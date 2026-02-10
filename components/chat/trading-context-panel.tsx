@@ -1,7 +1,7 @@
 "use client"
 
 import { Card } from "@/components/ui/card"
-import { TrendingUp, TrendingDown, Activity, Star, ChevronDown, ChevronUp, BookOpen } from "lucide-react"
+import { TrendingUp, TrendingDown, Activity, Star, ChevronDown, ChevronUp, GraduationCap } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
@@ -45,6 +45,7 @@ interface TradingContextPanelProps {
   onClearTerm?: () => void
   learnTabActive?: boolean
   onLearnTabClick?: () => void
+  learningEnabled?: boolean
 }
 
 export function TradingContextPanel({
@@ -60,6 +61,7 @@ export function TradingContextPanel({
   onClearTerm,
   learnTabActive = false,
   onLearnTabClick,
+  learningEnabled = false,
 }: TradingContextPanelProps) {
   const { mode, selectedTicker, showChart, showCalendar, closeChart } = useChart()
   const [isCollapsed, setIsCollapsed] = useState(collapsed)
@@ -151,7 +153,7 @@ export function TradingContextPanel({
                     )}
                   >
                     <span className="flex items-center justify-center gap-1">
-                      {tab.key === "learn" && <BookOpen className="h-3 w-3" />}
+                      {tab.key === "learn" && <GraduationCap className="h-3 w-3" />}
                       {tab.label}
                       {tab.key === "learn" && selectedTerm && !learnTabActive && (
                         <span className="w-1.5 h-1.5 rounded-full bg-purple-500" />
@@ -173,10 +175,19 @@ export function TradingContextPanel({
             className="h-full min-h-0 flex-1"
           >
             {activeMode === "learn" ? (
-              <EducationChat
-                selectedTerm={selectedTerm ?? null}
-                onClear={onClearTerm ?? (() => {})}
-              />
+              learningEnabled ? (
+                <EducationChat
+                  selectedTerm={selectedTerm ?? null}
+                  onClear={onClearTerm ?? (() => {})}
+                />
+              ) : (
+                <div className="flex flex-col items-center justify-center h-full p-6 text-center">
+                  <GraduationCap className="h-10 w-10 text-purple-500/40 mb-3" />
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    Toggle on Learn mode to see trading terms highlighted in Pelican&apos;s responses and get the definitions.
+                  </p>
+                </div>
+              )
             ) : activeMode === "chart" && selectedTicker ? (
               <TradingViewChart symbol={selectedTicker} onClose={closeChart} />
             ) : (
@@ -223,7 +234,7 @@ export function TradingContextPanel({
                 )}
               >
                 <span className="flex items-center justify-center gap-1">
-                  {tab.key === "learn" && <BookOpen className="h-3 w-3" />}
+                  {tab.key === "learn" && <GraduationCap className="h-3 w-3" />}
                   {tab.label}
                   {tab.key === "learn" && selectedTerm && !learnTabActive && (
                     <span className="w-1.5 h-1.5 rounded-full bg-purple-500" />

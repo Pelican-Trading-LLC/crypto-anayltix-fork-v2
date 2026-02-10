@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect, FormEvent } from 'react'
-import { BookOpen, Send, Trash2 } from 'lucide-react'
+import { GraduationCap, Send, Trash2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { motion, AnimatePresence } from 'framer-motion'
 import DOMPurify from 'isomorphic-dompurify'
@@ -117,7 +117,7 @@ export function EducationChat({ selectedTerm, onClear }: EducationChatProps) {
   if (!selectedTerm && messages.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center h-full p-6 text-center">
-        <BookOpen className="h-10 w-10 text-purple-500/40 mb-3" />
+        <GraduationCap className="h-10 w-10 text-purple-500/40 mb-3" />
         <p className="text-sm text-muted-foreground leading-relaxed">
           Click any highlighted term in the chat to learn about it. Toggle Learning Mode in the chat header.
         </p>
@@ -130,7 +130,7 @@ export function EducationChat({ selectedTerm, onClear }: EducationChatProps) {
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-2.5 border-b border-white/5">
         <div className="flex items-center gap-2">
-          <BookOpen className="h-4 w-4 text-purple-500" />
+          <GraduationCap className="h-4 w-4 text-purple-500" />
           <span className="text-xs font-medium text-foreground">
             {selectedTerm ? selectedTerm.term : 'Education'}
           </span>

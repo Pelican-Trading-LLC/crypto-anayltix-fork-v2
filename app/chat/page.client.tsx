@@ -91,8 +91,9 @@ function LearningAwareTradingPanel(props: React.ComponentProps<typeof TradingCon
       {...props}
       selectedTerm={enabled ? selectedTerm : null}
       onClearTerm={clearTerm}
-      learnTabActive={enabled && learnTabActive}
+      learnTabActive={learnTabActive}
       onLearnTabClick={() => setLearnTabActive(!learnTabActive)}
+      learningEnabled={enabled}
     />
   )
 }
