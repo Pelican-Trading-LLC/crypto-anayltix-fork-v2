@@ -444,6 +444,8 @@ export default function ChatPage() {
   const handleNewConversation = async () => {
     await conversationRouter.handleNewConversation()
     setMobileSheetOpen(false)
+    // Refresh sidebar to catch any conversation created during the previous chat
+    window.dispatchEvent(new CustomEvent('pelican:conversation-created'))
   }
 
   const handleStopGeneration = () => {
