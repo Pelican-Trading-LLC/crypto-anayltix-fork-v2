@@ -8,24 +8,28 @@ interface DataPoint {
 interface AnalyticsChartProps {
   title: string
   data: DataPoint[]
+  emptyMessage?: string
 }
 
-export function AnalyticsChart({ title, data }: AnalyticsChartProps) {
+export function AnalyticsChart({ title, data, emptyMessage }: AnalyticsChartProps) {
   const max = Math.max(...data.map((d) => d.value), 1)
   const total = data.reduce((sum, d) => sum + d.value, 0)
+  const hasData = data.length > 0 && total > 0
 
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="text-base">{title}</CardTitle>
-        <span className="text-sm text-muted-foreground">
-          Total: {total.toLocaleString()}
-        </span>
+        {hasData && (
+          <span className="text-sm text-muted-foreground">
+            Total: {total.toLocaleString()}
+          </span>
+        )}
       </CardHeader>
       <CardContent>
-        {data.length === 0 ? (
+        {!hasData ? (
           <p className="text-sm text-muted-foreground py-8 text-center">
-            No data available
+            {emptyMessage ?? 'No data available'}
           </p>
         ) : (
           <div className="flex items-end gap-px h-40">
@@ -52,8 +56,8 @@ export function AnalyticsChart({ title, data }: AnalyticsChartProps) {
             })}
           </div>
         )}
-        {/* X-axis labels — show first, middle, last */}
-        {data.length > 0 && (
+        {/* X-axis labels -- show first, middle, last */}
+        {hasData && (
           <div className="flex justify-between mt-2 text-[10px] text-muted-foreground">
             <span>{data[0]?.label}</span>
             {data.length > 2 && (

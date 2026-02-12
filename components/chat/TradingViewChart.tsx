@@ -104,6 +104,19 @@ function TradingViewChartInner({ symbol, onClose }: TradingViewChartProps) {
         )}
         <div ref={containerRef} className="h-full w-full" />
       </div>
+
+      {/* TradingView Attribution */}
+      <div className="flex items-center justify-center gap-1.5 py-2 text-[11px] text-muted-foreground/60">
+        <span>Powered by</span>
+        <a
+          href="https://www.tradingview.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-muted-foreground/80 hover:text-muted-foreground underline-offset-2 hover:underline transition-colors"
+        >
+          TradingView
+        </a>
+      </div>
     </div>
   )
 }

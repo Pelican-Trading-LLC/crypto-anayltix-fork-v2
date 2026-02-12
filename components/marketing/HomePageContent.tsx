@@ -1,5 +1,7 @@
 'use client';
 
+import { useState } from 'react';
+import Image from 'next/image';
 import {
   FlaskConical,
   MessageCircle,
@@ -20,6 +22,29 @@ import dynamic from 'next/dynamic';
 const HelpChat = dynamic(() => import('@/components/marketing/HelpChat'), {
   ssr: false,
 });
+
+function TeamAvatar({ src, alt, initials }: { src: string; alt: string; initials: string }) {
+  const [imgError, setImgError] = useState(false);
+
+  return (
+    <div className="team-avatar">
+      {!imgError ? (
+        <Image
+          src={src}
+          alt={alt}
+          width={96}
+          height={96}
+          className="team-avatar-img"
+          onError={() => setImgError(true)}
+        />
+      ) : (
+        <div className="team-avatar-fallback">
+          {initials}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function HomePageContent() {
   const t = useT();
@@ -365,11 +390,24 @@ export default function HomePageContent() {
           </div>
           <div className="team-grid">
             <div className="team-card bracket-box animate-on-scroll">
+              <TeamAvatar src="/nick-headshot.jpg" alt="Nick Groves" initials="NG" />
               <div className="team-name">{t.marketing.team.nickName}</div>
               <div className="team-role">{t.marketing.team.nickRole}</div>
+              <a
+                href="https://x.com/NickGrovesAI"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="team-twitter-link"
+              >
+                <svg className="team-twitter-icon" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+                @NickGrovesAI
+              </a>
               <CollapsibleBio text={t.marketing.team.nickBio} />
             </div>
             <div className="team-card bracket-box animate-on-scroll">
+              <TeamAvatar src="/ray-headshot.jpg" alt="Ray Campbell" initials="RC" />
               <div className="team-name">{t.marketing.team.rayName}</div>
               <div className="team-role">{t.marketing.team.rayRole}</div>
               <CollapsibleBio text={t.marketing.team.rayBio} />

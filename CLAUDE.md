@@ -1,204 +1,211 @@
 ## Workflow Orchestration
 ### 1. Plan Mode Default
 - Enter plan mode for ANY non-trivial task (3+ steps or architectural decisions)
-- If something goes sideways, STOP and re-plan immediately - don't keep pushing
-- Use plan mode for verification steps, not just building
+- If something goes sideways, STOP and re-plan immediately
 - Write detailed specs upfront to reduce ambiguity
 ### 2. Agent Strategy
-- **Agent Teams**: Use freely for parallel workstreams. No limits on agent count — use as many as needed to get results fast.
-- **Subagents**: Spawn as many as needed for any subtask. Nest freely if it helps.
+- **Agent Teams**: Use freely for parallel workstreams. No limits on agent count.
+- **Subagents**: Spawn as many as needed. Nest freely.
 - Maximize parallelism. Speed over conservation.
 ### 3. Self-Improvement Loop
-- After ANY correction from the user: update 'tasks/lessons.md' with the pattern
-- Write rules for yourself that prevent the same mistake
-- Ruthlessly iterate on these lessons until mistake rate drops
-- Review lessons at session start for relevant project
+- After ANY correction: update `tasks/lessons.md` with the pattern
+- Write rules that prevent the same mistake
+- Review lessons at session start
 ### 4. Verification Before Done
-- Never mark a task complete without proving it works
-- Diff behavior between main and your changes when relevant
-- Ask yourself: "Would a staff engineer approve this?"
-- Run tests, check logs, demonstrate correctness
-### 5. Demand Elegance (Balanced)
-- For non-trivial changes: pause and ask "is there a more elegant way?"
-- If a fix feels hacky: "Knowing everything I know now, implement the elegant solution"
-- Skip this for simple, obvious fixes - don't over-engineer
-- Challenge your own work before presenting it
-### 6. Autonomous Bug Fixing
-- When given a bug report: just fix it. Don't ask for hand-holding
-- Point at logs, errors, failing tests - then resolve them
-- Zero context switching required from the user
-- Go fix failing CI tests without being told how
-
-## Task Management
-1. **Plan First**: Write plan to 'tasks/todo.md' with checkable items
-2. **Verify Plan**: Check in before starting implementation
-3. **Track Progress**: Mark items complete as you go
-4. **Explain Changes**: High-level summary at each step
-5. **Document Results**: Add review section to 'tasks/todo.md'
-6. **Capture Lessons**: Update 'tasks/lessons.md' after corrections
+- Never mark complete without proving it works
+- `npm run build` must pass before any commit
+- Ask: "Would a staff engineer approve this?"
+### 5. Autonomous Bug Fixing
+- When given a bug: just fix it. Don't ask for hand-holding.
+- Point at logs/errors, then resolve them.
 
 ## Core Principles
-- **Simplicity First**: Make every change as simple as possible. Impact minimal code.
-- **No Laziness**: Find root causes. No temporary fixes. Senior developer standards.
-- **Minimal Impact**: Changes should only touch what's necessary. Avoid introducing bugs.
-
-## Project Context: Pelican Frontend v2
-
-### What This Is
-AI-powered trading assistant frontend. Next.js 14 App Router, Supabase auth, Stripe payments, SSE streaming chat.
-
-### V2 Goals
-1. SSR for marketing pages (SEO/Core Web Vitals)
-2. Performance optimization (images, code splitting, bundle size)
-3. Component splitting (settings, message-bubble, chat-input)
-4. New features: regenerate response, suggestions tab, better mobile
-
-### Architecture Constraints
-- Keep: Supabase, Stripe, SWR, Radix UI, 30-language i18n
-- Change: Marketing pages → Server Components, add next/dynamic imports
-- Don't Touch: hooks/use-chat.ts streaming logic (it works), hooks/use-conversations.ts
-
-### Key Files to Know
-- `app/(marketing)/page.tsx` — Currently 'use client', needs SSR refactor
-- `app/settings/page.tsx` — 995 lines, needs splitting into sections
-- `components/chat/message-bubble.tsx` — 552 lines, needs splitting
-- `app/layout.tsx` lines 37-40 — Duplicate font loading, remove external link tags
-
-### Testing Requirements
-- Zero test coverage currently
-- Add Vitest for unit tests
-- Add Playwright E2E for: auth flow, chat send/receive, payment flow
-
-### Don't Do
-- Don't rebuild the chat streaming implementation
-- Don't refactor hooks/use-chat.ts unless explicitly asked
-- Don't add new dependencies without checking if existing ones cover the use case
-- Don't use React.lazy — use next/dynamic instead (App Router)
+- **Simplicity First**: Minimal changes, minimal code touched.
+- **No Laziness**: Root causes only. No temporary fixes.
+- **Security First**: Every feature needs RLS, input validation, auth checks. Never client-only enforcement.
+- **Don't Touch Streaming**: `hooks/use-chat.ts` and `hooks/use-streaming-chat.ts` work. Don't modify unless explicitly asked.
 
 ---
 
-## File Ownership Rules (Agent Teams)
+## Project Context: Pelican Trading AI
 
-When using agent teams, teammates must respect these boundaries to avoid merge conflicts:
+### What This Is
+AI-powered trading assistant. Users ask questions about markets in plain English, get institutional-grade analysis. Think Bloomberg Terminal for retail traders.
 
-### Read-Only (Never Modify)
-- `hooks/use-chat.ts` — 577-line SSE streaming. Works. Don't touch.
-- `hooks/use-streaming-chat.ts` — SSE parsing. Works.
-- `hooks/use-conversations.ts` — Conversation state. Works.
-- `messages/*.json` — 30 languages of translations. Only modify via i18n workflow.
-
-### Directory Ownership (One Agent Per Directory)
-- `app/(marketing)/` — SSR migration agent only
-- `app/(app)/` — App feature agent only
-- `app/(admin)/` — Admin dashboard agent only (new directory)
-- `app/chart/` — Chart widget agent only (new directory)
-- `app/api/` — Only modify if you own the feature that API serves
-- `components/chat/` — One agent per component file, never two agents on same file
-- `components/settings/` — One agent only (new directory, split from settings page)
-- `components/portfolio/` — One agent only (new directory)
-- `components/admin/` — One agent only (new directory)
-
-### Shared (Coordinate Before Modifying)
-- `app/layout.tsx` — Root layout. Changes here affect everything. Coordinate with lead.
-- `lib/supabase/*` — Supabase client/server setup. Shared utility.
-- `lib/admin.ts` — Admin email checks. Shared utility.
-- `providers/` — Context providers. Changes affect all routes.
-- `tailwind.config.ts` — Global styles. Coordinate.
-- `package.json` — Dependency changes must be approved by lead agent.
-
-## V2 Phased Roadmap
-
-| Phase | Focus | Duration | Agent Teams? |
-|-------|-------|----------|-------------|
-| 0 | Quick wins: font fix, image optimization, console cleanup | 2 days | No — solo session |
-| 1 | SSR + Performance: marketing SSR, code splitting, loading states | 1 week | Yes — 3 agents (SSR, Perf, Review) |
-| 2 | Component splitting: settings, message-bubble, chat-input | 1 week | Yes — one per component |
-| 3 | Chat features: regenerate, suggestions tab, mobile UI | 1 week | No — tightly coupled to streaming |
-| 4 | Admin dashboard: user list, credit analytics, metrics | 1 week | Yes — 2 agents (backend, frontend) |
-| 5 | Portfolio system: position CRUD, CSV import, portfolio view | 1.5 weeks | Yes — 3 agents (schema, CSV parser, UI) |
-| 6 | Alerts + Realtime: price alerts, notifications, WebSocket | 1 week | No — sequential realtime logic |
-| 7 | Chart widgets: TradingView embed, pop-out windows | 3-5 days | No — contained task |
-| 8 | Testing + Polish: Vitest, Playwright, bug fixes | 1 week | Optional — parallel test writing |
-
-## V2 Database Schema (New Tables)
-```sql
--- Portfolio system
-portfolios (id, user_id, name, is_default, created_at)
-positions (id, portfolio_id, user_id, ticker, quantity, entry_price, entry_date, position_type, notes, metadata, created_at, updated_at)
-position_alerts (id, position_id, user_id, alert_type, threshold, is_active, triggered_at, created_at)
-
--- Notifications (Supabase Realtime)
-notifications (id, user_id, type, title, body, data, read_at, created_at)
-
--- Analytics
-analytics_events (id, event, properties, user_id, session_id, timestamp)
-credit_transactions (id, user_id, amount, balance_after, transaction_type, metadata, created_at)
-```
-
-## V2 New Features Summary
-
-### Portfolio/Position Tracking
-- Manual position entry (ticker, quantity, entry price, date)
-- CSV import from brokers (TD/Schwab, IBKR, Robinhood)
-- P&L calculations
-- Chat becomes context-aware of user positions
-
-### Real-time Alerts (Supabase Realtime)
-- Price alerts (above/below threshold)
-- Percentage gain/loss alerts
-- Notifications table triggers realtime push
-- Toast notifications in UI
-
-### Pop-out Chart Widgets
-- TradingView embedded widgets
-- window.open() to /chart/[ticker] route
-- Charts appear when ticker mentioned in chat
-
-### Admin Dashboard
-- User list with search/filter
-- Credit consumption analytics
-- Revenue metrics from Stripe
-- System health monitoring
-
-### Chat Enhancements
-- Regenerate response button
-- Pelican suggestions tab (prebuilt prompts)
-- Branch to new chat button
-- Better mobile UI (touch targets, responsive layout)
-
-## Tech Stack Reference
-
+### Tech Stack
 | Layer | Technology |
 |-------|------------|
 | Framework | Next.js 14 (App Router) |
 | Language | TypeScript (strict) |
-| Auth/DB | Supabase (Postgres + Auth + Realtime + Storage) |
-| Payments | Stripe |
-| UI | Radix UI + shadcn/ui + Tailwind CSS v4 |
+| Auth/DB | Supabase (project: `ewcqmsfaostcwmgybbub`, us-east-2) |
+| Payments | Stripe (Starter $29, Pro $99, Elite $249) |
+| UI | Radix UI + shadcn/ui + Tailwind CSS |
 | State | SWR + React Context |
 | Charts | TradingView widgets |
-| Backend API | Fly.io (Python) |
+| Backend API | Python on Fly.io (SSE streaming) |
+| LLM | GPT-5 (primary), GPT-4o-mini (education, classification) |
+| Market Data | Polygon.io |
 | Hosting | Vercel |
-| Monitoring | Sentry + Vercel Analytics |
-| i18n | next-intl (30 languages) |
+| Email | Resend |
+| i18n | Custom useTranslation hook (30 languages) |
+| Domain | pelicantrading.ai (prod), pelicantrading.org (staging) |
 
-## Agent Teams Guidelines
+### Database — Core Tables (actively used)
+```
+user_credits: user_id (PK), credits_balance, credits_used_this_month, plan_type,
+  plan_credits_monthly, stripe_customer_id, stripe_subscription_id,
+  free_questions_remaining (default 10), is_admin, terms_accepted
 
-### When to Use Agent Teams
-- Tasks with 2+ independent workstreams touching different files/directories
-- Code reviews from multiple perspectives (security, performance, accessibility)
-- Cross-layer features (schema + API + UI in parallel)
+conversations: id, user_id, title, created_at, updated_at, is_active,
+  metadata, last_message_preview, message_count
 
-### When NOT to Use Agent Teams
-- Sequential tasks or same-file edits
-- Work that depends heavily on hooks/use-chat.ts or streaming logic
-- Quick bug fixes or single-file changes
-- Any task where agents would need to edit the same file
+messages: id, conversation_id, user_id, role (user/assistant/syem),
+  content, timestamp, metadata (JSONB — may contain images array),
+  intent, tickers[], emotional_state
 
-### Execution Protocol
-- No limits on agent count — spawn as many as the task demands
-- No token conservation concerns — prioritize speed and results
-- Lead agent assigns tasks and synthesizes results
-- Teammates claim tasks from shared task list
-- If a teammate needs to touch a shared file, message the lead first
-- After each phase, lead runs verification before moving on
+files: id, user_id, storage_path, mime_type, name, size
+```
+
+### Database — Future Feature Tables (exist in Supabase, no frontend yet)
+```
+trades: id, user_id, ticker, asset_type, direction, quantity, entry_price,
+  exit_price, stop_loss, take_profit, status (open/closed/cancelled),
+  pnl_amount, pnl_percent, r_multiple, entry_date, exit_date,
+  thesis, notes, setup_tags[], conviction (1-10), ai_grade (jsonb)
+
+daily_journal: id, user_id, journal_date, pre_market_notes, market_bias,
+  daily_goal, post_market_notes, lessons_learned, daily_pnl
+
+playbooks: id, user_id, name, setup_type, entry_rules, exit_rules,
+  risk_rules, checklist[], win_rate
+
+watchlist: id, user_id, ticker, notes, alert_price_above, alert_price_below
+```
+
+### RPC Functions (exist in Supabase, for future trade journal)
+```
+close_trade, get_trade_stats, get_stats_by_setup, get_pnl_by_day_of_week, get_equity_curve
+```
+
+### RPC Function for Admin (actively used)
+```
+get_popular_tickers(p_days INTEGER, p_limit INTEGER) → [{ ticker TEXT, mention_count BIGINT }]
+  -- Extracts tickers from user message content via regex against known ticker whitelist
+```
+
+---
+
+## What's Built (V2 Features — Complete)
+
+### Chat Interface
+- SSE streaming with GPT-5 via Fly.io backend
+- Ticker highlighting (purple, clickable → pre-fills chat)
+- Learning Mode toggle (GraduationCap icon, 120+ terms, hover tooltips, education sidebar chat)
+- Regenerate response button
+- Message actions (copy, etc.)
+- 30-language support
+
+### Right Sidebar Tabs
+- **Market**: Live indices (SPX, IXIC, DJI), VIX, sector performance, watchlist with prices
+- **Calendar**: TradingView economic calendar widget
+- **Learn**: Education chat (GPT-4o-mini) for Learning Mode
+
+### Admin Dashboard (`/admin`)
+- User list with search/filter
+- Recent signups table
+- Recent conversations with expandable previews
+- Credit management
+- Analytics: messages/day, conversations/day, signups/day, credit consumption, conversion funnel, plan distribution, MRR
+
+### Security (Hardened)
+- Stripe checkout: authenticated endpoints, validated price IDs, server-controlled credits
+- Terms of Service: server-side enforcement for Google OAuth
+- RLS on all tables
+- Secure RPC with SECURITY DEFINER
+
+---
+
+## Architecture Patterns
+
+### Chat ↔ Feature Integration
+Features use a "chat pre-fill" pattern: clicking elements composes messages in chat input.
+Look for `prefillChatMessage` or similar — should be a shared utility.
+
+### Data Fetching
+Check what pattern the codebase uses (SWR hooks, React Query, or raw useEffect). Match existing patterns.
+
+### Supabase Client
+- Client-side: `createClient` or `createBrowserClient` (search lib/supabase/)
+- Server-side API routes: different client. Search for `createServerClient`.
+
+---
+
+## Planned Features (NOT in repo yet — do not reference these files)
+
+### Trade Journal (`/journal`)
+- 5 tabs: Dashboard, Trades, Analytics, Daily Journal, Playbooks
+- 6 recharts visualizations: equity curve, daily P&L, setup performance, day-of-week, R-multiple, conviction
+- Log/Close/Edit trade modals with zod validation
+- Pelican Scan: click icon on trade → pre-fills chat with trade context
+- "Log Trade" button on chat messages with ticker detection
+- Sidebar "Trades" tab: open position cards, today's closed trades, quick actions
+
+### Market Heatmap (`/heatmap`)
+- Custom squarified treemap (no d3 dependency)
+- S&P 500 static constituent mapping (200+ stocks)
+- Sidebar "Heatmap" tab with same data views
+- Click stock → pre-fills chat with analysis prompt
+- Auto-refresh: 60s market hours, 5m after hours
+
+### Database tables exist in Supabase but frontend not built yet:
+trades, daily_journal, playbooks, watchlist, trade_screenshots, trade_imports
+
+---
+
+## File Ownership (Agent Teams)
+
+### Read-Only
+- `hooks/use-chat.ts` — SSE streaming. Works. Don't touch.
+- `hooks/use-streaming-chat.ts` — SSE parsing. Works.
+- `hooks/use-conversations.ts` — Conversation state. Works.
+- `messages/*.json` — Translation files. Only modify via i18n workflow.
+
+### Shared (Coordinate First)
+- `app/layout.tsx` — Root layout affects everything
+- `lib/supabase/*` — Shared client setup
+- `providers/` — Context providers
+- `tailwind.config.ts` — Global styles
+- `package.json` — Dependency changes need approval
+- `globals.css` — Design tokens and CSS variables
+
+---
+
+## Coding Standards
+- TypeScript strict. No `any` where proper types exist.
+- Functional components + hooks. React.memo for expensive renders.
+- Tailwind utilities + custom classes in globals.css for animations.
+- PascalCase components, camelCase functions, kebab-case files.
+- All mutations in try/catch with user-facing errors.
+- `IF NOT EXISTS` in migrations. Never break production.
+- No console.log in production except intentional error logging.
+- All user-facing strings through translation system.
+- `tabular-nums` on all numeric data (prices, percentages).
+- `next/dynamic` instead of React.lazy (App Router).
+
+---
+
+## Current TODO
+- [ ] A(full Q&A, copy, search)
+- [ ] Image persistence (Supabase Storage → signed URLs)
+- [ ] TradingView attribution tags
+- [ ] Nick headshot + Twitter on team page
+- [ ] UI polish pass (chat formatting, spacing, visual hierarchy)
+- [ ] Open Graph meta tags for social sharing
+- [ ] Landing page CRO improvements (audit score: 51/100)
+
+## Future TODO (not started)
+- [ ] Trade Journal frontend (tables exist in Supabase)
+- [ ] Market Heatmap frontend (Polygon.io API routes needed)
+- [ ] Morning Briefing feature
+- [ ] Position Dashboard with health scores
+- [ ] Sidebar Trades + Heatmap tabs

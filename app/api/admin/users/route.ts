@@ -10,9 +10,13 @@ export async function GET(req: NextRequest) {
   const limit = Math.min(Math.max(1, parseInt(searchParams.get('limit') || '50')), 100)
   const search = (searchParams.get('search') || '').toLowerCase().trim()
   const planFilter = (searchParams.get('plan') || '').toLowerCase().trim()
+  const activityFilter = (searchParams.get('activity') || '').toLowerCase().trim()
   const sortBy = (searchParams.get('sort') || 'newest').toLowerCase().trim()
 
   const admin = getServiceClient()
+
+  const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
+  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
 
   // Get all auth users
   const { data: authData, error: authError } = await admin.auth.admin.listUsers({
@@ -42,15 +46,53 @@ export async function GET(req: NextRequest) {
     allCredits.map((c) => [c.user_id as string, c])
   )
 
-  // Fetch message counts per user for "most_active" sort
+  // Fetch message counts and last active for all users (needed for sorting, activity filter, CSV export)
   const userMsgCounts = new Map<string, number>()
-  if (sortBy === 'most_active') {
-    const { data: msgData } = await admin.from('messages').select('user_id')
-    if (msgData) {
-      for (const m of msgData) {
-        const uid = m.user_id as string
-        userMsgCounts.set(uid, (userMsgCounts.get(uid) ?? 0) + 1)
+  const userConvoCounts = new Map<string, number>()
+  const userLastActive = new Map<string, string>()
+
+  // Always fetch message data for activity filter, sorting, and enhanced user rows
+  const [msgDataResult, convoDataResult, recentMsgResult] = await Promise.all([
+    admin.from('messages').select('user_id'),
+    admin.from('conversations').select('user_id'),
+    admin.from('messages').select('user_id, created_at').order('created_at', { ascending: false }),
+  ])
+
+  if (msgDataResult.data) {
+    for (const m of msgDataResult.data) {
+      const uid = m.user_id as string
+      userMsgCounts.set(uid, (userMsgCounts.get(uid) ?? 0) + 1)
+    }
+  }
+
+  if (convoDataResult.data) {
+    for (const c of convoDataResult.data) {
+      const uid = c.user_id as string
+      userConvoCounts.set(uid, (userConvoCounts.get(uid) ?? 0) + 1)
+    }
+  }
+
+  if (recentMsgResult.data) {
+    for (const m of recentMsgResult.data) {
+      const uid = m.user_id as string
+      if (!userLastActive.has(uid)) {
+        userLastActive.set(uid, m.created_at as string)
       }
+    }
+  }
+
+  // For activity filter, determine which users were active in 7d and which have no messages in 30d
+  const activeIn7d = new Set<string>()
+  const activeIn30d = new Set<string>()
+
+  if (recentMsgResult.data) {
+    const sevenDaysAgoDate = new Date(sevenDaysAgo)
+    const thirtyDaysAgoDate = new Date(thirtyDaysAgo)
+    for (const m of recentMsgResult.data) {
+      const uid = m.user_id as string
+      const ts = new Date(m.created_at as string)
+      if (ts >= sevenDaysAgoDate) activeIn7d.add(uid)
+      if (ts >= thirtyDaysAgoDate) activeIn30d.add(uid)
     }
   }
 
@@ -69,6 +111,8 @@ export async function GET(req: NextRequest) {
       creditsUsed: (credit?.credits_used_this_month ?? 0) as number,
       freeQuestionsRemaining: (credit?.free_questions_remaining ?? 0) as number,
       messageCount: userMsgCounts.get(u.id) ?? 0,
+      totalConversations: userConvoCounts.get(u.id) ?? 0,
+      lastActive: userLastActive.get(u.id) ?? null,
     }
   })
 
@@ -83,6 +127,13 @@ export async function GET(req: NextRequest) {
   // Filter by plan
   if (planFilter && planFilter !== 'all') {
     merged = merged.filter((u) => u.plan === planFilter)
+  }
+
+  // Filter by activity
+  if (activityFilter === 'active') {
+    merged = merged.filter((u) => activeIn7d.has(u.id))
+  } else if (activityFilter === 'inactive') {
+    merged = merged.filter((u) => !activeIn30d.has(u.id))
   }
 
   // Sort
@@ -108,9 +159,21 @@ export async function GET(req: NextRequest) {
   const offset = (page - 1) * limit
   const pageUsers = merged.slice(offset, offset + limit)
 
-  // Strip messageCount from response (internal sort field)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const users = pageUsers.map(({ messageCount: _mc, ...rest }) => rest)
+  const users = pageUsers.map((u) => ({
+    id: u.id,
+    displayName: u.displayName,
+    email: u.email,
+    createdAt: u.createdAt,
+    lastSignIn: u.lastSignIn,
+    isAdmin: u.isAdmin,
+    plan: u.plan,
+    creditsBalance: u.creditsBalance,
+    creditsUsed: u.creditsUsed,
+    freeQuestionsRemaining: u.freeQuestionsRemaining,
+    messageCount: u.messageCount,
+    totalConversations: u.totalConversations,
+    lastActive: u.lastActive,
+  }))
 
   return NextResponse.json({ users, total, page, limit, totalPages }, {
     headers: { "Cache-Control": "private, no-cache" },

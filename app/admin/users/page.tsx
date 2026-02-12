@@ -25,34 +25,71 @@ export default async function AdminUsersPage() {
   const pageUsers = allUsers.slice(0, limit)
   const totalPages = Math.ceil(total / limit)
 
-  // Fetch credit info for this page's users
+  // Fetch credit info and message/conversation counts
   const userIds = pageUsers.map((u) => u.id)
-  let credits: Record<string, unknown>[] = []
-  if (userIds.length > 0) {
-    const { data, error } = await admin
-      .from('user_credits')
-      .select('user_id, credits_balance, plan_type, credits_used_this_month, free_questions_remaining, is_admin')
-      .in('user_id', userIds)
-    if (error) console.error('[Admin Users] credits query failed:', error.message)
-    credits = data ?? []
-  }
 
+  const [creditsResult, msgDataResult, convoDataResult, recentMsgResult] = await Promise.all([
+    userIds.length > 0
+      ? admin
+          .from('user_credits')
+          .select('user_id, credits_balance, plan_type, credits_used_this_month, free_questions_remaining, is_admin')
+          .in('user_id', userIds)
+      : Promise.resolve({ data: [], error: null }),
+    admin.from('messages').select('user_id'),
+    admin.from('conversations').select('user_id'),
+    admin.from('messages').select('user_id, created_at').order('created_at', { ascending: false }),
+  ])
+
+  if (creditsResult.error) console.error('[Admin Users] credits query failed:', creditsResult.error.message)
+
+  const credits = creditsResult.data ?? []
   const creditMap = new Map(
-    credits.map((c) => [c.user_id as string, c])
+    credits.map((c: Record<string, unknown>) => [c.user_id as string, c])
   )
 
+  // Build message count and conversation count maps
+  const userMsgCounts = new Map<string, number>()
+  const userConvoCounts = new Map<string, number>()
+  const userLastActive = new Map<string, string>()
+
+  if (msgDataResult.data) {
+    for (const m of msgDataResult.data) {
+      const uid = m.user_id as string
+      userMsgCounts.set(uid, (userMsgCounts.get(uid) ?? 0) + 1)
+    }
+  }
+
+  if (convoDataResult.data) {
+    for (const c of convoDataResult.data) {
+      const uid = c.user_id as string
+      userConvoCounts.set(uid, (userConvoCounts.get(uid) ?? 0) + 1)
+    }
+  }
+
+  if (recentMsgResult.data) {
+    for (const m of recentMsgResult.data) {
+      const uid = m.user_id as string
+      if (!userLastActive.has(uid)) {
+        userLastActive.set(uid, m.created_at as string)
+      }
+    }
+  }
+
   const users = pageUsers.map((u) => {
-    const credit = creditMap.get(u.id)
+    const credit = creditMap.get(u.id) as Record<string, unknown> | undefined
     return {
       id: u.id,
       displayName: u.email ?? null,
       email: u.email ?? '',
       createdAt: u.created_at,
-      isAdmin: ((credit as Record<string, unknown>)?.is_admin ?? false) as boolean,
-      plan: ((credit as Record<string, unknown>)?.plan_type ?? 'none') as string,
-      creditsBalance: ((credit as Record<string, unknown>)?.credits_balance ?? 0) as number,
-      creditsUsed: ((credit as Record<string, unknown>)?.credits_used_this_month ?? 0) as number,
-      freeQuestionsRemaining: ((credit as Record<string, unknown>)?.free_questions_remaining ?? 0) as number,
+      isAdmin: ((credit)?.is_admin ?? false) as boolean,
+      plan: ((credit)?.plan_type ?? 'none') as string,
+      creditsBalance: ((credit)?.credits_balance ?? 0) as number,
+      creditsUsed: ((credit)?.credits_used_this_month ?? 0) as number,
+      freeQuestionsRemaining: ((credit)?.free_questions_remaining ?? 0) as number,
+      messageCount: userMsgCounts.get(u.id) ?? 0,
+      totalConversations: userConvoCounts.get(u.id) ?? 0,
+      lastActive: userLastActive.get(u.id) ?? null,
     }
   })
 

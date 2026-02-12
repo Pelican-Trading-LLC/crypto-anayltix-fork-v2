@@ -26,6 +26,9 @@ interface AdminUser {
   creditsBalance: number
   creditsUsed: number
   freeQuestionsRemaining: number
+  messageCount?: number
+  totalConversations?: number
+  lastActive?: string | null
 }
 
 interface UsersResponse {
@@ -37,9 +40,14 @@ interface UsersResponse {
 }
 
 const PLAN_OPTIONS = ['all', 'none', 'trial', 'base', 'pro', 'power', 'founder'] as const
+const ACTIVITY_OPTIONS = [
+  { value: 'all', label: 'All Activity' },
+  { value: 'active', label: 'Active (7d)' },
+  { value: 'inactive', label: 'Inactive (30d)' },
+] as const
 const SORT_OPTIONS = [
-  { value: 'newest', label: 'Newest' },
-  { value: 'oldest', label: 'Oldest' },
+  { value: 'newest', label: 'Newest First' },
+  { value: 'oldest', label: 'Oldest First' },
   { value: 'most_credits', label: 'Most Credits' },
   { value: 'least_credits', label: 'Least Credits' },
   { value: 'most_active', label: 'Most Active' },
@@ -50,10 +58,29 @@ function planVariant(plan: string) {
     case 'pro':
     case 'power':
       return 'default' as const
+    case 'base':
     case 'starter':
       return 'secondary' as const
+    case 'founder':
+      return 'default' as const
     default:
       return 'outline' as const
+  }
+}
+
+function planColor(plan: string) {
+  switch (plan) {
+    case 'pro':
+      return 'bg-purple-500/10 text-purple-400 border-purple-500/20'
+    case 'power':
+      return 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+    case 'founder':
+      return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+    case 'base':
+    case 'starter':
+      return 'bg-blue-500/10 text-blue-400 border-blue-500/20'
+    default:
+      return ''
   }
 }
 
@@ -65,11 +92,23 @@ function formatShortDate(dateStr: string) {
   })
 }
 
+function timeAgo(dateStr: string) {
+  const seconds = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000)
+  if (seconds < 60) return 'just now'
+  const minutes = Math.floor(seconds / 60)
+  if (minutes < 60) return `${minutes}m ago`
+  const hours = Math.floor(minutes / 60)
+  if (hours < 24) return `${hours}h ago`
+  const days = Math.floor(hours / 24)
+  return `${days}d ago`
+}
+
 function exportCSV(users: AdminUser[]) {
-  const header = 'email,plan_type,credits_balance,credits_used_this_month,signed_up'
+  const header = 'email,plan_type,credits_balance,credits_used_this_month,total_conversations,total_messages,last_active,signup_date'
   const rows = users.map((u) => {
     const email = u.email.includes(',') ? `"${u.email}"` : u.email
-    return `${email},${u.plan},${u.creditsBalance},${u.creditsUsed},${u.createdAt.split('T')[0]}`
+    const lastActive = u.lastActive ? u.lastActive.split('T')[0] : ''
+    return `${email},${u.plan},${u.creditsBalance},${u.creditsUsed},${u.totalConversations ?? 0},${u.messageCount ?? 0},${lastActive},${u.createdAt.split('T')[0]}`
   })
   const csv = [header, ...rows].join('\n')
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
@@ -85,16 +124,18 @@ export function UsersTable({ initialData }: { initialData: UsersResponse }) {
   const [data, setData] = useState<UsersResponse>(initialData)
   const [search, setSearch] = useState('')
   const [planFilter, setPlanFilter] = useState('all')
+  const [activityFilter, setActivityFilter] = useState('all')
   const [sortBy, setSortBy] = useState('newest')
   const [loading, setLoading] = useState(false)
   const [expandedId, setExpandedId] = useState<string | null>(null)
 
-  const fetchUsers = useCallback(async (page: number, query: string, plan: string, sort: string) => {
+  const fetchUsers = useCallback(async (page: number, query: string, plan: string, activity: string, sort: string) => {
     setLoading(true)
     try {
       const params = new URLSearchParams({ page: String(page), limit: '20' })
       if (query.trim()) params.set('search', query.trim())
       if (plan && plan !== 'all') params.set('plan', plan)
+      if (activity && activity !== 'all') params.set('activity', activity)
       if (sort) params.set('sort', sort)
 
       const res = await fetch(`/api/admin/users?${params}`)
@@ -110,24 +151,30 @@ export function UsersTable({ initialData }: { initialData: UsersResponse }) {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
     setExpandedId(null)
-    fetchUsers(1, search, planFilter, sortBy)
+    fetchUsers(1, search, planFilter, activityFilter, sortBy)
   }
 
   const handlePlanChange = (plan: string) => {
     setPlanFilter(plan)
     setExpandedId(null)
-    fetchUsers(1, search, plan, sortBy)
+    fetchUsers(1, search, plan, activityFilter, sortBy)
+  }
+
+  const handleActivityChange = (activity: string) => {
+    setActivityFilter(activity)
+    setExpandedId(null)
+    fetchUsers(1, search, planFilter, activity, sortBy)
   }
 
   const handleSortChange = (sort: string) => {
     setSortBy(sort)
     setExpandedId(null)
-    fetchUsers(1, search, planFilter, sort)
+    fetchUsers(1, search, planFilter, activityFilter, sort)
   }
 
   const goToPage = (page: number) => {
     setExpandedId(null)
-    fetchUsers(page, search, planFilter, sortBy)
+    fetchUsers(page, search, planFilter, activityFilter, sortBy)
   }
 
   const handleExport = async () => {
@@ -135,6 +182,7 @@ export function UsersTable({ initialData }: { initialData: UsersResponse }) {
     const params = new URLSearchParams({ page: '1', limit: '100' })
     if (search.trim()) params.set('search', search.trim())
     if (planFilter && planFilter !== 'all') params.set('plan', planFilter)
+    if (activityFilter && activityFilter !== 'all') params.set('activity', activityFilter)
     if (sortBy) params.set('sort', sortBy)
 
     try {
@@ -144,7 +192,7 @@ export function UsersTable({ initialData }: { initialData: UsersResponse }) {
         exportCSV(json.users)
       }
     } catch {
-      // Silent fail — user can retry
+      // Silent fail -- user can retry
     }
   }
 
@@ -167,7 +215,7 @@ export function UsersTable({ initialData }: { initialData: UsersResponse }) {
           </Button>
         </form>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <select
             value={planFilter}
             onChange={(e) => handlePlanChange(e.target.value)}
@@ -177,6 +225,16 @@ export function UsersTable({ initialData }: { initialData: UsersResponse }) {
               <option key={p} value={p}>
                 {p === 'all' ? 'All Plans' : p.charAt(0).toUpperCase() + p.slice(1)}
               </option>
+            ))}
+          </select>
+
+          <select
+            value={activityFilter}
+            onChange={(e) => handleActivityChange(e.target.value)}
+            className="h-9 rounded-md border border-input bg-background px-3 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+          >
+            {ACTIVITY_OPTIONS.map((a) => (
+              <option key={a.value} value={a.value}>{a.label}</option>
             ))}
           </select>
 
@@ -204,14 +262,16 @@ export function UsersTable({ initialData }: { initialData: UsersResponse }) {
               <TableHead>User</TableHead>
               <TableHead>Plan</TableHead>
               <TableHead className="hidden md:table-cell">Credits</TableHead>
-              <TableHead className="hidden lg:table-cell">Signed Up</TableHead>
+              <TableHead className="hidden lg:table-cell">Messages</TableHead>
+              <TableHead className="hidden lg:table-cell">Last Active</TableHead>
+              <TableHead className="hidden xl:table-cell">Signed Up</TableHead>
               <TableHead className="w-10" />
             </TableRow>
           </TableHeader>
           <TableBody>
             {data.users.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5} className="py-8 text-center text-muted-foreground">
+                <TableCell colSpan={7} className="py-8 text-center text-muted-foreground">
                   No users found
                 </TableCell>
               </TableRow>
@@ -239,14 +299,26 @@ export function UsersTable({ initialData }: { initialData: UsersResponse }) {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge variant={planVariant(user.plan)} className="text-[10px]">
+                      <Badge
+                        variant={planVariant(user.plan)}
+                        className={`text-[10px] ${planColor(user.plan)}`}
+                      >
                         {user.plan}
                       </Badge>
                     </TableCell>
                     <TableCell className="hidden md:table-cell tabular-nums">
-                      {user.creditsBalance.toLocaleString()}
+                      <span className="font-medium">{user.creditsBalance.toLocaleString()}</span>
+                      <span className="text-muted-foreground text-xs ml-1">
+                        / {user.creditsUsed.toLocaleString()} used
+                      </span>
                     </TableCell>
-                    <TableCell className="hidden lg:table-cell text-muted-foreground">
+                    <TableCell className="hidden lg:table-cell tabular-nums text-muted-foreground">
+                      {(user.messageCount ?? 0).toLocaleString()}
+                    </TableCell>
+                    <TableCell className="hidden lg:table-cell text-muted-foreground text-xs">
+                      {user.lastActive ? timeAgo(user.lastActive) : 'Never'}
+                    </TableCell>
+                    <TableCell className="hidden xl:table-cell text-muted-foreground">
                       {formatShortDate(user.createdAt)}
                     </TableCell>
                     <TableCell>

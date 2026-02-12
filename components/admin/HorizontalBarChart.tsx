@@ -9,9 +9,10 @@ interface HorizontalBarChartProps {
   title: string
   data: BarItem[]
   maxItems?: number
+  emptyMessage?: string
 }
 
-export function HorizontalBarChart({ title, data, maxItems = 15 }: HorizontalBarChartProps) {
+export function HorizontalBarChart({ title, data, maxItems = 15, emptyMessage }: HorizontalBarChartProps) {
   const items = data.slice(0, maxItems)
   const max = Math.max(...items.map((d) => d.value), 1)
 
@@ -22,7 +23,9 @@ export function HorizontalBarChart({ title, data, maxItems = 15 }: HorizontalBar
       </CardHeader>
       <CardContent>
         {items.length === 0 ? (
-          <p className="text-sm text-muted-foreground py-8 text-center">No data available</p>
+          <p className="text-sm text-muted-foreground py-8 text-center">
+            {emptyMessage ?? 'No data available'}
+          </p>
         ) : (
           <div className="space-y-2">
             {items.map((item) => {
