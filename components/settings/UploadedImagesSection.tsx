@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
+import Image from "next/image"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -185,11 +186,12 @@ export function UploadedImagesSection({ userId }: UploadedImagesSectionProps) {
                   className="group relative rounded-lg border border-border bg-muted/30 overflow-hidden"
                 >
                   <div className="aspect-square relative">
-                    <img
+                    <Image
                       src={img.signedUrl}
                       alt={img.file.name}
+                      fill
+                      unoptimized
                       className="absolute inset-0 w-full h-full object-cover"
-                      loading="lazy"
                     />
                     <Button
                       variant="destructive"

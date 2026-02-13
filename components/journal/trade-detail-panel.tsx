@@ -1,8 +1,7 @@
 "use client"
 
 import { Trade } from "@/hooks/use-trades"
-import { X, TrendingUp, TrendingDown, Calendar, DollarSign, Target, AlertCircle } from "lucide-react"
-import { formatDistanceToNow } from "date-fns"
+import { X } from "lucide-react"
 
 interface TradeDetailPanelProps {
   trade: Trade
@@ -11,7 +10,7 @@ interface TradeDetailPanelProps {
   onCloseTrade?: (trade: Trade) => void
 }
 
-export function TradeDetailPanel({ trade, onClose, onEdit, onCloseTrade }: TradeDetailPanelProps) {
+export function TradeDetailPanel({ trade, onClose, onCloseTrade }: TradeDetailPanelProps) {
   const isWinner = trade.pnl_amount !== null && trade.pnl_amount > 0
   const isLoser = trade.pnl_amount !== null && trade.pnl_amount < 0
 

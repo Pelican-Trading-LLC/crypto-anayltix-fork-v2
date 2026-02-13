@@ -25,7 +25,7 @@ export function TickerSearch({ open, onClose }: TickerSearchProps) {
     if (stored) {
       try {
         setRecentSearches(JSON.parse(stored))
-      } catch (e) {
+      } catch {
         // Ignore parse errors
       }
     }
@@ -73,7 +73,7 @@ export function TickerSearch({ open, onClose }: TickerSearchProps) {
 
     onClose()
     setQuery("")
-  }, [recentSearches, openWithPrompt, onClose, query])
+  }, [recentSearches, openWithPrompt, onClose])
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'ArrowDown') {

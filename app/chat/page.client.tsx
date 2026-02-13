@@ -1,14 +1,13 @@
 "use client"
 
 import { useState, useRef, useEffect, useCallback } from "react"
-import { useRouter, usePathname, useSearchParams } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { ConversationSidebar } from "@/components/chat/conversation-sidebar"
 import { ChatContainer } from "@/components/chat/chat-container"
 import { ChatInput, type ChatInputRef } from "@/components/chat/chat-input"
 import { ChatErrorBoundary } from "@/components/chat/chat-error-boundary"
 import { useChat } from "@/hooks/use-chat"
 import { useMarketData } from "@/hooks/use-market-data"
-import { useConversations } from "@/hooks/use-conversations"
 import { useMessageHandler } from "@/hooks/use-message-handler"
 import { useFileUpload } from "@/hooks/use-file-upload"
 import { useConversationRouter } from "@/hooks/use-conversation-router"
@@ -115,12 +114,10 @@ export default function ChatPage() {
   const { refetch, hasAccess, loading: creditsLoading } = useCreditsContext()
   const outOfCredits = !creditsLoading && !hasAccess
   const router = useRouter()
-  const pathname = usePathname()
   const searchParams = useSearchParams()
 
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [mobileSheetOpen, setMobileSheetOpen] = useState(false)
-  const [isOnline, setIsOnline] = useState(true)
   const [showOfflineBanner, setShowOfflineBanner] = useState(false)
   const [mounted, setMounted] = useState(false)
   const [tradingPanelCollapsed, setTradingPanelCollapsed] = useState(false)
@@ -210,11 +207,9 @@ export default function ChatPage() {
 
     // Monitor online/offline status
     const handleOnline = () => {
-      setIsOnline(true)
       setShowOfflineBanner(false)
     }
     const handleOffline = () => {
-      setIsOnline(false)
       setShowOfflineBanner(true)
     }
 
@@ -269,7 +264,7 @@ export default function ChatPage() {
     conversationNotFound,
   } = useChat({
     conversationId: conversationIdFromUrl,
-    onError: (error) => {
+    onError: () => {
       // Show offline banner for network errors
       setShowOfflineBanner(true)
     },
@@ -304,7 +299,7 @@ export default function ChatPage() {
               })
               .eq('id', recentMsg.id)
           }
-        } catch (e) {
+        } catch {
 
         }
       }

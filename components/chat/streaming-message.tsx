@@ -63,7 +63,7 @@ export const StreamingMessage = React.memo(function StreamingMessage({
   const displayMessage = useMemo(() => ({
     ...message,
     content: displayedContent,
-  }), [message.id, displayedContent, message.role])
+  }), [message, displayedContent])
 
   // Allow user to click to instantly reveal full message
   const handleClick = () => {

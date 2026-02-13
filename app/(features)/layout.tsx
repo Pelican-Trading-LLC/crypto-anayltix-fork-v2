@@ -19,7 +19,7 @@
 export const dynamic = 'force-dynamic'
 export const dynamicParams = true
 
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import { TopNav } from '@/components/navigation/top-nav'
 import { PelicanChatPanel } from '@/components/pelican-panel/pelican-chat-panel'
@@ -87,18 +87,13 @@ function FeaturesLayoutInner({ children }: { children: React.ReactNode }) {
 // =============================================================================
 
 export default function FeaturesLayout({ children }: { children: React.ReactNode }) {
-  const [trialExhaustedOpen, setTrialExhaustedOpen] = useState(false)
-  const [insufficientCreditsOpen, setInsufficientCreditsOpen] = useState(false)
-
   const handleTrialExhausted = (info: unknown) => {
     console.warn('[FEATURES-LAYOUT] Trial exhausted', info)
-    setTrialExhaustedOpen(true)
     // TODO: Show trial exhausted modal
   }
 
   const handleInsufficientCredits = (info: unknown) => {
     console.warn('[FEATURES-LAYOUT] Insufficient credits', info)
-    setInsufficientCreditsOpen(true)
     // TODO: Show insufficient credits modal
   }
 

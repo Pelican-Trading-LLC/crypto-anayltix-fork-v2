@@ -1,5 +1,7 @@
 "use client"
 
+export const dynamic = "force-dynamic"
+
 import { useState, useMemo } from "react"
 import { useEarnings } from "@/hooks/use-earnings"
 import { usePelicanPanel } from "@/hooks/use-pelican-panel"

@@ -257,7 +257,7 @@ function ConversationModal({
           const data = await res.json()
           setMessages(data.messages ?? [])
         }
-      } catch (e) {
+      } catch {
 
       } finally {
         if (!cancelled) setLoading(false)
@@ -416,7 +416,7 @@ export function RecentConversations({
           setConversations(data.conversations ?? [])
           setHasMore(data.hasMore === true)
         }
-      } catch (e) {
+      } catch {
 
       }
     }
@@ -452,7 +452,7 @@ export function RecentConversations({
         setConversations((prev) => [...prev, ...newConvos])
         setHasMore(data.hasMore === true)
       }
-    } catch (e) {
+    } catch {
 
     } finally {
       setLoadingMore(false)
@@ -494,7 +494,7 @@ export function RecentConversations({
           ...prev,
           [id]: { messages, total, loaded: messages.length },
         }))
-      } catch (e) {
+      } catch {
 
       } finally {
         setLoadingId(null)
@@ -526,7 +526,7 @@ export function RecentConversations({
             },
           }
         })
-      } catch (e) {
+      } catch {
 
       } finally {
         setLoadingMoreMessages(false)

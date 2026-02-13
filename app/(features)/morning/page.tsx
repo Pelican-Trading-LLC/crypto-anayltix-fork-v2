@@ -1,11 +1,13 @@
 "use client"
 
+export const dynamic = "force-dynamic"
+
 import { useState } from "react"
 import { useTrades } from "@/hooks/use-trades"
 import { useMorningBrief } from "@/hooks/use-morning-brief"
 import { usePelicanPanel } from "@/hooks/use-pelican-panel"
 import { PelicanChatPanel } from "@/components/pelican-panel/pelican-chat-panel"
-import { TrendingUp, TrendingDown, Sparkles, RefreshCw, DollarSign, Percent } from "lucide-react"
+import { TrendingUp, TrendingDown, Sparkles, RefreshCw, DollarSign } from "lucide-react"
 import { getMarketStatus } from "@/hooks/use-market-data"
 
 export default function MorningPage() {
@@ -19,19 +21,6 @@ export default function MorningPage() {
 
   const handleGenerateBrief = async () => {
     setIsGeneratingBrief(true)
-
-    // Build context for AI brief
-    const context = {
-      positions: openTrades.map((t) => ({
-        ticker: t.ticker,
-        direction: t.direction,
-        entry: t.entry_price,
-        quantity: t.quantity,
-      })),
-      gainers: movers.gainers.slice(0, 5),
-      losers: movers.losers.slice(0, 5),
-      marketStatus,
-    }
 
     const prompt = `Generate my morning trading brief for ${new Date().toLocaleDateString()}:
 

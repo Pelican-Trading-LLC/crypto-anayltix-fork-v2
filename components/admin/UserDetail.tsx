@@ -138,7 +138,7 @@ export function UserDetail({ user }: UserDetailProps) {
         if (res.ok && !cancelled) {
           setDetail(await res.json())
         }
-      } catch (e) {
+      } catch {
 
       } finally {
         if (!cancelled) setDetailLoading(false)
@@ -164,7 +164,7 @@ export function UserDetail({ user }: UserDetailProps) {
         const data = await res.json()
         setMessagesCache((prev) => ({ ...prev, [id]: data.messages ?? [] }))
       }
-    } catch (e) {
+    } catch {
 
     } finally {
       setMessagesLoading(null)

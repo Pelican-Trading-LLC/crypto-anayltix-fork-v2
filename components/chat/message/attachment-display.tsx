@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react"
 import { motion } from "framer-motion"
+import Image from "next/image"
 import { X } from "lucide-react"
 import { AttachmentChip } from "../attachment-chip"
 import type { Attachment } from "@/lib/chat-utils"
@@ -34,10 +35,13 @@ function ImageLightbox({ url, alt, onClose }: { url: string; alt: string; onClos
       >
         <X className="w-6 h-6" />
       </button>
-      <img
+      <Image
         src={url}
         alt={alt}
-        className="max-w-[90vw] max-h-[85vh] object-contain rounded-lg"
+        width={1600}
+        height={1200}
+        unoptimized
+        className="max-w-[90vw] max-h-[85vh] object-contain rounded-lg w-auto h-auto"
         onClick={(e) => e.stopPropagation()}
       />
     </div>
@@ -72,15 +76,13 @@ export function AttachmentDisplay({ attachments }: AttachmentDisplayProps) {
                   className="max-w-[320px] rounded-xl overflow-hidden border border-[#1e1e2e] cursor-pointer hover:scale-[1.02] hover:brightness-110 transition-all duration-200"
                   onClick={() => setLightboxUrl({ url: attachment.url, alt: attachment.name || "Image" })}
                 >
-                  <img
+                  <Image
                     src={attachment.url || "/placeholder.svg"}
                     alt={attachment.name || "Image"}
+                    width={800}
+                    height={600}
+                    unoptimized
                     className="w-full h-auto"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement
-                      target.src = "/placeholder.svg"
-                    }}
-                    loading="lazy"
                   />
                 </div>
               </motion.div>

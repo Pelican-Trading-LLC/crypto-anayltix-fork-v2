@@ -1,5 +1,7 @@
 "use client"
 
+export const dynamic = "force-dynamic"
+
 import { useState } from "react"
 import { useTrades, Trade } from "@/hooks/use-trades"
 import { useTradeStats } from "@/hooks/use-trade-stats"
