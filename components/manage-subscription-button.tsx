@@ -38,7 +38,7 @@ export function ManageSubscriptionButton({
         window.location.href = url
       }
     } catch (error) {
-      console.error('Billing portal error:', error)
+
     } finally {
       setLoading(false)
     }

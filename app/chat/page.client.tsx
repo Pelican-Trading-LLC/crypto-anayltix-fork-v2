@@ -305,7 +305,7 @@ export default function ChatPage() {
               .eq('id', recentMsg.id)
           }
         } catch (e) {
-          console.error('[Chat] Failed to persist image metadata:', e)
+
         }
       }
 
@@ -389,7 +389,7 @@ export default function ChatPage() {
   // If you see this log, something unexpected happened
   useEffect(() => {
     if (conversationNotFound && conversationIdFromUrl) {
-      console.warn('[CHAT] Conversation not found (unexpected):', conversationIdFromUrl)
+
       // Don't redirect - let user continue or handle gracefully
     }
   }, [conversationNotFound, conversationIdFromUrl])

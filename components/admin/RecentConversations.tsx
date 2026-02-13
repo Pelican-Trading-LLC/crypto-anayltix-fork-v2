@@ -258,7 +258,7 @@ function ConversationModal({
           setMessages(data.messages ?? [])
         }
       } catch (e) {
-        console.error('[ConversationModal] Failed to fetch messages:', e)
+
       } finally {
         if (!cancelled) setLoading(false)
       }
@@ -417,7 +417,7 @@ export function RecentConversations({
           setHasMore(data.hasMore === true)
         }
       } catch (e) {
-        console.error('[RecentConversations] filter fetch failed:', e)
+
       }
     }
     fetchFiltered()
@@ -453,7 +453,7 @@ export function RecentConversations({
         setHasMore(data.hasMore === true)
       }
     } catch (e) {
-      console.error('[RecentConversations] Failed to load more:', e)
+
     } finally {
       setLoadingMore(false)
     }
@@ -495,7 +495,7 @@ export function RecentConversations({
           [id]: { messages, total, loaded: messages.length },
         }))
       } catch (e) {
-        console.error('[RecentConversations] Failed to fetch messages:', e)
+
       } finally {
         setLoadingId(null)
       }
@@ -527,7 +527,7 @@ export function RecentConversations({
           }
         })
       } catch (e) {
-        console.error('[RecentConversations] Failed to load more messages:', e)
+
       } finally {
         setLoadingMoreMessages(false)
       }
@@ -558,7 +558,7 @@ export function RecentConversations({
         setCopyAllState(conversationId)
         setTimeout(() => setCopyAllState(null), 2000)
       } catch {
-        console.error('[RecentConversations] Copy all failed')
+
       }
     },
     [messagesCache]

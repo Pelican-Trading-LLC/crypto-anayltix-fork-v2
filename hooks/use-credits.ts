@@ -83,7 +83,7 @@ export function useCredits(): UseCreditsReturn {
 
       setError(null)
     } catch (err) {
-      console.error('Failed to fetch credits:', err)
+
       setError(err instanceof Error ? err.message : 'Failed to fetch credits')
     } finally {
       setLoading(false)

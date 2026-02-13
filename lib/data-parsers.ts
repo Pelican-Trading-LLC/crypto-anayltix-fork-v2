@@ -55,7 +55,7 @@ export function detectStructuredData(text: string): StructuredDataTable | null {
 
     // Validate structure
     if (!parsed.columns || !parsed.data || !Array.isArray(parsed.columns) || !Array.isArray(parsed.data)) {
-      console.warn('Invalid structured data: missing columns or data array')
+
       return null
     }
 
@@ -64,7 +64,7 @@ export function detectStructuredData(text: string): StructuredDataTable | null {
       return typeof col === 'object' && col !== null && 'key' in col && 'label' in col
     })
     if (!validColumns) {
-      console.warn('Invalid structured data: columns missing key or label')
+
       return null
     }
 
@@ -77,7 +77,7 @@ export function detectStructuredData(text: string): StructuredDataTable | null {
       summary: parsed.summary,
     }
   } catch (error) {
-    console.error('Failed to parse structured data table:', error)
+
     return null
   }
 }

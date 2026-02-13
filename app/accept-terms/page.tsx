@@ -46,7 +46,7 @@ export default function AcceptTermsPage() {
       const { error: rpcError } = await supabase.rpc("accept_terms")
 
       if (rpcError) {
-        console.error("[ACCEPT-TERMS] RPC error:", rpcError)
+
         setError("Something went wrong. Please try again.")
         return
       }

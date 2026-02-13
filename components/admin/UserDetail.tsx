@@ -139,7 +139,7 @@ export function UserDetail({ user }: UserDetailProps) {
           setDetail(await res.json())
         }
       } catch (e) {
-        console.error('[UserDetail] Failed to fetch detail:', e)
+
       } finally {
         if (!cancelled) setDetailLoading(false)
       }
@@ -165,7 +165,7 @@ export function UserDetail({ user }: UserDetailProps) {
         setMessagesCache((prev) => ({ ...prev, [id]: data.messages ?? [] }))
       }
     } catch (e) {
-      console.error('[UserDetail] Failed to fetch messages:', e)
+
     } finally {
       setMessagesLoading(null)
     }

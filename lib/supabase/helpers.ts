@@ -310,7 +310,7 @@ export async function bulkInsertWithRLSCheck<T = Record<string, unknown>>(
     
     // Check if all rows were inserted
     if (data.length < rows.length) {
-      console.warn(`[RLS] Partial insert: ${data.length}/${rows.length} rows inserted`)
+      // Partial insert detected: some rows may have been rejected by RLS
     }
     
     return { data: data as T[], error: null, success: true, count: data.length }
