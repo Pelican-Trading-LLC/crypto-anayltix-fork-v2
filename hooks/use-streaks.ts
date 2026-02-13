@@ -76,7 +76,8 @@ async function fetchStreaks(userId: string): Promise<Record<StreakType, StreakDa
   if (data) {
     data.forEach((row) => {
       if (row.streak_type === 'journal' || row.streak_type === 'plan') {
-        streaks[row.streak_type] = {
+        const streakType = row.streak_type as StreakType
+        streaks[streakType] = {
           current_streak: row.current_streak,
           best_streak: row.best_streak,
           last_activity_date: row.last_activity_date,
@@ -95,7 +96,7 @@ async function fetchStreaks(userId: string): Promise<Record<StreakType, StreakDa
 export function useStreaks(): UseStreaksReturn {
   // Get current user ID
   const supabase = createClient()
-  const { data: { user } } = useSWR('user', async () => {
+  const { data: user } = useSWR('user', async () => {
     const result = await supabase.auth.getUser()
     return result.data.user
   })
@@ -143,7 +144,7 @@ export function useStreaks(): UseStreaksReturn {
       // Revalidate cache
       mutate()
     } catch (err) {
-      logger.error('[STREAKS] Update streak error', err)
+      logger.error('[STREAKS] Update streak error', err instanceof Error ? err : undefined)
       throw err
     }
   }, [userId, mutate])

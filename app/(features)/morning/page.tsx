@@ -52,7 +52,7 @@ Please provide:
 3. Notable movers and what's driving them
 4. 2-3 actionable insights for today's session`
 
-    await openWithPrompt(null, prompt, { source: 'morning', metadata: { date: new Date().toISOString() } })
+    await openWithPrompt(null, prompt, 'morning')
     setIsGeneratingBrief(false)
   }
 

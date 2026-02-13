@@ -5,16 +5,17 @@ import Image from 'next/image'
 import { X, Send, Loader2, RefreshCw } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import type { Message } from '@/lib/chat-utils'
 import { MessageContent } from '@/components/chat/message/message-content'
 import { extractTradingMetadata } from '@/lib/trading-metadata'
+import { usePelicanPanelContext } from '@/providers/pelican-panel-provider'
 
 // =============================================================================
 // TYPES
 // =============================================================================
 
-interface PelicanChatPanelProps {
+interface PelicanChatPanelInternalProps {
   isOpen: boolean
   messages: Message[]
   isStreaming: boolean
@@ -101,10 +102,10 @@ function PanelMessage({ message, isStreaming = false, isAutoPrompt = false }: Pa
 }
 
 // =============================================================================
-// MAIN COMPONENT
+// INTERNAL COMPONENT
 // =============================================================================
 
-export function PelicanChatPanel({
+function PelicanChatPanelInternal({
   isOpen,
   messages,
   isStreaming,
@@ -113,7 +114,7 @@ export function PelicanChatPanel({
   onSendMessage,
   onRegenerate,
   className,
-}: PelicanChatPanelProps) {
+}: PelicanChatPanelInternalProps) {
   const [inputValue, setInputValue] = useState('')
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
@@ -361,5 +362,33 @@ export function PelicanChatPanel({
         </div>
       </motion.div>
     </>
+  )
+}
+
+// =============================================================================
+// CONNECTED COMPONENT (EXPORTED)
+// =============================================================================
+
+export function PelicanChatPanel() {
+  const {
+    isOpen,
+    messages,
+    isStreaming,
+    ticker,
+    close,
+    sendMessage,
+    regenerateLastMessage,
+  } = usePelicanPanelContext()
+
+  return (
+    <PelicanChatPanelInternal
+      isOpen={isOpen}
+      messages={messages}
+      isStreaming={isStreaming}
+      ticker={ticker}
+      onClose={close}
+      onSendMessage={sendMessage}
+      onRegenerate={regenerateLastMessage}
+    />
   )
 }

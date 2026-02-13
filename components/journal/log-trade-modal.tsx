@@ -31,7 +31,7 @@ export function LogTradeModal({ open, onOpenChange, onSubmit, initialTicker = ""
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!ticker || !quantity || !entryPrice) {
+    if (!ticker || !quantity || !entryPrice || !entryDate) {
       return
     }
 

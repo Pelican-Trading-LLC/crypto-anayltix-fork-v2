@@ -18,7 +18,7 @@
 
 import { useState, useCallback, useRef, useEffect } from 'react'
 import { useStreamingChat, type TrialExhaustedInfo, type InsufficientCreditsInfo } from './use-streaming-chat'
-import { logger } from '@/lib/logger'
+import { logger, type LogContext } from '@/lib/logger'
 import { createClient } from '@/lib/supabase/client'
 import type { Message } from '@/lib/chat-utils'
 
@@ -186,7 +186,7 @@ export function usePelicanPanel(options: UsePelicanPanelOptions = {}): UsePelica
       logger.info('[PELICAN-PANEL] Created conversation', { id: data.id, ticker, context })
       return data.id
     } catch (error) {
-      logger.error('[PELICAN-PANEL] Conversation creation error', error)
+      logger.error('[PELICAN-PANEL] Conversation creation error', error instanceof Error ? error : undefined)
       return null
     }
   }, [])
@@ -281,12 +281,12 @@ export function usePelicanPanel(options: UsePelicanPanelOptions = {}): UsePelica
           onTrialExhausted: (info: TrialExhaustedInfo) => {
             updateMessagesWithSync(prev => prev.filter(msg => msg.id !== assistantMessageId))
             onTrialExhausted?.(info)
-            logger.warn('[PELICAN-PANEL] Trial exhausted', info)
+            logger.warn('[PELICAN-PANEL] Trial exhausted', info as unknown as LogContext)
           },
           onInsufficientCredits: (info: InsufficientCreditsInfo) => {
             updateMessagesWithSync(prev => prev.filter(msg => msg.id !== assistantMessageId))
             onInsufficientCredits?.(info)
-            logger.warn('[PELICAN-PANEL] Insufficient credits', info)
+            logger.warn('[PELICAN-PANEL] Insufficient credits', info as unknown as LogContext)
           },
         },
         conversationIdRef.current,

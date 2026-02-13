@@ -50,8 +50,10 @@ const NAV_TABS: NavTab[] = [
 export function TopNav({ className }: TopNavProps) {
   const pathname = usePathname()
   const { journalStreak } = useStreaks()
-  const { credits, plan, hasAccess } = useCreditsContext()
+  const { credits, hasAccess } = useCreditsContext()
   const [creditsDropdownOpen, setCreditsDropdownOpen] = useState(false)
+
+  const plan = credits?.plan ?? 'free'
 
   // Determine active tab based on pathname
   const getActiveTab = (): string => {
@@ -173,7 +175,7 @@ export function TopNav({ className }: TopNavProps) {
                 className="h-9 px-3 hover:bg-sidebar-accent/50"
               >
                 <span className="text-sm font-medium tabular-nums">
-                  {credits.toLocaleString()} credits
+                  {(credits?.balance ?? 0).toLocaleString()} credits
                 </span>
                 <ChevronDown className="ml-1 h-3 w-3 text-muted-foreground" />
               </Button>
@@ -190,7 +192,7 @@ export function TopNav({ className }: TopNavProps) {
                 <div className="flex justify-between items-center mb-1">
                   <span className="text-xs text-muted-foreground">Balance</span>
                   <span className="text-sm font-semibold text-foreground tabular-nums">
-                    {credits.toLocaleString()}
+                    {(credits?.balance ?? 0).toLocaleString()}
                   </span>
                 </div>
                 {!hasAccess && (

@@ -18,10 +18,8 @@ export default function EarningsPage() {
     )
 
     const groups = filtered.reduce((acc, event) => {
-      if (!acc[event.date]) {
-        acc[event.date] = []
-      }
-      acc[event.date].push(event)
+      acc[event.date] = acc[event.date] || []
+      acc[event.date]!.push(event)
       return acc
     }, {} as Record<string, typeof events>)
 
@@ -45,7 +43,7 @@ Please provide:
 3. Historical earnings reaction patterns
 4. Risk/reward assessment for trading the event`
 
-    openWithPrompt(event.symbol, prompt, { source: 'earnings', metadata: { date: event.date } })
+    openWithPrompt(event.symbol, prompt, 'earnings')
   }
 
   const showPelicanPanel = pelicanState.isOpen

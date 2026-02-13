@@ -143,7 +143,7 @@ export function DashboardTab({ stats, equityCurve, isLoading }: DashboardTabProp
                   color: 'oklch(0.95 0.01 280)',
                 }}
                 labelFormatter={(value) => new Date(value).toLocaleDateString()}
-                formatter={(value: number) => [`$${value.toFixed(2)}`, 'P&L']}
+                formatter={(value: number | undefined) => [`$${(value ?? 0).toFixed(2)}`, 'P&L']}
               />
               <Line
                 type="monotone"

@@ -50,7 +50,7 @@ export function CloseTradeModal({ open, onOpenChange, trade, onSubmit }: CloseTr
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!exitPrice) return
+    if (!exitPrice || !exitDate) return
 
     setIsSubmitting(true)
 

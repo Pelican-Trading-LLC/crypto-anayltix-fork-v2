@@ -62,21 +62,16 @@ function FeaturesLayoutInner({ children }: { children: React.ReactNode }) {
         {/* Pelican Panel (30% when open) */}
         <AnimatePresence>
           {panel.isOpen && (
-            <PelicanChatPanel
-              isOpen={panel.isOpen}
-              messages={panel.messages}
-              isStreaming={panel.isStreaming}
-              ticker={panel.ticker}
-              onClose={panel.close}
-              onSendMessage={panel.sendMessage}
-              onRegenerate={panel.regenerateLastMessage}
+            <div
               className="hidden md:flex"
               style={{
                 width: '30%',
                 minWidth: '330px',
                 maxWidth: '420px',
               }}
-            />
+            >
+              <PelicanChatPanel />
+            </div>
           )}
         </AnimatePresence>
       </div>

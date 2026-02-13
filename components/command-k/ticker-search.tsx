@@ -68,7 +68,7 @@ export function TickerSearch({ open, onClose }: TickerSearchProps) {
     openWithPrompt(
       ticker,
       `Analyze ${ticker} (${name}). Provide:\n1. Recent price action and key levels\n2. Technical setup and momentum\n3. Fundamental highlights\n4. Trading opportunities and risks`,
-      { source: 'search', metadata: { query } }
+      'search'
     )
 
     onClose()

@@ -47,7 +47,7 @@ export default function HeatmapPage() {
     openWithPrompt(
       ticker,
       `Analyze ${ticker} (${name}). Provide:\n1. Recent price action and key levels\n2. Technical setup\n3. Upcoming catalysts\n4. Risk/reward outlook`,
-      { source: 'heatmap', metadata: { view: viewMode } }
+      'heatmap'
     )
   }
 

@@ -97,9 +97,9 @@ export async function GET() {
     })
 
     const response: MoversResponse = {
-      gainers: (gainersData.tickers || []).slice(0, 10).map(mapMover),
-      losers: (losersData.tickers || []).slice(0, 10).map(mapMover),
-      active: (activeData.tickers || []).slice(0, 10).map(mapMover),
+      gainers: (gainersData?.tickers || []).slice(0, 10).map(mapMover),
+      losers: (losersData?.tickers || []).slice(0, 10).map(mapMover),
+      active: (activeData?.tickers || []).slice(0, 10).map(mapMover),
     }
 
     // Cache the response
