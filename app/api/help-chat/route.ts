@@ -3,7 +3,7 @@ import { createIpRateLimiter, getClientIp, rateLimitResponse } from '@/lib/rate-
 
 const MAX_CONTENT_LENGTH = 2000
 
-const helpLimiter = createIpRateLimiter('help-chat', 10, '1 h')
+const helpLimiter = createIpRateLimiter('help-chat', 30, '1 h')
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
