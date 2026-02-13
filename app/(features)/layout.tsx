@@ -1,5 +1,4 @@
-export const dynamic = 'force-dynamic'
-export const dynamicParams = true
+"use client"
 
 /**
  * Features Layout
@@ -17,7 +16,8 @@ export const dynamicParams = true
  * @version 1.0.0
  */
 
-"use client"
+export const dynamic = 'force-dynamic'
+export const dynamicParams = true
 
 import React, { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'

@@ -6,9 +6,19 @@ import { cn } from "@/lib/utils"
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useChart } from "@/providers/chart-provider"
-import { TradingViewChart } from "./TradingViewChart"
-import { EconomicCalendar } from "./EconomicCalendar"
+import dynamic from "next/dynamic"
 import { EducationChat } from "./EducationChat"
+
+// Dynamic imports with SSR disabled to prevent build-time errors
+const TradingViewChart = dynamic(
+  () => import("./TradingViewChart").then(m => ({ default: m.TradingViewChart })),
+  { ssr: false }
+)
+
+const EconomicCalendar = dynamic(
+  () => import("./EconomicCalendar").then(m => ({ default: m.EconomicCalendar })),
+  { ssr: false }
+)
 
 interface MarketIndex {
   symbol: string
