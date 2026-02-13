@@ -3,6 +3,7 @@
 export const dynamic = "force-dynamic"
 
 import { useState } from "react"
+import dynamicImport from "next/dynamic"
 import { useTrades, Trade } from "@/hooks/use-trades"
 import { useTradeStats } from "@/hooks/use-trade-stats"
 import { usePelicanPanel } from "@/hooks/use-pelican-panel"
@@ -10,9 +11,17 @@ import { LogTradeModal } from "@/components/journal/log-trade-modal"
 import { CloseTradeModal } from "@/components/journal/close-trade-modal"
 import { TradesTable } from "@/components/journal/trades-table"
 import { TradeDetailPanel } from "@/components/journal/trade-detail-panel"
-import { DashboardTab } from "@/components/journal/dashboard-tab"
-import { PelicanChatPanel } from "@/components/pelican-panel/pelican-chat-panel"
 import { Plus, BarChart3, ListFilter } from "lucide-react"
+
+const DashboardTab = dynamicImport(
+  () => import("@/components/journal/dashboard-tab").then((m) => ({ default: m.DashboardTab })),
+  { ssr: false }
+)
+
+const PelicanChatPanel = dynamicImport(
+  () => import("@/components/pelican-panel/pelican-chat-panel").then((m) => ({ default: m.PelicanChatPanel })),
+  { ssr: false }
+)
 
 type TabKey = 'dashboard' | 'trades'
 type ActivePanel = 'detail' | 'pelican' | null

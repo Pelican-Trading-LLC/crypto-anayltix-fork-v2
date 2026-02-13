@@ -3,12 +3,17 @@
 export const dynamic = "force-dynamic"
 
 import { useState } from "react"
+import dynamicImport from "next/dynamic"
 import { useTrades } from "@/hooks/use-trades"
 import { useMorningBrief } from "@/hooks/use-morning-brief"
 import { usePelicanPanel } from "@/hooks/use-pelican-panel"
-import { PelicanChatPanel } from "@/components/pelican-panel/pelican-chat-panel"
 import { TrendingUp, TrendingDown, Sparkles, RefreshCw, DollarSign } from "lucide-react"
 import { getMarketStatus } from "@/hooks/use-market-data"
+
+const PelicanChatPanel = dynamicImport(
+  () => import("@/components/pelican-panel/pelican-chat-panel").then((m) => ({ default: m.PelicanChatPanel })),
+  { ssr: false }
+)
 
 export default function MorningPage() {
   const [isGeneratingBrief, setIsGeneratingBrief] = useState(false)

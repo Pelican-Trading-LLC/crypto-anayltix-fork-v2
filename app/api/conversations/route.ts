@@ -4,6 +4,15 @@ import * as Sentry from "@sentry/nextjs"
 
 const PRIVATE_CACHE = { "Cache-Control": "private, no-cache" } as const
 
+interface ConversationRow {
+  id: string
+  title: string | null
+  archived_at: string | null
+  updated_at: string
+  message_count: number | null
+  last_message_preview: string | null
+}
+
 function sanitizePostgrestSearch(input: string): string {
   return input
     .replace(/\\/g, '\\\\')
@@ -82,7 +91,7 @@ export async function GET(req: NextRequest) {
     const nextCursor = conversations.length === limit ? conversations[conversations.length - 1]?.updated_at : null
 
     return NextResponse.json({
-      conversations: conversations.map((conv) => ({
+      conversations: (conversations as ConversationRow[]).map((conv) => ({
         id: conv.id,
         title: conv.title,
         archivedAt: conv.archived_at,

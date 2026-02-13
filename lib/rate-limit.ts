@@ -1,15 +1,48 @@
 import { Ratelimit } from '@upstash/ratelimit'
 import { Redis } from '@upstash/redis'
 
-const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL!,
-  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
-})
+type RateLimitResult = {
+  success: boolean
+  limit: number
+  remaining: number
+  reset: number
+}
+
+type RateLimiterLike = {
+  limit: (identifier: string) => Promise<RateLimitResult>
+}
+
+function createNoopLimiter(requests: number): RateLimiterLike {
+  return {
+    async limit() {
+      return {
+        success: true,
+        limit: requests,
+        remaining: requests,
+        reset: Date.now() + 60_000,
+      }
+    },
+  }
+}
+
+function createRedisClient() {
+  const url = process.env.UPSTASH_REDIS_REST_URL
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN
+
+  if (!url || !token) {
+    return null
+  }
+
+  return new Redis({ url, token })
+}
 
 /**
  * Rate limiter for authenticated routes — keyed by user ID.
  */
 export function createUserRateLimiter(prefix: string, requests: number, window: `${number} ${"ms" | "s" | "m" | "h" | "d"}` | `${number}${"ms" | "s" | "m" | "h" | "d"}`) {
+  const redis = createRedisClient()
+  if (!redis) return createNoopLimiter(requests)
+
   return new Ratelimit({
     redis,
     prefix: `ratelimit:${prefix}`,
@@ -21,6 +54,9 @@ export function createUserRateLimiter(prefix: string, requests: number, window: 
  * Rate limiter for unauthenticated routes — keyed by IP.
  */
 export function createIpRateLimiter(prefix: string, requests: number, window: `${number} ${"ms" | "s" | "m" | "h" | "d"}` | `${number}${"ms" | "s" | "m" | "h" | "d"}`) {
+  const redis = createRedisClient()
+  if (!redis) return createNoopLimiter(requests)
+
   return new Ratelimit({
     redis,
     prefix: `ratelimit:${prefix}`,

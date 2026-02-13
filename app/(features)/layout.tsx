@@ -21,12 +21,17 @@ export const dynamicParams = true
 
 import React, { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
+import dynamicImport from 'next/dynamic'
 import { TopNav } from '@/components/navigation/top-nav'
-import { PelicanChatPanel } from '@/components/pelican-panel/pelican-chat-panel'
 import { PelicanPanelProvider, usePelicanPanelContext } from '@/providers/pelican-panel-provider'
 import { AnimatePresence } from 'framer-motion'
 import { TickerSearch } from '@/components/command-k/ticker-search'
 import { useCommandK } from '@/hooks/use-command-k'
+
+const PelicanChatPanel = dynamicImport(
+  () => import('@/components/pelican-panel/pelican-chat-panel').then((m) => ({ default: m.PelicanChatPanel })),
+  { ssr: false }
+)
 
 // =============================================================================
 // INNER LAYOUT (Has access to panel context)

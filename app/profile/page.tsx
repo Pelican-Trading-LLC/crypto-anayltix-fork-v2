@@ -12,6 +12,13 @@ import { Badge } from "@/components/ui/badge"
 import { MessageSquare, LogOut } from "lucide-react"
 import Link from "next/link"
 
+interface RecentConversation {
+  id: string
+  title: string | null
+  created_at: string
+  updated_at: string
+}
+
 export default async function ProfilePage() {
   const supabase = await createClient()
 
@@ -117,9 +124,9 @@ export default async function ProfilePage() {
                 <CardDescription>Your latest trading discussions with Pelican AI</CardDescription>
               </CardHeader>
               <CardContent>
-                {conversations && conversations.length > 0 ? (
+                {(conversations as RecentConversation[] | null) && conversations.length > 0 ? (
                   <div className="space-y-3">
-                    {conversations.map((conversation) => (
+                    {(conversations as RecentConversation[]).map((conversation) => (
                       <div
                         key={conversation.id}
                         className="flex items-center justify-between p-3 rounded-lg border border-border hover:bg-muted transition-colors"

@@ -7,6 +7,14 @@ interface ImageMeta {
   size: number
 }
 
+interface MessageRow {
+  id: string
+  role: string
+  content: string
+  created_at: string
+  metadata: unknown
+}
+
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -42,7 +50,7 @@ export async function GET(
 
     // Resolve signed URLs for any stored images in metadata
     const resolvedMessages = await Promise.all(
-      (messages || []).map(async (msg) => {
+      (messages || []).map(async (msg: MessageRow) => {
         const meta = msg.metadata as Record<string, unknown> | null
         const images = meta?.images as ImageMeta[] | undefined
 
