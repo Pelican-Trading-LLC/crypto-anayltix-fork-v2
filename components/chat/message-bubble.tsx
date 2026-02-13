@@ -3,10 +3,9 @@
 import type React from "react"
 import Image from "next/image"
 
-import { MessageActions } from "./message-actions"
 import { motion } from "framer-motion"
 import { useState, useCallback, useMemo, memo } from "react"
-import { Copy, Check, Pencil } from "lucide-react"
+import { Copy, Check, Pencil, RefreshCw, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/hooks/use-toast"
 import { getMessageAnimationVariant } from "@/lib/animation-config"
@@ -254,17 +253,21 @@ export const MessageBubble = memo(function MessageBubble({
               </Button>
 
               {onRegenerate && (
-                <MessageActions
-                  message={message}
-                  onStop={onStop}
-                  onRegenerate={onRegenerate}
-                  onEdit={onEdit}
-                  onDelete={onDelete}
-                  onPin={onPin}
-                  isRegenerating={isRegenerating}
-                  canDelete={true}
-                  variant="minimal"
-                />
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={onRegenerate}
+                  disabled={isRegenerating || message.isStreaming}
+                  className="h-11 sm:h-9 px-3 min-h-[44px] sm:min-h-0 text-xs text-muted-foreground hover:text-purple-400 hover:bg-purple-500/10 rounded-lg transition-colors"
+                  title={isRegenerating ? "Regenerating..." : "Regenerate response"}
+                >
+                  {isRegenerating ? (
+                    <Loader2 className="h-[18px] w-[18px] mr-1.5 animate-spin" />
+                  ) : (
+                    <RefreshCw className="h-[18px] w-[18px] mr-1.5" />
+                  )}
+                  {isRegenerating ? "Regenerating..." : "Regenerate"}
+                </Button>
               )}
             </div>
           </div>
