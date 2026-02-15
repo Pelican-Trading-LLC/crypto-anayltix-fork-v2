@@ -461,8 +461,7 @@
 
   /* Lock viewport on chat page - prevent bounce/drag on mobile */
   .chat-viewport-lock {
-    position: fixed;
-    inset: 0;
+    /* REMOVED position: fixed and inset: 0 - let height calc work */
     overflow: hidden;
     overscroll-behavior: none;
     -webkit-overflow-scrolling: touch;
@@ -488,8 +487,7 @@
   /* Mobile-only: lock html/body when chat is active */
   @media (max-width: 1279px) {
     .chat-viewport-lock {
-      height: 100dvh;
-      min-height: 100dvh;
+      /* Height is controlled by parent calc, not fixed here */
     }
   }
 

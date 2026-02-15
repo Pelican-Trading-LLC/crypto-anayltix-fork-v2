@@ -114,67 +114,56 @@ const ConversationItem = React.memo(function ConversationItem({
   }
 
   return (
-    <div
-      role="button"
-      tabIndex={0}
+    <button
       data-conversation-id={conversation.id}
       className={cn(
-        "conversation-item group relative cursor-pointer rounded-lg mx-2",
-        "min-h-[48px] px-3 py-2 flex items-center gap-2",
-        "transition-[background-color,border-color] duration-150 ease-in-out",
-        isActive && "bg-primary/10 border border-primary/20 border-l-2 border-l-primary",
-        !isActive && "hover:bg-sidebar-accent/50 border border-transparent",
+        "w-full text-left px-3 py-2 rounded-lg transition-colors group relative mx-2",
+        isActive && "bg-white/[0.04]",
+        !isActive && "hover:bg-white/[0.04]",
         isNavigatingToThis && "opacity-50 cursor-wait",
       )}
       onClick={() => {
         if (isNavigatingToThis) return
         onSelect(conversation.id)
       }}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault()
-          if (isNavigatingToThis) return
-          onSelect(conversation.id)
-        }
-      }}
     >
-      <div className="flex-1 min-w-0 max-w-[180px]">
-        <h3 className="font-medium text-sm truncate text-sidebar-foreground">
-          {(conversation.title || newChatLabel).length > 25
-            ? `${(conversation.title || newChatLabel).slice(0, 25)}...`
-            : conversation.title || newChatLabel}
-        </h3>
-        <span className="text-[10px] text-muted-foreground/60 leading-none">
-          {getRelativeTime(conversation.updated_at)}
-        </span>
-      </div>
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex-1 min-w-0">
+          <div className="text-sm text-gray-200 truncate font-medium">
+            {conversation.title || newChatLabel}
+          </div>
+          <div className="text-[10px] text-gray-500 mt-0.5">
+            {getRelativeTime(conversation.updated_at)}
+          </div>
+        </div>
 
-      <div className="flex items-center gap-1 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
-        <button
-          onClick={(e) => {
-            e.stopPropagation()
-            onStartEdit(conversation.id, conversation.title || newChatLabel)
-          }}
-          className="p-1.5 rounded hover:bg-sidebar-accent transition-colors opacity-70 hover:opacity-100 text-muted-foreground hover:text-sidebar-foreground"
-          title="Rename conversation"
-          aria-label="Rename conversation"
-        >
-          <Edit3 className="h-4 w-4" />
-        </button>
+        <div className="flex items-center gap-0.5 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+          <button
+            onClick={(e) => {
+              e.stopPropagation()
+              onStartEdit(conversation.id, conversation.title || newChatLabel)
+            }}
+            className="p-1 rounded hover:bg-white/[0.08] transition-colors text-gray-400 hover:text-gray-300"
+            title="Rename conversation"
+            aria-label="Rename conversation"
+          >
+            <Edit3 className="h-3.5 w-3.5" />
+          </button>
 
-        <button
-          onClick={(e) => {
-            e.stopPropagation()
-            onDelete(conversation.id)
-          }}
-          className="p-1.5 rounded hover:bg-red-500/20 transition-colors opacity-70 hover:opacity-100"
-          title="Delete conversation"
-          aria-label="Delete conversation"
-        >
-          <Trash2 className="h-4 w-4 text-red-500 dark:text-red-400" />
-        </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation()
+              onDelete(conversation.id)
+            }}
+            className="p-1 rounded hover:bg-red-500/20 transition-colors text-red-400 hover:text-red-300"
+            title="Delete conversation"
+            aria-label="Delete conversation"
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+          </button>
+        </div>
       </div>
-    </div>
+    </button>
   )
 })
 
@@ -208,6 +197,7 @@ export function ConversationSidebar({
   const t = useT()
   const { signOut } = useAuth()
   const [searchQuery, setSearchQuery] = useState("")
+  const [searchExpanded, setSearchExpanded] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editTitle, setEditTitle] = useState("")
   const [deletingId, setDeletingId] = useState<string | null>(null)
@@ -327,24 +317,21 @@ export function ConversationSidebar({
       )}
     >
       {/* Header */}
-      <div className="px-4 py-4 border-b border-sidebar-border/30">
-        <div className="flex items-center justify-between mb-6">
-          <Link
-            href="/"
-            className="flex items-center gap-2 group transition-opacity hover:opacity-80"
-          >
-            <Image
-              src="/pelican-logo-transparent.webp"
-              alt="PelicanAI"
-              width={28}
-              height={28}
-              className="w-7 h-7 object-contain"
-            />
-            <span className="font-bold text-base text-primary">
-              PelicanAI
-            </span>
-          </Link>
-          <div className="flex items-center gap-1">
+      <div className="p-3 space-y-3 border-b border-sidebar-border/30">
+        {/* Logo + Brand */}
+        <div className="flex items-center gap-2.5 px-1">
+          <Image
+            src="/pelican-logo-transparent.webp"
+            alt="Pelican AI"
+            width={32}
+            height={32}
+            className="w-8 h-8 object-contain"
+          />
+          <div className="flex flex-col">
+            <span className="text-sm font-bold text-sidebar-foreground">Pelican AI</span>
+            <span className="text-[10px] text-gray-500">Trading Intelligence</span>
+          </div>
+          <div className="ml-auto flex items-center gap-1">
             <ThemeToggle />
             {onToggleCollapse && !isMobileSheet && (
               <Button
@@ -359,27 +346,42 @@ export function ConversationSidebar({
           </div>
         </div>
 
-        {/* New Chat Button */}
-        <Button
-          onClick={onNewConversation}
-          className="w-full h-10 bg-gradient-to-r from-purple-600 via-violet-600 to-purple-600 hover:from-purple-700 hover:via-violet-700 hover:to-purple-700 text-white"
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          {t.common.newChat}
-        </Button>
-      </div>
-
-      {/* Search */}
-      <div className="px-4 py-3 border-b border-sidebar-border/30">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-          <Input
-            placeholder={t.common.search}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="h-10 pl-10 pr-3 bg-sidebar/50 border-sidebar-border/50"
-          />
+        {/* New Chat + Search Row */}
+        <div className="flex gap-2">
+          <Button
+            onClick={onNewConversation}
+            className="flex-1 h-8 bg-[#8b5cf6]/15 hover:bg-[#8b5cf6]/20 text-[#8b5cf6] border border-[#8b5cf6]/30"
+            variant="outline"
+          >
+            <Plus className="w-4 h-4 mr-1.5" />
+            <span className="text-xs font-medium">New chat</span>
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setSearchExpanded(!searchExpanded)}
+            className={cn(
+              "h-8 w-8 flex-shrink-0 transition-colors",
+              searchExpanded ? "bg-white/[0.04] text-[#8b5cf6]" : "bg-white/[0.04] text-gray-400 hover:text-gray-300"
+            )}
+          >
+            <Search className="h-4 w-4" />
+          </Button>
         </div>
+
+        {/* Expandable Search Input */}
+        {searchExpanded && (
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+            <Input
+              placeholder={t.common.search}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="h-8 pl-10 pr-3 bg-sidebar/50 border-sidebar-border/50 text-sm"
+              autoFocus
+            />
+          </div>
+        )}
       </div>
 
       {/* Conversations List */}

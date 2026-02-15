@@ -4,17 +4,9 @@ import React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import Image from 'next/image'
-import { ChevronDown } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { useStreaks } from '@/hooks/use-streaks'
 import { useCreditsContext } from '@/providers/credits-provider'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
 
 // =============================================================================
 // TYPES
@@ -22,6 +14,7 @@ import {
 
 interface TopNavProps {
   className?: string
+  compact?: boolean
 }
 
 interface NavTab {
@@ -46,7 +39,7 @@ const NAV_TABS: NavTab[] = [
 // MAIN COMPONENT
 // =============================================================================
 
-export function TopNav({ className }: TopNavProps) {
+export function TopNav({ className, compact = false }: TopNavProps) {
   const pathname = usePathname()
   const { journalStreak } = useStreaks()
   const { credits } = useCreditsContext()
@@ -63,6 +56,51 @@ export function TopNav({ className }: TopNavProps) {
 
   const activeTab = getActiveTab()
 
+  // Compact mode for chat page
+  if (compact) {
+    return (
+      <nav className={cn(
+        "sticky top-0 z-40 w-full border-b border-white/[0.03] bg-transparent backdrop-blur-xl",
+        className
+      )}>
+        <div className="flex items-center justify-between h-10 px-4">
+          {/* Page links */}
+          <div className="flex items-center gap-1">
+            {NAV_TABS.map((tab) => {
+              const isActive = activeTab === tab.key
+              return (
+                <Link
+                  key={tab.key}
+                  href={tab.href}
+                  className={cn(
+                    "px-3 py-1 text-xs font-medium rounded-md transition-colors whitespace-nowrap",
+                    isActive
+                      ? "text-white bg-white/[0.06]"
+                      : "text-gray-500 hover:text-gray-300"
+                  )}
+                >
+                  {tab.label}
+                </Link>
+              )
+            })}
+          </div>
+
+          {/* Minimal stats */}
+          <div className="flex items-center gap-3 ml-auto">
+            <span className="text-[10px] text-gray-500 font-mono tabular-nums">
+              {(credits?.balance ?? 0).toLocaleString()} credits
+            </span>
+            <span className="text-[10px] text-gray-500 flex items-center gap-1">
+              <span>🔥</span>
+              <span className="font-mono tabular-nums">{journalStreak}d</span>
+            </span>
+          </div>
+        </div>
+      </nav>
+    )
+  }
+
+  // Full mode for feature pages
   return (
     <nav className={cn(
       "sticky top-0 z-40 w-full border-b border-white/[0.04] bg-[#0c0c14]/80 backdrop-blur-xl",
