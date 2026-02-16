@@ -117,9 +117,9 @@ const ConversationItem = React.memo(function ConversationItem({
     <button
       data-conversation-id={conversation.id}
       className={cn(
-        "w-full text-left px-3 py-2 rounded-lg transition-colors group relative mx-2",
-        isActive && "bg-white/[0.04]",
-        !isActive && "hover:bg-white/[0.04]",
+        "w-full text-left px-3 py-2 rounded-lg transition-all duration-150 group relative mx-2",
+        isActive && "bg-[var(--accent-purple-subtle)] border border-[rgba(139,92,246,0.12)]",
+        !isActive && "hover:bg-[var(--accent-purple-subtle)] border border-transparent",
         isNavigatingToThis && "opacity-50 cursor-wait",
       )}
       onClick={() => {
@@ -350,7 +350,7 @@ export function ConversationSidebar({
         <div className="flex gap-2">
           <Button
             onClick={onNewConversation}
-            className="flex-1 h-8 bg-[#8b5cf6]/15 hover:bg-[#8b5cf6]/20 text-[#8b5cf6] border border-[#8b5cf6]/30"
+            className="flex-1 h-8 bg-[var(--accent-purple-muted)] hover:bg-[rgba(139,92,246,0.22)] text-[var(--accent-purple-hover)] border border-[rgba(139,92,246,0.20)] hover:border-[rgba(139,92,246,0.35)] hover:shadow-[var(--glow-purple-soft)] transition-all duration-200"
             variant="outline"
           >
             <Plus className="w-4 h-4 mr-1.5" />
@@ -362,7 +362,7 @@ export function ConversationSidebar({
             onClick={() => setSearchExpanded(!searchExpanded)}
             className={cn(
               "h-8 w-8 flex-shrink-0 transition-colors",
-              searchExpanded ? "bg-white/[0.04] text-[#8b5cf6]" : "bg-white/[0.04] text-gray-400 hover:text-gray-300"
+              searchExpanded ? "bg-[var(--surface-2)] text-[var(--accent-purple)]" : "bg-[var(--surface-1)] text-gray-400 hover:text-gray-300"
             )}
           >
             <Search className="h-4 w-4" />

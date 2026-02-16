@@ -132,7 +132,7 @@ export function TradingContextPanel({
   // Chart, calendar, and learn modes get a full-height card
   if (activeMode === "chart" || activeMode === "calendar" || activeMode === "learn") {
     return (
-      <Card className="border-l-0 rounded-l-none bg-[var(--surface-1)]/40 backdrop-blur border-white/5 overflow-hidden h-full flex flex-col">
+      <Card className="border-l-0 rounded-l-none bg-[var(--surface-0)]/60 backdrop-blur-xl border-l border-[rgba(139,92,246,0.06)] rounded-none border-y-0 border-r-0 overflow-hidden h-full flex flex-col">
         {activeMode === "learn" && (
           <div className="flex items-center border-b border-white/5 shrink-0">
             <div className="flex flex-1">
@@ -154,11 +154,11 @@ export function TradingContextPanel({
                       }
                     }}
                     className={cn(
-                      "flex-1 py-2.5 text-xs font-medium transition-colors border-b-2 relative",
+                      "flex-1 py-2.5 text-xs font-medium transition-all duration-150 border-b-2 relative",
                       isActive
                         ? tab.key === "learn"
-                          ? "text-purple-500 border-purple-500"
-                          : "text-teal-500 border-teal-500"
+                          ? "text-[var(--accent-purple)] border-[var(--accent-purple)] shadow-[0_2px_8px_rgba(139,92,246,0.3)]"
+                          : "text-teal-400 border-teal-400 shadow-[0_2px_8px_rgba(45,212,191,0.3)]"
                         : "text-muted-foreground border-transparent hover:text-foreground hover:border-white/10"
                     )}
                   >
@@ -210,7 +210,7 @@ export function TradingContextPanel({
   }
 
   return (
-    <Card className="border-l-0 rounded-l-none bg-[var(--surface-1)]/40 backdrop-blur border-white/5 overflow-hidden">
+    <Card className="border-l-0 rounded-l-none bg-[var(--surface-0)]/60 backdrop-blur-xl border-l border-[rgba(139,92,246,0.06)] rounded-none border-y-0 border-r-0 overflow-hidden">
       {/* Tab bar */}
       <div className="flex items-center border-b border-white/5">
         <div className="flex flex-1">
@@ -305,7 +305,15 @@ export function TradingContextPanel({
                   {defaultIndices.map((index) => (
                     <div
                       key={index.symbol}
-                      className="flex items-center justify-between p-2 rounded-lg bg-[var(--surface-2)] border border-white/5 hover:bg-muted/50 transition-colors"
+                      className={cn(
+                        "flex items-center justify-between p-2 rounded-lg bg-[var(--surface-1)] border border-[rgba(139,92,246,0.06)] hover:border-[rgba(139,92,246,0.15)] hover:shadow-[var(--glow-purple-soft)] cursor-pointer transition-all duration-200",
+                        "border-l-2",
+                        index.changePercent !== null && index.changePercent >= 0
+                          ? "border-l-emerald-500/40"
+                          : index.changePercent !== null
+                          ? "border-l-red-500/40"
+                          : "border-l-gray-500/20"
+                      )}
                     >
                       <div className="flex flex-col">
                         <span className="text-xs font-medium text-foreground">{index.symbol}</span>
@@ -396,7 +404,7 @@ export function TradingContextPanel({
                     <div
                       key={ticker.symbol}
                       onClick={() => showChart(ticker.symbol)}
-                      className="flex items-center justify-between p-2 rounded-lg bg-[var(--surface-2)] border border-white/5 hover:bg-muted/50 transition-colors cursor-pointer"
+                      className="flex items-center justify-between p-2 rounded-lg bg-[var(--surface-1)] border border-[rgba(139,92,246,0.06)] hover:border-[rgba(139,92,246,0.15)] hover:shadow-[var(--glow-purple-soft)] cursor-pointer transition-all duration-200"
                     >
                       <span className="text-xs font-semibold text-foreground">{ticker.symbol}</span>
                       <div className="flex flex-col items-end">

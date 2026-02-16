@@ -26,7 +26,7 @@ export function WelcomeScreen({ onQuickStart, disabled }: WelcomeScreenProps) {
           <Image
             src="/pelican-logo-transparent.webp"
             alt={t.common.appName}
-            className="w-24 h-24 sm:w-32 sm:h-32 object-contain"
+            className="w-24 h-24 sm:w-32 sm:h-32 object-contain pelican-logo-glow"
             width={128}
             height={128}
             priority
