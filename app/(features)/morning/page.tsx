@@ -10,6 +10,7 @@ import { PelicanCard } from "@/components/ui/pelican-card"
 import { Sparkles, RefreshCw, CalendarDays } from "lucide-react"
 import { getMarketStatus } from "@/hooks/use-market-data"
 import { LogoImg } from "@/components/ui/logo-img"
+import { MessageContent } from "@/components/chat/message/message-content"
 
 type MoversTab = "gainers" | "losers"
 
@@ -43,16 +44,27 @@ interface EconomicEvent {
 export default function MorningPage() {
   const [moversTab, setMoversTab] = useState<MoversTab>("gainers")
   const [priceTier, setPriceTier] = useState<PriceTier>(PRICE_TIERS[1]!) // Default to $200+
-  const [isGeneratingBrief, setIsGeneratingBrief] = useState(false)
   const [economicEvents, setEconomicEvents] = useState<EconomicEvent[]>([])
   const [economicLoading, setEconomicLoading] = useState(true)
+  const [briefContent, setBriefContent] = useState<string>('')
+  const [briefLoading, setBriefLoading] = useState(false)
+  const [briefError, setBriefError] = useState<string | null>(null)
 
   const { openTrades, isLoading: tradesLoading } = useTrades({ status: 'open' })
   const { movers, isLoading: moversLoading, refetch: refetchMovers } = useMorningBrief()
-  const { isOpen: isPanelOpen, openWithPrompt } = usePelicanPanelContext()
+  const { openWithPrompt } = usePelicanPanelContext()
 
   const marketStatus = getMarketStatus()
   const isMarketOpen = marketStatus === 'open'
+
+  // Load cached brief on mount
+  useEffect(() => {
+    const today = new Date().toISOString().split('T')[0]
+    const cached = localStorage.getItem(`pelican-brief-${today}`)
+    if (cached) {
+      setBriefContent(cached)
+    }
+  }, [])
 
   // Fetch economic calendar
   useEffect(() => {
@@ -106,7 +118,9 @@ export default function MorningPage() {
   }
 
   const handleGenerateBrief = async () => {
-    setIsGeneratingBrief(true)
+    setBriefLoading(true)
+    setBriefError(null)
+    setBriefContent('')
 
     const prompt = `Generate my morning trading brief for ${new Date().toLocaleDateString()}:
 
@@ -127,8 +141,70 @@ Please provide:
 3. Notable movers and what's driving them
 4. 2-3 actionable insights for today's session`
 
-    await openWithPrompt(null, prompt, "brief")
-    setIsGeneratingBrief(false)
+    try {
+      const response = await fetch('/api/chat/stream', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: prompt,
+          conversation_id: null,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to generate brief')
+      }
+
+      const reader = response.body?.getReader()
+      if (!reader) {
+        throw new Error('No response body')
+      }
+
+      const decoder = new TextDecoder()
+      let buffer = ''
+      let fullContent = ''
+
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+
+        buffer += decoder.decode(value, { stream: true })
+        const lines = buffer.split('\n')
+        buffer = lines.pop() || ''
+
+        for (const line of lines) {
+          const trimmed = line.trim()
+          if (!trimmed || !trimmed.startsWith('data: ')) continue
+
+          const data = trimmed.slice(6)
+          if (data === '[DONE]') continue
+
+          try {
+            const parsed = JSON.parse(data)
+            if (parsed.error) {
+              throw new Error(parsed.error)
+            }
+            if (parsed.content) {
+              fullContent += parsed.content
+              setBriefContent(fullContent)
+            }
+          } catch (e) {
+            if (e instanceof Error && e.message !== 'Unexpected end of JSON input') {
+              throw e
+            }
+          }
+        }
+      }
+
+      // Cache for today
+      const today = new Date().toISOString().split('T')[0]
+      localStorage.setItem(`pelican-brief-${today}`, fullContent)
+    } catch (err) {
+      console.error('Brief generation error:', err)
+      setBriefError('Failed to generate brief. Please try again.')
+    } finally {
+      setBriefLoading(false)
+    }
   }
 
   return (
@@ -328,34 +404,74 @@ Please provide:
           </div>
         </PelicanCard>
 
-        <PelicanCard hover={false} className="relative overflow-hidden border border-primary/60 p-5">
-          <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-purple-500/10 via-transparent to-purple-500/10 opacity-50 pointer-events-none" />
-          <div className="relative">
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="flex items-center gap-2 text-sm font-semibold text-foreground">
-                <Sparkles className="h-4 w-4 text-purple-300" />
-                The Daily Roast
-              </h2>
-              {isPanelOpen && (
-                <div className="flex items-center gap-1.5">
-                  <div className="live-dot" />
-                  <span className="text-xs text-purple-300">Live</span>
-                </div>
-              )}
+        <div className="rounded-xl border border-white/[0.04] bg-white/[0.02] p-6">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-purple-400" />
+              <h3 className="font-semibold text-lg text-foreground">Pelican Brief</h3>
             </div>
-            <p className="thinking-shimmer-text mb-4 text-sm text-foreground/85">
-              Generate AI context across your positions, movers, and macro setup for a high-signal briefing.
-            </p>
-            <button
-              onClick={handleGenerateBrief}
-              disabled={isGeneratingBrief}
-              className="inline-flex items-center gap-2 rounded-lg bg-purple-600 px-4 py-2 sm:py-3 text-sm font-medium text-white transition-all hover:bg-purple-500 hover:shadow-[0_0_20px_rgba(139,92,246,0.3)] active:scale-95 disabled:opacity-50 min-h-[44px]"
-            >
-              <Sparkles className="h-4 w-4" />
-              {isGeneratingBrief ? "Generating..." : "Run Daily Roast"}
-            </button>
+            {briefContent && !briefLoading && (
+              <button
+                onClick={handleGenerateBrief}
+                className="text-xs text-foreground/40 hover:text-foreground/60 transition-colors flex items-center gap-1"
+              >
+                <RefreshCw className="h-3 w-3" />
+                Regenerate
+              </button>
+            )}
           </div>
-        </PelicanCard>
+
+          {/* Empty state */}
+          {!briefContent && !briefLoading && !briefError && (
+            <>
+              <p className="text-sm text-foreground/50 mb-4">
+                AI-generated morning intelligence across your positions, movers, and macro setup.
+              </p>
+              <button
+                onClick={handleGenerateBrief}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#8b5cf6] hover:bg-[#7c3aed] text-white text-sm font-medium transition-colors active:scale-95 min-h-[44px]"
+              >
+                <Sparkles className="h-4 w-4" />
+                Generate Brief
+              </button>
+            </>
+          )}
+
+          {/* Loading state */}
+          {briefLoading && (
+            <div className="flex items-center gap-3 py-8">
+              <div className="h-5 w-5 border-2 border-purple-400/30 border-t-purple-400 rounded-full animate-spin" />
+              <span className="text-sm text-foreground/50">
+                Generating your morning brief...
+              </span>
+            </div>
+          )}
+
+          {/* Streamed/completed content */}
+          {briefContent && (
+            <div className="text-foreground/80 leading-relaxed">
+              <MessageContent
+                content={briefContent}
+                isStreaming={briefLoading}
+                showSkeleton={false}
+              />
+            </div>
+          )}
+
+          {/* Error state */}
+          {briefError && (
+            <div>
+              <p className="text-sm text-red-400 mb-3">{briefError}</p>
+              <button
+                onClick={handleGenerateBrief}
+                className="text-xs text-purple-400 hover:text-purple-300 transition-colors"
+              >
+                Try again
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )

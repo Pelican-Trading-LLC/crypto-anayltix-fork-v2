@@ -163,15 +163,15 @@ export default function JournalPage() {
           {/* Actions - Desktop */}
           <div className="hidden sm:flex items-center gap-2">
             {/* Type Filter */}
-            <div className="flex items-center gap-1 bg-white/[0.06] border border-border rounded-lg p-1">
+            <div className="flex items-center gap-1 bg-white/[0.02] border border-white/[0.06] rounded-lg p-0.5">
               <button
                 onClick={() => setTradeTypeFilter('all')}
                 className={`
-                  px-3 py-1.5 rounded text-xs font-medium transition-colors
+                  px-3 py-1.5 rounded-md text-xs font-medium transition-colors
                   ${
                     tradeTypeFilter === 'all'
-                      ? 'bg-purple-600 text-white'
-                      : 'text-foreground/70 hover:text-foreground'
+                      ? 'bg-[#8b5cf6]/20 text-[#8b5cf6] border border-[#8b5cf6]/30'
+                      : 'bg-transparent text-foreground/50 border border-transparent hover:text-foreground/70 hover:bg-white/[0.04]'
                   }
                 `}
               >
@@ -180,11 +180,11 @@ export default function JournalPage() {
               <button
                 onClick={() => setTradeTypeFilter('real')}
                 className={`
-                  px-3 py-1.5 rounded text-xs font-medium transition-colors
+                  px-3 py-1.5 rounded-md text-xs font-medium transition-colors
                   ${
                     tradeTypeFilter === 'real'
-                      ? 'bg-purple-600 text-white'
-                      : 'text-foreground/70 hover:text-foreground'
+                      ? 'bg-[#8b5cf6]/20 text-[#8b5cf6] border border-[#8b5cf6]/30'
+                      : 'bg-transparent text-foreground/50 border border-transparent hover:text-foreground/70 hover:bg-white/[0.04]'
                   }
                 `}
               >
@@ -193,11 +193,11 @@ export default function JournalPage() {
               <button
                 onClick={() => setTradeTypeFilter('paper')}
                 className={`
-                  px-3 py-1.5 rounded text-xs font-medium transition-colors
+                  px-3 py-1.5 rounded-md text-xs font-medium transition-colors
                   ${
                     tradeTypeFilter === 'paper'
-                      ? 'bg-purple-600 text-white'
-                      : 'text-foreground/70 hover:text-foreground'
+                      ? 'bg-[#8b5cf6]/20 text-[#8b5cf6] border border-[#8b5cf6]/30'
+                      : 'bg-transparent text-foreground/50 border border-transparent hover:text-foreground/70 hover:bg-white/[0.04]'
                   }
                 `}
               >
