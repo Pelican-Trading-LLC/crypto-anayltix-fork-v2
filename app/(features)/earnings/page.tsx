@@ -59,6 +59,23 @@ function sortByImportance(events: EarningsEvent[]): EarningsEvent[] {
   })
 }
 
+// Logo component with fallback
+function LogoImg({ symbol }: { symbol: string }) {
+  const [hidden, setHidden] = useState(false)
+
+  if (hidden) return null
+
+  return (
+    <img
+      src={`https://api.elbstream.com/logos/symbol/${symbol}?format=png&size=50`}
+      alt=""
+      className="w-4 h-4 rounded-sm object-contain flex-shrink-0"
+      loading="lazy"
+      onError={() => setHidden(true)}
+    />
+  )
+}
+
 // Compact earnings card component
 function EarningsCard({
   event,
@@ -81,13 +98,7 @@ function EarningsCard({
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1.5 min-w-0">
-          <img
-            src={`https://assets.parqet.com/logos/symbol/${event.symbol}?format=png&size=50`}
-            alt=""
-            className="w-4 h-4 rounded-sm object-contain flex-shrink-0"
-            loading="lazy"
-            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
-          />
+          <LogoImg symbol={event.symbol} />
           <span className="font-mono font-bold text-xs text-[#8b5cf6] group-hover:text-[#a78bfa] truncate">
             {event.symbol}
           </span>
@@ -435,12 +446,12 @@ What are the key things to watch? Any whisper numbers or sentiment shifts? How h
       {/* Attribution for Parqet logos */}
       <div className="text-center py-3 mt-2">
         <a
-          href="https://www.parqet.com/api/logos"
+          href="https://elbstream.com"
           target="_blank"
           rel="noopener noreferrer"
           className="text-[10px] text-gray-600 hover:text-gray-400 transition-colors"
         >
-          Logos provided by Parqet
+          Logos provided by Elbstream
         </a>
       </div>
     </div>

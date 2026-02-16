@@ -31,7 +31,10 @@ export function EducationChat({ selectedTerm, onClear }: EducationChatProps) {
 
   // Scroll to bottom when messages change
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    const scrollContainer = messagesEndRef.current?.parentElement
+    if (scrollContainer) {
+      scrollContainer.scrollTo({ top: scrollContainer.scrollHeight, behavior: 'smooth' })
+    }
   }, [messages])
 
   // When selectedTerm changes, reset conversation and show intro message

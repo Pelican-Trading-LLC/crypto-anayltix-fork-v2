@@ -23,7 +23,10 @@ export default function HelpChat({ logoUrl = '/pelican-logo-transparent.webp' }:
 
   // Scroll to bottom when messages change
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const scrollContainer = messagesEndRef.current?.parentElement;
+    if (scrollContainer) {
+      scrollContainer.scrollTo({ top: scrollContainer.scrollHeight, behavior: 'smooth' });
+    }
   }, [messages]);
 
   // Focus input when chat opens

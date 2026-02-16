@@ -83,12 +83,16 @@ export function useSmartScroll(options: SmartScrollOptions = {}) {
 
   const scrollToBottom = useCallback(
     (behavior: ScrollBehavior = scrollBehavior) => {
-      // FIX 24: Use requestAnimationFrame to prevent scroll jumps
-      if (bottomRef.current) {
-        requestAnimationFrame(() => {
-          bottomRef.current?.scrollIntoView({ behavior })
-        })
-      }
+      const container = containerRef.current
+      if (!container) return
+
+      // Don't scroll if content fits on screen
+      if (container.scrollHeight <= container.clientHeight + 50) return
+
+      container.scrollTo({
+        top: container.scrollHeight,
+        behavior,
+      })
     },
     [scrollBehavior],
   )
@@ -134,28 +138,28 @@ export function useSmartScroll(options: SmartScrollOptions = {}) {
       return
     }
 
-    // Simple, reliable approach: let scrollIntoView handle everything
+    const container = containerRef.current
+    if (!container) return
+
     createTimeout(() => {
       const messageElement = document.querySelector(`[data-message-id="${messageId}"]`)
 
-      if (messageElement) {
-        messageElement.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start',
-          inline: 'nearest'
-        })
+      if (container && messageElement) {
+        const containerRect = container.getBoundingClientRect()
+        const messageRect = messageElement.getBoundingClientRect()
+        const scrollOffset = messageRect.top - containerRect.top + container.scrollTop - 20
 
-        // Add offset to position message with proper spacing from top
-        createTimeout(() => {
-          const container = containerRef.current
-          if (container && container.scrollHeight > container.clientHeight) {
-            // Container is scrollable - scroll container
-            container.scrollBy({ top: -100, behavior: 'smooth' })
-          } else {
-            // Window is scrollable - scroll window
-            window.scrollBy({ top: -100, behavior: 'smooth' })
-          }
-        }, 200)
+        // Don't scroll if message is already visible
+        const messageTop = messageRect.top - containerRect.top
+        const messageBottom = messageTop + messageRect.height
+        const isVisible = messageTop >= 0 && messageBottom <= containerRect.height
+
+        if (!isVisible) {
+          container.scrollTo({
+            top: scrollOffset,
+            behavior: 'smooth',
+          })
+        }
       }
     }, 100)
   }, [createTimeout])
@@ -163,6 +167,13 @@ export function useSmartScroll(options: SmartScrollOptions = {}) {
   // Claude/ChatGPT style auto-scroll: handles all scenarios
   const handleNewMessage = useCallback(
     (isStreaming = false, isUserMessage = false, messageId?: string) => {
+      const container = containerRef.current
+      if (!container) return
+
+      // If content fits on screen, don't scroll at all
+      // This handles the first-message case
+      if (container.scrollHeight <= container.clientHeight + 50) return
+
       isStreamingRef.current = isStreaming
 
       setLastNewMessageAt(Date.now())
@@ -201,7 +212,13 @@ export function useSmartScroll(options: SmartScrollOptions = {}) {
         // This is checked on every streaming update
         if (shouldAutoScrollRef.current && isNearBottom) {
           // User is at bottom and hasn't scrolled up: keep showing new text
-          scrollToBottom("auto") // Use 'auto' for instant, smooth streaming
+          const container = containerRef.current
+          if (container) {
+            container.scrollTo({
+              top: container.scrollHeight,
+              behavior: "auto",  // instant during streaming, no jank
+            })
+          }
         }
         // If user scrolled up during streaming: shouldAutoScrollRef.current is false (set by handleScroll)
         // So we won't scroll anymore until they scroll back to bottom
