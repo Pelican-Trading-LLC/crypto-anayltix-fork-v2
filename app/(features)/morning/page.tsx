@@ -213,10 +213,8 @@ Please provide:
               <div className="h-6 w-6 animate-spin rounded-full border-2 border-purple-500/30 border-t-purple-500" />
             </div>
           ) : macroEvents.length === 0 ? (
-            <p className="text-sm text-foreground/50">
-              {economicEvents.length === 0
-                ? "Economic calendar unavailable. Check FINNHUB_API_KEY environment variable."
-                : "No high/medium impact US events in the next 7 days"}
+            <p className="text-sm text-foreground/40">
+              No upcoming economic events this week
             </p>
           ) : (
             <div className="space-y-2">
@@ -261,16 +259,24 @@ Please provide:
           <div className="mb-4">
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-sm font-semibold text-foreground">Market Movers</h2>
-              <div className="rounded-lg border border-border bg-white/[0.06] p-1">
+              <div className="rounded-lg border border-white/[0.06] bg-white/[0.06] p-1">
                 <button
                   onClick={() => setMoversTab("gainers")}
-                  className={`rounded px-2 py-1 text-xs ${moversTab === "gainers" ? "bg-purple-600 text-white" : "text-foreground/70"}`}
+                  className={`rounded px-2 py-1 text-xs transition-colors ${
+                    moversTab === "gainers"
+                      ? "bg-green-500/20 text-green-300 border border-green-500/30"
+                      : "text-foreground/40 border border-transparent"
+                  }`}
                 >
                   Gainers
                 </button>
                 <button
                   onClick={() => setMoversTab("losers")}
-                  className={`rounded px-2 py-1 text-xs ${moversTab === "losers" ? "bg-purple-600 text-white" : "text-foreground/70"}`}
+                  className={`rounded px-2 py-1 text-xs transition-colors ${
+                    moversTab === "losers"
+                      ? "bg-red-500/20 text-red-300 border border-red-500/30"
+                      : "text-foreground/40 border border-transparent"
+                  }`}
                 >
                   Losers
                 </button>

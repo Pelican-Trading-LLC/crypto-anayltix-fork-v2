@@ -76,7 +76,7 @@ export default function HeatmapPage() {
   return (
     <div className="flex flex-col h-full overflow-hidden">
       {/* Header */}
-      <div className="flex-shrink-0 px-6 py-4 border-b border-border">
+      <div className="flex-shrink-0 px-6 py-4 border-b border-white/[0.04]">
         <div className="flex items-center justify-between mb-3">
           <div>
             <h1 className="text-xl font-semibold text-foreground">S&P 500 Heatmap</h1>
@@ -101,7 +101,7 @@ export default function HeatmapPage() {
                 ${
                   autoRefresh
                     ? 'bg-purple-600/20 text-purple-300 border border-purple-500/30'
-                    : 'bg-white/[0.06] text-foreground/70 border border-border hover:bg-white/[0.08]'
+                    : 'bg-white/[0.06] text-foreground/70 border border-white/[0.06] hover:bg-white/[0.08]'
                 }
               `}
             >
@@ -113,13 +113,13 @@ export default function HeatmapPage() {
             <button
               onClick={() => refetch()}
               disabled={isLoading}
-              className="px-3 py-1.5 rounded-lg bg-white/[0.06] border border-border hover:bg-white/[0.08] transition-colors disabled:opacity-50"
+              className="px-3 py-1.5 rounded-lg bg-white/[0.06] border border-white/[0.06] hover:bg-white/[0.08] transition-colors disabled:opacity-50"
             >
               <RefreshCw className={`w-4 h-4 text-foreground/70 ${isLoading ? 'animate-spin' : ''}`} />
             </button>
 
             {/* View mode toggle */}
-            <div className="flex items-center gap-1 bg-white/[0.06] border border-border rounded-lg p-1">
+            <div className="flex items-center gap-1 bg-white/[0.06] border border-white/[0.06] rounded-lg p-1">
               <button
                 onClick={() => setViewMode('treemap')}
                 className={`
@@ -166,7 +166,7 @@ export default function HeatmapPage() {
       {/* Main content */}
       <div className="flex-1 flex overflow-hidden">
         {/* Sidebar - Sector Legend */}
-        <div className="flex-shrink-0 w-64 border-r border-border p-4 overflow-y-auto">
+        <div className="flex-shrink-0 w-64 border-r border-white/[0.04] p-4 overflow-y-auto">
           <SectorLegend
             stocks={stocks}
             selectedSectors={selectedSectors}

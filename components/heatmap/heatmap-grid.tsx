@@ -12,7 +12,7 @@ interface HeatmapGridProps {
 export function HeatmapGrid({ stocks, onStockClick }: HeatmapGridProps) {
   if (stocks.length === 0) {
     return (
-      <div className="flex items-center justify-center border border-border rounded-lg bg-surface-1 p-12">
+      <div className="flex items-center justify-center border border-white/[0.04] rounded-lg bg-surface-1 p-12">
         <p className="text-foreground/50 text-sm">No data available</p>
       </div>
     )

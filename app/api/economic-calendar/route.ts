@@ -68,44 +68,72 @@ export async function GET(request: NextRequest) {
     }
 
     const url = `https://finnhub.io/api/v1/calendar/economic?from=${from}&to=${to}&token=${FINNHUB_API_KEY}`
-    const response = await fetch(url)
+    const response = await fetch(url, {
+      headers: { 'Accept': 'application/json' },
+    })
 
     if (!response.ok) {
+      console.error("Finnhub economic error:", response.status, response.statusText)
       if (cachedData?.data) return NextResponse.json(cachedData.data)
-      return NextResponse.json({ error: "Failed to fetch economic calendar" }, { status: 502 })
+      return NextResponse.json({ events: [], lastUpdated: new Date().toISOString() })
     }
 
     interface FinnhubEconomicEvent {
       event?: string
+      indicator?: string
       country?: string
       date?: string
       time?: string
-      impact?: number
+      impact?: number | string
       actual?: number | null
       estimate?: number | null
       prior?: number | null
+      prev?: number | null
       unit?: string
     }
 
     interface FinnhubEconomicResponse {
-      economicCalendar?: FinnhubEconomicEvent[]
+      economicCalendar?: FinnhubEconomicEvent[] | { result?: FinnhubEconomicEvent[] }
+      result?: FinnhubEconomicEvent[]
     }
 
     const data: FinnhubEconomicResponse = await response.json()
 
-    const events: EconomicEvent[] = (data.economicCalendar || [])
-      .filter((e) => e.country === 'US')  // US events only
+    // Handle nested response structure - Finnhub may return:
+    // { economicCalendar: [...] } OR
+    // { economicCalendar: { result: [...] } } OR
+    // { result: [...] }
+    let rawEvents: FinnhubEconomicEvent[] = []
+    if (data.economicCalendar) {
+      if (Array.isArray(data.economicCalendar)) {
+        rawEvents = data.economicCalendar
+      } else if (data.economicCalendar && typeof data.economicCalendar === 'object' && 'result' in data.economicCalendar) {
+        rawEvents = (data.economicCalendar as { result?: FinnhubEconomicEvent[] }).result || []
+      }
+    } else if (data.result && Array.isArray(data.result)) {
+      rawEvents = data.result
+    }
+
+    const mappedEvents = rawEvents
+      .filter((e) => {
+        const country = (e.country || '').toUpperCase()
+        return country === 'US' || country === 'UNITED STATES'
+      })
       .map((e) => ({
-        event: e.event || '',
-        country: e.country || 'US',
-        date: e.date || '',
+        event: e.event || e.indicator || '',
+        country: 'US' as const,
+        date: e.date || from || new Date().toISOString().split('T')[0],
         time: e.time || '',
-        impact: (e.impact === 3 ? 'high' : e.impact === 2 ? 'medium' : 'low') as 'low' | 'medium' | 'high',
+        impact: (typeof e.impact === 'number'
+          ? (e.impact === 3 ? 'high' : e.impact === 2 ? 'medium' : 'low')
+          : ((e.impact || 'low').toLowerCase())) as 'low' | 'medium' | 'high',
         actual: e.actual ?? null,
         estimate: e.estimate ?? null,
-        prior: e.prior ?? null,
+        prior: e.prior ?? e.prev ?? null,
         unit: e.unit || '',
       }))
+
+    const events: EconomicEvent[] = (mappedEvents as EconomicEvent[]).slice(0, 20)
 
     const responseData: EconomicCalendarResponse = {
       events,
