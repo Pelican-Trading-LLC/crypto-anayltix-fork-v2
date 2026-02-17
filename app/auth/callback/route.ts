@@ -101,7 +101,6 @@ export async function GET(request: NextRequest) {
     }
 
     // No code provided - this shouldn't happen for OAuth, but handle gracefully
-    console.warn('[AUTH CALLBACK] No code parameter provided')
     return NextResponse.redirect(new URL('/chat', request.url))
   } catch (error) {
     console.error('[AUTH CALLBACK] Unhandled error:', error)

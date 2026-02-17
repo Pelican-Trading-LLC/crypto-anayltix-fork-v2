@@ -69,7 +69,14 @@ export const updateSession = async (request: NextRequest) => {
     }
 
     return response;
-  } catch {
+  } catch (e) {
+    console.error('Middleware auth error:', e)
+    // Fail closed — redirect to login for protected routes
+    if (!isPublicPath(pathname)) {
+      const loginUrl = request.nextUrl.clone()
+      loginUrl.pathname = '/auth/login'
+      return NextResponse.redirect(loginUrl)
+    }
     return NextResponse.next({
       request: { headers: request.headers },
     });

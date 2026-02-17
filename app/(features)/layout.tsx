@@ -139,13 +139,11 @@ function FeaturesLayoutInner({ children }: { children: React.ReactNode }) {
 // =============================================================================
 
 export default function FeaturesLayout({ children }: { children: React.ReactNode }) {
-  const handleTrialExhausted = (info: unknown) => {
-    console.warn('[FEATURES-LAYOUT] Trial exhausted', info)
+  const handleTrialExhausted = (_info: unknown) => {
     // TODO: Show trial exhausted modal
   }
 
-  const handleInsufficientCredits = (info: unknown) => {
-    console.warn('[FEATURES-LAYOUT] Insufficient credits', info)
+  const handleInsufficientCredits = (_info: unknown) => {
     // TODO: Show insufficient credits modal
   }
 

@@ -12,13 +12,14 @@ type RateLimiterLike = {
   limit: (identifier: string) => Promise<RateLimitResult>
 }
 
-function createSafeMockLimiter(requests: number): RateLimiterLike {
+function createDenyAllLimiter(): RateLimiterLike {
+  console.error('UPSTASH_REDIS_REST_URL or UPSTASH_REDIS_REST_TOKEN is not set. Rate limiting will DENY all requests.')
   return {
     async limit() {
       return {
-        success: true,
-        limit: requests,
-        remaining: requests,
+        success: false,
+        limit: 0,
+        remaining: 0,
         reset: Date.now() + 60_000,
       }
     },
@@ -41,7 +42,7 @@ function createRedisClient() {
  */
 export function createUserRateLimiter(prefix: string, requests: number, window: `${number} ${"ms" | "s" | "m" | "h" | "d"}` | `${number}${"ms" | "s" | "m" | "h" | "d"}`) {
   const redis = createRedisClient()
-  if (!redis) return createSafeMockLimiter(requests)
+  if (!redis) return createDenyAllLimiter()
 
   return new Ratelimit({
     redis,
@@ -55,7 +56,7 @@ export function createUserRateLimiter(prefix: string, requests: number, window: 
  */
 export function createIpRateLimiter(prefix: string, requests: number, window: `${number} ${"ms" | "s" | "m" | "h" | "d"}` | `${number}${"ms" | "s" | "m" | "h" | "d"}`) {
   const redis = createRedisClient()
-  if (!redis) return createSafeMockLimiter(requests)
+  if (!redis) return createDenyAllLimiter()
 
   return new Ratelimit({
     redis,

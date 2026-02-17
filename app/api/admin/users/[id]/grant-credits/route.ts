@@ -5,6 +5,7 @@ export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  try {
   const auth = await requireAdmin()
   if ('error' in auth) return auth.error
 
@@ -46,4 +47,8 @@ export async function POST(
   }
 
   return NextResponse.json({ credits_balance: newBalance })
+  } catch (error) {
+    console.error('Admin grant credits error:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  }
 }

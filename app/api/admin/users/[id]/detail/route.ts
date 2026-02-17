@@ -5,6 +5,7 @@ export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  try {
   const auth = await requireAdmin()
   if ('error' in auth) return auth.error
 
@@ -60,4 +61,8 @@ export async function GET(
   }, {
     headers: { "Cache-Control": "private, no-cache" },
   })
+  } catch (error) {
+    console.error('Admin user detail error:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  }
 }

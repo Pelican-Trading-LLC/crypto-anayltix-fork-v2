@@ -23,6 +23,7 @@ function bucketByDay(rows: { created_at: string }[], days: string[]) {
 }
 
 export async function GET() {
+  try {
   const auth = await requireAdmin()
   if ('error' in auth) return auth.error
 
@@ -280,4 +281,8 @@ export async function GET() {
   }, {
     headers: { 'Cache-Control': 'private, no-cache' },
   })
+  } catch (error) {
+    console.error('Admin analytics error:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  }
 }

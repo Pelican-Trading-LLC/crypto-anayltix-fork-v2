@@ -2,6 +2,7 @@ import { type NextRequest, NextResponse } from 'next/server'
 import { requireAdmin, getServiceClient } from '@/lib/admin'
 
 export async function GET(req: NextRequest) {
+  try {
   const auth = await requireAdmin()
   if ('error' in auth) return auth.error
 
@@ -110,4 +111,8 @@ export async function GET(req: NextRequest) {
   }, {
     headers: { 'Cache-Control': 'private, no-cache' },
   })
+  } catch (error) {
+    console.error('Admin conversations error:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  }
 }
