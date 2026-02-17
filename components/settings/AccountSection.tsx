@@ -63,7 +63,7 @@ export function AccountSection({ user, settings, supabase }: AccountSectionProps
               id="email"
               value={settings.email}
               disabled
-              className="bg-muted dark:bg-[#0a0a0f] dark:border dark:border-white/5"
+              className="bg-muted dark:bg-[var(--bg-base)] dark:border dark:border-white/5"
             />
             <p className="text-sm text-muted-foreground">Contact support to change your email address</p>
           </CardContent>

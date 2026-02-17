@@ -133,7 +133,7 @@ export default function SettingsPage() {
         onSave={handleSave}
       />
 
-      <div className="page-container-wide py-8 dark:bg-[#0a0a0f]">
+      <div className="page-container-wide py-8 dark:bg-[var(--bg-base)]">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           <SettingsSidebar
             activeSection={activeSection}

@@ -64,7 +64,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-[#0a0a0c] relative overflow-hidden font-sans text-white p-4">
+    <div className="min-h-screen w-full flex items-center justify-center bg-[var(--bg-base)] relative overflow-hidden font-sans text-white p-4">
       {/* --- BACKGROUND EFFECTS (CSS Only - No Images Needed) --- */}
       <div
         className="absolute inset-0 z-0 opacity-20"
@@ -85,7 +85,7 @@ export default function LoginPage() {
           </Link>
         </div>
 
-        <div className="bg-[#12141c]/80 backdrop-blur-xl border-t border-t-white/20 border-b border-b-black/50 border-x border-x-white/10 rounded-3xl p-8 shadow-2xl">
+        <div className="bg-[var(--bg-surface)]/80 backdrop-blur-xl border-t border-t-white/20 border-b border-b-black/50 border-x border-x-white/10 rounded-3xl p-8 shadow-2xl">
           <div className="flex flex-col items-center text-center mb-8">
             <div className="w-20 h-20 mb-4 relative">
               <Image
@@ -111,7 +111,7 @@ export default function LoginPage() {
                   type="email"
                   id="email"
                   placeholder="trader@example.com"
-                  className="w-full bg-[#0a0a0c]/50 border border-white/10 rounded-xl py-3 pl-11 pr-4 text-white placeholder-gray-600 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500/50 transition-all hover:bg-[#0a0a0c]/80"
+                  className="w-full bg-[var(--bg-base)]/50 border border-white/10 rounded-xl py-3 pl-11 pr-4 text-white placeholder-gray-600 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500/50 transition-all hover:bg-[var(--bg-base)]/80"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -134,7 +134,7 @@ export default function LoginPage() {
                 <input
                   type="password"
                   id="password"
-                  className="w-full bg-[#0a0a0c]/50 border border-white/10 rounded-xl py-3 pl-11 pr-4 text-white placeholder-gray-600 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500/50 transition-all hover:bg-[#0a0a0c]/80"
+                  className="w-full bg-[var(--bg-base)]/50 border border-white/10 rounded-xl py-3 pl-11 pr-4 text-white placeholder-gray-600 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500/50 transition-all hover:bg-[var(--bg-base)]/80"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -158,7 +158,7 @@ export default function LoginPage() {
               <div className="w-full border-t border-white/10"></div>
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="px-2 bg-[#161821] text-gray-500">Or continue with</span>
+              <span className="px-2 bg-[var(--bg-elevated)] text-gray-500">Or continue with</span>
             </div>
           </div>
 

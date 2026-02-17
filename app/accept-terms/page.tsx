@@ -61,14 +61,14 @@ export default function AcceptTermsPage() {
 
   if (checkingAuth) {
     return (
-      <div className="min-h-screen w-full flex items-center justify-center bg-[#0a0a0c]">
+      <div className="min-h-screen w-full flex items-center justify-center bg-[var(--bg-base)]">
         <div className="animate-spin h-8 w-8 border-4 border-purple-500 border-t-transparent rounded-full" />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-[#0a0a0c] relative overflow-hidden font-sans text-white p-4">
+    <div className="min-h-screen w-full flex items-center justify-center bg-[var(--bg-base)] relative overflow-hidden font-sans text-white p-4">
       {/* Background effects matching login page */}
       <div
         className="absolute inset-0 z-0 opacity-20"
@@ -82,7 +82,7 @@ export default function AcceptTermsPage() {
       <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-blue-900/30 blur-[120px] rounded-full mix-blend-screen" />
 
       <div className="w-full max-w-[420px] relative z-10 flex flex-col">
-        <div className="bg-[#12141c]/80 backdrop-blur-xl border-t border-t-white/20 border-b border-b-black/50 border-x border-x-white/10 rounded-3xl p-8 shadow-2xl">
+        <div className="bg-[var(--bg-surface)]/80 backdrop-blur-xl border-t border-t-white/20 border-b border-b-black/50 border-x border-x-white/10 rounded-3xl p-8 shadow-2xl">
           <div className="flex flex-col items-center text-center mb-8">
             <div className="w-20 h-20 mb-4 relative">
               <Image
@@ -106,7 +106,7 @@ export default function AcceptTermsPage() {
               <input
                 id="terms"
                 type="checkbox"
-                className="mt-1 w-5 h-5 bg-[#1b1f2b] border-[#2d3240] rounded text-purple-600 focus:ring-purple-500 focus:ring-offset-0 focus:ring-offset-transparent cursor-pointer accent-purple-600"
+                className="mt-1 w-5 h-5 bg-[var(--bg-elevated)] border-[var(--border-default)] rounded text-purple-600 focus:ring-purple-500 focus:ring-offset-0 focus:ring-offset-transparent cursor-pointer accent-purple-600"
                 checked={agreed}
                 onChange={(e) => setAgreed(e.target.checked)}
               />

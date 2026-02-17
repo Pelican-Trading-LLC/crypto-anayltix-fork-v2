@@ -96,7 +96,7 @@ export function ReferralCodeInput({ onReferralReady }: ReferralCodeInputProps) {
           value={code}
           onChange={handleChange}
           placeholder="MAZER"
-          className="w-full bg-[#1b1f2b] border border-[#2d3240] rounded-xl py-3 px-4 pr-11 text-white placeholder-gray-600 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all uppercase"
+          className="w-full bg-[var(--bg-elevated)] border border-[var(--border-default)] rounded-xl py-3 px-4 pr-11 text-white placeholder-gray-600 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all uppercase"
         />
         <div className="absolute right-3.5 top-1/2 -translate-y-1/2">
           {validationState === "loading" && (

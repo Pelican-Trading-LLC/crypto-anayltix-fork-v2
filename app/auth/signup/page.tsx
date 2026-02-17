@@ -112,7 +112,7 @@ export default function SignUpPage() {
   }
 
   return (
-    <div className="min-h-screen w-full bg-[#0a0a0c] flex flex-col items-center justify-center relative overflow-hidden font-sans text-white">
+    <div className="min-h-screen w-full bg-[var(--bg-base)] flex flex-col items-center justify-center relative overflow-hidden font-sans text-white">
       <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,_#1e1b4b_0%,_transparent_50%)] opacity-20 pointer-events-none" />
 
       <div className="absolute top-6 left-6 z-30 pointer-events-auto">
@@ -125,13 +125,13 @@ export default function SignUpPage() {
         </Link>
       </div>
 
-      <div className="w-full min-h-screen bg-[#12141c] rounded-none shadow-none overflow-hidden flex flex-col md:flex-row border-0 z-10">
+      <div className="w-full min-h-screen bg-[var(--bg-surface)] rounded-none shadow-none overflow-hidden flex flex-col md:flex-row border-0 z-10">
         {/* LEFT SIDE: Visual & Branding (CSS-Only Version) */}
-        <div className="flex w-full md:w-1/2 relative flex-col justify-between p-8 md:p-12 overflow-hidden bg-[#050505] min-h-[320px] md:min-h-full">
+        <div className="flex w-full md:w-1/2 relative flex-col justify-between p-8 md:p-12 overflow-hidden bg-[#0a0a10] min-h-[320px] md:min-h-full">
             {/* BACKGROUND: Glowing Data Landscape (CSS Only) */}
             <div className="absolute inset-0 z-0 overflow-hidden">
                {/* 1. The Dark Base */}
-               <div className="absolute inset-0 bg-[#020205]"></div>
+               <div className="absolute inset-0 bg-[#08080e]"></div>
                
                {/* 2. The "Mountain" Glows */}
                <div className="absolute bottom-[-10%] left-[-10%] w-[80%] h-[60%] bg-purple-900/40 blur-[80px] rounded-full mix-blend-screen"></div>
@@ -181,7 +181,7 @@ export default function SignUpPage() {
             </div>
         </div>
 
-        <div className="w-full md:w-1/2 bg-[#12141c] p-10 md:p-14 flex flex-col justify-center relative z-10 pointer-events-auto">
+        <div className="w-full md:w-1/2 bg-[var(--bg-surface)] p-10 md:p-14 flex flex-col justify-center relative z-10 pointer-events-auto">
           <div className="max-w-md w-full mx-auto">
             <h2 className="text-3xl font-semibold mb-2 text-white">Create your account</h2>
             <p className="text-gray-400 mb-8">Start trading smarter in minutes.</p>
@@ -195,7 +195,7 @@ export default function SignUpPage() {
                     type="email"
                     id="email"
                     placeholder="trader@example.com"
-                    className="w-full bg-[#1b1f2b] border border-[#2d3240] rounded-xl py-3 pl-11 pr-4 text-white placeholder-gray-600 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
+                    className="w-full bg-[var(--bg-elevated)] border border-[var(--border-default)] rounded-xl py-3 pl-11 pr-4 text-white placeholder-gray-600 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -210,7 +210,7 @@ export default function SignUpPage() {
                   <input
                     type="password"
                     id="password"
-                    className="w-full bg-[#1b1f2b] border border-[#2d3240] rounded-xl py-3 pl-11 pr-4 text-white placeholder-gray-600 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
+                    className="w-full bg-[var(--bg-elevated)] border border-[var(--border-default)] rounded-xl py-3 pl-11 pr-4 text-white placeholder-gray-600 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -225,7 +225,7 @@ export default function SignUpPage() {
                   <input
                     type="password"
                     id="repeat-password"
-                    className="w-full bg-[#1b1f2b] border border-[#2d3240] rounded-xl py-3 pl-11 pr-4 text-white placeholder-gray-600 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
+                    className="w-full bg-[var(--bg-elevated)] border border-[var(--border-default)] rounded-xl py-3 pl-11 pr-4 text-white placeholder-gray-600 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
                     required
                     value={repeatPassword}
                     onChange={(e) => setRepeatPassword(e.target.value)}
@@ -239,7 +239,7 @@ export default function SignUpPage() {
                 <input
                   id="terms"
                   type="checkbox"
-                  className="w-5 h-5 bg-[#1b1f2b] border-[#2d3240] rounded text-purple-600 focus:ring-purple-500 focus:ring-offset-0 focus:ring-offset-transparent cursor-pointer accent-purple-600"
+                  className="w-5 h-5 bg-[var(--bg-elevated)] border-[var(--border-default)] rounded text-purple-600 focus:ring-purple-500 focus:ring-offset-0 focus:ring-offset-transparent cursor-pointer accent-purple-600"
                   checked={agreedToTerms}
                   onChange={(e) => setAgreedToTerms(e.target.checked)}
                 />

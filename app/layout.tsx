@@ -46,12 +46,12 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className="dark:bg-[#13112a]">
+    <html lang="en" suppressHydrationWarning className="dark:bg-[var(--bg-base)]">
       <head>
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="theme-color" content="#13112a" />
+        <meta name="theme-color" content="#13131a" />
       </head>
       <body className={`${GeistSans.className} antialiased bg-background ${GeistSans.variable} ${GeistMono.variable}`}>
         <ReferralCapture />

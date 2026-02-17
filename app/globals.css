@@ -84,22 +84,22 @@
   --sidebar-ring: oklch(0.45 0.01 240 / 0.3);
   /* ===== PELICAN DESIGN SYSTEM V3 TOKENS ===== */
 
-  /* Backgrounds — layered depth */
-  --bg-base: #0a0a0f;
-  --bg-surface: #111118;
-  --bg-elevated: #16161f;
-  --bg-overlay: rgba(0, 0, 0, 0.6);
+  /* Backgrounds — lifted dark mode with visible layer separation */
+  --bg-base: #13131a;
+  --bg-surface: #1c1c26;
+  --bg-elevated: #252530;
+  --bg-overlay: rgba(0, 0, 0, 0.65);
 
-  /* Borders */
-  --border-subtle: rgba(255, 255, 255, 0.06);
-  --border-default: rgba(255, 255, 255, 0.1);
-  --border-hover: rgba(255, 255, 255, 0.15);
+  /* Borders — adjusted for lifted palette */
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-default: rgba(255, 255, 255, 0.12);
+  --border-hover: rgba(255, 255, 255, 0.18);
 
-  /* Text */
-  --text-primary: #e8e8ed;
-  --text-secondary: #9898a6;
-  --text-muted: #5a5a6e;
-  --text-disabled: #3a3a4a;
+  /* Text — bumped for contrast on new backgrounds */
+  --text-primary: #ededf0;
+  --text-secondary: #a0a0b0;
+  --text-muted: #6a6a82;
+  --text-disabled: #3e3e50;
 
   /* Accent */
   --accent-primary: #8b5cf6;
@@ -118,10 +118,10 @@
   --status-closed: #6b7280;
   --status-cancelled: #ef4444;
 
-  /* Shadows — depth through shadow, NOT borders */
-  --shadow-card: 0 1px 3px rgba(0,0,0,0.4), 0 4px 16px rgba(0,0,0,0.15);
-  --shadow-card-hover: 0 2px 8px rgba(0,0,0,0.5), 0 8px 32px rgba(0,0,0,0.2);
-  --shadow-elevated: 0 4px 8px rgba(0,0,0,0.5), 0 16px 48px rgba(0,0,0,0.25);
+  /* Shadows — stronger for visible depth on lifted palette */
+  --shadow-card: 0 1px 2px rgba(0,0,0,0.5), 0 4px 16px rgba(0,0,0,0.2);
+  --shadow-card-hover: 0 2px 6px rgba(0,0,0,0.6), 0 10px 32px rgba(0,0,0,0.25);
+  --shadow-elevated: 0 4px 8px rgba(0,0,0,0.6), 0 16px 48px rgba(0,0,0,0.3);
 
   /* Spacing */
   --space-page-x: 2rem;
@@ -138,31 +138,31 @@
 
 /* Fixed dark mode selector to work properly with next-themes */
 .dark {
-  /* Purple-tinted dark mode - warm purple undertones, clearly visible */
+  /* Purple-tinted dark mode - lifted palette with visible layer separation */
   /* HSL format for shadcn/Tailwind compatibility */
-  --background: 252 30% 5%;              /* hsl(252, 30%, 5%) = dark purple base */
-  --foreground: 252 10% 92%;             /* light purple-tinted white */
-  --muted: 252 25% 12%;                  /* purple-tinted muted backgrounds */
-  --muted-foreground: 252 8% 65%;        /* muted text */
+  --background: 252 20% 9%;              /* lifted from 5% — dark but not void */
+  --foreground: 252 10% 93%;             /* light purple-tinted white */
+  --muted: 252 22% 15%;                  /* purple-tinted muted backgrounds */
+  --muted-foreground: 252 8% 66%;        /* muted text */
 
-  /* Layered surfaces - BRIGHTER with MORE purple saturation */
-  --surface-0: #13112a;                  /* significantly more purple */
-  --surface-1: #181630;                  /* clearly purple-tinted */
-  --surface-2: #1e1b38;                  /* distinctly warm purple */
-  --surface-3: #252240;                  /* hover states pop */
+  /* Layered surfaces - lifted with purple saturation */
+  --surface-0: #1a1830;                  /* lifted from #13112a */
+  --surface-1: #201e38;                  /* lifted from #181630 */
+  --surface-2: #272440;                  /* lifted from #1e1b38 */
+  --surface-3: #2e2b48;                  /* lifted from #252240 */
 
-  /* Purple-tinted borders - nearly invisible */
-  --border: 252 20% 20%;                 /* subtle purple-gray border for Tailwind */
-  --border-subtle: rgba(139, 92, 246, 0.04);
-  --border-hover: rgba(139, 92, 246, 0.18);
-  --border-active: rgba(139, 92, 246, 0.30);
+  /* Purple-tinted borders - slightly more visible */
+  --border: 252 20% 22%;                 /* subtle purple-gray border for Tailwind */
+  --border-subtle: rgba(139, 92, 246, 0.06);
+  --border-hover: rgba(139, 92, 246, 0.20);
+  --border-active: rgba(139, 92, 246, 0.32);
   --ring: 252 50% 50% / 0.5;             /* purple focus ring */
 
-  /* Text colors */
-  --text-primary: #e8e8ef;
-  --text-secondary: #9d9db5;
-  --text-muted: #5c5c7a;
-  --text-ghost: #3d3d56;
+  /* Text colors - bumped for contrast */
+  --text-primary: #ededf0;
+  --text-secondary: #a2a2ba;
+  --text-muted: #65658a;
+  --text-ghost: #42425c;
 
   /* Accent purple */
   --accent-purple: #8b5cf6;
@@ -192,12 +192,12 @@
   --chart-4: oklch(0.70 0.15 280);
   --chart-5: oklch(0.50 0.28 275);
 
-  /* Components with futuristic styling - HSL format */
-  --card: 252 28% 8%;                    /* purple-tinted cards */
-  --card-foreground: 252 10% 92%;        /* light text on cards */
-  --popover: 252 28% 8%;                 /* same as card */
-  --popover-foreground: 252 10% 92%;     /* light text */
-  --sidebar: 252 35% 6%;                 /* darker purple for sidebar */
+  /* Components with futuristic styling - HSL format (lifted) */
+  --card: 252 22% 12%;                   /* purple-tinted cards — lifted from 8% */
+  --card-foreground: 252 10% 93%;        /* light text on cards */
+  --popover: 252 22% 12%;               /* same as card */
+  --popover-foreground: 252 10% 93%;     /* light text */
+  --sidebar: 252 28% 9%;                 /* darker purple for sidebar — lifted from 6% */
   --sidebar-foreground: 252 10% 92%;     /* light text */
   --sidebar-primary: oklch(0.60 0.25 280);
   --sidebar-primary-foreground: oklch(0.98 0.002 280);

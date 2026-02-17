@@ -173,8 +173,8 @@ function AdminMessageRow({ msg, spacious }: { msg: ConvoMessage; spacious?: bool
     <div
       className={`rounded-lg ${spacious ? 'mb-5 last:mb-0' : 'mb-4 last:mb-0'} ${
         isUser
-          ? 'bg-[#1a1a25] border-l-2 border-purple-500/40 pl-4 pr-3 py-3'
-          : 'bg-[#13131a] border-l-2 border-blue-500/30 pl-4 pr-3 py-3'
+          ? 'bg-[var(--bg-elevated)] border-l-2 border-purple-500/40 pl-4 pr-3 py-3'
+          : 'bg-[var(--bg-surface)] border-l-2 border-blue-500/30 pl-4 pr-3 py-3'
       }`}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
@@ -282,11 +282,11 @@ function ConversationModal({
   return (
     <Dialog open={open} onOpenChange={(o) => { if (!o) onClose() }}>
       <DialogContent
-        className="max-w-4xl w-[90vw] h-[85vh] flex flex-col p-0 gap-0 bg-[#0a0a0f] border-[#1e1e2e]"
+        className="max-w-4xl w-[90vw] h-[85vh] flex flex-col p-0 gap-0 bg-[var(--bg-base)] border-[var(--border-default)]"
         showCloseButton={false}
       >
         {/* Header */}
-        <DialogHeader className="flex-shrink-0 px-6 py-4 border-b border-[#1e1e2e]">
+        <DialogHeader className="flex-shrink-0 px-6 py-4 border-b border-[var(--border-default)]">
           <div className="flex items-start justify-between">
             <div className="min-w-0 flex-1">
               <DialogTitle className="text-base text-white truncate">
@@ -678,7 +678,7 @@ export function RecentConversations({
                         {!isLoading && messages.length > 0 && (
                           <>
                             {/* Metadata row */}
-                            <div className="flex items-center gap-3 text-[11px] text-muted-foreground py-2 border-b border-[#1e1e2e]">
+                            <div className="flex items-center gap-3 text-[11px] text-muted-foreground py-2 border-b border-[var(--border-default)]">
                               <span className="flex items-center gap-1">
                                 <MessageSquare className="size-3" />
                                 {cached!.total} messages
