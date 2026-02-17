@@ -263,7 +263,7 @@ function PelicanChatPanelInternal({
         transition={{ duration: 0.2 }}
         className={cn(
           "hidden md:flex flex-col border-l border-[var(--border-subtle)] bg-[var(--bg-surface)]",
-          "h-screen w-full",
+          "h-full w-full",
           className
         )}
         style={{

@@ -84,11 +84,11 @@
   --sidebar-ring: oklch(0.45 0.01 240 / 0.3);
   /* ===== PELICAN DESIGN SYSTEM V3 TOKENS ===== */
 
-  /* Backgrounds — deep purple DNA throughout */
-  --bg-base: #110e1a;
-  --bg-surface: #1a1827;
-  --bg-elevated: #252335;
-  --bg-overlay: rgba(8, 5, 14, 0.75);
+  /* Backgrounds — deep purple DNA, perceptibly lifted */
+  --bg-base: #16131f;
+  --bg-surface: #1f1c2a;
+  --bg-elevated: #2a2738;
+  --bg-overlay: rgba(10, 8, 16, 0.75);
 
   /* Borders — purple tint on hover ties to accent */
   --border-subtle: rgba(255, 255, 255, 0.08);
@@ -119,9 +119,9 @@
   --status-cancelled: #ef4444;
 
   /* Shadows — visible depth + purple glow on hover */
-  --shadow-card: 0 1px 2px rgba(0,0,0,0.6), 0 6px 20px rgba(0,0,0,0.25);
-  --shadow-card-hover: 0 2px 8px rgba(0,0,0,0.7), 0 12px 40px rgba(0,0,0,0.3), 0 0 0 1px rgba(139,92,246,0.1);
-  --shadow-elevated: 0 4px 12px rgba(0,0,0,0.7), 0 20px 60px rgba(0,0,0,0.35);
+  --shadow-card: 0 2px 8px rgba(0,0,0,0.25), 0 0 0 1px rgba(255,255,255,0.04);
+  --shadow-card-hover: 0 4px 24px rgba(0,0,0,0.4), 0 0 0 1px rgba(139,92,246,0.12), 0 0 30px rgba(139,92,246,0.06);
+  --shadow-elevated: 0 4px 12px rgba(0,0,0,0.5), 0 20px 60px rgba(0,0,0,0.3);
 
   /* Spacing */
   --space-page-x: 2rem;
@@ -140,16 +140,16 @@
 .dark {
   /* Purple-tinted dark mode — more pop, purple undertone through layers */
   /* HSL format for shadcn/Tailwind compatibility */
-  --background: 260 28% 8%;              /* matches --bg-base #110e1a */
+  --background: 260 24% 10%;             /* matches --bg-base #16131f */
   --foreground: 245 10% 95%;             /* bright, almost white */
   --muted: 245 20% 16%;                  /* purple-tinted muted backgrounds */
   --muted-foreground: 245 8% 55%;        /* muted text */
 
   /* Layered surfaces - purple undertone, clear separation */
-  --surface-0: #110e1a;                  /* = bg-base */
-  --surface-1: #1a1827;                  /* = bg-surface */
-  --surface-2: #252335;                  /* = bg-elevated */
-  --surface-3: #2e2e42;                  /* extra step for deep nesting */
+  --surface-0: #16131f;                  /* = bg-base */
+  --surface-1: #1f1c2a;                  /* = bg-surface */
+  --surface-2: #2a2738;                  /* = bg-elevated */
+  --surface-3: #332f45;                  /* extra step for deep nesting */
 
   /* Borders — purple accent on interaction */
   --border: 252 18% 24%;                 /* subtle purple-gray border for Tailwind */
@@ -197,7 +197,7 @@
   --card-foreground: 245 10% 95%;        /* bright text */
   --popover: 245 20% 15%;               /* ~bg-elevated */
   --popover-foreground: 245 10% 95%;     /* bright text */
-  --sidebar: 260 28% 8%;                 /* ~bg-base */
+  --sidebar: 260 24% 10%;                /* ~bg-base */
   --sidebar-foreground: 252 10% 92%;     /* light text */
   --sidebar-primary: oklch(0.60 0.25 280);
   --sidebar-primary-foreground: oklch(0.98 0.002 280);
@@ -633,11 +633,12 @@
   .pelican-card {
     position: relative;
     background: var(--bg-surface);
-    border: 1px solid var(--border-subtle);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: var(--radius-card);
     box-shadow: var(--shadow-card);
     padding: var(--space-card);
-    transition: all 0.2s ease-out;
+    overflow: hidden;
+    transition: border-color 200ms ease, box-shadow 200ms ease, transform 200ms ease;
   }
 
   .pelican-card::before {
@@ -648,19 +649,20 @@
     height: 1px;
     background: linear-gradient(90deg,
       transparent 0%,
-      rgba(255, 255, 255, 0.06) 20%,
-      rgba(255, 255, 255, 0.09) 50%,
-      rgba(255, 255, 255, 0.06) 80%,
+      rgba(255, 255, 255, 0.12) 20%,
+      rgba(255, 255, 255, 0.18) 50%,
+      rgba(255, 255, 255, 0.12) 80%,
       transparent 100%
     );
     border-radius: var(--radius-card) var(--radius-card) 0 0;
     pointer-events: none;
+    z-index: 1;
   }
 
   .pelican-card:hover {
+    border-color: rgba(139, 92, 246, 0.25);
     box-shadow: var(--shadow-card-hover);
-    border-color: var(--border-hover);
-    transform: translateY(-2px);
+    transform: translateY(-1px);
   }
 
   /* Interactive card (clickable) */
