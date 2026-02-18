@@ -3,6 +3,8 @@
 import { Trade } from "@/hooks/use-trades"
 import { X } from "@phosphor-icons/react"
 import { PelicanCard, PelicanButton, DataCell } from "@/components/ui/pelican"
+import { TradeGradeCard } from "@/components/grading/trade-grade-card"
+import type { TradeGrade } from "@/lib/grading/trade-grader"
 
 interface TradeDetailPanelProps {
   trade: Trade
@@ -94,6 +96,11 @@ export function TradeDetailPanel({ trade, onClose, onCloseTrade }: TradeDetailPa
               )}
             </div>
           </PelicanCard>
+        )}
+
+        {/* AI Grade */}
+        {trade.status === 'closed' && trade.ai_grade && (trade.ai_grade as Record<string, unknown>).overall_score != null && (
+          <TradeGradeCard grade={trade.ai_grade as unknown as TradeGrade} />
         )}
 
         {/* Entry Details */}

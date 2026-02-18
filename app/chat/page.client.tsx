@@ -34,6 +34,9 @@ import { useTrades } from "@/hooks/use-trades"
 import { useWatchlist } from "@/hooks/use-watchlist"
 import { useSavedInsights } from "@/hooks/use-saved-insights"
 import { OnboardingSkipBanner } from "@/components/onboarding/skip-banner"
+import { useTiltDetection } from "@/hooks/use-tilt-detection"
+import { TiltAlertBanner } from "@/components/tilt/tilt-alert-banner"
+import { TiltIndicator } from "@/components/tilt/tilt-indicator"
 import type { ActionTrade } from "@/types/action-buttons"
 
 const SettingsModal = dynamic(() => import("@/components/settings-modal").then(m => ({ default: m.SettingsModal })))
@@ -132,6 +135,9 @@ export default function ChatPage() {
   const [mounted, setMounted] = useState(false)
   const [tradingPanelCollapsed, setTradingPanelCollapsed] = useState(false)
   const [sidebarWidth, setSidebarWidth] = useState(280)
+
+  // Tilt detection
+  const { alerts: tiltAlerts, isOnTilt } = useTiltDetection()
 
   // Action buttons — shared state
   const { trades: allTradesRaw, closeTrade: closeTradeAction, logTrade: logTradeAction } = useTrades()
@@ -701,6 +707,7 @@ export default function ChatPage() {
             <span className="font-semibold text-foreground">Pelican AI</span>
           </div>
           <div className="flex items-center gap-1 sm:gap-2">
+            <TiltIndicator isOnTilt={isOnTilt} alertCount={tiltAlerts.length} />
             <ChatCreditCounter />
             <LearningModeToggle />
             <ThemeToggle />
@@ -712,6 +719,11 @@ export default function ChatPage() {
           <div className="flex-1 overflow-y-auto overscroll-none pb-[120px] md:pb-0 chat-scroll-area">
             <div className="max-w-5xl mx-auto w-full px-4 sm:px-6">
               <OnboardingSkipBanner />
+              {tiltAlerts.length > 0 && (
+                <div className="mb-4">
+                  <TiltAlertBanner alerts={tiltAlerts} />
+                </div>
+              )}
               <ChatContainer
                 messages={messages}
                 isLoading={chatLoading}

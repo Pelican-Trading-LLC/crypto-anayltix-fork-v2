@@ -23,6 +23,9 @@ import {
   generateRiskInsights,
 } from '@/lib/positions/dashboard-utils'
 import { useState, useEffect, useCallback, useRef } from 'react'
+import { useTiltDetection } from '@/hooks/use-tilt-detection'
+import { TiltAlertBanner } from '@/components/tilt/tilt-alert-banner'
+import { GradeOverview } from '@/components/grading/grade-overview'
 
 const STORAGE_KEY = 'pelican-starting-balance'
 
@@ -98,6 +101,8 @@ export function PositionsDashboardTab({
     [openTrades],
   )
 
+  const { alerts: tiltAlerts } = useTiltDetection()
+
   const drawdownData = useMemo(
     () => calculateDrawdown(equityCurve, startingBalance),
     [equityCurve, startingBalance],
@@ -152,6 +157,18 @@ export function PositionsDashboardTab({
       animate="visible"
       className="space-y-4"
     >
+      {/* Tilt Alerts */}
+      {tiltAlerts.length > 0 && (
+        <motion.div variants={staggerItem}>
+          <TiltAlertBanner alerts={tiltAlerts} />
+        </motion.div>
+      )}
+
+      {/* Grade Overview */}
+      <motion.div variants={staggerItem}>
+        <GradeOverview trades={trades} />
+      </motion.div>
+
       {/* Row 1: Quick Stats */}
       <motion.div variants={staggerItem}>
         <StatsRow stats={quickStats} />

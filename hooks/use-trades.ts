@@ -166,6 +166,20 @@ export function useTrades({
 
     // Revalidate trades
     mutate()
+
+    // Fire and forget — auto-grade the closed trade
+    fetch('/api/grade-trade', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ trade_id: tradeId }),
+    })
+      .then(() => {
+        // Re-fetch to pick up the grade
+        setTimeout(() => mutate(), 1500)
+      })
+      .catch(() => {
+        // Grading is non-blocking
+      })
   }
 
   const updateTrade = async (tradeId: string, updates: Partial<Trade>): Promise<void> => {

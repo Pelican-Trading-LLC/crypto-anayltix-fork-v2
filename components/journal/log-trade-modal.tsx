@@ -9,6 +9,8 @@ import { checkTradeAgainstPlan } from "@/lib/trading/plan-check"
 import { PelicanButton } from "@/components/ui/pelican"
 import { Warning, Shield, Check } from "@phosphor-icons/react"
 import type { PlanViolation } from "@/types/trading"
+import { useRiskBudget } from "@/hooks/use-risk-budget"
+import { BudgetWarningBanner } from "@/components/risk-budget/budget-warning-banner"
 
 interface LogTradeModalProps {
   open: boolean
@@ -479,6 +481,9 @@ export function LogTradeModal({ open, onOpenChange, onSubmit, initialTicker = ""
             </label>
           </div>
 
+          {/* Risk Budget Warning */}
+          <RiskBudgetWarning />
+
           {/* Plan Violations & Checklist */}
           <PlanCheckSection
             plan={plan}
@@ -647,4 +652,12 @@ function PlanCheckSection({
       )}
     </>
   )
+}
+
+// ── Risk Budget Warning (inline sub-component) ──
+
+function RiskBudgetWarning() {
+  const { budget } = useRiskBudget()
+  if (!budget || budget.overallStatus === 'green') return null
+  return <BudgetWarningBanner budget={budget} />
 }

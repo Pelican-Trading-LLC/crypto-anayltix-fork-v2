@@ -7,6 +7,7 @@ import { motion } from "framer-motion"
 import { useLiveQuotes, type Quote } from "@/hooks/use-live-quotes"
 import { LogoImg } from "@/components/ui/logo-img"
 import { PelicanCard, PelicanButton, staggerContainer, staggerItem } from "@/components/ui/pelican"
+import { GradeBadge } from "@/components/grading/trade-grade-card"
 
 interface TradesTableProps {
   trades: Trade[]
@@ -178,6 +179,9 @@ export function TradesTable({ trades, onSelectTrade, selectedTradeId, onScanTrad
             <th className="pb-3 px-4">
               <span className={thClass}>Status</span>
             </th>
+            <th className="pb-3 px-4 text-center">
+              <span className={thClass}>Grade</span>
+            </th>
             <th className="pb-3 px-4 text-right">
               <span className={thClass}>Actions</span>
             </th>
@@ -289,6 +293,13 @@ export function TradesTable({ trades, onSelectTrade, selectedTradeId, onScanTrad
                     {trade.status}
                   </span>
                 </td>
+                <td className="py-3 px-4 text-center">
+                  {trade.ai_grade && (trade.ai_grade as Record<string, unknown>).overall_grade ? (
+                    <GradeBadge grade={String((trade.ai_grade as Record<string, unknown>).overall_grade)} />
+                  ) : (
+                    <span className="text-[var(--text-disabled)]">—</span>
+                  )}
+                </td>
                 <td className="py-3 px-4 text-right">
                   {onScanTrade && (
                     <PelicanButton
@@ -396,6 +407,9 @@ export function TradesTable({ trades, onSelectTrade, selectedTradeId, onScanTrad
                 <div className="flex items-center justify-between">
                   <div className="text-xs font-mono tabular-nums text-[var(--text-muted)]">{new Date(trade.entry_date).toLocaleDateString()}</div>
                   <div className="flex items-center gap-2">
+                    {trade.ai_grade && String((trade.ai_grade as Record<string, unknown>).overall_grade || '') !== '' && (
+                      <GradeBadge grade={String((trade.ai_grade as Record<string, unknown>).overall_grade)} />
+                    )}
                     <span
                       className={`inline-flex items-center gap-1.5 text-[10px] px-2 py-1 rounded-full font-medium uppercase ${
                         trade.status === 'open'
