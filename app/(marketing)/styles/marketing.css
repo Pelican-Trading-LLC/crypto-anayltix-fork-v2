@@ -3,9 +3,9 @@
 
 /* Marketing-specific CSS variables - scoped to .marketing-page */
 .marketing-page {
-  --bg-primary: #080C14;
-  --bg-secondary: #0D1320;
-  --bg-tertiary: #121A2C;
+  --bg-primary: #070B14;
+  --bg-secondary: #0B1220;
+  --bg-tertiary: #111C2D;
   --accent-indigo: #3B82F6;
   --accent-indigo-dim: rgba(59, 130, 246, 0.15);
   --accent-cyan: #60A5FA;

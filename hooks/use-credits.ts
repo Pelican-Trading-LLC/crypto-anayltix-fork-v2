@@ -126,11 +126,13 @@ export function useCredits(): UseCreditsReturn {
   }, [supabase, fetchCredits])
 
   useEffect(() => {
+    let channel: ReturnType<typeof supabase.channel> | null = null
+
     const setupSubscription = async () => {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
 
-      const channel = supabase
+      channel = supabase
         .channel('user_credits_changes')
         .on(
           'postgres_changes',
@@ -153,13 +155,15 @@ export function useCredits(): UseCreditsReturn {
           }
         )
         .subscribe()
-
-      return () => {
-        supabase.removeChannel(channel)
-      }
     }
 
     setupSubscription()
+
+    return () => {
+      if (channel) {
+        supabase.removeChannel(channel)
+      }
+    }
   }, [supabase])
 
   return { 

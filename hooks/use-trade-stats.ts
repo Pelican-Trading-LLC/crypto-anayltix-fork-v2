@@ -78,7 +78,7 @@ export function useTradeStats({
     },
     {
       revalidateOnFocus: false,
-      dedupingInterval: 10000,
+      dedupingInterval: 30000,
     }
   )
 
@@ -95,7 +95,7 @@ export function useTradeStats({
     },
     {
       revalidateOnFocus: false,
-      dedupingInterval: 10000,
+      dedupingInterval: 30000,
     }
   )
 
@@ -112,7 +112,7 @@ export function useTradeStats({
     },
     {
       revalidateOnFocus: false,
-      dedupingInterval: 10000,
+      dedupingInterval: 30000,
     }
   )
 
@@ -129,7 +129,7 @@ export function useTradeStats({
     },
     {
       revalidateOnFocus: false,
-      dedupingInterval: 10000,
+      dedupingInterval: 30000,
     }
   )
 

@@ -172,26 +172,26 @@
 .dark {
   /* Navy institutional dark mode — blue undertone through layers */
   /* HSL format for shadcn/Tailwind compatibility */
-  --background: 220 30% 5%;              /* matches --bg-base #080C14 */
+  --background: 220 30% 5%;              /* matches --bg-base #070B14 */
   --foreground: 214 20% 92%;             /* bright, almost white */
   --muted: 220 25% 10%;                  /* navy-tinted muted backgrounds */
   --muted-foreground: 215 16% 47%;       /* muted text */
 
   /* Layered surfaces - navy undertone, clear separation */
-  --surface-0: #080C14;                  /* = bg-base */
-  --surface-1: #0D1320;                  /* = bg-surface */
-  --surface-2: #121A2C;                  /* = bg-elevated */
-  --surface-3: #182236;                  /* extra step for deep nesting */
+  --surface-0: #070B14;                  /* = bg-base */
+  --surface-1: #0B1220;                  /* = bg-surface */
+  --surface-2: #111C2D;                  /* = bg-elevated */
+  --surface-3: #162438;                  /* extra step for deep nesting */
 
   /* ===== PELICAN DESIGN SYSTEM V3 TOKENS — DARK MODE ===== */
 
   /* Backgrounds — deep navy DNA */
-  --bg-base: #080C14;
-  --bg-surface: #0D1320;
-  --bg-elevated: #121A2C;
+  --bg-base: #070B14;
+  --bg-surface: #0B1220;
+  --bg-elevated: #111C2D;
   --bg-overlay: rgba(4, 6, 12, 0.75);
   --bg-sidebar: #0A0F1A;
-  --bg-input: #121A2C;
+  --bg-input: #111C2D;
 
   /* Interaction surfaces */
   --surface-hover: rgba(255, 255, 255, 0.05);

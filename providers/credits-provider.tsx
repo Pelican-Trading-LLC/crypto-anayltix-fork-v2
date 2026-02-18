@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, ReactNode } from 'react'
+import { createContext, useContext, useCallback, useMemo, ReactNode } from 'react'
 import { useCredits } from '@/hooks/use-credits'
 
 interface CreditInfo {
@@ -30,37 +30,37 @@ const CreditsContext = createContext<CreditsContextType | null>(null)
 export function CreditsProvider({ children }: { children: ReactNode }) {
   const { credits, loading, error, refetch, updateBalance } = useCredits()
 
-  const canAfford = (cost: number): boolean => {
+  const canAfford = useCallback((cost: number): boolean => {
     if (!credits) return false
     return credits.balance >= cost
-  }
+  }, [credits])
 
-  const isSubscribed = credits !== null && 
-    credits.plan !== 'none' && 
+  const isSubscribed = credits !== null &&
+    credits.plan !== 'none' &&
     credits.plan !== 'canceled' &&
     credits.plan !== 'past_due'
-  
+
   const isFounder = credits !== null && credits.plan === 'founder'
   const isTrial = credits !== null &&
     !isSubscribed &&
     credits.freeQuestionsRemaining > 0
   const hasAccess = isSubscribed || isFounder || isTrial
 
+  const value = useMemo(() => ({
+    credits,
+    loading,
+    error,
+    refetch,
+    updateBalance,
+    canAfford,
+    isSubscribed,
+    isFounder,
+    isTrial,
+    hasAccess,
+  }), [credits, loading, error, refetch, updateBalance, canAfford, isSubscribed, isFounder, isTrial, hasAccess])
+
   return (
-    <CreditsContext.Provider
-      value={{
-        credits,
-        loading,
-        error,
-        refetch,
-        updateBalance,
-        canAfford,
-        isSubscribed,
-        isFounder,
-        isTrial,
-        hasAccess
-      }}
-    >
+    <CreditsContext.Provider value={value}>
       {children}
     </CreditsContext.Provider>
   )

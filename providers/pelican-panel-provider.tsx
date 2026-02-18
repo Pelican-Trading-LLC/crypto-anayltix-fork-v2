@@ -1,6 +1,6 @@
 "use client"
 
-import React, { createContext, useContext, ReactNode } from 'react'
+import React, { createContext, useContext, useMemo, ReactNode } from 'react'
 import { usePelicanPanel, type PelicanPanelContext } from '@/hooks/use-pelican-panel'
 
 // =============================================================================
@@ -50,7 +50,7 @@ export function PelicanPanelProvider({
     onError,
   })
 
-  const value: PelicanPanelContextValue = {
+  const value: PelicanPanelContextValue = useMemo(() => ({
     isOpen: panel.state.isOpen,
     conversationId: panel.state.conversationId,
     messages: panel.state.messages,
@@ -62,7 +62,19 @@ export function PelicanPanelProvider({
     close: panel.close,
     clearMessages: panel.clearMessages,
     regenerateLastMessage: panel.regenerateLastMessage,
-  }
+  }), [
+    panel.state.isOpen,
+    panel.state.conversationId,
+    panel.state.messages,
+    panel.state.isStreaming,
+    panel.state.ticker,
+    panel.state.context,
+    panel.openWithPrompt,
+    panel.sendMessage,
+    panel.close,
+    panel.clearMessages,
+    panel.regenerateLastMessage,
+  ])
 
   return (
     <PelicanPanelContext.Provider value={value}>

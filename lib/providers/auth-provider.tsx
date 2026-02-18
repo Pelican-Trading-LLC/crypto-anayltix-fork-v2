@@ -141,7 +141,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // onAuthStateChange fires INITIAL_SESSION on setup, providing the user
     // without a separate getUser() call — single network request instead of two
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      setUser(session?.user ?? null)
+      // Only update user state if the user ID actually changed
+      // This prevents cascading re-renders from TOKEN_REFRESHED events
+      // which provide a new User object with the same ID
+      setUser(prev => {
+        const newUser = session?.user ?? null
+        if (prev?.id === newUser?.id) return prev
+        return newUser
+      })
       setLoading(false)
 
       // Migrate guest conversations when user logs in
@@ -156,9 +163,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // --------------------------------------------------------------------------
   // Sign Out
   // --------------------------------------------------------------------------
-  const signOut = async () => {
+  const signOut = useCallback(async () => {
     await supabase.auth.signOut()
-    
+
     // Clear guest mode if set
     if (typeof window !== "undefined") {
       localStorage.removeItem(GUEST_MODE_KEY)
@@ -170,10 +177,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
       })
     }
-  }
+  }, [supabase.auth])
+
+  const authValue = useMemo(() => ({ user, loading, signOut }), [user, loading, signOut])
 
   return (
-    <AuthContext.Provider value={{ user, loading, signOut }}>
+    <AuthContext.Provider value={authValue}>
       {children}
     </AuthContext.Provider>
   )
