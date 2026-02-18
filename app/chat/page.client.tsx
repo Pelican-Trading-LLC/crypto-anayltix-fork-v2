@@ -722,7 +722,7 @@ export default function ChatPage() {
             "z-40"
           )}>
             <div className="h-6 bg-gradient-to-t from-[var(--bg-base)] to-transparent pointer-events-none" />
-            <div className="bg-[var(--bg-base)] px-4 sm:px-6 pb-4">
+            <div className="px-4 sm:px-6 pb-4">
             <div className="max-w-5xl mx-auto w-full relative">
               {outOfCredits && (
                 <div className="absolute inset-0 z-10 flex items-center justify-center px-4 sm:px-6 py-3">
