@@ -130,6 +130,7 @@ export default function ChatPage() {
   const [showOfflineBanner, setShowOfflineBanner] = useState(false)
   const [mounted, setMounted] = useState(false)
   const [tradingPanelCollapsed, setTradingPanelCollapsed] = useState(false)
+  const [sidebarWidth, setSidebarWidth] = useState(280)
 
   // Action buttons — shared state
   const { trades: allTradesRaw, closeTrade: closeTradeAction, logTrade: logTradeAction } = useTrades()
@@ -183,6 +184,12 @@ export default function ChatPage() {
     setSidebarCollapsed(newCollapsed)
     localStorage.setItem('pelican_sidebar_collapsed', newCollapsed.toString())
   }
+
+  // Handle sidebar width change with persistence
+  const handleSidebarWidthChange = useCallback((newWidth: number) => {
+    setSidebarWidth(newWidth)
+    localStorage.setItem('pelican_sidebar_width', String(newWidth))
+  }, [])
 
   // Handle trading panel toggle with persistence
   const handleTradingPanelToggle = () => {
@@ -251,6 +258,12 @@ export default function ChatPage() {
     if (savedWidth) {
       const n = parseInt(savedWidth, 10)
       if (!isNaN(n) && n >= PANEL_MIN && n <= PANEL_MAX) setPanelWidth(n)
+    }
+
+    const savedSidebarWidth = localStorage.getItem('pelican_sidebar_width')
+    if (savedSidebarWidth) {
+      const sw = parseInt(savedSidebarWidth, 10)
+      if (!isNaN(sw) && sw >= 220 && sw <= 480) setSidebarWidth(sw)
     }
 
     // Monitor online/offline status
@@ -612,6 +625,8 @@ export default function ChatPage() {
             onNewConversation={handleNewConversation}
             isCollapsed={sidebarCollapsed}
             onToggleCollapse={handleSidebarToggle}
+            width={sidebarWidth}
+            onWidthChange={handleSidebarWidthChange}
           />
         )}
       </div>

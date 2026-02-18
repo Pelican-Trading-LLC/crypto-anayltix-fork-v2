@@ -174,7 +174,7 @@ export default function CorrelationsPageClient() {
           <>
             <div className="grid grid-cols-1 xl:grid-cols-4 gap-4">
               <div className="xl:col-span-3">
-                <div className="pelican-card overflow-x-auto">
+                <div className="pelican-card overflow-auto">
                   <CorrelationMatrix
                     assets={data.assets}
                     correlations={data.correlations}

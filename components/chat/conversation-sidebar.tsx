@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useMemo, useEffect, useCallback } from "react"
+import React, { useState, useMemo, useEffect, useCallback, useRef } from "react"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import {
@@ -29,12 +29,14 @@ import {
   BookmarkSimple,
   CaretDown,
   CaretUp,
+  ArrowLeft,
 } from "@phosphor-icons/react"
 import { useTheme } from "next-themes"
 import { cn } from "@/lib/utils"
 import { useConversations } from "@/hooks/use-conversations"
 import { useSavedInsights } from "@/hooks/use-saved-insights"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { useT } from "@/lib/providers/translation-provider"
 import { useAuth } from "@/lib/providers/auth-provider"
 import { createClient } from "@/lib/supabase/client"
@@ -57,6 +59,8 @@ interface ConversationSidebarProps {
   isMobileSheet?: boolean
   isNavigating?: boolean
   navigatingToId?: string
+  width?: number
+  onWidthChange?: (width: number) => void
 }
 
 interface ConversationItemProps {
@@ -212,8 +216,11 @@ export function ConversationSidebar({
   isMobileSheet = false,
   isNavigating = false,
   navigatingToId,
+  width,
+  onWidthChange,
 }: ConversationSidebarProps) {
   const t = useT()
+  const router = useRouter()
   const { signOut } = useAuth()
   const [searchQuery, setSearchQuery] = useState("")
   const [searchExpanded, setSearchExpanded] = useState(false)
@@ -222,8 +229,56 @@ export function ConversationSidebar({
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [showSignOutDialog, setShowSignOutDialog] = useState(false)
   const [isAdmin, setIsAdmin] = useState(false)
-  const [insightsExpanded, setInsightsExpanded] = useState(false)
+  const [sidebarView, setSidebarView] = useState<'conversations' | 'insights'>('conversations')
   const { items: savedInsights, deleteInsight } = useSavedInsights()
+
+  // Drag-to-resize
+  const MIN_WIDTH = 220
+  const MAX_WIDTH = 480
+  const DEFAULT_WIDTH = 280
+  const [isDragging, setIsDragging] = useState(false)
+
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    if (!onWidthChange) return
+    e.preventDefault()
+    setIsDragging(true)
+
+    const startX = e.clientX
+    const startWidth = width ?? DEFAULT_WIDTH
+
+    const handleMouseMove = (ev: MouseEvent) => {
+      const delta = ev.clientX - startX
+      const newWidth = Math.min(MAX_WIDTH, Math.max(MIN_WIDTH, startWidth + delta))
+      onWidthChange(newWidth)
+    }
+
+    const handleMouseUp = () => {
+      setIsDragging(false)
+      document.removeEventListener('mousemove', handleMouseMove)
+      document.removeEventListener('mouseup', handleMouseUp)
+    }
+
+    document.addEventListener('mousemove', handleMouseMove)
+    document.addEventListener('mouseup', handleMouseUp)
+  }, [width, onWidthChange])
+
+  const handleDoubleClick = useCallback(() => {
+    onWidthChange?.(DEFAULT_WIDTH)
+  }, [onWidthChange])
+
+  useEffect(() => {
+    if (isDragging) {
+      document.body.style.cursor = 'col-resize'
+      document.body.style.userSelect = 'none'
+    } else {
+      document.body.style.cursor = ''
+      document.body.style.userSelect = ''
+    }
+    return () => {
+      document.body.style.cursor = ''
+      document.body.style.userSelect = ''
+    }
+  }, [isDragging])
 
   useEffect(() => {
     const supabase = createClient()
@@ -332,11 +387,29 @@ export function ConversationSidebar({
     <div
       className={cn(
         "relative z-20",
-        isMobileSheet ? "w-full h-full" : "w-[280px] h-screen border-r border-[var(--border-subtle)]",
+        isMobileSheet ? "w-full h-full" : "h-full border-r border-[var(--border-subtle)]",
         "flex flex-col bg-sidebar",
         className,
       )}
+      style={!isMobileSheet ? { width: width ?? DEFAULT_WIDTH } : undefined}
     >
+      {/* Drag handle for resize */}
+      {!isMobileSheet && onWidthChange && (
+        <div
+          onMouseDown={handleMouseDown}
+          onDoubleClick={handleDoubleClick}
+          className="absolute top-0 right-0 w-1 h-full cursor-col-resize group z-30"
+        >
+          <div
+            className={cn(
+              "w-full h-full transition-colors",
+              isDragging
+                ? "bg-[var(--accent-indigo)]"
+                : "bg-transparent group-hover:bg-[var(--border-default)]"
+            )}
+          />
+        </div>
+      )}
       {/* Header */}
       <div className="p-3 space-y-2 border-b border-sidebar-border/30">
         {/* New Chat + Search + Collapse Row */}
@@ -383,245 +456,318 @@ export function ConversationSidebar({
         )}
       </div>
 
-      {/* Saved Insights */}
+      {/* Saved Insights toggle */}
       {savedInsights.length > 0 && (
         <div className="border-b border-sidebar-border/30">
           <button
-            onClick={() => setInsightsExpanded(!insightsExpanded)}
+            onClick={() => setSidebarView(sidebarView === 'insights' ? 'conversations' : 'insights')}
             className="flex items-center justify-between w-full px-4 py-2 text-[10px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider hover:bg-[var(--surface-hover)] transition-colors"
           >
             <span className="flex items-center gap-1.5">
-              <BookmarkSimple size={12} weight="bold" />
-              Saved Insights ({savedInsights.length})
+              <BookmarkSimple size={12} weight={sidebarView === 'insights' ? 'fill' : 'bold'} />
+              Saved Insights
+              <span
+                className="px-1.5 py-0.5 rounded-full text-[10px]"
+                style={{
+                  background: 'rgba(139,92,246,0.1)',
+                  color: 'var(--accent-indigo, #8b5cf6)',
+                }}
+              >
+                {savedInsights.length}
+              </span>
             </span>
-            {insightsExpanded ? <CaretUp size={10} /> : <CaretDown size={10} />}
+            <CaretDown
+              size={10}
+              style={{
+                transform: sidebarView === 'insights' ? 'rotate(180deg)' : 'rotate(0)',
+                transition: 'transform 150ms ease',
+                color: 'var(--text-muted)',
+              }}
+            />
           </button>
-          {insightsExpanded && (
-            <div className="px-2 pb-2 space-y-1 max-h-[200px] overflow-y-auto">
-              {savedInsights.slice(0, 10).map(insight => (
-                <div
-                  key={insight.id}
-                  className="group flex items-start gap-2 px-2 py-1.5 rounded-md hover:bg-[var(--surface-hover)] transition-colors"
-                >
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs text-[var(--text-primary)] line-clamp-2 leading-snug">
-                      {insight.content.slice(0, 120)}{insight.content.length > 120 ? '…' : ''}
-                    </p>
-                    {insight.tickers.length > 0 && (
-                      <div className="flex gap-1 mt-0.5">
-                        {insight.tickers.slice(0, 3).map(t => (
-                          <span key={t} className="text-[10px] font-mono text-[var(--accent-indigo)]">
-                            ${t}
+        </div>
+      )}
+
+      {/* Main content area — conversations or saved insights */}
+      <ScrollArea className="flex-1 min-h-0">
+        {sidebarView === 'conversations' ? (
+          <div className="py-2">
+            {loading ? (
+              <div className="space-y-1 px-2 py-3">
+                {[...Array(5)].map((_, i) => (
+                  <div key={i} className="flex items-center gap-2 px-3 py-2.5 rounded-lg">
+                    <div className="flex-1 space-y-1.5">
+                      <div className="h-3.5 rounded shimmer" style={{ width: `${65 + (i * 7) % 30}%` }} />
+                      <div className="h-2.5 rounded shimmer" style={{ width: `${40 + (i * 11) % 35}%`, animationDelay: `${i * 150}ms` }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : filteredConversations.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-8 px-6 text-center">
+                <ChatCircle size={32} weight="regular" className="mb-2 text-muted-foreground/20" />
+                <p className="text-xs font-medium text-muted-foreground/60">
+                  {t.chat.emptyConversations}
+                </p>
+                <p className="text-xs mt-1 text-muted-foreground/40">
+                  Click &quot;{t.common.newChat}&quot; to start
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {/* Today */}
+                {groupedConversations.today.length > 0 && (
+                  <div>
+                    <h4 className="px-4 py-2 text-[10px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
+                      Today
+                    </h4>
+                    <div className="space-y-1">
+                      {groupedConversations.today.map((conv) => (
+                        <ConversationItem
+                          key={conv.id}
+                          conversation={conv}
+                          isActive={currentConversationId === conv.id}
+                          isEditing={editingId === conv.id}
+                          isNavigatingToThis={isNavigating && navigatingToId === conv.id}
+                          editTitle={editTitle}
+                          onSelect={handleSelect}
+                          onStartEdit={handleStartEdit}
+                          onCancelEdit={handleCancelEdit}
+                          onConfirmEdit={handleRenameConversation}
+                          onEditTitleChange={handleEditTitleChange}
+                          onDelete={handleDelete}
+                          newChatLabel={t.common.newChat}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Yesterday */}
+                {groupedConversations.yesterday.length > 0 && (
+                  <div>
+                    <h4 className="px-4 py-2 text-[10px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
+                      Yesterday
+                    </h4>
+                    <div className="space-y-1">
+                      {groupedConversations.yesterday.map((conv) => (
+                        <ConversationItem
+                          key={conv.id}
+                          conversation={conv}
+                          isActive={currentConversationId === conv.id}
+                          isEditing={editingId === conv.id}
+                          isNavigatingToThis={isNavigating && navigatingToId === conv.id}
+                          editTitle={editTitle}
+                          onSelect={handleSelect}
+                          onStartEdit={handleStartEdit}
+                          onCancelEdit={handleCancelEdit}
+                          onConfirmEdit={handleRenameConversation}
+                          onEditTitleChange={handleEditTitleChange}
+                          onDelete={handleDelete}
+                          newChatLabel={t.common.newChat}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Previous 7 Days */}
+                {groupedConversations.previous7Days.length > 0 && (
+                  <div>
+                    <h4 className="px-4 py-2 text-[10px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
+                      Previous 7 Days
+                    </h4>
+                    <div className="space-y-1">
+                      {groupedConversations.previous7Days.map((conv) => (
+                        <ConversationItem
+                          key={conv.id}
+                          conversation={conv}
+                          isActive={currentConversationId === conv.id}
+                          isEditing={editingId === conv.id}
+                          isNavigatingToThis={isNavigating && navigatingToId === conv.id}
+                          editTitle={editTitle}
+                          onSelect={handleSelect}
+                          onStartEdit={handleStartEdit}
+                          onCancelEdit={handleCancelEdit}
+                          onConfirmEdit={handleRenameConversation}
+                          onEditTitleChange={handleEditTitleChange}
+                          onDelete={handleDelete}
+                          newChatLabel={t.common.newChat}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Previous 30 Days */}
+                {groupedConversations.previous30Days.length > 0 && (
+                  <div>
+                    <h4 className="px-4 py-2 text-[10px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
+                      Previous 30 Days
+                    </h4>
+                    <div className="space-y-1">
+                      {groupedConversations.previous30Days.map((conv) => (
+                        <ConversationItem
+                          key={conv.id}
+                          conversation={conv}
+                          isActive={currentConversationId === conv.id}
+                          isEditing={editingId === conv.id}
+                          isNavigatingToThis={isNavigating && navigatingToId === conv.id}
+                          editTitle={editTitle}
+                          onSelect={handleSelect}
+                          onStartEdit={handleStartEdit}
+                          onCancelEdit={handleCancelEdit}
+                          onConfirmEdit={handleRenameConversation}
+                          onEditTitleChange={handleEditTitleChange}
+                          onDelete={handleDelete}
+                          newChatLabel={t.common.newChat}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Older */}
+                {groupedConversations.older.length > 0 && (
+                  <div>
+                    <h4 className="px-4 py-2 text-[10px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
+                      Older
+                    </h4>
+                    <div className="space-y-1">
+                      {groupedConversations.older.map((conv) => (
+                        <ConversationItem
+                          key={conv.id}
+                          conversation={conv}
+                          isActive={currentConversationId === conv.id}
+                          isEditing={editingId === conv.id}
+                          isNavigatingToThis={isNavigating && navigatingToId === conv.id}
+                          editTitle={editTitle}
+                          onSelect={handleSelect}
+                          onStartEdit={handleStartEdit}
+                          onCancelEdit={handleCancelEdit}
+                          onConfirmEdit={handleRenameConversation}
+                          onEditTitleChange={handleEditTitleChange}
+                          onDelete={handleDelete}
+                          newChatLabel={t.common.newChat}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Load More — centered */}
+                {hasMore && (
+                  <div className="flex justify-center py-3 px-2">
+                    <button
+                      onClick={loadMore}
+                      disabled={loadingMore}
+                      className="px-4 py-2 rounded-lg text-xs font-medium transition-colors"
+                      style={{
+                        color: 'var(--text-secondary)',
+                        background: 'var(--bg-elevated)',
+                        border: '1px solid var(--border-subtle)',
+                      }}
+                    >
+                      {loadingMore ? (
+                        <span className="flex items-center justify-center gap-2">
+                          <span className="w-3 h-3 border-2 border-[var(--text-muted)] border-t-transparent rounded-full animate-spin" />
+                          Loading...
+                        </span>
+                      ) : (
+                        'Load older conversations'
+                      )}
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        ) : (
+          /* Saved Insights view */
+          <div className="py-2 px-2">
+            {/* Back button */}
+            <button
+              onClick={() => setSidebarView('conversations')}
+              className="flex items-center gap-1 px-2 py-2 mb-2 text-xs transition-colors rounded-md hover:bg-[var(--surface-hover)]"
+              style={{ color: 'var(--text-secondary)' }}
+            >
+              <ArrowLeft size={14} />
+              Back to conversations
+            </button>
+
+            {savedInsights.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-12">
+                <BookmarkSimple size={28} style={{ color: 'var(--text-muted)' }} />
+                <p className="text-sm mt-3" style={{ color: 'var(--text-secondary)' }}>
+                  No saved insights yet
+                </p>
+                <p className="text-xs mt-1 text-center px-4" style={{ color: 'var(--text-muted)' }}>
+                  Click &quot;Save Insight&quot; on any Pelican response to save it here
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {savedInsights.map(insight => (
+                  <div
+                    key={insight.id}
+                    className="group relative rounded-lg p-3 cursor-pointer transition-colors hover:border-[var(--border-hover)]"
+                    style={{
+                      background: 'var(--bg-elevated)',
+                      border: '1px solid var(--border-subtle)',
+                    }}
+                    onClick={() => {
+                      if (insight.conversation_id) {
+                        onConversationSelect(insight.conversation_id)
+                      }
+                      setSidebarView('conversations')
+                    }}
+                  >
+                    {/* Ticker badges */}
+                    {insight.tickers?.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mb-2">
+                        {insight.tickers.map(ticker => (
+                          <span
+                            key={ticker}
+                            className="px-1.5 py-0.5 rounded text-[10px] font-mono font-medium"
+                            style={{
+                              background: 'rgba(34,197,94,0.1)',
+                              color: 'rgb(34,197,94)',
+                            }}
+                          >
+                            ${ticker}
                           </span>
                         ))}
                       </div>
                     )}
-                  </div>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      deleteInsight(insight.id)
-                    }}
-                    className="p-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity text-[var(--text-muted)] hover:text-red-400"
-                    title="Remove insight"
-                  >
-                    <Trash size={12} />
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
 
-      {/* Conversations List */}
-      <ScrollArea className="flex-1 min-h-0">
-        <div className="py-2">
-          {loading ? (
-            <div className="space-y-1 px-2 py-3">
-              {[...Array(5)].map((_, i) => (
-                <div key={i} className="flex items-center gap-2 px-3 py-2.5 rounded-lg">
-                  <div className="flex-1 space-y-1.5">
-                    <div className="h-3.5 rounded shimmer" style={{ width: `${65 + (i * 7) % 30}%` }} />
-                    <div className="h-2.5 rounded shimmer" style={{ width: `${40 + (i * 11) % 35}%`, animationDelay: `${i * 150}ms` }} />
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : filteredConversations.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-8 px-6 text-center">
-              <ChatCircle size={32} weight="regular" className="mb-2 text-muted-foreground/20" />
-              <p className="text-xs font-medium text-muted-foreground/60">
-                {t.chat.emptyConversations}
-              </p>
-              <p className="text-xs mt-1 text-muted-foreground/40">
-                Click &quot;{t.common.newChat}&quot; to start
-              </p>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {/* Today */}
-              {groupedConversations.today.length > 0 && (
-                <div>
-                  <h4 className="px-4 py-2 text-[10px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
-                    Today
-                  </h4>
-                  <div className="space-y-1">
-                    {groupedConversations.today.map((conv) => (
-                      <ConversationItem
-                        key={conv.id}
-                        conversation={conv}
-                        isActive={currentConversationId === conv.id}
-                        isEditing={editingId === conv.id}
-                        isNavigatingToThis={isNavigating && navigatingToId === conv.id}
-                        editTitle={editTitle}
-                        onSelect={handleSelect}
-                        onStartEdit={handleStartEdit}
-                        onCancelEdit={handleCancelEdit}
-                        onConfirmEdit={handleRenameConversation}
-                        onEditTitleChange={handleEditTitleChange}
-                        onDelete={handleDelete}
-                        newChatLabel={t.common.newChat}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
+                    {/* Content preview */}
+                    <p className="text-xs leading-relaxed line-clamp-4" style={{ color: 'var(--text-primary)' }}>
+                      {insight.content}
+                    </p>
 
-              {/* Yesterday */}
-              {groupedConversations.yesterday.length > 0 && (
-                <div>
-                  <h4 className="px-4 py-2 text-[10px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
-                    Yesterday
-                  </h4>
-                  <div className="space-y-1">
-                    {groupedConversations.yesterday.map((conv) => (
-                      <ConversationItem
-                        key={conv.id}
-                        conversation={conv}
-                        isActive={currentConversationId === conv.id}
-                        isEditing={editingId === conv.id}
-                        isNavigatingToThis={isNavigating && navigatingToId === conv.id}
-                        editTitle={editTitle}
-                        onSelect={handleSelect}
-                        onStartEdit={handleStartEdit}
-                        onCancelEdit={handleCancelEdit}
-                        onConfirmEdit={handleRenameConversation}
-                        onEditTitleChange={handleEditTitleChange}
-                        onDelete={handleDelete}
-                        newChatLabel={t.common.newChat}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Previous 7 Days */}
-              {groupedConversations.previous7Days.length > 0 && (
-                <div>
-                  <h4 className="px-4 py-2 text-[10px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
-                    Previous 7 Days
-                  </h4>
-                  <div className="space-y-1">
-                    {groupedConversations.previous7Days.map((conv) => (
-                      <ConversationItem
-                        key={conv.id}
-                        conversation={conv}
-                        isActive={currentConversationId === conv.id}
-                        isEditing={editingId === conv.id}
-                        isNavigatingToThis={isNavigating && navigatingToId === conv.id}
-                        editTitle={editTitle}
-                        onSelect={handleSelect}
-                        onStartEdit={handleStartEdit}
-                        onCancelEdit={handleCancelEdit}
-                        onConfirmEdit={handleRenameConversation}
-                        onEditTitleChange={handleEditTitleChange}
-                        onDelete={handleDelete}
-                        newChatLabel={t.common.newChat}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Previous 30 Days */}
-              {groupedConversations.previous30Days.length > 0 && (
-                <div>
-                  <h4 className="px-4 py-2 text-[10px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
-                    Previous 30 Days
-                  </h4>
-                  <div className="space-y-1">
-                    {groupedConversations.previous30Days.map((conv) => (
-                      <ConversationItem
-                        key={conv.id}
-                        conversation={conv}
-                        isActive={currentConversationId === conv.id}
-                        isEditing={editingId === conv.id}
-                        isNavigatingToThis={isNavigating && navigatingToId === conv.id}
-                        editTitle={editTitle}
-                        onSelect={handleSelect}
-                        onStartEdit={handleStartEdit}
-                        onCancelEdit={handleCancelEdit}
-                        onConfirmEdit={handleRenameConversation}
-                        onEditTitleChange={handleEditTitleChange}
-                        onDelete={handleDelete}
-                        newChatLabel={t.common.newChat}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Older */}
-              {groupedConversations.older.length > 0 && (
-                <div>
-                  <h4 className="px-4 py-2 text-[10px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
-                    Older
-                  </h4>
-                  <div className="space-y-1">
-                    {groupedConversations.older.map((conv) => (
-                      <ConversationItem
-                        key={conv.id}
-                        conversation={conv}
-                        isActive={currentConversationId === conv.id}
-                        isEditing={editingId === conv.id}
-                        isNavigatingToThis={isNavigating && navigatingToId === conv.id}
-                        editTitle={editTitle}
-                        onSelect={handleSelect}
-                        onStartEdit={handleStartEdit}
-                        onCancelEdit={handleCancelEdit}
-                        onConfirmEdit={handleRenameConversation}
-                        onEditTitleChange={handleEditTitleChange}
-                        onDelete={handleDelete}
-                        newChatLabel={t.common.newChat}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Load More */}
-              {hasMore && (
-                <div className="px-4 py-3">
-                  <button
-                    onClick={loadMore}
-                    disabled={loadingMore}
-                    className="w-full py-2 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-1)]/60 transition-colors rounded-md disabled:opacity-50"
-                  >
-                    {loadingMore ? (
-                      <span className="flex items-center justify-center gap-2">
-                        <span className="w-3 h-3 border-2 border-[var(--text-muted)] border-t-transparent rounded-full animate-spin" />
-                        Loading...
+                    {/* Footer: date + delete */}
+                    <div className="flex items-center justify-between mt-2">
+                      <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
+                        {getRelativeTime(insight.created_at)}
                       </span>
-                    ) : (
-                      'Load older conversations'
-                    )}
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          deleteInsight(insight.id)
+                        }}
+                        className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded hover:bg-red-500/20"
+                        style={{ color: 'var(--text-muted)' }}
+                        title="Remove"
+                      >
+                        <Trash size={12} />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </ScrollArea>
 
       {/* Footer */}
