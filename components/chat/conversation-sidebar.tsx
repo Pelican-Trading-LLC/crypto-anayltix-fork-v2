@@ -135,10 +135,10 @@ const ConversationItem = React.memo(function ConversationItem({
     >
       <div className="flex items-center justify-between gap-2">
         <div className="flex-1 min-w-0">
-          <div className="text-sm text-[var(--text-primary)] truncate font-medium">
+          <div className="text-sm text-foreground truncate font-medium">
             {conversation.title || newChatLabel}
           </div>
-          <div className="text-[10px] text-[var(--text-muted)] mt-0.5">
+          <div className="text-[10px] text-muted-foreground/60 mt-0.5">
             {getRelativeTime(conversation.updated_at)}
           </div>
         </div>
@@ -461,7 +461,7 @@ export function ConversationSidebar({
         <div className="border-b border-sidebar-border/30">
           <button
             onClick={() => setSidebarView(sidebarView === 'insights' ? 'conversations' : 'insights')}
-            className="flex items-center justify-between w-full px-4 py-2 text-[10px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider hover:bg-[var(--surface-hover)] transition-colors"
+            className="flex items-center justify-between w-full px-4 py-2 text-[10px] font-semibold text-foreground/50 uppercase tracking-wider hover:bg-[var(--surface-hover)] transition-colors"
           >
             <span className="flex items-center gap-1.5">
               <BookmarkSimple size={12} weight={sidebarView === 'insights' ? 'fill' : 'bold'} />
@@ -518,7 +518,7 @@ export function ConversationSidebar({
                 {/* Today */}
                 {groupedConversations.today.length > 0 && (
                   <div>
-                    <h4 className="px-4 py-2 text-[10px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
+                    <h4 className="px-4 py-2 text-[10px] font-semibold text-foreground/50 uppercase tracking-wider">
                       Today
                     </h4>
                     <div className="space-y-1">
@@ -546,7 +546,7 @@ export function ConversationSidebar({
                 {/* Yesterday */}
                 {groupedConversations.yesterday.length > 0 && (
                   <div>
-                    <h4 className="px-4 py-2 text-[10px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
+                    <h4 className="px-4 py-2 text-[10px] font-semibold text-foreground/50 uppercase tracking-wider">
                       Yesterday
                     </h4>
                     <div className="space-y-1">
@@ -574,7 +574,7 @@ export function ConversationSidebar({
                 {/* Previous 7 Days */}
                 {groupedConversations.previous7Days.length > 0 && (
                   <div>
-                    <h4 className="px-4 py-2 text-[10px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
+                    <h4 className="px-4 py-2 text-[10px] font-semibold text-foreground/50 uppercase tracking-wider">
                       Previous 7 Days
                     </h4>
                     <div className="space-y-1">
@@ -602,7 +602,7 @@ export function ConversationSidebar({
                 {/* Previous 30 Days */}
                 {groupedConversations.previous30Days.length > 0 && (
                   <div>
-                    <h4 className="px-4 py-2 text-[10px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
+                    <h4 className="px-4 py-2 text-[10px] font-semibold text-foreground/50 uppercase tracking-wider">
                       Previous 30 Days
                     </h4>
                     <div className="space-y-1">
@@ -630,7 +630,7 @@ export function ConversationSidebar({
                 {/* Older */}
                 {groupedConversations.older.length > 0 && (
                   <div>
-                    <h4 className="px-4 py-2 text-[10px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
+                    <h4 className="px-4 py-2 text-[10px] font-semibold text-foreground/50 uppercase tracking-wider">
                       Older
                     </h4>
                     <div className="space-y-1">

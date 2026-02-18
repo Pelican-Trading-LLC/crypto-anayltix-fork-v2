@@ -28,14 +28,14 @@ export function SuggestedPrompts({ onSelect, disabled }: SuggestedPromptsProps) 
             disabled={disabled}
             className={
               disabled
-                ? "p-3 sm:p-4 rounded-xl border border-[rgba(59,130,246,0.08)] bg-[var(--surface-1)] text-left cursor-not-allowed opacity-50"
-                : "p-3 sm:p-4 rounded-xl border border-[rgba(59,130,246,0.08)] bg-[var(--surface-1)] hover:border-[rgba(59,130,246,0.20)] hover:bg-[var(--surface-2)] hover:shadow-[var(--glow-indigo-soft)] transition-all duration-200 text-left cursor-pointer group"
+                ? "p-3 sm:p-4 rounded-xl border border-border/40 bg-card text-left cursor-not-allowed opacity-50"
+                : "p-3 sm:p-4 rounded-xl border border-border/40 bg-card hover:border-primary/40 hover:bg-card/80 shadow-sm shadow-black/10 hover:shadow-md hover:shadow-black/20 transition-all duration-200 text-left cursor-pointer group"
             }
           >
             <span className={
               disabled
-                ? "text-sm text-[var(--text-muted)] leading-snug"
-                : "text-sm text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-colors leading-snug"
+                ? "text-sm text-muted-foreground leading-snug"
+                : "text-sm text-foreground/80 group-hover:text-foreground transition-colors leading-snug"
             }>
               {prompt}
             </span>

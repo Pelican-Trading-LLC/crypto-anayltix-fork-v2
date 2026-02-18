@@ -721,7 +721,7 @@ export default function ChatPage() {
             "chat-input-fixed",
             "z-40"
           )}>
-            <div className="h-6 bg-gradient-to-t from-[var(--bg-base)] to-transparent pointer-events-none" />
+            <div className="h-12 bg-gradient-to-t from-background to-transparent pointer-events-none" />
             <div className="px-4 sm:px-6 pb-4">
             <div className="max-w-5xl mx-auto w-full relative">
               {outOfCredits && (
