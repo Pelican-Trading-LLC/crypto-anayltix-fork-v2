@@ -142,10 +142,10 @@ export default function HeroChatDemo() {
       </div>
 
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 16px', borderBottom: divider, background: '#0B1220' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 16px', borderBottom: divider, background: '#0F172A' }}>
         <div style={{ position: 'relative', flexShrink: 0 }}>
           <Image src={LOGO} alt="Pelican" width={28} height={28} style={{ borderRadius: 8 }} />
-          <div style={{ position: 'absolute', bottom: -2, right: -2, width: 10, height: 10, borderRadius: '50%', background: '#22c55e', border: '2px solid #0B1220' }} />
+          <div style={{ position: 'absolute', bottom: -2, right: -2, width: 10, height: 10, borderRadius: '50%', background: '#22c55e', border: '2px solid #0F172A' }} />
         </div>
         <div>
           <div style={{ fontSize: 15, fontWeight: 600, color: '#f1f5f9', lineHeight: 1.2 }}>Pelican AI</div>

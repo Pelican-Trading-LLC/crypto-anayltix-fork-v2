@@ -177,17 +177,17 @@
   --muted: 220 25% 10%;                  /* navy-tinted muted backgrounds */
   --muted-foreground: 215 16% 47%;       /* muted text */
 
-  /* Layered surfaces - navy undertone, clear separation */
-  --surface-0: #070B14;                  /* = bg-base */
-  --surface-1: #0B1220;                  /* = bg-surface */
-  --surface-2: #111C2D;                  /* = bg-elevated */
-  --surface-3: #162438;                  /* extra step for deep nesting */
+  /* Four-tier surface depth — navy undertone, clear separation */
+  --surface-0: #070B14;                  /* page background */
+  --surface-1: #0F172A;                  /* panels, sidebars, sections */
+  --surface-2: #111C2D;                  /* content cards */
+  --surface-3: #16243A;                  /* elevated: tooltips, modals, dropdowns */
 
   /* ===== PELICAN DESIGN SYSTEM V3 TOKENS — DARK MODE ===== */
 
-  /* Backgrounds — deep navy DNA */
+  /* Backgrounds — four-tier depth system */
   --bg-base: #070B14;
-  --bg-surface: #0B1220;
+  --bg-surface: #0F172A;
   --bg-elevated: #111C2D;
   --bg-overlay: rgba(4, 6, 12, 0.75);
   --bg-sidebar: #0A0F1A;
@@ -398,6 +398,20 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     line-height: var(--leading-normal);
+  }
+
+  /* Radial intelligence glow — dark mode only, static, fixed */
+  .dark body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background: radial-gradient(
+      ellipse 80% 60% at 50% 35%,
+      rgba(59, 130, 246, 0.045),
+      transparent 70%
+    );
   }
 
   body {

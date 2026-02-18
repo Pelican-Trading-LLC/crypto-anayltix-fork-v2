@@ -137,7 +137,7 @@ export default function HelpChat({ logoUrl = '/pelican-logo-transparent.webp' }:
             maxWidth: 'calc(100vw - 48px)',
             height: '500px',
             maxHeight: 'calc(100vh - 140px)',
-            background: '#0B1220',
+            background: '#0F172A',
             border: '1px solid rgba(59, 130, 246, 0.3)',
             borderRadius: '12px',
             display: 'flex',
@@ -321,7 +321,7 @@ export default function HelpChat({ logoUrl = '/pelican-logo-transparent.webp' }:
                 style={{
                   flex: 1,
                   padding: '12px 16px',
-                  background: '#0B1220',
+                  background: '#0F172A',
                   border: '1px solid rgba(148, 163, 184, 0.2)',
                   borderRadius: '8px',
                   color: '#f1f5f9',
