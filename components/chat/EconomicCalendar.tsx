@@ -76,7 +76,7 @@ function EconomicCalendarInner({ onClose }: EconomicCalendarProps) {
             <div className="h-48 w-full mx-4 rounded-lg bg-muted/30 animate-pulse" />
           </div>
         )}
-        <div ref={containerRef} className="h-full w-full bg-[#0F172A]" />
+        <div ref={containerRef} className="h-full w-full bg-[#0B0F18]" />
       </div>
 
       {/* TradingView Attribution */}

@@ -123,7 +123,7 @@ export default function HeroChatDemo() {
   return (
     <div style={{
       position: 'relative', width: '100%', maxWidth: 560, margin: '0 auto',
-      borderRadius: 16, overflow: 'hidden', background: '#070B14',
+      borderRadius: 16, overflow: 'hidden', background: '#060910',
       border: '1px solid rgba(59,130,246,0.25)',
       boxShadow: '0 0 80px rgba(59,130,246,0.12), 0 25px 50px rgba(0,0,0,0.5)',
       fontFamily: 'var(--font-geist-sans), system-ui, -apple-system, sans-serif',
@@ -142,10 +142,10 @@ export default function HeroChatDemo() {
       </div>
 
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 16px', borderBottom: divider, background: '#0F172A' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 16px', borderBottom: divider, background: '#0B0F18' }}>
         <div style={{ position: 'relative', flexShrink: 0 }}>
           <Image src={LOGO} alt="Pelican" width={28} height={28} style={{ borderRadius: 8 }} />
-          <div style={{ position: 'absolute', bottom: -2, right: -2, width: 10, height: 10, borderRadius: '50%', background: '#22c55e', border: '2px solid #0F172A' }} />
+          <div style={{ position: 'absolute', bottom: -2, right: -2, width: 10, height: 10, borderRadius: '50%', background: '#22c55e', border: '2px solid #0B0F18' }} />
         </div>
         <div>
           <div style={{ fontSize: 15, fontWeight: 600, color: '#f1f5f9', lineHeight: 1.2 }}>Pelican AI</div>
@@ -201,7 +201,7 @@ export default function HeroChatDemo() {
             background: inputText ? '#3B82F6' : 'rgba(148,163,184,0.15)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={inputText ? '#070B14' : '#64748b'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={inputText ? '#060910' : '#64748b'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M22 2L11 13" /><path d="M22 2L15 22L11 13L2 9L22 2Z" />
             </svg>
           </div>

@@ -170,50 +170,50 @@
 
 /* Fixed dark mode selector to work properly with next-themes */
 .dark {
-  /* Navy institutional dark mode — blue undertone through layers */
+  /* High-contrast dark mode — near-black with trace blue */
   /* HSL format for shadcn/Tailwind compatibility */
-  --background: 220 30% 5%;              /* matches --bg-base #070B14 */
-  --foreground: 214 20% 92%;             /* bright, almost white */
-  --muted: 220 25% 10%;                  /* navy-tinted muted backgrounds */
-  --muted-foreground: 215 16% 47%;       /* muted text */
+  --background: 220 20% 3%;              /* matches --bg-base #060910 */
+  --foreground: 214 32% 95%;             /* bright, high contrast */
+  --muted: 220 20% 7%;                   /* near-black muted backgrounds */
+  --muted-foreground: 215 16% 50%;       /* muted text */
 
-  /* Four-tier surface depth — navy undertone, clear separation */
-  --surface-0: #070B14;                  /* page background */
-  --surface-1: #0F172A;                  /* panels, sidebars, sections */
-  --surface-2: #111C2D;                  /* content cards */
-  --surface-3: #16243A;                  /* elevated: tooltips, modals, dropdowns */
+  /* Four-tier surface depth — near-black, trace blue */
+  --surface-0: #060910;                  /* page background */
+  --surface-1: #0B0F18;                  /* panels, sidebars, sections */
+  --surface-2: #0E1219;                  /* content cards */
+  --surface-3: #141A24;                  /* elevated: tooltips, modals, dropdowns */
 
   /* ===== PELICAN DESIGN SYSTEM V3 TOKENS — DARK MODE ===== */
 
-  /* Backgrounds — four-tier depth system */
-  --bg-base: #070B14;
-  --bg-surface: #0F172A;
-  --bg-elevated: #111C2D;
-  --bg-overlay: rgba(4, 6, 12, 0.75);
-  --bg-sidebar: #0A0F1A;
-  --bg-input: #111C2D;
+  /* Backgrounds — four-tier depth, near-black */
+  --bg-base: #060910;
+  --bg-surface: #0B0F18;
+  --bg-elevated: #0E1219;
+  --bg-overlay: rgba(2, 4, 8, 0.80);
+  --bg-sidebar: #090C14;
+  --bg-input: #0E1219;
 
   /* Interaction surfaces */
-  --surface-hover: rgba(255, 255, 255, 0.05);
+  --surface-hover: rgba(255, 255, 255, 0.06);
   --surface-active: rgba(59, 130, 246, 0.12);
-  --surface-code-block: #0F1624;
+  --surface-code-block: #0B1018;
 
-  /* Borders — blue accent on interaction */
-  --border: 220 25% 18%;                 /* subtle navy border for Tailwind */
-  --border-subtle: rgba(59, 130, 246, 0.10);
-  --border-default: rgba(255, 255, 255, 0.13);
-  --border-hover: rgba(59, 130, 246, 0.25);
+  /* Borders — subtle, shadows do the heavy lifting */
+  --border: 220 20% 14%;                 /* subtle dark border for Tailwind */
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-default: rgba(255, 255, 255, 0.10);
+  --border-hover: rgba(59, 130, 246, 0.20);
   --border-active: rgba(59, 130, 246, 0.35);
-  --border-input: rgba(255, 255, 255, 0.10);
+  --border-input: rgba(255, 255, 255, 0.08);
   --ring: 217 91% 60% / 0.5;             /* blue focus ring */
 
-  /* Text colors - bright for pop */
-  --text-primary: #E2E8F0;
+  /* Text colors — high contrast against near-black */
+  --text-primary: #F1F5F9;
   --text-emphasis: #FFFFFF;
-  --text-secondary: #94A3B8;
-  --text-muted: #64748B;
-  --text-disabled: #475569;
-  --text-ghost: #4B5563;
+  --text-secondary: #B0BEC5;
+  --text-muted: #7E8FA3;
+  --text-disabled: #5A6B80;
+  --text-ghost: #4B5E73;
 
   /* Accent — blue institutional */
   --accent-primary: #3B82F6;
@@ -238,14 +238,14 @@
   --status-closed: #6b7280;
   --status-cancelled: #ef4444;
 
-  /* Shadows — visible depth + blue glow on hover */
-  --shadow-card: 0 2px 8px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.05);
-  --shadow-card-hover: 0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(59,130,246,0.15), 0 0 30px rgba(59,130,246,0.08);
-  --shadow-elevated: 0 4px 12px rgba(0,0,0,0.5), 0 20px 60px rgba(0,0,0,0.3);
-  --shadow-input: 0 1px 2px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.05);
-  --shadow-input-focus: 0 0 0 2px rgba(59, 130, 246, 0.4), 0 0 20px rgba(59, 130, 246, 0.08);
-  --shadow-sidebar: 1px 0 4px rgba(0,0,0,0.3);
-  --shadow-panel: -1px 0 4px rgba(0,0,0,0.3);
+  /* Shadows — deep depth, cards float */
+  --shadow-card: 0 1px 2px rgba(0,0,0,0.4), 0 4px 12px rgba(0,0,0,0.3);
+  --shadow-card-hover: 0 8px 32px rgba(0,0,0,0.6), 0 0 0 1px rgba(59,130,246,0.15), 0 0 30px rgba(59,130,246,0.06);
+  --shadow-elevated: 0 4px 16px rgba(0,0,0,0.5), 0 8px 32px rgba(0,0,0,0.3);
+  --shadow-input: 0 1px 2px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.04);
+  --shadow-input-focus: 0 0 0 2px rgba(59, 130, 246, 0.4), 0 0 20px rgba(59, 130, 246, 0.06);
+  --shadow-sidebar: 1px 0 6px rgba(0,0,0,0.4);
+  --shadow-panel: -1px 0 6px rgba(0,0,0,0.4);
 
   /* Glows — stronger for more pop */
   --glow-indigo-soft: 0 0 20px rgba(59, 130, 246, 0.12);
@@ -256,7 +256,7 @@
   --scrollbar-thumb-hover: rgba(255, 255, 255, 0.20);
 
   /* Gradient fades */
-  --fade-color: 8, 12, 20;
+  --fade-color: 6, 9, 16;
 
   /* Brand - Institutional Blue */
   --primary: oklch(0.60 0.20 220);
@@ -409,7 +409,7 @@
     z-index: 0;
     background: radial-gradient(
       ellipse 80% 60% at 50% 35%,
-      rgba(59, 130, 246, 0.045),
+      rgba(59, 130, 246, 0.04),
       transparent 70%
     );
   }
