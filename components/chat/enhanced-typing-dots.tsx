@@ -47,9 +47,9 @@ const THINKING_MESSAGES: Record<Category, TimedMessage[]> = {
   ],
   default: [
     { after: 0, text: "Pelican is thinking" },
-    { after: 2, text: "Analyzing your question" },
-    { after: 5, text: "Researching the answer" },
-    { after: 8, text: "Almost there" },
+    { after: 10, text: "Almost there" },
+    { after: 30, text: "Impressive question — this might take a minute" },
+    { after: 60, text: "Deep analysis in progress — hang tight" },
   ],
 }
 

@@ -1,6 +1,7 @@
 "use client"
 
 import Image from "next/image"
+import Link from "next/link"
 import { useT } from "@/lib/providers/translation-provider"
 import { SuggestedPrompts } from "./SuggestedPrompts"
 
@@ -41,6 +42,13 @@ export function WelcomeScreen({ onQuickStart, disabled }: WelcomeScreenProps) {
         </p>
 
         <SuggestedPrompts onSelect={onQuickStart} disabled={disabled} />
+
+        <Link
+          href="/guide"
+          className="text-sm text-[var(--text-secondary)] hover:text-[var(--accent-primary)] transition-colors"
+        >
+          See how to get the most from Pelican →
+        </Link>
       </div>
     </div>
   )
