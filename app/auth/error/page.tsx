@@ -30,7 +30,7 @@ export default async function AuthErrorPage({
                 <p className="text-sm text-muted-foreground">An unspecified error occurred during authentication.</p>
               )}
               <div className="flex flex-col gap-2">
-                <Button asChild className="w-full bg-gradient-to-r from-indigo-600 to-indigo-700">
+                <Button asChild className="w-full bg-gradient-to-r from-blue-600 to-blue-700">
                   <Link href="/auth/login">Try Again</Link>
                 </Button>
                 <Button variant="outline" asChild className="w-full bg-transparent">

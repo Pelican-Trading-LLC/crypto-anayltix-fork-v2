@@ -17,7 +17,7 @@ describe("SettingsSidebar", () => {
       <SettingsSidebar activeSection="trading" onSectionChange={vi.fn()} />
     )
     const tradingButton = screen.getByText("Trading Preferences").closest("button")
-    expect(tradingButton?.className).toContain("text-indigo")
+    expect(tradingButton?.className).toContain("text-blue")
   })
 
   it("calls onSectionChange when a section is clicked", () => {

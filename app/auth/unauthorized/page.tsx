@@ -25,7 +25,7 @@ export default function UnauthorizedPage() {
         </p>
         <button
           onClick={handleSignOut}
-          className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors"
+          className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
         >
           Sign Out
         </button>

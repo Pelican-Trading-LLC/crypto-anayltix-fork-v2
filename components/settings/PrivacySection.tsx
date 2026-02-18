@@ -48,13 +48,13 @@ export function PrivacySection({ user }: PrivacySectionProps) {
           <div className="space-y-2">
             <h4 className="font-medium">Legal</h4>
             <div className="space-y-1">
-              <Button variant="link" asChild className="h-auto p-0 text-indigo-600">
+              <Button variant="link" asChild className="h-auto p-0 text-blue-600">
                 <Link href="/privacy" target="_blank">
                   Privacy Policy
                 </Link>
               </Button>
               <br />
-              <Button variant="link" asChild className="h-auto p-0 text-indigo-600">
+              <Button variant="link" asChild className="h-auto p-0 text-blue-600">
                 <Link href="/terms" target="_blank">
                   Terms of Service
                 </Link>

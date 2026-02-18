@@ -59,7 +59,7 @@ function PanelMessage({ message, isStreaming = false, isAutoPrompt = false }: Pa
             </div>
             {isAutoPrompt && (
               <div className="flex justify-end mt-1.5">
-                <span className="text-[10px] text-indigo-400/60 bg-indigo-500/10 px-2 py-0.5 rounded-full">
+                <span className="text-[10px] text-blue-400/60 bg-blue-500/10 px-2 py-0.5 rounded-full">
                   Auto-prompt
                 </span>
               </div>
@@ -236,14 +236,14 @@ function PelicanChatPanelInternal({
               onKeyDown={handleKeyDown}
               placeholder="Ask Pelican anything..."
               disabled={isStreaming}
-              className="flex-1 bg-white/[0.06] border border-[var(--border-subtle)] rounded-lg px-3 py-2 text-sm leading-relaxed text-[var(--text-primary)] resize-none focus:outline-none focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 min-h-[40px] max-h-[120px]"
+              className="flex-1 bg-white/[0.06] border border-[var(--border-subtle)] rounded-lg px-3 py-2 text-sm leading-relaxed text-[var(--text-primary)] resize-none focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:opacity-50 min-h-[40px] max-h-[120px]"
               rows={1}
             />
             <Button
               onClick={handleSend}
               disabled={!inputValue.trim() || isStreaming}
               size="icon"
-              className="h-10 w-10 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
+              className="h-10 w-10 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
             >
               {isStreaming ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -318,7 +318,7 @@ function PelicanChatPanelInternal({
                   variant="ghost"
                   size="sm"
                   onClick={onRegenerate}
-                  className="text-xs text-[var(--text-muted)] hover:text-indigo-400 hover:bg-indigo-500/10"
+                  className="text-xs text-[var(--text-muted)] hover:text-blue-400 hover:bg-blue-500/10"
                 >
                   <RefreshCw className="h-3 w-3 mr-1.5" />
                   Regenerate
@@ -355,14 +355,14 @@ function PelicanChatPanelInternal({
               onKeyDown={handleKeyDown}
               placeholder="Ask Pelican anything..."
               disabled={isStreaming}
-              className="flex-1 bg-white/[0.06] border border-[var(--border-subtle)] rounded-lg px-3 py-2 text-sm leading-relaxed text-[var(--text-primary)] resize-none focus:outline-none focus:ring-1 focus:ring-indigo-500 disabled:opacity-50 min-h-[40px] max-h-[120px]"
+              className="flex-1 bg-white/[0.06] border border-[var(--border-subtle)] rounded-lg px-3 py-2 text-sm leading-relaxed text-[var(--text-primary)] resize-none focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:opacity-50 min-h-[40px] max-h-[120px]"
               rows={1}
             />
             <Button
               onClick={handleSend}
               disabled={!inputValue.trim() || isStreaming}
               size="icon"
-              className="h-10 w-10 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
+              className="h-10 w-10 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
             >
               {isStreaming ? (
                 <Loader2 className="h-4 w-4 animate-spin" />

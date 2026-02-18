@@ -134,14 +134,14 @@ export default function SignUpPage() {
                <div className="absolute inset-0 bg-[#08080e]"></div>
                
                {/* 2. The "Mountain" Glows */}
-               <div className="absolute bottom-[-10%] left-[-10%] w-[80%] h-[60%] bg-indigo-900/40 blur-[80px] rounded-full mix-blend-screen"></div>
+               <div className="absolute bottom-[-10%] left-[-10%] w-[80%] h-[60%] bg-blue-900/40 blur-[80px] rounded-full mix-blend-screen"></div>
                <div className="absolute bottom-[-10%] right-[-10%] w-[80%] h-[60%] bg-blue-900/30 blur-[80px] rounded-full mix-blend-screen"></div>
                
                {/* 3. The Grid Floor (Perspective) */}
                <div 
                  className="absolute inset-0 opacity-30" 
                  style={{
-                    backgroundImage: 'linear-gradient(rgba(67, 56, 202, 0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(67, 56, 202, 0.3) 1px, transparent 1px)',
+                    backgroundImage: 'linear-gradient(rgba(37, 99, 235, 0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(37, 99, 235, 0.3) 1px, transparent 1px)',
                     backgroundSize: '40px 40px',
                     transform: 'perspective(500px) rotateX(60deg) translateY(100px) scale(2)',
                     transformOrigin: 'bottom center',
@@ -150,10 +150,10 @@ export default function SignUpPage() {
                />
                
                {/* 4. Rising "Candlestick" Bars (Simulated with spans) */}
-               <div className="absolute bottom-0 left-10 w-4 h-32 bg-gradient-to-t from-indigo-600 to-transparent opacity-50 blur-sm"></div>
-               <div className="absolute bottom-0 left-20 w-4 h-48 bg-gradient-to-t from-indigo-500 to-transparent opacity-60 blur-sm"></div>
+               <div className="absolute bottom-0 left-10 w-4 h-32 bg-gradient-to-t from-blue-600 to-transparent opacity-50 blur-sm"></div>
+               <div className="absolute bottom-0 left-20 w-4 h-48 bg-gradient-to-t from-blue-500 to-transparent opacity-60 blur-sm"></div>
                <div className="absolute bottom-0 left-32 w-4 h-24 bg-gradient-to-t from-blue-600 to-transparent opacity-40 blur-sm"></div>
-               <div className="absolute bottom-0 right-20 w-4 h-56 bg-gradient-to-t from-indigo-400 to-transparent opacity-50 blur-sm"></div>
+               <div className="absolute bottom-0 right-20 w-4 h-56 bg-gradient-to-t from-blue-400 to-transparent opacity-50 blur-sm"></div>
             </div>
 
             {/* Logo */}
@@ -190,12 +190,12 @@ export default function SignUpPage() {
               <div className="space-y-1.5">
                 <label htmlFor="email" className="text-sm font-medium text-gray-300 ml-1">Email</label>
                 <div className="relative group">
-                  <Mail className="absolute left-3.5 top-3.5 h-5 w-5 text-gray-500 group-focus-within:text-indigo-400 transition-colors" />
+                  <Mail className="absolute left-3.5 top-3.5 h-5 w-5 text-gray-500 group-focus-within:text-blue-400 transition-colors" />
                   <input
                     type="email"
                     id="email"
                     placeholder="trader@example.com"
-                    className="w-full bg-[var(--bg-elevated)] border border-[var(--border-default)] rounded-xl py-3 pl-11 pr-4 text-white placeholder-gray-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                    className="w-full bg-[var(--bg-elevated)] border border-[var(--border-default)] rounded-xl py-3 pl-11 pr-4 text-white placeholder-gray-600 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -206,11 +206,11 @@ export default function SignUpPage() {
               <div className="space-y-1.5">
                 <label htmlFor="password" className="text-sm font-medium text-gray-300 ml-1">Password</label>
                 <div className="relative group">
-                  <Lock className="absolute left-3.5 top-3.5 h-5 w-5 text-gray-500 group-focus-within:text-indigo-400 transition-colors" />
+                  <Lock className="absolute left-3.5 top-3.5 h-5 w-5 text-gray-500 group-focus-within:text-blue-400 transition-colors" />
                   <input
                     type="password"
                     id="password"
-                    className="w-full bg-[var(--bg-elevated)] border border-[var(--border-default)] rounded-xl py-3 pl-11 pr-4 text-white placeholder-gray-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                    className="w-full bg-[var(--bg-elevated)] border border-[var(--border-default)] rounded-xl py-3 pl-11 pr-4 text-white placeholder-gray-600 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -221,11 +221,11 @@ export default function SignUpPage() {
               <div className="space-y-1.5">
                 <label htmlFor="repeat-password" className="text-sm font-medium text-gray-300 ml-1">Repeat Password</label>
                 <div className="relative group">
-                  <Lock className="absolute left-3.5 top-3.5 h-5 w-5 text-gray-500 group-focus-within:text-indigo-400 transition-colors" />
+                  <Lock className="absolute left-3.5 top-3.5 h-5 w-5 text-gray-500 group-focus-within:text-blue-400 transition-colors" />
                   <input
                     type="password"
                     id="repeat-password"
-                    className="w-full bg-[var(--bg-elevated)] border border-[var(--border-default)] rounded-xl py-3 pl-11 pr-4 text-white placeholder-gray-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                    className="w-full bg-[var(--bg-elevated)] border border-[var(--border-default)] rounded-xl py-3 pl-11 pr-4 text-white placeholder-gray-600 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
                     required
                     value={repeatPassword}
                     onChange={(e) => setRepeatPassword(e.target.value)}
@@ -239,12 +239,12 @@ export default function SignUpPage() {
                 <input
                   id="terms"
                   type="checkbox"
-                  className="w-5 h-5 bg-[var(--bg-elevated)] border-[var(--border-default)] rounded text-indigo-600 focus:ring-indigo-500 focus:ring-offset-0 focus:ring-offset-transparent cursor-pointer accent-indigo-600"
+                  className="w-5 h-5 bg-[var(--bg-elevated)] border-[var(--border-default)] rounded text-blue-600 focus:ring-blue-500 focus:ring-offset-0 focus:ring-offset-transparent cursor-pointer accent-blue-600"
                   checked={agreedToTerms}
                   onChange={(e) => setAgreedToTerms(e.target.checked)}
                 />
                 <label htmlFor="terms" className="ml-3 text-sm text-gray-400">
-                  I agree to the <Link href="/terms" className="text-indigo-400 hover:text-indigo-300 transition-colors">Terms of Service</Link>
+                  I agree to the <Link href="/terms" className="text-blue-400 hover:text-blue-300 transition-colors">Terms of Service</Link>
                 </label>
               </div>
 
@@ -252,7 +252,7 @@ export default function SignUpPage() {
 
               <button
                 type="submit"
-                className="w-full mt-4 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white font-semibold py-3.5 rounded-full transition-all shadow-[0_0_20px_rgba(67,56,202,0.3)] hover:shadow-[0_0_30px_rgba(67,56,202,0.5)] active:scale-[0.98]"
+                className="w-full mt-4 bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-500 hover:to-blue-500 text-white font-semibold py-3.5 rounded-full transition-all shadow-[0_0_20px_rgba(37,99,235,0.3)] hover:shadow-[0_0_30px_rgba(37,99,235,0.5)] active:scale-[0.98]"
                 disabled={isLoading}
               >
                 {isLoading ? "Creating account..." : "Create account"}
@@ -261,7 +261,7 @@ export default function SignUpPage() {
               <div className="text-center pt-4 pointer-events-auto">
                 <p className="text-sm text-gray-500">
                   Already have an account?{" "}
-                  <Link href="/auth/login" className="text-indigo-400 hover:text-indigo-300 font-medium transition-colors">
+                  <Link href="/auth/login" className="text-blue-400 hover:text-blue-300 font-medium transition-colors">
                     Sign in
                   </Link>
                 </p>

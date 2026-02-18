@@ -123,9 +123,9 @@ export default function HeroChatDemo() {
   return (
     <div style={{
       position: 'relative', width: '100%', maxWidth: 560, margin: '0 auto',
-      borderRadius: 16, overflow: 'hidden', background: '#0a0b0f',
-      border: '1px solid rgba(168,85,247,0.25)',
-      boxShadow: '0 0 80px rgba(168,85,247,0.12), 0 25px 50px rgba(0,0,0,0.5)',
+      borderRadius: 16, overflow: 'hidden', background: '#080C14',
+      border: '1px solid rgba(59,130,246,0.25)',
+      boxShadow: '0 0 80px rgba(59,130,246,0.12), 0 25px 50px rgba(0,0,0,0.5)',
       fontFamily: 'var(--font-geist-sans), system-ui, -apple-system, sans-serif',
     }}>
       {/* Cursor */}
@@ -142,10 +142,10 @@ export default function HeroChatDemo() {
       </div>
 
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 16px', borderBottom: divider, background: '#12141a' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 16px', borderBottom: divider, background: '#0D1320' }}>
         <div style={{ position: 'relative', flexShrink: 0 }}>
           <Image src={LOGO} alt="Pelican" width={28} height={28} style={{ borderRadius: 8 }} />
-          <div style={{ position: 'absolute', bottom: -2, right: -2, width: 10, height: 10, borderRadius: '50%', background: '#22c55e', border: '2px solid #12141a' }} />
+          <div style={{ position: 'absolute', bottom: -2, right: -2, width: 10, height: 10, borderRadius: '50%', background: '#22c55e', border: '2px solid #0D1320' }} />
         </div>
         <div>
           <div style={{ fontSize: 15, fontWeight: 600, color: '#f1f5f9', lineHeight: 1.2 }}>Pelican AI</div>
@@ -172,7 +172,7 @@ export default function HeroChatDemo() {
             <div style={{ display: 'flex', gap: 4, padding: '8px 0' }}>
               {[0, 1, 2].map(d => (
                 <div key={d} style={{
-                  width: 7, height: 7, borderRadius: '50%', background: '#a855f7',
+                  width: 7, height: 7, borderRadius: '50%', background: '#3B82F6',
                   animation: 'heroDotBounce 0.6s infinite ease-in-out', animationDelay: `${d * 0.15}s`,
                 }} />
               ))}
@@ -189,8 +189,8 @@ export default function HeroChatDemo() {
         <div style={{
           display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px',
           background: 'rgba(26,29,36,0.8)', borderRadius: 16, minHeight: 48,
-          border: inputFocused ? '1px solid rgba(168,85,247,0.5)' : '1px solid rgba(148,163,184,0.15)',
-          boxShadow: inputFocused ? '0 0 0 3px rgba(168,85,247,0.1), 0 2px 8px rgba(0,0,0,0.2)' : '0 2px 8px rgba(0,0,0,0.2)',
+          border: inputFocused ? '1px solid rgba(59,130,246,0.5)' : '1px solid rgba(148,163,184,0.15)',
+          boxShadow: inputFocused ? '0 0 0 3px rgba(59,130,246,0.1), 0 2px 8px rgba(0,0,0,0.2)' : '0 2px 8px rgba(0,0,0,0.2)',
           transition: 'border-color 0.2s, box-shadow 0.2s',
         }}>
           <div style={{ flex: 1, fontSize: 14, lineHeight: 1.5, color: inputText ? '#f1f5f9' : '#64748b', minHeight: 22, display: 'flex', alignItems: 'center', wordBreak: 'break-word' as const }}>
@@ -198,10 +198,10 @@ export default function HeroChatDemo() {
           </div>
           <div style={{
             width: 36, height: 36, borderRadius: '50%', flexShrink: 0, transition: 'background 0.2s',
-            background: inputText ? '#a855f7' : 'rgba(148,163,184,0.15)',
+            background: inputText ? '#3B82F6' : 'rgba(148,163,184,0.15)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={inputText ? '#0a0b0f' : '#64748b'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={inputText ? '#080C14' : '#64748b'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M22 2L11 13" /><path d="M22 2L15 22L11 13L2 9L22 2Z" />
             </svg>
           </div>

@@ -74,7 +74,7 @@ export default function LoginPage() {
           maskImage: 'radial-gradient(circle at center, black 40%, transparent 100%)',
         }}
       />
-      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-indigo-900/40 blur-[120px] rounded-full mix-blend-screen animate-pulse duration-[4s]" />
+      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-900/40 blur-[120px] rounded-full mix-blend-screen animate-pulse duration-[4s]" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-blue-900/30 blur-[120px] rounded-full mix-blend-screen" />
 
       <div className="w-full max-w-[420px] relative z-10 flex flex-col">
@@ -93,7 +93,7 @@ export default function LoginPage() {
                 alt="Pelican Logo"
                 width={80}
                 height={80}
-                className="object-contain drop-shadow-[0_0_15px_rgba(67,56,202,0.5)]"
+                className="object-contain drop-shadow-[0_0_15px_rgba(37,99,235,0.5)]"
               />
             </div>
             <h1 className="text-2xl font-bold tracking-tight text-white">Welcome back</h1>
@@ -106,12 +106,12 @@ export default function LoginPage() {
             <div className="space-y-1.5">
               <label htmlFor="email" className="text-xs font-semibold text-gray-300 ml-1 uppercase tracking-wider">Email</label>
               <div className="relative group">
-                <Mail className="absolute left-3.5 top-3.5 h-5 w-5 text-gray-500 group-focus-within:text-indigo-400 transition-colors" />
+                <Mail className="absolute left-3.5 top-3.5 h-5 w-5 text-gray-500 group-focus-within:text-blue-400 transition-colors" />
                 <input
                   type="email"
                   id="email"
                   placeholder="trader@example.com"
-                  className="w-full bg-[var(--bg-base)]/50 border border-white/10 rounded-xl py-3 pl-11 pr-4 text-white placeholder-gray-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/50 transition-all hover:bg-[var(--bg-base)]/80"
+                  className="w-full bg-[var(--bg-base)]/50 border border-white/10 rounded-xl py-3 pl-11 pr-4 text-white placeholder-gray-600 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/50 transition-all hover:bg-[var(--bg-base)]/80"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -124,17 +124,17 @@ export default function LoginPage() {
                 <label htmlFor="password" className="text-xs font-semibold text-gray-300 uppercase tracking-wider">Password</label>
                 <Link
                   href="/auth/forgot-password"
-                  className="text-xs text-indigo-400 hover:text-indigo-300 transition-colors"
+                  className="text-xs text-blue-400 hover:text-blue-300 transition-colors"
                 >
                   Forgot?
                 </Link>
               </div>
               <div className="relative group">
-                <Lock className="absolute left-3.5 top-3.5 h-5 w-5 text-gray-500 group-focus-within:text-indigo-400 transition-colors" />
+                <Lock className="absolute left-3.5 top-3.5 h-5 w-5 text-gray-500 group-focus-within:text-blue-400 transition-colors" />
                 <input
                   type="password"
                   id="password"
-                  className="w-full bg-[var(--bg-base)]/50 border border-white/10 rounded-xl py-3 pl-11 pr-4 text-white placeholder-gray-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/50 transition-all hover:bg-[var(--bg-base)]/80"
+                  className="w-full bg-[var(--bg-base)]/50 border border-white/10 rounded-xl py-3 pl-11 pr-4 text-white placeholder-gray-600 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/50 transition-all hover:bg-[var(--bg-base)]/80"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -146,7 +146,7 @@ export default function LoginPage() {
 
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white font-semibold py-3.5 rounded-xl transition-all shadow-[0_0_20px_rgba(67,56,202,0.3)] hover:shadow-[0_0_30px_rgba(67,56,202,0.5)] active:scale-[0.98] mt-2"
+              className="w-full bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-500 hover:to-blue-500 text-white font-semibold py-3.5 rounded-xl transition-all shadow-[0_0_20px_rgba(37,99,235,0.3)] hover:shadow-[0_0_30px_rgba(37,99,235,0.5)] active:scale-[0.98] mt-2"
               disabled={isLoading}
             >
               {isLoading ? "Signing in..." : "Sign In"}
@@ -178,7 +178,7 @@ export default function LoginPage() {
 
           <p className="mt-8 text-center text-sm text-gray-400">
             Don&apos;t have an account?{' '}
-            <Link href="/auth/signup" className="text-indigo-400 hover:text-indigo-300 font-medium transition-colors">
+            <Link href="/auth/signup" className="text-blue-400 hover:text-blue-300 font-medium transition-colors">
               Sign up
             </Link>
           </p>

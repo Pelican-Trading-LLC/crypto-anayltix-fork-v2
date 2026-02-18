@@ -106,8 +106,8 @@ export function AccountBalanceChart({
         <AreaChart data={data}>
           <defs>
             <linearGradient id="balanceGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="hsl(258, 60%, 55%)" stopOpacity={0.2} />
-              <stop offset="100%" stopColor="hsl(258, 60%, 55%)" stopOpacity={0.02} />
+              <stop offset="0%" stopColor="hsl(217, 91%, 60%)" stopOpacity={0.2} />
+              <stop offset="100%" stopColor="hsl(217, 91%, 60%)" stopOpacity={0.02} />
             </linearGradient>
           </defs>
           <XAxis
@@ -134,7 +134,7 @@ export function AccountBalanceChart({
           <Area
             type="monotone"
             dataKey="balance"
-            stroke="hsl(258, 60%, 55%)"
+            stroke="hsl(217, 91%, 60%)"
             strokeWidth={2}
             fill="url(#balanceGradient)"
           />

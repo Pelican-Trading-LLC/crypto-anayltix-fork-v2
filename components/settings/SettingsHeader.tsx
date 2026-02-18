@@ -33,7 +33,7 @@ export function SettingsHeader({ user, isSaving, hasUnsavedChanges, onSave }: Se
               <Button
                 onClick={onSave}
                 disabled={!hasUnsavedChanges || isSaving}
-                className="w-full sm:w-auto bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800"
+                className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
               >
                 {isSaving ? (
                   <>
@@ -50,7 +50,7 @@ export function SettingsHeader({ user, isSaving, hasUnsavedChanges, onSave }: Se
             ) : (
               <Button
                 asChild
-                className="w-full sm:w-auto bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800"
+                className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
               >
                 <Link href="/auth/signup">
                   <User className="h-4 w-4 mr-2" />

@@ -31,7 +31,7 @@ export function AIGradeCard({ overall, dimensions }: AIGradeCardProps) {
         </div>
         <div
           className={cn(
-            "flex h-16 w-16 items-center justify-center rounded-full border-2 text-3xl font-black font-mono shadow-[0_0_20px_rgba(79,70,229,0.2)]",
+            "flex h-16 w-16 items-center justify-center rounded-full border-2 text-3xl font-black font-mono shadow-[0_0_20px_rgba(59,130,246,0.2)]",
             getGradeColor(overall)
           )}
         >

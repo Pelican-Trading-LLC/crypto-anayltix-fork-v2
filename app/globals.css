@@ -42,84 +42,85 @@
   --section-padding-y: clamp(3rem, 7vw, 6rem);
   --section-padding-y-tight: clamp(2rem, 5vw, 4rem);
 
-  /* Dark neutral color scheme - professional and sleek */
-  --background: oklch(0.98 0.002 240);
-  --foreground: oklch(0.15 0.005 240);
+  /* Navy institutional color scheme - light mode */
+  --background: oklch(0.98 0.005 220);
+  --foreground: oklch(0.15 0.01 220);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.15 0 0);
-  --popover: oklch(0.99 0.002 240);
+  --popover: oklch(0.99 0.005 220);
   --popover-foreground: oklch(0.15 0 0);
-  --primary: oklch(0.45 0.01 240);
-  --primary-foreground: oklch(0.98 0.002 240);
-  --secondary: oklch(0.55 0.01 240);
-  --secondary-foreground: oklch(0.98 0.002 240);
-  --muted: oklch(0.96 0.002 240);
-  --muted-foreground: oklch(0.45 0.005 240);
+  --primary: oklch(0.45 0.02 220);
+  --primary-foreground: oklch(0.98 0.005 220);
+  --secondary: oklch(0.55 0.02 220);
+  --secondary-foreground: oklch(0.98 0.005 220);
+  --muted: oklch(0.96 0.005 220);
+  --muted-foreground: oklch(0.45 0.01 220);
 
   /* Light mode surface variables for layered backgrounds */
-  --surface-1: oklch(0.99 0.002 200);
+  --surface-1: oklch(0.99 0.005 220);
   --surface-2: oklch(1 0 0);
-  --surface-3: oklch(0.98 0.005 200);
+  --surface-3: oklch(0.98 0.008 220);
 
-  --accent: oklch(0.50 0.01 240);
-  --accent-foreground: oklch(0.98 0.002 240);
+  --accent: oklch(0.50 0.02 220);
+  --accent-foreground: oklch(0.98 0.005 220);
   --destructive: oklch(0.55 0.15 25);
   --destructive-foreground: oklch(1 0 0);
-  --border: oklch(0.9 0.002 240);
+  --border: oklch(0.9 0.005 220);
   --input: oklch(1 0 0);
-  --ring: oklch(0.45 0.01 240 / 0.3);
-  --chart-1: oklch(0.45 0.01 240);
-  --chart-2: oklch(0.55 0.01 240);
+  --ring: oklch(0.45 0.02 220 / 0.3);
+  --chart-1: oklch(0.45 0.02 220);
+  --chart-2: oklch(0.55 0.02 220);
   --chart-3: oklch(0.55 0.15 25);
-  --chart-4: oklch(0.4 0.005 240);
-  --chart-5: oklch(0.50 0.01 240);
+  --chart-4: oklch(0.4 0.01 220);
+  --chart-5: oklch(0.50 0.02 220);
   --radius: 0.5rem;
   --sidebar: oklch(1 0 0);
-  --sidebar-foreground: oklch(0.15 0.005 240);
-  --sidebar-primary: oklch(0.45 0.01 240);
-  --sidebar-primary-foreground: oklch(0.98 0.002 240);
-  --sidebar-accent: oklch(0.55 0.01 240);
-  --sidebar-accent-foreground: oklch(0.98 0.002 240);
-  --sidebar-border: oklch(0.9 0.002 240);
-  --sidebar-ring: oklch(0.45 0.01 240 / 0.3);
+  --sidebar-foreground: oklch(0.15 0.01 220);
+  --sidebar-primary: oklch(0.45 0.02 220);
+  --sidebar-primary-foreground: oklch(0.98 0.005 220);
+  --sidebar-accent: oklch(0.55 0.02 220);
+  --sidebar-accent-foreground: oklch(0.98 0.005 220);
+  --sidebar-border: oklch(0.9 0.005 220);
+  --sidebar-ring: oklch(0.45 0.02 220 / 0.3);
   /* ===== PELICAN DESIGN SYSTEM V3 TOKENS — LIGHT MODE ===== */
 
-  /* Backgrounds — warm neutral whites with subtle cool undertone */
-  --bg-base: #ffffff;
-  --bg-surface: #f8f8fb;
-  --bg-elevated: #f0f0f5;
+  /* Backgrounds — clean slate/white */
+  --bg-base: #F8FAFC;
+  --bg-surface: #FFFFFF;
+  --bg-elevated: #F1F5F9;
   --bg-overlay: rgba(0, 0, 0, 0.4);
-  --bg-sidebar: #f5f5fa;
-  --bg-input: #ffffff;
+  --bg-sidebar: #F1F5F9;
+  --bg-input: #FFFFFF;
 
   /* Interaction surfaces */
   --surface-hover: rgba(0, 0, 0, 0.04);
-  --surface-active: rgba(79, 70, 229, 0.08);
-  --surface-code-block: #f5f5fa;
+  --surface-active: rgba(59, 130, 246, 0.08);
+  --surface-code-block: #F1F5F9;
 
   /* Borders — subtle structural dividers */
   --border-subtle: rgba(0, 0, 0, 0.08);
   --border-default: rgba(0, 0, 0, 0.12);
-  --border-hover: rgba(79, 70, 229, 0.25);
-  --border-active: rgba(79, 70, 229, 0.40);
+  --border-hover: rgba(59, 130, 246, 0.25);
+  --border-active: rgba(59, 130, 246, 0.40);
   --border-input: rgba(0, 0, 0, 0.12);
 
   /* Text — clear hierarchy on white */
-  --text-primary: #111827;
-  --text-secondary: #4b5563;
-  --text-muted: #9ca3af;
-  --text-disabled: #d1d5db;
-  --text-ghost: #c0c0c8;
+  --text-primary: #0F172A;
+  --text-emphasis: #0F172A;
+  --text-secondary: #475569;
+  --text-muted: #94A3B8;
+  --text-disabled: #CBD5E1;
+  --text-ghost: #CBD5E1;
 
-  /* Accent */
-  --accent-primary: #4F46E5;
-  --accent-hover: #4338CA;
-  --accent-muted: rgba(79, 70, 229, 0.10);
-  --accent-glow: rgba(79, 70, 229, 0.05);
-  --accent-indigo: #4F46E5;
-  --accent-indigo-hover: #4338CA;
-  --accent-indigo-muted: rgba(79, 70, 229, 0.10);
-  --accent-indigo-subtle: rgba(79, 70, 229, 0.05);
+  /* Accent — blue institutional */
+  --accent-primary: #2563EB;
+  --accent-hover: #1D4ED8;
+  --accent-muted: rgba(37, 99, 235, 0.10);
+  --accent-glow: rgba(37, 99, 235, 0.05);
+  --accent-indigo: #2563EB;
+  --accent-indigo-hover: #1D4ED8;
+  --accent-indigo-muted: rgba(37, 99, 235, 0.10);
+  --accent-indigo-subtle: rgba(37, 99, 235, 0.05);
 
   /* Data Colors — darker for white bg readability */
   --data-positive: #059669;
@@ -139,7 +140,7 @@
   --shadow-card-hover: 0 8px 24px rgba(0,0,0,0.10), 0 0 0 1px rgba(0,0,0,0.06);
   --shadow-elevated: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
   --shadow-input: 0 1px 3px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.08);
-  --shadow-input-focus: 0 0 0 2px rgba(79, 70, 229, 0.25), 0 1px 3px rgba(0,0,0,0.06);
+  --shadow-input-focus: 0 0 0 2px rgba(37, 99, 235, 0.25), 0 1px 3px rgba(0,0,0,0.06);
   --shadow-sidebar: 1px 0 4px rgba(0,0,0,0.06);
   --shadow-panel: -1px 0 4px rgba(0,0,0,0.06);
 
@@ -152,7 +153,7 @@
   --scrollbar-thumb-hover: rgba(0, 0, 0, 0.25);
 
   /* Gradient fades */
-  --fade-color: 255, 255, 255;
+  --fade-color: 248, 250, 252;
 
   /* Spacing */
   --space-page-x: 2rem;
@@ -169,59 +170,60 @@
 
 /* Fixed dark mode selector to work properly with next-themes */
 .dark {
-  /* Indigo-tinted dark mode — more pop, indigo undertone through layers */
+  /* Navy institutional dark mode — blue undertone through layers */
   /* HSL format for shadcn/Tailwind compatibility */
-  --background: 240 18% 7%;             /* matches --bg-base #15151e */
-  --foreground: 245 10% 95%;             /* bright, almost white */
-  --muted: 240 14% 14%;                  /* indigo-tinted muted backgrounds */
-  --muted-foreground: 245 8% 55%;        /* muted text */
+  --background: 220 30% 5%;              /* matches --bg-base #080C14 */
+  --foreground: 214 20% 92%;             /* bright, almost white */
+  --muted: 220 25% 10%;                  /* navy-tinted muted backgrounds */
+  --muted-foreground: 215 16% 47%;       /* muted text */
 
-  /* Layered surfaces - indigo undertone, clear separation */
-  --surface-0: #15151e;                  /* = bg-base */
-  --surface-1: #1c1c28;                  /* = bg-surface */
-  --surface-2: #272735;                  /* = bg-elevated */
-  --surface-3: #332f45;                  /* extra step for deep nesting */
+  /* Layered surfaces - navy undertone, clear separation */
+  --surface-0: #080C14;                  /* = bg-base */
+  --surface-1: #0D1320;                  /* = bg-surface */
+  --surface-2: #121A2C;                  /* = bg-elevated */
+  --surface-3: #182236;                  /* extra step for deep nesting */
 
   /* ===== PELICAN DESIGN SYSTEM V3 TOKENS — DARK MODE ===== */
 
-  /* Backgrounds — deep indigo DNA */
-  --bg-base: #15151e;
-  --bg-surface: #1c1c28;
-  --bg-elevated: #272735;
-  --bg-overlay: rgba(10, 8, 16, 0.75);
-  --bg-sidebar: #13131c;
-  --bg-input: #272735;
+  /* Backgrounds — deep navy DNA */
+  --bg-base: #080C14;
+  --bg-surface: #0D1320;
+  --bg-elevated: #121A2C;
+  --bg-overlay: rgba(4, 6, 12, 0.75);
+  --bg-sidebar: #0A0F1A;
+  --bg-input: #121A2C;
 
   /* Interaction surfaces */
   --surface-hover: rgba(255, 255, 255, 0.05);
-  --surface-active: rgba(79, 70, 229, 0.12);
-  --surface-code-block: #1a1a26;
+  --surface-active: rgba(59, 130, 246, 0.12);
+  --surface-code-block: #0F1624;
 
-  /* Borders — indigo accent on interaction */
-  --border: 235 18% 24%;                 /* subtle indigo-gray border for Tailwind */
-  --border-subtle: rgba(79, 70, 229, 0.10);
+  /* Borders — blue accent on interaction */
+  --border: 220 25% 18%;                 /* subtle navy border for Tailwind */
+  --border-subtle: rgba(59, 130, 246, 0.10);
   --border-default: rgba(255, 255, 255, 0.13);
-  --border-hover: rgba(79, 70, 229, 0.25);
-  --border-active: rgba(79, 70, 229, 0.35);
+  --border-hover: rgba(59, 130, 246, 0.25);
+  --border-active: rgba(59, 130, 246, 0.35);
   --border-input: rgba(255, 255, 255, 0.10);
-  --ring: 235 50% 50% / 0.5;             /* indigo focus ring */
+  --ring: 217 91% 60% / 0.5;             /* blue focus ring */
 
   /* Text colors - bright for pop */
-  --text-primary: #f4f4f8;
-  --text-secondary: #b0b0c0;
-  --text-muted: #6a6a8c;
-  --text-disabled: #44445a;
-  --text-ghost: #46465e;
+  --text-primary: #E2E8F0;
+  --text-emphasis: #FFFFFF;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
+  --text-disabled: #475569;
+  --text-ghost: #4B5563;
 
-  /* Accent */
-  --accent-primary: #4F46E5;
-  --accent-hover: #9d74f7;
-  --accent-muted: rgba(79, 70, 229, 0.15);
-  --accent-glow: rgba(79, 70, 229, 0.12);
-  --accent-indigo: #4F46E5;
-  --accent-indigo-hover: #818CF8;
-  --accent-indigo-muted: rgba(79, 70, 229, 0.15);
-  --accent-indigo-subtle: rgba(79, 70, 229, 0.12);
+  /* Accent — blue institutional */
+  --accent-primary: #3B82F6;
+  --accent-hover: #60A5FA;
+  --accent-muted: rgba(59, 130, 246, 0.15);
+  --accent-glow: rgba(59, 130, 246, 0.12);
+  --accent-indigo: #3B82F6;
+  --accent-indigo-hover: #60A5FA;
+  --accent-indigo-muted: rgba(59, 130, 246, 0.15);
+  --accent-indigo-subtle: rgba(59, 130, 246, 0.12);
 
   /* Data colors — brighter for dark bg */
   --data-positive: #22c55e;
@@ -236,64 +238,64 @@
   --status-closed: #6b7280;
   --status-cancelled: #ef4444;
 
-  /* Shadows — visible depth + purple glow on hover */
+  /* Shadows — visible depth + blue glow on hover */
   --shadow-card: 0 2px 8px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.05);
-  --shadow-card-hover: 0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(79,70,229,0.15), 0 0 30px rgba(79,70,229,0.08);
+  --shadow-card-hover: 0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(59,130,246,0.15), 0 0 30px rgba(59,130,246,0.08);
   --shadow-elevated: 0 4px 12px rgba(0,0,0,0.5), 0 20px 60px rgba(0,0,0,0.3);
   --shadow-input: 0 1px 2px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.05);
-  --shadow-input-focus: 0 0 0 2px rgba(79, 70, 229, 0.4), 0 0 20px rgba(79, 70, 229, 0.08);
+  --shadow-input-focus: 0 0 0 2px rgba(59, 130, 246, 0.4), 0 0 20px rgba(59, 130, 246, 0.08);
   --shadow-sidebar: 1px 0 4px rgba(0,0,0,0.3);
   --shadow-panel: -1px 0 4px rgba(0,0,0,0.3);
 
   /* Glows — stronger for more pop */
-  --glow-indigo-soft: 0 0 20px rgba(79, 70, 229, 0.12);
-  --glow-indigo-medium: 0 0 30px rgba(79, 70, 229, 0.18);
+  --glow-indigo-soft: 0 0 20px rgba(59, 130, 246, 0.12);
+  --glow-indigo-medium: 0 0 30px rgba(59, 130, 246, 0.18);
 
   /* Scrollbar */
   --scrollbar-thumb: rgba(255, 255, 255, 0.10);
   --scrollbar-thumb-hover: rgba(255, 255, 255, 0.20);
 
   /* Gradient fades */
-  --fade-color: 21, 21, 30;
+  --fade-color: 8, 12, 20;
 
-  /* Brand - Vibrant Purple */
-  --primary: oklch(0.60 0.25 280);
-  --primary-foreground: oklch(0.98 0.002 280);
-  --accent: oklch(0.55 0.22 285);
-  --accent-foreground: oklch(0.98 0.002 280);
-  --secondary: oklch(0.20 0.05 280);
-  --secondary-foreground: oklch(0.95 0.004 280);
+  /* Brand - Institutional Blue */
+  --primary: oklch(0.60 0.20 220);
+  --primary-foreground: oklch(0.98 0.005 220);
+  --accent: oklch(0.55 0.18 225);
+  --accent-foreground: oklch(0.98 0.005 220);
+  --secondary: oklch(0.20 0.04 220);
+  --secondary-foreground: oklch(0.95 0.008 220);
   --destructive: oklch(0.55 0.25 25);
-  --destructive-foreground: oklch(0.98 0.002 280);
-  --input: oklch(0.12 0.01 280);
+  --destructive-foreground: oklch(0.98 0.005 220);
+  --input: oklch(0.12 0.02 220);
 
-  /* Charts with indigo theme */
-  --chart-1: oklch(0.60 0.25 280);
-  --chart-2: oklch(0.65 0.22 290);
+  /* Charts with blue theme */
+  --chart-1: oklch(0.60 0.20 220);
+  --chart-2: oklch(0.65 0.18 230);
   --chart-3: oklch(0.55 0.25 25);
-  --chart-4: oklch(0.70 0.15 280);
-  --chart-5: oklch(0.50 0.28 275);
+  --chart-4: oklch(0.70 0.12 220);
+  --chart-5: oklch(0.50 0.22 215);
 
   /* Components — aligned to design token layers */
-  --card: 245 22% 13%;                   /* ~bg-surface */
-  --card-foreground: 245 10% 95%;        /* bright text */
-  --popover: 245 20% 15%;               /* ~bg-elevated */
-  --popover-foreground: 245 10% 95%;     /* bright text */
-  --sidebar: 260 24% 10%;                /* ~bg-base */
-  --sidebar-foreground: 235 10% 92%;     /* light text */
-  --sidebar-primary: oklch(0.60 0.25 280);
-  --sidebar-primary-foreground: oklch(0.98 0.002 280);
-  --sidebar-accent: rgba(79, 70, 229, 0.12);
-  --sidebar-accent-foreground: oklch(0.95 0.004 280);
-  --sidebar-border: rgba(79, 70, 229, 0.08);
-  --sidebar-ring: rgba(79, 70, 229, 0.5);
+  --card: 220 30% 6%;                    /* ~bg-surface */
+  --card-foreground: 214 20% 92%;        /* bright text */
+  --popover: 220 28% 9%;                /* ~bg-elevated */
+  --popover-foreground: 214 20% 92%;     /* bright text */
+  --sidebar: 220 32% 5%;                /* ~bg-base */
+  --sidebar-foreground: 215 16% 90%;     /* light text */
+  --sidebar-primary: oklch(0.60 0.20 220);
+  --sidebar-primary-foreground: oklch(0.98 0.005 220);
+  --sidebar-accent: rgba(59, 130, 246, 0.12);
+  --sidebar-accent-foreground: oklch(0.95 0.008 220);
+  --sidebar-border: rgba(59, 130, 246, 0.08);
+  --sidebar-ring: rgba(59, 130, 246, 0.5);
 }
 
 /* Pro Dark theme overrides */
 .dark.pro-dark {
-  --foreground: oklch(0.98 0.004 300);
-  --surface-2: oklch(0.12 0.01 280);
-  --border: oklch(0.36 0.01 280);
+  --foreground: oklch(0.98 0.008 220);
+  --surface-2: oklch(0.12 0.02 220);
+  --border: oklch(0.36 0.02 220);
 }
 
 @theme inline {
@@ -450,7 +452,7 @@
 
   /* Focus indicators for accessibility */
   *:focus-visible {
-    outline: 2px solid rgba(79, 70, 229, 0.5);
+    outline: 2px solid rgba(59, 130, 246, 0.5);
     outline-offset: 2px;
     border-radius: 4px;
   }
@@ -460,15 +462,15 @@
   }
 
   button:focus-visible {
-    outline: 2px solid rgba(79, 70, 229, 0.5);
+    outline: 2px solid rgba(59, 130, 246, 0.5);
     outline-offset: 2px;
   }
 
   input:focus-visible,
   textarea:focus-visible {
-    outline: 2px solid rgba(79, 70, 229, 0.5);
+    outline: 2px solid rgba(59, 130, 246, 0.5);
     outline-offset: -2px;
-    border-color: rgba(79, 70, 229, 0.5);
+    border-color: rgba(59, 130, 246, 0.5);
   }
 
   /* Prevent scroll chaining without blocking wheel scrolling */
@@ -561,14 +563,14 @@
     word-break: break-word;
   }
 
-  /* Enhanced selection styles with indigo theme */
+  /* Enhanced selection styles with blue theme */
   ::selection {
-    background-color: rgba(79, 70, 229, 0.15);
-    color: #111827;
+    background-color: rgba(37, 99, 235, 0.15);
+    color: #0F172A;
   }
 
   .dark ::selection {
-    background-color: rgba(99, 102, 241, 0.3);
+    background-color: rgba(59, 130, 246, 0.3);
     color: inherit;
   }
 
@@ -632,15 +634,15 @@
   /* Chat background gradient — subtle in light, aurora in dark */
   .chat-background-gradient {
     background:
-      radial-gradient(ellipse at 50% 20%, rgba(79, 70, 229, 0.04) 0%, transparent 55%),
-      radial-gradient(ellipse at 80% 80%, rgba(79, 70, 229, 0.02) 0%, transparent 40%);
+      radial-gradient(ellipse at 50% 20%, rgba(59, 130, 246, 0.04) 0%, transparent 55%),
+      radial-gradient(ellipse at 80% 80%, rgba(59, 130, 246, 0.02) 0%, transparent 40%);
   }
 
   .dark .chat-background-gradient {
     background:
-      radial-gradient(ellipse at 50% 20%, rgba(79, 70, 229, 0.12) 0%, transparent 55%),
-      radial-gradient(ellipse at 30% 60%, rgba(67, 56, 202, 0.06) 0%, transparent 45%),
-      radial-gradient(ellipse at 75% 80%, rgba(79, 70, 229, 0.08) 0%, transparent 40%),
+      radial-gradient(ellipse at 50% 20%, rgba(59, 130, 246, 0.12) 0%, transparent 55%),
+      radial-gradient(ellipse at 30% 60%, rgba(37, 99, 235, 0.06) 0%, transparent 45%),
+      radial-gradient(ellipse at 75% 80%, rgba(59, 130, 246, 0.08) 0%, transparent 40%),
       hsl(var(--background));
   }
 
@@ -717,7 +719,7 @@
 
   /* ========== V2 Visual Polish Utilities ========== */
 
-  /* Card with top highlight and indigo glow on hover */
+  /* Card with top highlight and blue glow on hover */
   .pelican-card {
     position: relative;
     background: var(--bg-surface);
@@ -748,7 +750,7 @@
   }
 
   .pelican-card:hover {
-    border-color: rgba(79, 70, 229, 0.20);
+    border-color: rgba(59, 130, 246, 0.20);
     box-shadow: var(--shadow-card-hover);
     transform: translateY(-1px);
   }
@@ -788,13 +790,13 @@
   }
 
   .dark .pelican-logo-glow {
-    filter: drop-shadow(0 0 20px rgba(79, 70, 229, 0.15));
+    filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.15));
     animation: logo-breathe 4s ease-in-out infinite;
   }
 
   @keyframes logo-breathe {
-    0%, 100% { filter: drop-shadow(0 0 20px rgba(79, 70, 229, 0.10)); }
-    50% { filter: drop-shadow(0 0 30px rgba(79, 70, 229, 0.20)); }
+    0%, 100% { filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.10)); }
+    50% { filter: drop-shadow(0 0 30px rgba(59, 130, 246, 0.20)); }
   }
 
   /* Stat value — glow in dark, clean in light */
@@ -825,7 +827,7 @@
 
   /* Subtle gradient backgrounds for section headers */
   .section-header-gradient {
-    background: linear-gradient(135deg, rgba(79, 70, 229, 0.08) 0%, transparent 60%);
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, transparent 60%);
   }
 
   /* Animated skeleton for loading states */
@@ -883,7 +885,7 @@
 
   /* Subtle border utility for professional UI */
   .border-subtle {
-    border-color: rgba(79, 70, 229, 0.06);
+    border-color: rgba(59, 130, 246, 0.06);
   }
 
   /* Safe area padding for mobile (notch/bottom bar) */

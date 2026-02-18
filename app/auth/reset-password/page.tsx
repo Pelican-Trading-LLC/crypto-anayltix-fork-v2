@@ -86,7 +86,7 @@ export default function ResetPasswordPage() {
           maskImage: 'radial-gradient(circle at center, black 40%, transparent 100%)',
         }}
       />
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-900/30 blur-[100px] rounded-full mix-blend-screen animate-pulse duration-[4s]" />
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-900/30 blur-[100px] rounded-full mix-blend-screen animate-pulse duration-[4s]" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-900/20 blur-[100px] rounded-full mix-blend-screen" />
 
       <div className="w-full max-w-[420px] relative z-10">
@@ -105,7 +105,7 @@ export default function ResetPasswordPage() {
                 alt="Pelican Logo"
                 width={48}
                 height={48}
-                className="object-contain drop-shadow-[0_0_15px_rgba(67,56,202,0.5)]"
+                className="object-contain drop-shadow-[0_0_15px_rgba(37,99,235,0.5)]"
               />
             </div>
             <h1 className="text-2xl font-bold tracking-tight text-white">Create a new password</h1>
@@ -120,11 +120,11 @@ export default function ResetPasswordPage() {
                 New password
               </label>
               <div className="relative group">
-                <Lock className="absolute left-3.5 top-3.5 h-5 w-5 text-gray-500 group-focus-within:text-indigo-400 transition-colors" />
+                <Lock className="absolute left-3.5 top-3.5 h-5 w-5 text-gray-500 group-focus-within:text-blue-400 transition-colors" />
                 <input
                   id="password"
                   type="password"
-                  className="w-full bg-[var(--bg-base)]/50 border border-white/10 rounded-xl py-3 pl-11 pr-4 text-white placeholder-gray-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all hover:bg-[var(--bg-base)]/80"
+                  className="w-full bg-[var(--bg-base)]/50 border border-white/10 rounded-xl py-3 pl-11 pr-4 text-white placeholder-gray-600 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all hover:bg-[var(--bg-base)]/80"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -137,11 +137,11 @@ export default function ResetPasswordPage() {
                 Confirm password
               </label>
               <div className="relative group">
-                <Lock className="absolute left-3.5 top-3.5 h-5 w-5 text-gray-500 group-focus-within:text-indigo-400 transition-colors" />
+                <Lock className="absolute left-3.5 top-3.5 h-5 w-5 text-gray-500 group-focus-within:text-blue-400 transition-colors" />
                 <input
                   id="confirmPassword"
                   type="password"
-                  className="w-full bg-[var(--bg-base)]/50 border border-white/10 rounded-xl py-3 pl-11 pr-4 text-white placeholder-gray-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all hover:bg-[var(--bg-base)]/80"
+                  className="w-full bg-[var(--bg-base)]/50 border border-white/10 rounded-xl py-3 pl-11 pr-4 text-white placeholder-gray-600 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all hover:bg-[var(--bg-base)]/80"
                   required
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
@@ -161,7 +161,7 @@ export default function ResetPasswordPage() {
 
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white font-semibold py-3.5 rounded-xl transition-all shadow-[0_0_20px_rgba(67,56,202,0.3)] hover:shadow-[0_0_30px_rgba(67,56,202,0.5)] active:scale-[0.98]"
+              className="w-full bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-500 hover:to-blue-500 text-white font-semibold py-3.5 rounded-xl transition-all shadow-[0_0_20px_rgba(37,99,235,0.3)] hover:shadow-[0_0_30px_rgba(37,99,235,0.5)] active:scale-[0.98]"
               disabled={isLoading}
             >
               {isLoading ? "Updating..." : "Update password"}

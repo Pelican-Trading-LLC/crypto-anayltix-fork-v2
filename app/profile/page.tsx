@@ -149,7 +149,7 @@ export default async function ProfilePage() {
                   <div className="text-center py-8">
                     <MessageSquare className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
                     <p className="text-muted-foreground">No conversations yet</p>
-                    <Button asChild className="mt-4 bg-gradient-to-r from-indigo-600 to-indigo-700">
+                    <Button asChild className="mt-4 bg-gradient-to-r from-blue-600 to-blue-700">
                       <Link href="/chat">Start Your First Chat</Link>
                     </Button>
                   </div>

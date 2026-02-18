@@ -128,7 +128,7 @@ function CopyEmailButton({ email }: { email: string }) {
   return (
     <button
       onClick={handleCopy}
-      className="ml-1 text-muted-foreground/40 hover:text-indigo-400 transition-colors inline-flex items-center"
+      className="ml-1 text-muted-foreground/40 hover:text-blue-400 transition-colors inline-flex items-center"
       title="Copy email"
     >
       {copied ? (
@@ -173,7 +173,7 @@ function AdminMessageRow({ msg, spacious }: { msg: ConvoMessage; spacious?: bool
     <div
       className={`rounded-lg ${spacious ? 'mb-5 last:mb-0' : 'mb-4 last:mb-0'} ${
         isUser
-          ? 'bg-[var(--bg-elevated)] border-l-2 border-indigo-500/40 pl-4 pr-3 py-3'
+          ? 'bg-[var(--bg-elevated)] border-l-2 border-blue-500/40 pl-4 pr-3 py-3'
           : 'bg-[var(--bg-surface)] border-l-2 border-blue-500/30 pl-4 pr-3 py-3'
       }`}
       onMouseEnter={() => setHovered(true)}
@@ -183,7 +183,7 @@ function AdminMessageRow({ msg, spacious }: { msg: ConvoMessage; spacious?: bool
         <span
           className={`text-xs font-medium px-3 py-1 rounded-md ${
             isUser
-              ? 'bg-indigo-500/20 text-indigo-300'
+              ? 'bg-blue-500/20 text-blue-300'
               : 'bg-blue-500/15 text-blue-300'
           }`}
         >
@@ -308,7 +308,7 @@ function ConversationModal({
             <div className="flex items-center gap-2 ml-4 flex-shrink-0">
               <button
                 onClick={handleCopyAll}
-                className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-md text-indigo-400 hover:text-indigo-300 hover:bg-indigo-500/10 transition-colors"
+                className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-md text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 transition-colors"
               >
                 {copyState ? (
                   <>
@@ -638,7 +638,7 @@ export function RecentConversations({
                             e.stopPropagation()
                             setModalConv(conv)
                           }}
-                          className="p-1 rounded text-muted-foreground/50 hover:text-indigo-400 transition-colors"
+                          className="p-1 rounded text-muted-foreground/50 hover:text-blue-400 transition-colors"
                           title="Open in modal"
                         >
                           <Maximize2 className="size-3.5" />
@@ -699,7 +699,7 @@ export function RecentConversations({
                             <div className="py-1.5">
                               <button
                                 onClick={() => handleCopyAll(conv.id)}
-                                className="flex items-center gap-1.5 text-xs text-indigo-400 hover:text-indigo-300 transition-colors"
+                                className="flex items-center gap-1.5 text-xs text-blue-400 hover:text-blue-300 transition-colors"
                               >
                                 {copyAllState === conv.id ? (
                                   <>
@@ -728,7 +728,7 @@ export function RecentConversations({
                                     handleLoadMoreMessages(conv.id)
                                   }
                                   disabled={loadingMoreMessages}
-                                  className="w-full flex items-center justify-center gap-2 text-xs py-2 text-indigo-400 hover:text-indigo-300 transition-colors"
+                                  className="w-full flex items-center justify-center gap-2 text-xs py-2 text-blue-400 hover:text-blue-300 transition-colors"
                                 >
                                   {loadingMoreMessages ? (
                                     <>

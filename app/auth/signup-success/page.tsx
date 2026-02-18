@@ -9,7 +9,7 @@ export default function SignUpSuccessPage() {
       <div className="w-full max-w-sm">
         <div className="flex flex-col gap-6">
           <div className="flex flex-col items-center gap-2">
-            <div className="w-12 h-12 bg-gradient-to-br from-indigo-600 to-indigo-700 rounded-xl flex items-center justify-center p-2">
+            <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl flex items-center justify-center p-2">
               <Image
                 src="/pelican-logo-transparent.webp"
                 alt="Pelican AI"

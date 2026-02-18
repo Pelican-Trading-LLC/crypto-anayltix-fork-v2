@@ -155,8 +155,8 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
               "transition-all duration-200",
               "min-h-[56px]",
               isFocused && [
-                "border-[rgba(79,70,229,0.40)]",
-                "shadow-[0_0_0_1px_rgba(79,70,229,0.2),0_4px_16px_rgba(0,0,0,0.3)]",
+                "border-[rgba(59,130,246,0.40)]",
+                "shadow-[0_0_0_1px_rgba(59,130,246,0.2),0_4px_16px_rgba(0,0,0,0.3)]",
               ],
             )}
           >

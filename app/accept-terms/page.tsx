@@ -62,7 +62,7 @@ export default function AcceptTermsPage() {
   if (checkingAuth) {
     return (
       <div className="min-h-screen w-full flex items-center justify-center bg-[var(--bg-base)]">
-        <div className="animate-spin h-8 w-8 border-4 border-indigo-500 border-t-transparent rounded-full" />
+        <div className="animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full" />
       </div>
     )
   }
@@ -78,7 +78,7 @@ export default function AcceptTermsPage() {
           maskImage: "radial-gradient(circle at center, black 40%, transparent 100%)",
         }}
       />
-      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-indigo-900/40 blur-[120px] rounded-full mix-blend-screen" />
+      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-900/40 blur-[120px] rounded-full mix-blend-screen" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-blue-900/30 blur-[120px] rounded-full mix-blend-screen" />
 
       <div className="w-full max-w-[420px] relative z-10 flex flex-col">
@@ -90,7 +90,7 @@ export default function AcceptTermsPage() {
                 alt="Pelican Logo"
                 width={80}
                 height={80}
-                className="object-contain drop-shadow-[0_0_15px_rgba(67,56,202,0.5)]"
+                className="object-contain drop-shadow-[0_0_15px_rgba(37,99,235,0.5)]"
               />
             </div>
             <h1 className="text-2xl font-bold tracking-tight text-[var(--text-primary)]">
@@ -106,7 +106,7 @@ export default function AcceptTermsPage() {
               <input
                 id="terms"
                 type="checkbox"
-                className="mt-1 w-5 h-5 bg-[var(--bg-elevated)] border-[var(--border-default)] rounded text-indigo-600 focus:ring-indigo-500 focus:ring-offset-0 focus:ring-offset-transparent cursor-pointer accent-indigo-600"
+                className="mt-1 w-5 h-5 bg-[var(--bg-elevated)] border-[var(--border-default)] rounded text-blue-600 focus:ring-blue-500 focus:ring-offset-0 focus:ring-offset-transparent cursor-pointer accent-blue-600"
                 checked={agreed}
                 onChange={(e) => setAgreed(e.target.checked)}
               />
@@ -116,7 +116,7 @@ export default function AcceptTermsPage() {
                   href="/terms"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-indigo-400 hover:text-indigo-300 transition-colors underline underline-offset-2"
+                  className="text-blue-400 hover:text-blue-300 transition-colors underline underline-offset-2"
                 >
                   Terms of Service
                 </Link>
@@ -128,7 +128,7 @@ export default function AcceptTermsPage() {
             <button
               type="submit"
               disabled={!agreed || isLoading}
-              className="w-full bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white font-semibold py-3.5 rounded-xl transition-all shadow-[0_0_20px_rgba(67,56,202,0.3)] hover:shadow-[0_0_30px_rgba(67,56,202,0.5)] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:from-indigo-600 disabled:hover:to-blue-600 disabled:active:scale-100"
+              className="w-full bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-500 hover:to-blue-500 text-white font-semibold py-3.5 rounded-xl transition-all shadow-[0_0_20px_rgba(37,99,235,0.3)] hover:shadow-[0_0_30px_rgba(37,99,235,0.5)] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:from-blue-600 disabled:hover:to-blue-600 disabled:active:scale-100"
             >
               {isLoading ? "Saving..." : "Continue"}
             </button>

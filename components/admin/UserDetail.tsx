@@ -93,7 +93,7 @@ function MessageBubble({ msg }: { msg: ConvoMessage }) {
       <div
         className={`max-w-[80%] rounded-lg px-3 py-2 text-sm ${
           isUser
-            ? 'bg-indigo-600/20 text-indigo-100'
+            ? 'bg-blue-600/20 text-blue-100'
             : 'bg-muted text-foreground'
         }`}
       >
@@ -106,7 +106,7 @@ function MessageBubble({ msg }: { msg: ConvoMessage }) {
         {isLong && (
           <button
             onClick={(e) => { e.stopPropagation(); setExpanded(!expanded) }}
-            className="text-xs text-indigo-400 hover:text-indigo-300 mt-1"
+            className="text-xs text-blue-400 hover:text-blue-300 mt-1"
           >
             {expanded ? 'Show less' : 'Show more'}
           </button>

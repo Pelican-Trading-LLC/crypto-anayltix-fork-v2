@@ -120,7 +120,7 @@ export function EducationChat({ selectedTerm, onClear }: EducationChatProps) {
   if (!selectedTerm && messages.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center h-full p-6 text-center">
-        <GraduationCap className="h-10 w-10 text-indigo-500/40 mb-3" />
+        <GraduationCap className="h-10 w-10 text-blue-500/40 mb-3" />
         <p className="text-sm text-muted-foreground leading-relaxed">
           Click any highlighted term in the chat to learn about it. Toggle Learning Mode in the chat header.
         </p>
@@ -133,7 +133,7 @@ export function EducationChat({ selectedTerm, onClear }: EducationChatProps) {
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-2.5 border-b border-[var(--border-subtle)]">
         <div className="flex items-center gap-2">
-          <GraduationCap className="h-4 w-4 text-indigo-500" />
+          <GraduationCap className="h-4 w-4 text-blue-500" />
           <span className="text-xs font-medium text-foreground">
             {selectedTerm ? selectedTerm.term : 'Education'}
           </span>
@@ -168,7 +168,7 @@ export function EducationChat({ selectedTerm, onClear }: EducationChatProps) {
                 className={cn(
                   'max-w-[90%] px-3 py-2 text-xs leading-relaxed rounded-lg',
                   msg.type === 'user'
-                    ? 'bg-indigo-600 text-white rounded-br-sm'
+                    ? 'bg-blue-600 text-white rounded-br-sm'
                     : 'bg-[var(--bg-elevated)] border border-[var(--border-subtle)] text-foreground rounded-bl-sm'
                 )}
                 dangerouslySetInnerHTML={{
@@ -193,7 +193,7 @@ export function EducationChat({ selectedTerm, onClear }: EducationChatProps) {
                 {[0, 1, 2].map((i) => (
                   <div
                     key={i}
-                    className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-bounce"
+                    className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-bounce"
                     style={{ animationDelay: `${i * 0.15}s` }}
                   />
                 ))}
@@ -216,7 +216,7 @@ export function EducationChat({ selectedTerm, onClear }: EducationChatProps) {
             placeholder={selectedTerm ? `Ask about ${selectedTerm.term}...` : 'Ask a question...'}
             disabled={isLoading}
             onKeyDown={(e) => e.stopPropagation()}
-            className="flex-1 bg-[var(--bg-elevated)] border border-[var(--border-default)] rounded-md px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground outline-none focus:border-indigo-500/50 transition-colors"
+            className="flex-1 bg-[var(--bg-elevated)] border border-[var(--border-default)] rounded-md px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground outline-none focus:border-blue-500/50 transition-colors"
           />
           <button
             type="submit"
@@ -225,7 +225,7 @@ export function EducationChat({ selectedTerm, onClear }: EducationChatProps) {
               'p-2 rounded-md transition-colors',
               isLoading || !input.trim()
                 ? 'bg-muted text-muted-foreground cursor-not-allowed'
-                : 'bg-indigo-600 text-white hover:bg-indigo-500 cursor-pointer'
+                : 'bg-blue-600 text-white hover:bg-blue-500 cursor-pointer'
             )}
           >
             <Send className="h-3.5 w-3.5" />

@@ -124,7 +124,7 @@ const ConversationItem = React.memo(function ConversationItem({
       data-conversation-id={conversation.id}
       className={cn(
         "w-full text-left px-3 py-2 rounded-lg transition-all duration-150 group relative mx-2",
-        isActive && "bg-[rgba(79,70,229,0.10)] border-l-2 border-l-[var(--accent-indigo)] border-y border-r border-y-transparent border-r-transparent",
+        isActive && "bg-[rgba(59,130,246,0.10)] border-l-2 border-l-[var(--accent-indigo)] border-y border-r border-y-transparent border-r-transparent",
         !isActive && "hover:bg-[var(--surface-hover)] border border-transparent",
         isNavigatingToThis && "opacity-50 cursor-wait",
       )}
@@ -416,7 +416,7 @@ export function ConversationSidebar({
         <div className="flex gap-2 items-center">
           <button
             onClick={onNewConversation}
-            className="flex items-center gap-1.5 h-7 px-3 rounded-md bg-[var(--accent-indigo-muted)] text-[var(--accent-indigo-hover)] text-xs font-medium hover:bg-[rgba(79,70,229,0.22)] border border-[rgba(79,70,229,0.15)] hover:border-[rgba(79,70,229,0.30)] transition-all duration-200"
+            className="flex items-center gap-1.5 h-7 px-3 rounded-md bg-[var(--accent-indigo-muted)] text-[var(--accent-indigo-hover)] text-xs font-medium hover:bg-[rgba(59,130,246,0.22)] border border-[rgba(59,130,246,0.15)] hover:border-[rgba(59,130,246,0.30)] transition-all duration-200"
           >
             <Plus size={14} weight="bold" />
             New
@@ -469,8 +469,8 @@ export function ConversationSidebar({
               <span
                 className="px-1.5 py-0.5 rounded-full text-[10px]"
                 style={{
-                  background: 'rgba(139,92,246,0.1)',
-                  color: 'var(--accent-indigo, #8b5cf6)',
+                  background: 'rgba(59,130,246,0.1)',
+                  color: 'var(--accent-indigo, #3B82F6)',
                 }}
               >
                 {savedInsights.length}

@@ -79,7 +79,7 @@ export default function DemoVideoPlaceholder({ demoSrc }: DemoVideoProps) {
           height: '36px',
           borderRadius: '50%',
           background: 'rgba(0, 0, 0, 0.6)',
-          border: '1px solid rgba(99, 102, 241, 0.3)',
+          border: '1px solid rgba(59, 130, 246, 0.3)',
           color: 'rgba(255, 255, 255, 0.8)',
           cursor: 'pointer',
           display: 'flex',
@@ -89,12 +89,12 @@ export default function DemoVideoPlaceholder({ demoSrc }: DemoVideoProps) {
           zIndex: 10,
         }}
         onMouseEnter={(e) => {
-          e.currentTarget.style.background = 'rgba(99, 102, 241, 0.3)';
-          e.currentTarget.style.borderColor = 'rgba(99, 102, 241, 0.6)';
+          e.currentTarget.style.background = 'rgba(59, 130, 246, 0.3)';
+          e.currentTarget.style.borderColor = 'rgba(59, 130, 246, 0.6)';
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.background = 'rgba(0, 0, 0, 0.6)';
-          e.currentTarget.style.borderColor = 'rgba(99, 102, 241, 0.3)';
+          e.currentTarget.style.borderColor = 'rgba(59, 130, 246, 0.3)';
         }}
         title="Replay demo"
       >

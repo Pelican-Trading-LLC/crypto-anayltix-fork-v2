@@ -71,7 +71,7 @@ function planVariant(plan: string) {
 function planColor(plan: string) {
   switch (plan) {
     case 'pro':
-      return 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20'
+      return 'bg-blue-500/10 text-blue-400 border-blue-500/20'
     case 'power':
       return 'bg-amber-500/10 text-amber-400 border-amber-500/20'
     case 'founder':

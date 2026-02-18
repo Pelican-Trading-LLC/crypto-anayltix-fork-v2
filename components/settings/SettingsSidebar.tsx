@@ -36,7 +36,7 @@ export function SettingsSidebar({ activeSection, onSectionChange }: SettingsSide
                   onClick={() => onSectionChange(section.id)}
                   className={`w-full flex items-center gap-3 px-3 py-2 min-h-[44px] rounded-lg text-sm font-medium transition-colors ${
                     activeSection === section.id
-                      ? "bg-indigo-500/15 text-indigo-400 dark:bg-indigo-500/20 dark:text-indigo-300"
+                      ? "bg-blue-500/15 text-blue-400 dark:bg-blue-500/20 dark:text-blue-300"
                       : "text-muted-foreground hover:bg-muted hover:text-foreground"
                   }`}
                 >
