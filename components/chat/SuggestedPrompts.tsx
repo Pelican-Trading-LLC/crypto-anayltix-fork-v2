@@ -28,8 +28,8 @@ export function SuggestedPrompts({ onSelect, disabled }: SuggestedPromptsProps) 
             disabled={disabled}
             className={
               disabled
-                ? "p-3 sm:p-4 rounded-xl border border-border/40 bg-card text-left cursor-not-allowed opacity-50"
-                : "p-3 sm:p-4 rounded-xl border border-border/40 bg-card hover:border-primary/40 hover:bg-card/80 shadow-sm shadow-black/10 hover:shadow-md hover:shadow-black/20 transition-all duration-200 text-left cursor-pointer group"
+                ? "p-3 sm:p-4 rounded-xl border border-white/[0.06] bg-[color-mix(in_oklch,var(--card),white_6%)] text-left cursor-not-allowed opacity-50"
+                : "p-3 sm:p-4 rounded-xl border border-white/[0.08] bg-[color-mix(in_oklch,var(--card),white_6%)] hover:border-white/[0.12] hover:bg-[color-mix(in_oklch,var(--card),white_12%)] shadow-[0_0_10px_rgba(255,255,255,0.02)] hover:shadow-[0_0_15px_rgba(255,255,255,0.04)] transition-all duration-200 text-left cursor-pointer group"
             }
           >
             <span className={
