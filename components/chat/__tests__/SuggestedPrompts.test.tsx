@@ -1,18 +1,24 @@
 import { describe, it, expect, vi } from "vitest"
 import { render, screen, fireEvent } from "@testing-library/react"
+import type { PropsWithChildren } from "react"
 import { SuggestedPrompts, SUGGESTED_PROMPTS } from "../SuggestedPrompts"
 
 vi.mock("framer-motion", () => ({
   motion: {
-    button: ({ children, ...props }: React.PropsWithChildren<Record<string, unknown>>) => {
-      const rest = props
-      return <button {...rest}>{children}</button>
+    button: ({ children, whileHover, whileTap, initial, animate, exit, transition, ...props }: PropsWithChildren<Record<string, unknown>>) => {
+      void whileHover
+      void whileTap
+      void initial
+      void animate
+      void exit
+      void transition
+      return <button {...(props as React.ButtonHTMLAttributes<HTMLButtonElement>)}>{children}</button>
     },
   },
 }))
 
 describe("SuggestedPrompts", () => {
-  it("renders all 6 prompts", () => {
+  it("renders all prompts", () => {
     render(<SuggestedPrompts onSelect={vi.fn()} />)
     for (const prompt of SUGGESTED_PROMPTS) {
       expect(screen.getByText(prompt)).toBeInTheDocument()
@@ -26,8 +32,8 @@ describe("SuggestedPrompts", () => {
     fireEvent.click(screen.getByText(SUGGESTED_PROMPTS[0]))
     expect(onSelect).toHaveBeenCalledWith(SUGGESTED_PROMPTS[0])
 
-    fireEvent.click(screen.getByText(SUGGESTED_PROMPTS[3]))
-    expect(onSelect).toHaveBeenCalledWith(SUGGESTED_PROMPTS[3])
+    fireEvent.click(screen.getByText(SUGGESTED_PROMPTS[2]))
+    expect(onSelect).toHaveBeenCalledWith(SUGGESTED_PROMPTS[2])
 
     expect(onSelect).toHaveBeenCalledTimes(2)
   })

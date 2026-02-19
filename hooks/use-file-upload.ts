@@ -3,6 +3,8 @@
 import { useState, useCallback, useRef, useEffect } from "react"
 import type { ChatInputRef } from "@/components/chat/chat-input"
 import { ACCEPTED_FILE_TYPES, LIMITS, API_ENDPOINTS } from "@/lib/constants"
+import { createClient } from "@/lib/supabase/client"
+import { uploadChatImage } from "@/lib/upload-image"
 
 const isAcceptedFileType = (file: File) => {
   const normalizedMime = (file.type.split(";")[0] || file.type).trim().toLowerCase()
@@ -18,6 +20,12 @@ interface PendingAttachment {
   fileId?: string
 }
 
+interface ImageMetadata {
+  storagePath: string
+  name: string
+  size: number
+}
+
 interface UseFileUploadOptions {
   sendMessage: (content: string, options?: { attachments?: any[]; fileIds?: string[] }) => Promise<void>
   addSystemMessage: (content: string, retryAction?: () => void) => string
@@ -30,6 +38,8 @@ export function useFileUpload({ sendMessage, addSystemMessage, chatInputRef }: U
 
   const abortControllerRef = useRef<AbortController | null>(null)
   const mountedRef = useRef(true)
+  const pendingImageMetaRef = useRef<ImageMetadata[]>([])
+  const imageFilesRef = useRef<Map<string, File>>(new Map())
 
   useEffect(() => {
     mountedRef.current = true
@@ -202,12 +212,88 @@ export function useFileUpload({ sendMessage, addSystemMessage, chatInputRef }: U
     [addSystemMessage, chatInputRef],
   )
 
-  const clearUploadedFiles = useCallback(() => setUploadedFiles([]), [])
+  const clearUploadedFiles = useCallback(() => {
+    setUploadedFiles([])
+    imageFilesRef.current.clear()
+  }, [])
   const removeUploadedFile = useCallback((index: number) => {
     setUploadedFiles((prev) => prev.filter((_, i) => i !== index))
   }, [])
   const getUploadedFileIds = useCallback(() => uploadedFiles.map(f => f.id), [uploadedFiles])
   const getUploadedAttachments = useCallback(() => uploadedFiles.map(f => ({ type: f.type, name: f.name, url: f.url })), [uploadedFiles])
+
+  const handleMultipleFileUploadWithCapture = useCallback((files: File[]) => {
+    for (const file of files) {
+      if (file.type.startsWith("image/")) {
+        imageFilesRef.current.set(`${file.name}:${file.type}`, file)
+      }
+    }
+    void handleMultipleFileUpload(files)
+  }, [handleMultipleFileUpload])
+
+  const prepareMessageFiles = useCallback(async (userId?: string | null) => {
+    const fileIds = getUploadedFileIds()
+    const attachments = getUploadedAttachments()
+    const imagesMeta: ImageMetadata[] = []
+
+    if (userId && attachments.length > 0) {
+      for (const attachment of attachments) {
+        if (!attachment.type?.startsWith("image/")) continue
+
+        const key = `${attachment.name}:${attachment.type}`
+        const originalFile = imageFilesRef.current.get(key)
+        if (!originalFile) continue
+
+        const result = await uploadChatImage(originalFile, userId)
+        if (result) {
+          imagesMeta.push({
+            storagePath: result.storagePath,
+            name: originalFile.name,
+            size: originalFile.size,
+          })
+        }
+        imageFilesRef.current.delete(key)
+      }
+    }
+
+    pendingImageMetaRef.current = imagesMeta
+
+    return {
+      fileIds: fileIds.length > 0 ? fileIds : undefined,
+      attachments: attachments.length > 0 ? attachments : undefined,
+    }
+  }, [getUploadedFileIds, getUploadedAttachments])
+
+  const persistPendingImageMetadata = useCallback(async (conversationId: string | null) => {
+    const imagesMeta = pendingImageMetaRef.current
+    if (!conversationId || imagesMeta.length === 0) return
+
+    pendingImageMetaRef.current = []
+
+    try {
+      const supabase = createClient()
+      const { data: recentMsg } = await supabase
+        .from("messages")
+        .select("id, metadata")
+        .eq("conversation_id", conversationId)
+        .eq("role", "user")
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .single()
+
+      if (recentMsg) {
+        const existingMeta = (recentMsg.metadata as Record<string, unknown>) || {}
+        await supabase
+          .from("messages")
+          .update({
+            metadata: { ...existingMeta, images: imagesMeta },
+          })
+          .eq("id", recentMsg.id)
+      }
+    } catch {
+      // Best-effort metadata persistence.
+    }
+  }, [])
 
   return {
     pendingAttachments,
@@ -220,5 +306,8 @@ export function useFileUpload({ sendMessage, addSystemMessage, chatInputRef }: U
     removeUploadedFile,
     getUploadedFileIds,
     getUploadedAttachments,
+    handleMultipleFileUploadWithCapture,
+    prepareMessageFiles,
+    persistPendingImageMetadata,
   }
 }

@@ -6,7 +6,15 @@ import { AttachButton } from "./AttachButton"
 // Mock framer-motion
 vi.mock("framer-motion", () => ({
   motion: {
-    button: ({ children, ...props }: PropsWithChildren<Record<string, unknown>>) => <button {...props}>{children}</button>,
+    button: ({ children, whileHover, whileTap, initial, animate, exit, transition, ...props }: PropsWithChildren<Record<string, unknown>>) => {
+      void whileHover
+      void whileTap
+      void initial
+      void animate
+      void exit
+      void transition
+      return <button {...(props as React.ButtonHTMLAttributes<HTMLButtonElement>)}>{children}</button>
+    },
   },
 }))
 

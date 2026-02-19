@@ -6,8 +6,22 @@ import { SendButton } from "./SendButton"
 // Mock framer-motion to render plain elements
 vi.mock("framer-motion", () => ({
   motion: {
-    button: ({ children, ...props }: PropsWithChildren<Record<string, unknown>>) => <button {...props}>{children}</button>,
-    div: ({ children, ...props }: PropsWithChildren<Record<string, unknown>>) => <div {...props}>{children}</div>,
+    button: ({ children, whileHover, whileTap, initial, animate, exit, transition, ...props }: PropsWithChildren<Record<string, unknown>>) => {
+      void whileHover
+      void whileTap
+      void initial
+      void animate
+      void exit
+      void transition
+      return <button {...(props as React.ButtonHTMLAttributes<HTMLButtonElement>)}>{children}</button>
+    },
+    div: ({ children, initial, animate, exit, transition, ...props }: PropsWithChildren<Record<string, unknown>>) => {
+      void initial
+      void animate
+      void exit
+      void transition
+      return <div {...(props as React.HTMLAttributes<HTMLDivElement>)}>{children}</div>
+    },
   },
   AnimatePresence: ({ children }: PropsWithChildren) => <>{children}</>,
 }))

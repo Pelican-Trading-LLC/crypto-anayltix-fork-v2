@@ -10,10 +10,10 @@ import { useChat } from "@/hooks/use-chat"
 import { useMarketData } from "@/hooks/use-market-data"
 import { useMessageHandler } from "@/hooks/use-message-handler"
 import { useFileUpload } from "@/hooks/use-file-upload"
+import { usePanelLayout } from "@/hooks/use-panel-layout"
 import { useConversationRouter } from "@/hooks/use-conversation-router"
 import { useAuth } from "@/lib/providers/auth-provider"
 import { createClient } from "@/lib/supabase/client"
-import { uploadChatImage } from "@/lib/upload-image"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Menu } from "lucide-react"
@@ -128,13 +128,22 @@ export default function ChatPage() {
   const outOfCredits = !creditsLoading && !hasAccess
   const router = useRouter()
   const searchParams = useSearchParams()
-
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
-  const [mobileSheetOpen, setMobileSheetOpen] = useState(false)
-  const [showOfflineBanner, setShowOfflineBanner] = useState(false)
-  const [mounted, setMounted] = useState(false)
-  const [tradingPanelCollapsed, setTradingPanelCollapsed] = useState(false)
-  const [sidebarWidth, setSidebarWidth] = useState(280)
+  const {
+    mounted,
+    showOfflineBanner,
+    setShowOfflineBanner,
+    sidebarCollapsed,
+    mobileSheetOpen,
+    setMobileSheetOpen,
+    tradingPanelCollapsed,
+    sidebarWidth,
+    panelWidth,
+    handleSidebarToggle,
+    handleSidebarWidthChange,
+    handleTradingPanelToggle,
+    handleResizeStart,
+    expandTradingPanel,
+  } = usePanelLayout()
 
   // Tilt detection
   const { alerts: tiltAlerts, isOnTilt } = useTiltDetection()
@@ -178,71 +187,6 @@ export default function ChatPage() {
     setCloseTradeOpen(true)
   }, [allTradesRaw])
 
-  // Resizable trading panel width
-  const PANEL_MIN = 280
-  const PANEL_MAX = 700
-  const PANEL_DEFAULT = 320
-  const [panelWidth, setPanelWidth] = useState(PANEL_DEFAULT)
-  const isResizing = useRef(false)
-
-  // Handle sidebar toggle with persistence
-  const handleSidebarToggle = () => {
-    const newCollapsed = !sidebarCollapsed
-    setSidebarCollapsed(newCollapsed)
-    localStorage.setItem('pelican_sidebar_collapsed', newCollapsed.toString())
-  }
-
-  // Handle sidebar width change with persistence
-  const handleSidebarWidthChange = useCallback((newWidth: number) => {
-    setSidebarWidth(newWidth)
-    localStorage.setItem('pelican_sidebar_width', String(newWidth))
-  }, [])
-
-  // Handle trading panel toggle with persistence
-  const handleTradingPanelToggle = () => {
-    const newCollapsed = !tradingPanelCollapsed
-    setTradingPanelCollapsed(newCollapsed)
-    localStorage.setItem('pelican_trading_panel_collapsed', newCollapsed.toString())
-  }
-
-  // Panel resize handlers
-  const handleResizeStart = useCallback((e: React.MouseEvent) => {
-    e.preventDefault()
-    isResizing.current = true
-    const startX = e.clientX
-    const startWidth = panelWidth
-
-    document.body.style.userSelect = 'none'
-    document.body.style.cursor = 'col-resize'
-    // Disable pointer events on iframes during drag (they eat mouse events)
-    document.querySelectorAll('iframe').forEach(f => { (f as HTMLElement).style.pointerEvents = 'none' })
-
-    const onMouseMove = (ev: MouseEvent) => {
-      if (!isResizing.current) return
-      // Dragging left increases width (panel is on the right)
-      const delta = startX - ev.clientX
-      const newWidth = Math.min(PANEL_MAX, Math.max(PANEL_MIN, startWidth + delta))
-      setPanelWidth(newWidth)
-    }
-
-    const onMouseUp = () => {
-      isResizing.current = false
-      document.body.style.userSelect = ''
-      document.body.style.cursor = ''
-      document.querySelectorAll('iframe').forEach(f => { (f as HTMLElement).style.pointerEvents = '' })
-      document.removeEventListener('mousemove', onMouseMove)
-      document.removeEventListener('mouseup', onMouseUp)
-      // Persist final width
-      setPanelWidth(w => {
-        localStorage.setItem('pelican_trading_panel_width', String(w))
-        return w
-      })
-    }
-
-    document.addEventListener('mousemove', onMouseMove)
-    document.addEventListener('mouseup', onMouseUp)
-  }, [panelWidth])
-
   // Fetch real-time market data
   const { indices, vix, vixChange, sectors, watchlist, isLoading: isLoadingMarketData, refresh: refreshMarketData } = useMarketData({
     refreshInterval: 60000, // Refresh every 60 seconds
@@ -250,45 +194,6 @@ export default function ChatPage() {
     watchlistSymbols: ['AAPL', 'TSLA', 'NVDA', 'SPY'] // User's custom watchlist
   })
 
-  // Hydrate localStorage values after mount and monitor network status
-  useEffect(() => {
-    setMounted(true)
-
-    // Restore persisted state from localStorage
-    const savedSidebar = localStorage.getItem('pelican_sidebar_collapsed')
-    if (savedSidebar === 'true') setSidebarCollapsed(true)
-
-    const savedPanel = localStorage.getItem('pelican_trading_panel_collapsed')
-    if (savedPanel === 'true') setTradingPanelCollapsed(true)
-
-    const savedWidth = localStorage.getItem('pelican_trading_panel_width')
-    if (savedWidth) {
-      const n = parseInt(savedWidth, 10)
-      if (!isNaN(n) && n >= PANEL_MIN && n <= PANEL_MAX) setPanelWidth(n)
-    }
-
-    const savedSidebarWidth = localStorage.getItem('pelican_sidebar_width')
-    if (savedSidebarWidth) {
-      const sw = parseInt(savedSidebarWidth, 10)
-      if (!isNaN(sw) && sw >= 220 && sw <= 480) setSidebarWidth(sw)
-    }
-
-    // Monitor online/offline status
-    const handleOnline = () => {
-      setShowOfflineBanner(false)
-    }
-    const handleOffline = () => {
-      setShowOfflineBanner(true)
-    }
-
-    window.addEventListener('online', handleOnline)
-    window.addEventListener('offline', handleOffline)
-
-    return () => {
-      window.removeEventListener('online', handleOnline)
-      window.removeEventListener('offline', handleOffline)
-    }
-  }, [])
   // One-time terms acceptance check
   const [termsChecked, setTermsChecked] = useState(false)
   useEffect(() => {
@@ -366,36 +271,8 @@ export default function ChatPage() {
       setShowOfflineBanner(false)
       messageHandler.handleMessageFinish()
 
-      // Persist image metadata to the user message in Supabase
-      const imagesMeta = pendingImageMetaRef.current
-      const activeConvId = latestConversationIdRef.current
-      if (imagesMeta.length > 0 && activeConvId) {
-        pendingImageMetaRef.current = []
-        try {
-          const supabase = createClient()
-          // Find the most recent user message in this conversation
-          const { data: recentMsg } = await supabase
-            .from('messages')
-            .select('id, metadata')
-            .eq('conversation_id', activeConvId)
-            .eq('role', 'user')
-            .order('created_at', { ascending: false })
-            .limit(1)
-            .single()
-
-          if (recentMsg) {
-            const existingMeta = (recentMsg.metadata as Record<string, unknown>) || {}
-            await supabase
-              .from('messages')
-              .update({
-                metadata: { ...existingMeta, images: imagesMeta },
-              })
-              .eq('id', recentMsg.id)
-          }
-        } catch {
-
-        }
-      }
+      // Persist queued image metadata to the most recent user message.
+      await fileUpload.persistPendingImageMetadata(latestConversationIdRef.current)
 
       // Auto-generate conversation title after first exchange
       const convId = latestConversationIdRef.current
@@ -487,77 +364,35 @@ export default function ChatPage() {
     addSystemMessage,
     chatInputRef,
   })
+  const clearUploadedFiles = fileUpload.clearUploadedFiles
 
   // Clear uploaded files when switching conversations
   const prevConversationRef = useRef(conversationIdFromUrl)
   useEffect(() => {
     if (prevConversationRef.current !== conversationIdFromUrl) {
-      fileUpload.clearUploadedFiles()
+      clearUploadedFiles()
     }
     prevConversationRef.current = conversationIdFromUrl
-  }, [conversationIdFromUrl, fileUpload])
+  }, [conversationIdFromUrl, clearUploadedFiles])
 
   const handleQuickStart = (message: string) => {
     messageHandler.handleSendMessage(message)
   }
 
-  // Track image metadata for persistence after message send
-  const pendingImageMetaRef = useRef<Array<{ storagePath: string; name: string; size: number }>>([])
   // Track latest conversation ID (updated by onConversationCreated before onFinish fires)
   const latestConversationIdRef = useRef<string | null>(conversationIdFromUrl)
   latestConversationIdRef.current = conversationIdFromUrl
-  // Capture original File objects as they're uploaded (so we can re-upload images to chat-images)
-  const imageFilesRef = useRef<Map<string, File>>(new Map())
-
-  // Wrap the file upload to capture image File objects
   const handleFileUploadWithCapture = useCallback((files: File[]) => {
-    for (const file of files) {
-      if (file.type.startsWith('image/')) {
-        imageFilesRef.current.set(`${file.name}:${file.type}`, file)
-      }
-    }
-    fileUpload.handleMultipleFileUpload(files)
+    fileUpload.handleMultipleFileUploadWithCapture(files)
   }, [fileUpload])
 
   const handleSendMessageWithFiles = useCallback(async (message: string) => {
-    // Get uploaded file IDs and attachments
-    const fileIds = fileUpload.getUploadedFileIds()
-    const attachments = fileUpload.getUploadedAttachments()
-
-    // Upload any image attachments to chat-images bucket for persistence
-    const imagesMeta: Array<{ storagePath: string; name: string; size: number }> = []
-    if (user && attachments.length > 0) {
-      for (const att of attachments) {
-        if (att.type?.startsWith('image/')) {
-          const key = `${att.name}:${att.type}`
-          const originalFile = imageFilesRef.current.get(key)
-          if (originalFile) {
-            const result = await uploadChatImage(originalFile, user.id)
-            if (result) {
-              imagesMeta.push({
-                storagePath: result.storagePath,
-                name: originalFile.name,
-                size: originalFile.size,
-              })
-            }
-            imageFilesRef.current.delete(key)
-          }
-        }
-      }
-    }
-
-    // Store pending image metadata for post-send DB update
-    pendingImageMetaRef.current = imagesMeta
-
-    // Send message with files
-    await messageHandler.handleSendMessage(message, {
-      fileIds: fileIds.length > 0 ? fileIds : undefined,
-      attachments: attachments.length > 0 ? attachments : undefined
-    })
+    const uploadPayload = await fileUpload.prepareMessageFiles(user?.id)
+    await messageHandler.handleSendMessage(message, uploadPayload)
 
     // Clear uploaded files after sending
-    fileUpload.clearUploadedFiles()
-  }, [fileUpload, messageHandler, user])
+    clearUploadedFiles()
+  }, [fileUpload, messageHandler, user?.id, clearUploadedFiles])
 
   const handleConversationSelect = (id: string) => {
     conversationRouter.handleConversationSelect(id)
@@ -596,14 +431,8 @@ export default function ChatPage() {
       <ChatErrorBoundary onReset={() => clearMessages()}>
         <ChartProvider>
         <LearningModeProvider>
-        <ChartPanelExpander onExpand={() => {
-          setTradingPanelCollapsed(false)
-          localStorage.setItem('pelican_trading_panel_collapsed', 'false')
-        }} />
-        <LearningPanelExpander onExpand={() => {
-          setTradingPanelCollapsed(false)
-          localStorage.setItem('pelican_trading_panel_collapsed', 'false')
-        }} />
+        <ChartPanelExpander onExpand={expandTradingPanel} />
+        <LearningPanelExpander onExpand={expandTradingPanel} />
         <div id="main-content" className="flex h-[calc(100vh-3.5rem)] min-h-0 overflow-hidden relative chat-background-gradient chat-viewport-lock">
       {/* Futuristic background effects - only in dark mode */}
       {/* <div className="absolute inset-0 dark:block hidden pointer-events-none">

@@ -22,10 +22,6 @@ vi.mock("../attachment-chip", () => ({
   AttachmentChip: ({ name }: { name: string }) => <div data-testid="attachment-chip">{name}</div>,
 }))
 
-vi.mock("../table-image-display", () => ({
-  TableImageDisplay: () => <div data-testid="table-image">Table</div>,
-}))
-
 describe("AttachmentDisplay", () => {
   it("returns null for undefined attachments", () => {
     const { container } = render(<AttachmentDisplay attachments={undefined} />)
@@ -47,13 +43,15 @@ describe("AttachmentDisplay", () => {
     expect(screen.getByText("report.pdf")).toBeInTheDocument()
   })
 
-  it("renders Pelican table image with TableImageDisplay", () => {
+  it("renders Pelican table image as an image attachment", () => {
     render(
       <AttachmentDisplay
         attachments={[{ name: "pelican_table_1.png", type: "image/png", url: "https://example.com/table.png" }]}
       />
     )
-    expect(screen.getByTestId("table-image")).toBeInTheDocument()
+    const img = screen.getByAltText("pelican_table_1.png")
+    expect(img).toBeInTheDocument()
+    expect(img).toHaveAttribute("src", "https://example.com/table.png")
   })
 
   it("renders regular image with img tag", () => {

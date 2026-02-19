@@ -15,8 +15,9 @@ import { createClient } from "@/lib/supabase/client"
 import type { User } from "@supabase/supabase-js"
 import * as Sentry from "@sentry/nextjs"
 import { captureError } from "@/lib/sentry-helper"
+import { useGuestConversations } from "@/hooks/use-guest-conversations"
+import { useConversationRealtime } from "@/hooks/use-conversation-realtime"
 import {
-  isValidUUID,
   updateConversation as updateConversationDB,
   hardDeleteConversation,
   logRLSError
@@ -72,38 +73,6 @@ export interface UseConversationsReturn {
 }
 
 // ============================================================================
-// Guest User Utilities
-// ============================================================================
-
-function generateGuestUUID(): string {
-  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
-    const r = (Math.random() * 16) | 0
-    const v = c == "x" ? r : (r & 0x3) | 0x8
-    return v.toString(16)
-  })
-}
-
-const GUEST_CONVERSATIONS_KEY = "pelican_guest_conversations"
-const GUEST_USER_ID_KEY = "pelican_guest_user_id"
-
-function saveGuestConversations(conversations: Conversation[]) {
-  try {
-    localStorage.setItem(GUEST_CONVERSATIONS_KEY, JSON.stringify(conversations))
-  } catch (error) {
-    // Silent fail
-  }
-}
-
-function loadGuestConversations(): Conversation[] {
-  try {
-    const stored = localStorage.getItem(GUEST_CONVERSATIONS_KEY)
-    return stored ? JSON.parse(stored) : []
-  } catch (error) {
-    return []
-  }
-}
-
-// ============================================================================
 // Debounce Hook
 // ============================================================================
 
@@ -138,6 +107,22 @@ export function useConversations(): UseConversationsReturn {
   const pathname = usePathname()
   const supabase = useMemo(() => createClient(), [])
   const effectiveUserId = user?.id || guestUserId
+  const {
+    initializeGuestUserId,
+    loadGuestConversations,
+    createGuestConversation,
+    renameGuestConversation,
+    archiveGuestConversation,
+    removeGuestConversation,
+    updateGuestMessages: updateGuestConversationMessages,
+    loadGuestMessages: loadGuestConversationMessages,
+    ensureGuestConversation: ensureGuestConversationExists,
+  } = useGuestConversations<Conversation>({
+    isAuthenticated: Boolean(user?.id),
+    guestUserId,
+    setGuestUserId,
+    setConversations,
+  })
 
   // --------------------------------------------------------------------------
   // Debug: Log user ID sources
@@ -172,20 +157,9 @@ export function useConversations(): UseConversationsReturn {
     }
   }, [supabase])
 
-  // --------------------------------------------------------------------------
-  // Initialize guest user ID
-  // --------------------------------------------------------------------------
   useEffect(() => {
-    const storedGuestId = localStorage.getItem(GUEST_USER_ID_KEY)
-
-    if (storedGuestId && isValidUUID(storedGuestId)) {
-      setGuestUserId(storedGuestId)
-    } else {
-      const newGuestId = generateGuestUUID()
-      localStorage.setItem(GUEST_USER_ID_KEY, newGuestId)
-      setGuestUserId(newGuestId)
-    }
-  }, [])
+    initializeGuestUserId()
+  }, [initializeGuestUserId])
 
   // --------------------------------------------------------------------------
   // Auth state management
@@ -233,41 +207,19 @@ export function useConversations(): UseConversationsReturn {
       cancelled = true
       subscription?.unsubscribe()
     }
-  }, [guestUserId, loadFromDatabase])
+  }, [guestUserId, loadFromDatabase, loadGuestConversations, supabase])
 
-  // --------------------------------------------------------------------------
-  // Real-time subscription
-  // --------------------------------------------------------------------------
-  useEffect(() => {
-    if (!user?.id) return
-
-    const channel = supabase
-      .channel(`conversations:${user.id}`)
-      .on(
-        "postgres_changes",
-        { 
-          event: "*", 
-          schema: "public", 
-          table: "conversations", 
-          filter: `user_id=eq.${user.id}` 
-        },
-        () => loadFromDatabase(user.id)
-      )
-      .subscribe()
-
-    return () => { channel.unsubscribe() }
-  }, [user?.id, loadFromDatabase])
-
-  // --------------------------------------------------------------------------
-  // Instant refresh on conversation creation (supplements Realtime)
-  // --------------------------------------------------------------------------
-  useEffect(() => {
-    const handler = () => {
-      if (user?.id) loadFromDatabase(user.id)
+  const refreshCurrentUserConversations = useCallback(() => {
+    if (user?.id) {
+      void loadFromDatabase(user.id)
     }
-    window.addEventListener('pelican:conversation-created', handler)
-    return () => window.removeEventListener('pelican:conversation-created', handler)
   }, [user?.id, loadFromDatabase])
+
+  useConversationRealtime({
+    userId: user?.id,
+    supabase,
+    onRefresh: refreshCurrentUserConversations,
+  })
 
   // --------------------------------------------------------------------------
   // Load more (pagination)
@@ -324,7 +276,7 @@ export function useConversations(): UseConversationsReturn {
         }
       })
     }
-  }, [pathname, user?.id, loadFromDatabase, guestUserId, effectiveUserId])
+  }, [pathname, user?.id, loadFromDatabase, guestUserId, effectiveUserId, supabase, loadGuestConversations])
 
   // --------------------------------------------------------------------------
   // CREATE
@@ -368,24 +320,8 @@ export function useConversations(): UseConversationsReturn {
       }
     }
 
-    // Guest user: save to localStorage
-    const newConversation: Conversation = {
-      id: `guest-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      title,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      message_count: 0,
-      last_message_preview: "",
-      user_id: userId,
-      archived: false,
-    }
-
-    const updated = [newConversation, ...loadGuestConversations()]
-    saveGuestConversations(updated)
-    setConversations(updated)
-
-    return newConversation
-  }, [guestUserId, user, loadFromDatabase])
+    return createGuestConversation(title)
+  }, [guestUserId, user, loadFromDatabase, supabase, createGuestConversation])
 
   // --------------------------------------------------------------------------
   // RENAME
@@ -416,13 +352,7 @@ export function useConversations(): UseConversationsReturn {
           throw new Error(err.error || "Rename failed")
         }
       } else {
-        // Guest: update localStorage
-        const updated = loadGuestConversations().map(c =>
-          c.id === conversationId
-            ? { ...c, title: newTitle, updated_at: new Date().toISOString() }
-            : c
-        )
-        saveGuestConversations(updated)
+        renameGuestConversation(conversationId, newTitle)
       }
       return true
     } catch (error) {
@@ -430,7 +360,7 @@ export function useConversations(): UseConversationsReturn {
       setConversations(previous) // Rollback
       return false
     }
-  }, [conversations, effectiveUserId, user?.id])
+  }, [conversations, effectiveUserId, user?.id, renameGuestConversation])
 
   // --------------------------------------------------------------------------
   // ARCHIVE
@@ -461,20 +391,14 @@ export function useConversations(): UseConversationsReturn {
           throw error || new Error("Archive failed")
         }
       } else {
-        // Guest: update localStorage
-        const updated = loadGuestConversations().map(c =>
-          c.id === conversationId
-            ? { ...c, archived, updated_at: new Date().toISOString() }
-            : c
-        )
-        saveGuestConversations(updated)
+        archiveGuestConversation(conversationId, archived)
       }
       return true
     } catch (error) {
       setConversations(previous) // Rollback
       return false
     }
-  }, [conversations, effectiveUserId, user?.id])
+  }, [conversations, effectiveUserId, user?.id, archiveGuestConversation])
 
   // --------------------------------------------------------------------------
   // REMOVE (hard delete)
@@ -499,17 +423,14 @@ export function useConversations(): UseConversationsReturn {
           throw error || new Error("Delete failed")
         }
       } else {
-        // Guest: update localStorage and clean up messages
-        const updated = loadGuestConversations().filter(c => c.id !== conversationId)
-        saveGuestConversations(updated)
-        localStorage.removeItem(`pelican_guest_messages_${conversationId}`)
+        removeGuestConversation(conversationId)
       }
       return true
     } catch (error) {
       setConversations(previous) // Rollback
       return false
     }
-  }, [conversations, effectiveUserId, user?.id])
+  }, [conversations, effectiveUserId, user?.id, removeGuestConversation, supabase])
 
   // --------------------------------------------------------------------------
   // Guest-specific utilities
@@ -520,63 +441,16 @@ export function useConversations(): UseConversationsReturn {
     lastMessagePreview: string,
     messages?: unknown[]
   ) => {
-    if (user?.id) return // Auth users don't use this
-
-    const updated = loadGuestConversations().map(c =>
-      c.id === conversationId
-        ? { ...c, message_count: messageCount, last_message_preview: lastMessagePreview, updated_at: new Date().toISOString() }
-        : c
-    )
-    saveGuestConversations(updated)
-    setConversations(updated)
-
-    if (messages?.length) {
-      const toStore = messages.map((m: unknown) => {
-        const msg = m as { id: string; role: string; content: string; timestamp: unknown; attachments?: unknown }
-        return { id: msg.id, role: msg.role, content: msg.content, timestamp: msg.timestamp, attachments: msg.attachments }
-      })
-      localStorage.setItem(`pelican_guest_messages_${conversationId}`, JSON.stringify(toStore))
-    }
-  }, [user?.id])
+    updateGuestConversationMessages(conversationId, messageCount, lastMessagePreview, messages)
+  }, [updateGuestConversationMessages])
 
   const loadGuestMessages = useCallback((conversationId: string): unknown[] => {
-    if (user?.id) return []
-    
-    try {
-      const stored = localStorage.getItem(`pelican_guest_messages_${conversationId}`)
-      if (!stored) return []
-      
-      return JSON.parse(stored).map((m: { timestamp: string }) => ({
-        ...m,
-        timestamp: new Date(m.timestamp),
-        isStreaming: false,
-      }))
-    } catch {
-      return []
-    }
-  }, [user?.id])
+    return loadGuestConversationMessages(conversationId)
+  }, [loadGuestConversationMessages])
 
   const ensureGuestConversation = useCallback((conversationId: string, title?: string) => {
-    if (user?.id) return
-
-    const existing = loadGuestConversations()
-    if (existing.some(c => c.id === conversationId)) return
-
-    const newConv: Conversation = {
-      id: conversationId,
-      title: title || "New Conversation",
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      message_count: 0,
-      last_message_preview: "",
-      user_id: guestUserId || "",
-      archived: false,
-    }
-
-    const updated = [newConv, ...existing]
-    saveGuestConversations(updated)
-    setConversations(updated)
-  }, [user?.id, guestUserId])
+    ensureGuestConversationExists(conversationId, title)
+  }, [ensureGuestConversationExists])
 
   // --------------------------------------------------------------------------
   // Filtered list

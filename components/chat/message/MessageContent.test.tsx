@@ -1,23 +1,35 @@
 import { describe, it, expect, vi } from "vitest"
 import { render, screen } from "@testing-library/react"
+import { forwardRef } from "react"
 import { MessageContent } from "./message-content"
 
 // Mock framer-motion to avoid animation issues in tests
 vi.mock("framer-motion", () => ({
   motion: {
-    div: ({ children, ...props }: React.PropsWithChildren<Record<string, unknown>>) => {
-      const htmlProps = props as Record<string, unknown>
-      const safeProps: Record<string, unknown> = {}
-      for (const [key, value] of Object.entries(htmlProps)) {
-        if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
-          safeProps[key] = value
+    div: forwardRef<HTMLDivElement, React.PropsWithChildren<Record<string, unknown>>>(
+      function MockMotionDiv({ children, initial, animate, exit, transition, ...props }, ref) {
+        void initial
+        void animate
+        void exit
+        void transition
+
+        const htmlProps = props as Record<string, unknown>
+        const safeProps: Record<string, unknown> = {}
+        for (const [key, value] of Object.entries(htmlProps)) {
+          if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
+            safeProps[key] = value
+          }
+          if (key === "dangerouslySetInnerHTML") {
+            safeProps[key] = value
+          }
         }
-        if (key === "dangerouslySetInnerHTML") {
-          safeProps[key] = value
-        }
+        return (
+          <div ref={ref} {...(safeProps as React.HTMLAttributes<HTMLDivElement>)}>
+            {children}
+          </div>
+        )
       }
-      return <div {...(safeProps as React.HTMLAttributes<HTMLDivElement>)}>{children}</div>
-    },
+    ),
   },
 }))
 
