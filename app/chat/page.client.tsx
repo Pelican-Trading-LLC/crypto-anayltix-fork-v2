@@ -433,14 +433,7 @@ export default function ChatPage() {
         <LearningModeProvider>
         <ChartPanelExpander onExpand={expandTradingPanel} />
         <LearningPanelExpander onExpand={expandTradingPanel} />
-        <div id="main-content" className="flex h-[calc(100vh-3.5rem)] min-h-0 overflow-hidden relative chat-background-gradient chat-viewport-lock">
-      {/* Futuristic background effects - only in dark mode */}
-      {/* <div className="absolute inset-0 dark:block hidden pointer-events-none">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-950/10 via-black to-blue-950/10" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(124,58,237,0.08),transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(59,130,246,0.06),transparent_50%)]" />
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(124,58,237,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(124,58,237,0.02)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_80%_at_50%_50%,black,transparent)]" />
-      </div> */}
+        <div id="main-content" className="flex h-[calc(100vh-3.5rem)] min-h-0 overflow-hidden relative app-background-gradient chat-viewport-lock">
       {/* Offline indicator */}
       {showOfflineBanner && (
         <div className="fixed top-14 left-0 right-0 z-50 bg-amber-500 dark:bg-amber-600 text-white px-4 py-2 text-center text-sm font-medium shadow-lg">

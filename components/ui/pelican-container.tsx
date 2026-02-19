@@ -10,8 +10,7 @@ export function PelicanContainer({
   className?: string
 }) {
   return (
-    <div className={cn("relative h-full w-full overflow-hidden bg-[var(--background)]", className)}>
-      <div className="chat-background-gradient pointer-events-none absolute inset-0 opacity-30" />
+    <div className={cn("relative h-full w-full overflow-hidden app-background-gradient", className)}>
       <div className="relative z-10 h-full w-full">{children}</div>
     </div>
   )
