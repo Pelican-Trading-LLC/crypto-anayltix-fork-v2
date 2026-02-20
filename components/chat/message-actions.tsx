@@ -95,10 +95,11 @@ export function MessageActions({
 
   useEffect(() => {
     if (isEditing && textareaRef.current) {
-      textareaRef.current.focus()
-      textareaRef.current.select()
-      textareaRef.current.style.height = "auto"
-      textareaRef.current.style.height = textareaRef.current.scrollHeight + "px"
+      const ta = textareaRef.current
+      ta.focus()
+      ta.setSelectionRange(ta.value.length, ta.value.length)
+      ta.style.height = 'auto'
+      ta.style.height = Math.min(ta.scrollHeight, 300) + 'px'
     }
   }, [isEditing])
 
@@ -194,9 +195,13 @@ export function MessageActions({
         <Textarea
           ref={textareaRef}
           value={editContent}
-          onChange={(e) => setEditContent(e.target.value)}
+          onChange={(e) => {
+            setEditContent(e.target.value)
+            e.target.style.height = 'auto'
+            e.target.style.height = Math.min(e.target.scrollHeight, 300) + 'px'
+          }}
           onKeyDown={handleKeyDown}
-          className="min-h-[60px] resize-none"
+          className="min-h-[120px] max-h-[300px] overflow-y-auto resize-none rounded-2xl bg-primary/10 border border-primary/20 px-4 py-3 text-[15px] leading-relaxed text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
           placeholder="Edit your message..."
         />
         <div className="flex justify-end gap-2 mt-2">

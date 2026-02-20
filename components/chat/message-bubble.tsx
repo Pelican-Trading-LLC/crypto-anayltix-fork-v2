@@ -4,7 +4,7 @@ import type React from "react"
 import Image from "next/image"
 
 import { motion } from "framer-motion"
-import { useState, useCallback, useMemo, memo } from "react"
+import { useState, useCallback, useMemo, useRef, useEffect, memo } from "react"
 import { Copy, Check, PencilSimple, ArrowsClockwise, SpinnerGap } from "@phosphor-icons/react"
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/hooks/use-toast"
@@ -72,6 +72,7 @@ export const MessageBubble = memo(function MessageBubble({
   const [copied, setCopied] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
   const [editContent, setEditContent] = useState('')
+  const editRef = useRef<HTMLTextAreaElement>(null)
   const { toast } = useToast()
   const isUser = message.role === "user"
 
@@ -121,6 +122,18 @@ export const MessageBubble = memo(function MessageBubble({
       setIsEditing(true)
     }
 
+    // Auto-focus with cursor at end and auto-resize on edit start
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useEffect(() => {
+      if (isEditing && editRef.current) {
+        const ta = editRef.current
+        ta.focus()
+        ta.setSelectionRange(ta.value.length, ta.value.length)
+        ta.style.height = 'auto'
+        ta.style.height = Math.min(ta.scrollHeight, 300) + 'px'
+      }
+    }, [isEditing])
+
     const handleSubmitEdit = () => {
       const trimmed = editContent.trim()
       if (trimmed && trimmed !== message.content) {
@@ -153,12 +166,15 @@ export const MessageBubble = memo(function MessageBubble({
               {isEditing ? (
                 <div className="w-full">
                   <textarea
+                    ref={editRef}
                     value={editContent}
-                    onChange={(e) => setEditContent(e.target.value)}
+                    onChange={(e) => {
+                      setEditContent(e.target.value)
+                      e.target.style.height = 'auto'
+                      e.target.style.height = Math.min(e.target.scrollHeight, 300) + 'px'
+                    }}
                     onKeyDown={handleEditKeyDown}
-                    className="w-full bg-[var(--bg-surface)] border border-[var(--border-default)] rounded-2xl px-4 py-3 text-[15px] sm:text-base leading-relaxed text-[var(--text-primary)] resize-none focus:outline-none focus:ring-1 focus:ring-[var(--accent-primary)]"
-                    rows={Math.min(10, Math.max(2, editContent.split('\n').length + 1))}
-                    autoFocus
+                    className="w-full min-h-[120px] max-h-[300px] overflow-y-auto resize-none rounded-2xl rounded-br-sm bg-primary/10 border border-primary/20 px-4 py-3 text-[15px] sm:text-base leading-relaxed text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                   />
                   <div className="flex gap-2 mt-2 justify-end">
                     <Button
