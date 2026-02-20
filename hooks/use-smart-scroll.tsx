@@ -181,8 +181,9 @@ export function useSmartScroll(options: SmartScrollOptions = {}) {
       if (!container) return
 
       // If content fits on screen, don't scroll at all
-      // This handles the first-message case
-      if (container.scrollHeight <= container.clientHeight + 50) return
+      // Skip this guard for user messages — they must set forceScrollRef
+      // so streaming auto-scroll works when content grows past viewport
+      if (!isUserMessage && container.scrollHeight <= container.clientHeight + 50) return
 
       isStreamingRef.current = isStreaming
 
