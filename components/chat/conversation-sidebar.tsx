@@ -30,7 +30,14 @@ import {
   CaretDown,
   CaretUp,
   ArrowLeft,
+  DotsThree,
 } from "@phosphor-icons/react"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { useTheme } from "next-themes"
 import { cn } from "@/lib/utils"
 import { useConversations } from "@/hooks/use-conversations"
@@ -94,7 +101,7 @@ const ConversationItem = React.memo(function ConversationItem({
 }: ConversationItemProps) {
   if (isEditing) {
     return (
-      <div className="px-3 py-2 mx-2">
+      <div className="px-2 py-1.5 mx-1">
         <Input
           value={editTitle}
           onChange={(e) => onEditTitleChange(e.target.value)}
@@ -113,7 +120,7 @@ const ConversationItem = React.memo(function ConversationItem({
             }
           }}
           autoFocus
-          className="h-8 text-sm"
+          className="h-7 text-sm"
         />
       </div>
     )
@@ -123,7 +130,7 @@ const ConversationItem = React.memo(function ConversationItem({
     <button
       data-conversation-id={conversation.id}
       className={cn(
-        "w-full text-left px-3 py-2 rounded-lg transition-all duration-150 group relative mx-2 overflow-hidden",
+        "w-full text-left px-2 py-1.5 rounded-lg transition-all duration-150 group relative mx-1 overflow-hidden",
         isActive && "bg-accent/8 text-foreground",
         !isActive && "hover:bg-accent/5 text-muted-foreground hover:text-foreground",
         isNavigatingToThis && "opacity-50 cursor-wait",
@@ -138,36 +145,43 @@ const ConversationItem = React.memo(function ConversationItem({
           <div className="text-sm text-foreground truncate font-medium">
             {conversation.title || newChatLabel}
           </div>
-          <div className="text-[10px] text-muted-foreground/50 mt-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
-            {getRelativeTime(conversation.updated_at)}
-          </div>
         </div>
 
-        <div className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
-          <button
-            onClick={(e) => {
-              e.stopPropagation()
-              onStartEdit(conversation.id, conversation.title || newChatLabel)
-            }}
-            className="p-1 rounded hover:bg-[var(--bg-elevated)] transition-colors duration-150 text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-            title="Rename conversation"
-            aria-label="Rename conversation"
-          >
-            <PencilSimple size={14} weight="regular" />
-          </button>
-
-          <button
-            onClick={(e) => {
-              e.stopPropagation()
-              onDelete(conversation.id)
-            }}
-            className="p-1 rounded hover:bg-red-500/20 transition-colors text-red-400 hover:text-red-300"
-            title="Delete conversation"
-            aria-label="Delete conversation"
-          >
-            <Trash size={14} weight="regular" />
-          </button>
-        </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={(e) => e.stopPropagation()}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') e.stopPropagation() }}
+              className="opacity-0 group-hover:opacity-100 h-6 w-6 rounded-md flex items-center justify-center hover:bg-accent/10 text-muted-foreground transition-opacity shrink-0"
+            >
+              <DotsThree size={16} weight="bold" />
+            </div>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" side="bottom" className="w-40">
+            <DropdownMenuItem
+              onClick={(e) => {
+                e.stopPropagation()
+                onStartEdit(conversation.id, conversation.title || newChatLabel)
+              }}
+            >
+              <PencilSimple size={14} weight="regular" className="mr-2" />
+              Rename
+            </DropdownMenuItem>
+            {/* TODO: Pin Chat — add pin functionality */}
+            <DropdownMenuItem
+              onClick={(e) => {
+                e.stopPropagation()
+                onDelete(conversation.id)
+              }}
+              className="text-destructive focus:text-destructive"
+            >
+              <Trash size={14} weight="regular" className="mr-2" />
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </button>
   )
@@ -522,14 +536,14 @@ export function ConversationSidebar({
                 </p>
               </div>
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {/* Today */}
                 {groupedConversations.today.length > 0 && (
                   <div>
-                    <h4 className="px-4 py-2 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+                    <h4 className="px-3 py-1.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
                       Today
                     </h4>
-                    <div className="space-y-1">
+                    <div className="space-y-0.5">
                       {groupedConversations.today.map((conv) => (
                         <ConversationItem
                           key={conv.id}
@@ -554,10 +568,10 @@ export function ConversationSidebar({
                 {/* Yesterday */}
                 {groupedConversations.yesterday.length > 0 && (
                   <div>
-                    <h4 className="px-4 py-2 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+                    <h4 className="px-3 py-1.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
                       Yesterday
                     </h4>
-                    <div className="space-y-1">
+                    <div className="space-y-0.5">
                       {groupedConversations.yesterday.map((conv) => (
                         <ConversationItem
                           key={conv.id}
@@ -582,10 +596,10 @@ export function ConversationSidebar({
                 {/* Previous 7 Days */}
                 {groupedConversations.previous7Days.length > 0 && (
                   <div>
-                    <h4 className="px-4 py-2 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+                    <h4 className="px-3 py-1.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
                       Previous 7 Days
                     </h4>
-                    <div className="space-y-1">
+                    <div className="space-y-0.5">
                       {groupedConversations.previous7Days.map((conv) => (
                         <ConversationItem
                           key={conv.id}
@@ -610,10 +624,10 @@ export function ConversationSidebar({
                 {/* Previous 30 Days */}
                 {groupedConversations.previous30Days.length > 0 && (
                   <div>
-                    <h4 className="px-4 py-2 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+                    <h4 className="px-3 py-1.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
                       Previous 30 Days
                     </h4>
-                    <div className="space-y-1">
+                    <div className="space-y-0.5">
                       {groupedConversations.previous30Days.map((conv) => (
                         <ConversationItem
                           key={conv.id}
@@ -638,10 +652,10 @@ export function ConversationSidebar({
                 {/* Older */}
                 {groupedConversations.older.length > 0 && (
                   <div>
-                    <h4 className="px-4 py-2 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+                    <h4 className="px-3 py-1.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
                       Older
                     </h4>
-                    <div className="space-y-1">
+                    <div className="space-y-0.5">
                       {groupedConversations.older.map((conv) => (
                         <ConversationItem
                           key={conv.id}
