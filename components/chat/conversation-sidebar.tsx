@@ -123,7 +123,7 @@ const ConversationItem = React.memo(function ConversationItem({
     <button
       data-conversation-id={conversation.id}
       className={cn(
-        "w-full text-left px-3 py-2 rounded-lg transition-all duration-150 group relative mx-2",
+        "w-full text-left px-3 py-2 rounded-lg transition-all duration-150 group relative mx-2 overflow-hidden",
         isActive && "bg-accent/8 text-foreground",
         !isActive && "hover:bg-accent/5 text-muted-foreground hover:text-foreground",
         isNavigatingToThis && "opacity-50 cursor-wait",
