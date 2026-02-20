@@ -573,10 +573,10 @@ export default function ChatPage() {
           <div className={cn(
             "fixed bottom-0 left-0 right-0 md:absolute md:bottom-0 md:left-0 md:right-0",
             "chat-input-fixed",
-            "z-40 bg-transparent"
+            "z-40 bg-background"
           )}>
-            <div className="h-20 bg-gradient-to-t from-background to-transparent pointer-events-none" />
-            <div className="px-4 sm:px-6 pb-4 pt-0 bg-background">
+            <div className="absolute inset-x-0 bottom-full h-20 bg-gradient-to-t from-background to-transparent pointer-events-none" />
+            <div className="px-4 sm:px-6 pb-4 pt-2">
             <div className="max-w-5xl mx-auto w-full relative">
               {outOfCredits && (
                 <div className="absolute inset-0 z-10 flex items-center justify-center px-4 sm:px-6 py-3">
