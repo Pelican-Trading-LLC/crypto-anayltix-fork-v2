@@ -157,6 +157,8 @@ export async function PATCH(
     if (archived !== undefined) {
       updateData.archived = archived
       updateData.archived_at = archived ? new Date().toISOString() : null
+      // Archiving is a meaningful state change — bump updated_at
+      updateData.updated_at = new Date().toISOString()
     }
 
     // Check if there's anything to update

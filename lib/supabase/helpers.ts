@@ -402,7 +402,7 @@ export async function updateConversation(
   return updateWithRLSCheck(
     supabase,
     'conversations',
-    { ...updates, updated_at: new Date().toISOString() },
+    updates,
     { id: conversationId, user_id: userId },
     { isFilters: { deleted_at: null } }
   )

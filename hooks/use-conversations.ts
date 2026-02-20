@@ -329,11 +329,11 @@ export function useConversations(): UseConversationsReturn {
   const rename = useCallback(async (conversationId: string, newTitle: string): Promise<boolean> => {
     if (!effectiveUserId) return false
 
-    // Optimistic update
+    // Optimistic update — preserve updated_at so conversation doesn't jump position
     const previous = conversations
-    setConversations(prev => 
-      prev.map(c => c.id === conversationId 
-        ? { ...c, title: newTitle, updated_at: new Date().toISOString() } 
+    setConversations(prev =>
+      prev.map(c => c.id === conversationId
+        ? { ...c, title: newTitle }
         : c
       )
     )
@@ -383,7 +383,7 @@ export function useConversations(): UseConversationsReturn {
           supabase,
           conversationId,
           effectiveUserId,
-          { archived, archived_at: archived ? new Date().toISOString() : null }
+          { archived, archived_at: archived ? new Date().toISOString() : null, updated_at: new Date().toISOString() }
         )
 
         if (!success || error) {
