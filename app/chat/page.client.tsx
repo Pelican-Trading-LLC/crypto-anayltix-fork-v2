@@ -188,10 +188,9 @@ export default function ChatPage() {
   }, [allTradesRaw])
 
   // Fetch real-time market data
-  const { indices, vix, vixChange, sectors, watchlist, isLoading: isLoadingMarketData, refresh: refreshMarketData } = useMarketData({
-    refreshInterval: 60000, // Refresh every 60 seconds
+  const { indices, vix, vixChange, sectors, isLoading: isLoadingMarketData, refresh: refreshMarketData } = useMarketData({
+    refreshInterval: 60000,
     autoRefresh: true,
-    watchlistSymbols: ['AAPL', 'TSLA', 'NVDA', 'SPY'] // User's custom watchlist
   })
 
   // One-time terms acceptance check
@@ -647,9 +646,9 @@ export default function ChatPage() {
               vix={vix}
               vixChange={vixChange}
               sectors={sectors}
-              watchlist={watchlist}
               isLoading={isLoadingMarketData}
               onRefresh={refreshMarketData}
+              onPrefillChat={messageHandler.handleSendMessage}
             />
           </div>
         </>

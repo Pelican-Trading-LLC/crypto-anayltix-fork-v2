@@ -1,13 +1,22 @@
 "use client"
 
 import { Card } from "@/components/ui/card"
-import { TrendUp, TrendDown, Pulse, Star, CaretDown, CaretUp, GraduationCap } from "@phosphor-icons/react"
+import { TrendUp, TrendDown, Pulse, Star, CaretDown, CaretUp, GraduationCap, X, Plus, ChartLineUp, ChatCircle, Briefcase, Trash, MagnifyingGlass } from "@phosphor-icons/react"
 import { cn } from "@/lib/utils"
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useChart } from "@/providers/chart-provider"
 import dynamic from "next/dynamic"
 import { EducationChat } from "./EducationChat"
+import { useWatchlist } from "@/hooks/use-watchlist"
+import { useLiveQuotes } from "@/hooks/use-live-quotes"
+import { useTrades } from "@/hooks/use-trades"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 // Dynamic imports with SSR disabled to prevent build-time errors
 const TradingViewChart = dynamic(
@@ -40,16 +49,15 @@ interface WatchlistTicker {
 }
 
 interface TradingContextPanelProps {
-  // Future props for real data
   indices?: MarketIndex[]
   vix?: number | null
   vixChange?: number | null
   sectors?: SectorData[]
-  watchlist?: WatchlistTicker[]
   isLoading?: boolean
   onRefresh?: () => void
   collapsed?: boolean
   onToggleCollapse?: () => void
+  onPrefillChat?: (message: string) => void
   // Learning mode props
   selectedTerm?: { term: string; fullName: string; shortDef: string; category: string } | null
   onClearTerm?: () => void
@@ -63,10 +71,10 @@ export function TradingContextPanel({
   vix,
   vixChange,
   sectors,
-  watchlist,
   isLoading = false,
   collapsed = false,
   onToggleCollapse,
+  onPrefillChat,
   selectedTerm,
   onClearTerm,
   learnTabActive = false,
@@ -75,8 +83,27 @@ export function TradingContextPanel({
 }: TradingContextPanelProps) {
   const { mode, selectedTicker, showChart, showCalendar, closeChart } = useChart()
   const [isCollapsed, setIsCollapsed] = useState(collapsed)
+  const [editingWatchlist, setEditingWatchlist] = useState(false)
+  const [addTickerInput, setAddTickerInput] = useState("")
+  const addInputRef = useRef<HTMLInputElement>(null)
 
-  // Placeholder data - will be replaced with real data from props
+  // Real watchlist from Supabase
+  const { items: watchlistItems, addToWatchlist, removeFromWatchlist, loading: watchlistLoading } = useWatchlist()
+
+  // Live quotes for watchlist tickers
+  const watchlistSymbols = watchlistItems.map(item => item.ticker)
+  const { quotes: watchlistQuotes } = useLiveQuotes(watchlistSymbols)
+
+  // Merge watchlist items with live prices
+  const watchlistTickers: WatchlistTicker[] = watchlistItems.map(item => ({
+    symbol: item.ticker,
+    price: watchlistQuotes[item.ticker]?.price ?? null,
+    changePercent: watchlistQuotes[item.ticker]?.changePercent ?? null,
+  }))
+
+  // Open trades
+  const { openTrades } = useTrades()
+
   const defaultIndices: MarketIndex[] = indices || [
     { symbol: "SPX", name: "S&P 500", price: null, change: null, changePercent: null },
     { symbol: "IXIC", name: "Nasdaq", price: null, change: null, changePercent: null },
@@ -93,12 +120,13 @@ export function TradingContextPanel({
     { name: "Energy", changePercent: null },
   ]
 
-  const defaultWatchlist: WatchlistTicker[] = watchlist || [
-    { symbol: "AAPL", price: null, changePercent: null },
-    { symbol: "TSLA", price: null, changePercent: null },
-    { symbol: "NVDA", price: null, changePercent: null },
-    { symbol: "SPY", price: null, changePercent: null },
-  ]
+  const handleAddTicker = async () => {
+    const ticker = addTickerInput.trim().toUpperCase()
+    if (!ticker) return
+    await addToWatchlist(ticker)
+    setAddTickerInput("")
+    addInputRef.current?.focus()
+  }
 
   const formatPrice = (price: number | null) => {
     if (price === null) return "---"
@@ -382,6 +410,43 @@ export function TradingContextPanel({
                 </div>
               </div>
 
+              {/* Active Positions */}
+              {openTrades.length > 0 && (
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider flex items-center gap-1.5">
+                      <Briefcase size={12} weight="regular" />
+                      Active Positions
+                    </h4>
+                    <span className="text-[10px] text-[var(--text-muted)] font-mono tabular-nums">{openTrades.length}</span>
+                  </div>
+                  <div className="space-y-1.5">
+                    {openTrades.map((trade) => (
+                      <div
+                        key={trade.id}
+                        onClick={() => onPrefillChat?.(`Review my ${trade.direction} position in ${trade.ticker}`)}
+                        className="flex items-center justify-between p-2 rounded-lg bg-[var(--bg-surface)] border border-[var(--border-subtle)] hover:border-[var(--border-hover)] hover:bg-[var(--bg-elevated)] cursor-pointer transition-all duration-150"
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className={cn(
+                            "text-[9px] font-semibold px-1.5 py-0.5 rounded uppercase",
+                            trade.direction === 'long'
+                              ? "bg-[var(--data-positive)]/10 text-[var(--data-positive)]"
+                              : "bg-[var(--data-negative)]/10 text-[var(--data-negative)]"
+                          )}>
+                            {trade.direction}
+                          </span>
+                          <span className="text-xs font-semibold text-[var(--text-primary)]">{trade.ticker}</span>
+                        </div>
+                        <span className="text-[10px] text-[var(--text-muted)] font-mono tabular-nums">
+                          ${trade.entry_price.toFixed(2)}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Watchlist */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
@@ -389,33 +454,125 @@ export function TradingContextPanel({
                     <Star size={12} weight="regular" />
                     Watchlist
                   </h4>
-                  <button className="text-[10px] text-[var(--accent-primary)] hover:text-[var(--accent-hover)] transition-colors duration-150 font-medium">
-                    Edit
+                  <button
+                    onClick={() => setEditingWatchlist(!editingWatchlist)}
+                    className="text-[10px] text-[var(--accent-primary)] hover:text-[var(--accent-hover)] transition-colors duration-150 font-medium"
+                  >
+                    {editingWatchlist ? "Done" : "Edit"}
                   </button>
                 </div>
+
+                {/* Loading state */}
+                {watchlistLoading && watchlistTickers.length === 0 && (
+                  <div className="space-y-1.5">
+                    {[1, 2, 3].map((i) => (
+                      <div key={i} className="h-10 rounded-lg bg-[var(--bg-surface)] animate-pulse" />
+                    ))}
+                  </div>
+                )}
+
+                {/* Empty state */}
+                {!watchlistLoading && watchlistTickers.length === 0 && !editingWatchlist && (
+                  <div className="p-3 rounded-lg bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-center">
+                    <Star size={20} weight="thin" className="text-[var(--text-muted)] mx-auto mb-1.5" />
+                    <p className="text-[10px] text-[var(--text-muted)] leading-relaxed">
+                      No tickers on your watchlist.<br />Use chat to add stocks or click Edit.
+                    </p>
+                  </div>
+                )}
+
+                {/* Ticker list */}
                 <div className="space-y-1.5">
-                  {defaultWatchlist.map((ticker) => (
-                    <div
-                      key={ticker.symbol}
-                      onClick={() => showChart(ticker.symbol)}
-                      className="flex items-center justify-between p-2 rounded-lg bg-[var(--bg-surface)] border border-[var(--border-subtle)] hover:border-[var(--border-hover)] hover:bg-[var(--bg-elevated)] cursor-pointer transition-all duration-150"
-                    >
-                      <span className="text-xs font-semibold text-[var(--text-primary)]">{ticker.symbol}</span>
-                      <div className="flex flex-col items-end">
-                        <span className="text-xs font-medium font-mono tabular-nums text-[var(--text-primary)]">{formatPrice(ticker.price)}</span>
-                        <div
-                          className={cn(
-                            "text-[10px] font-medium font-mono tabular-nums px-1.5 py-0.5 rounded",
-                            getChangeBg(ticker.changePercent),
-                            getChangeColor(ticker.changePercent),
-                          )}
-                        >
-                          {formatPercent(ticker.changePercent)}
-                        </div>
-                      </div>
+                  {watchlistTickers.map((ticker) => (
+                    <div key={ticker.symbol} className="flex items-center gap-1">
+                      {editingWatchlist ? (
+                        <>
+                          <div className="flex-1 flex items-center justify-between p-2 rounded-lg bg-[var(--bg-surface)] border border-[var(--border-subtle)]">
+                            <span className="text-xs font-semibold text-[var(--text-primary)]">{ticker.symbol}</span>
+                            <div className="flex flex-col items-end">
+                              <span className="text-xs font-medium font-mono tabular-nums text-[var(--text-primary)]">{formatPrice(ticker.price)}</span>
+                            </div>
+                          </div>
+                          <button
+                            onClick={() => removeFromWatchlist(ticker.symbol)}
+                            className="p-1.5 rounded-md text-[var(--data-negative)] hover:bg-[var(--data-negative)]/10 transition-colors duration-150"
+                          >
+                            <X size={14} weight="bold" />
+                          </button>
+                        </>
+                      ) : (
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <button className="w-full flex items-center justify-between p-2 rounded-lg bg-[var(--bg-surface)] border border-[var(--border-subtle)] hover:border-[var(--border-hover)] hover:bg-[var(--bg-elevated)] cursor-pointer transition-all duration-150 text-left">
+                              <span className="text-xs font-semibold text-[var(--text-primary)]">{ticker.symbol}</span>
+                              <div className="flex flex-col items-end">
+                                <span className="text-xs font-medium font-mono tabular-nums text-[var(--text-primary)]">{formatPrice(ticker.price)}</span>
+                                <div
+                                  className={cn(
+                                    "text-[10px] font-medium font-mono tabular-nums px-1.5 py-0.5 rounded",
+                                    getChangeBg(ticker.changePercent),
+                                    getChangeColor(ticker.changePercent),
+                                  )}
+                                >
+                                  {formatPercent(ticker.changePercent)}
+                                </div>
+                              </div>
+                            </button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-48">
+                            <DropdownMenuItem onClick={() => showChart(ticker.symbol)}>
+                              <ChartLineUp size={14} weight="regular" className="mr-2" />
+                              Open Chart
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => onPrefillChat?.(`Analyze ${ticker.symbol}`)}>
+                              <ChatCircle size={14} weight="regular" className="mr-2" />
+                              Ask Pelican
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => onPrefillChat?.(`Deep dive on ${ticker.symbol} — technicals, fundamentals, and sentiment`)}>
+                              <MagnifyingGlass size={14} weight="regular" className="mr-2" />
+                              Deep Dive
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => removeFromWatchlist(ticker.symbol)}
+                              className="text-[var(--data-negative)] focus:text-[var(--data-negative)]"
+                            >
+                              <Trash size={14} weight="regular" className="mr-2" />
+                              Remove
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      )}
                     </div>
                   ))}
                 </div>
+
+                {/* Add ticker input (edit mode) */}
+                {editingWatchlist && (
+                  <div className="flex items-center gap-1.5">
+                    <div className="flex-1 flex items-center gap-1.5 px-2 py-1.5 rounded-lg bg-[var(--bg-surface)] border border-[var(--border-subtle)] focus-within:border-[var(--accent-primary)] transition-colors duration-150">
+                      <Plus size={12} weight="regular" className="text-[var(--text-muted)] shrink-0" />
+                      <input
+                        ref={addInputRef}
+                        type="text"
+                        value={addTickerInput}
+                        onChange={(e) => setAddTickerInput(e.target.value.toUpperCase())}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") handleAddTicker()
+                        }}
+                        placeholder="Add symbol..."
+                        className="flex-1 bg-transparent text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)] outline-none"
+                        maxLength={10}
+                      />
+                    </div>
+                    <button
+                      onClick={handleAddTicker}
+                      disabled={!addTickerInput.trim()}
+                      className="px-2.5 py-1.5 rounded-lg text-[10px] font-medium bg-[var(--accent-primary)] text-white hover:bg-[var(--accent-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors duration-150"
+                    >
+                      Add
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* Refresh indicator */}
