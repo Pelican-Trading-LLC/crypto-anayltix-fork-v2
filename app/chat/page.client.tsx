@@ -577,7 +577,7 @@ export default function ChatPage() {
           )}>
             <div className="absolute inset-x-0 bottom-full h-20 bg-gradient-to-t from-background to-transparent pointer-events-none" />
             <div className="px-4 sm:px-6 pb-4 pt-2">
-            <div className="max-w-5xl mx-auto w-full relative">
+            <div className="max-w-3xl mx-auto w-full relative">
               {outOfCredits && (
                 <div className="absolute inset-0 z-10 flex items-center justify-center px-4 sm:px-6 py-3">
                   <div className="w-full flex items-center justify-center gap-2 px-4 py-4 rounded-2xl border border-border bg-card text-sm text-muted-foreground min-h-[56px]">
