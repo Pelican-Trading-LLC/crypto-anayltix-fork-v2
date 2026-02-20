@@ -141,7 +141,7 @@ export function useSmartScroll(options: SmartScrollOptions = {}) {
     const container = containerRef.current
     if (!container) return
 
-    createTimeout(() => {
+    const tryScroll = (attempt: number) => {
       const messageElement = document.querySelector(`[data-message-id="${messageId}"]`)
 
       if (container && messageElement) {
@@ -160,8 +160,16 @@ export function useSmartScroll(options: SmartScrollOptions = {}) {
             behavior: 'smooth',
           })
         }
+      } else if (attempt < 3) {
+        // Retry if DOM element not rendered yet (sidebar/action button sends)
+        createTimeout(() => tryScroll(attempt + 1), 100)
+      } else {
+        // Fallback: just scroll to bottom
+        container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' })
       }
-    }, 100)
+    }
+
+    createTimeout(() => tryScroll(0), 50)
   }, [createTimeout])
 
   // Claude/ChatGPT style auto-scroll: handles all scenarios
@@ -244,14 +252,13 @@ export function useSmartScroll(options: SmartScrollOptions = {}) {
     shouldAutoScrollRef.current = true
   }, [])
 
-  // Handle streaming updates - DISABLED: User controls scroll position at all times
+  // Lightweight streaming auto-scroll: only scrolls if user hasn't scrolled away
   const handleStreamingUpdate = useCallback(() => {
-    // REMOVED: Auto-scroll during streaming - user controls scroll position
-    // const isNearBottom = checkIfNearBottom()
-    // const shouldAutoScroll = isNearBottom || !userHasScrolledRef.current
-    // if (shouldAutoScroll) {
-    //   scrollToBottom("instant")
-    // }
+    if (!shouldAutoScrollRef.current) return
+    const container = containerRef.current
+    if (!container) return
+    if (container.scrollHeight <= container.clientHeight + 50) return
+    container.scrollTo({ top: container.scrollHeight, behavior: "auto" })
   }, [])
 
   // Handle long messages - DISABLED: User controls scroll position at all times

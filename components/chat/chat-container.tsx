@@ -95,6 +95,7 @@ export function ChatContainer({
     state,
     scrollToBottom,
     handleNewMessage,
+    handleStreamingUpdate,
     handleStreamingEnd,
     resetScrollAwayState,
     resetScrollState,
@@ -203,10 +204,14 @@ export function ChatContainer({
     // ⚡ CRITICAL PERFORMANCE FIX:
     // During streaming, the messages array reference changes on every chunk
     // but no NEW messages are added - only content updates.
-    // Skip ALL processing if we're just updating streaming content.
+    // Skip most processing if we're just updating streaming content.
     // This prevents hundreds of unnecessary effect runs during large responses.
     if (!messageWasAdded) {
-      // Update refs and return immediately - no scroll handling needed
+      // Lightweight streaming auto-scroll: keep scrolled to bottom during streaming
+      // if the user hasn't manually scrolled away (checked inside handleStreamingUpdate)
+      if (isStreaming) {
+        handleStreamingUpdate()
+      }
       prevMessagesLengthRef.current = messages.length
       prevLastMessageIdRef.current = currentLastMessageId
       return
@@ -255,7 +260,7 @@ export function ChatContainer({
     // Update refs for next comparison
     prevMessagesLengthRef.current = messages.length
     prevLastMessageIdRef.current = currentLastMessageId
-  }, [messages, handleNewMessage, handleStreamingEnd, state.isStreaming, state.isNearBottom])
+  }, [messages, handleNewMessage, handleStreamingUpdate, handleStreamingEnd, state.isStreaming, state.isNearBottom])
 
   // Reset scroll when conversation changes
   const prevMessagesRef = useRef(messages)
