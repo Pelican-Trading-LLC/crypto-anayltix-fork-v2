@@ -2,7 +2,8 @@
 
 export const dynamic = "force-dynamic"
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, Suspense } from "react"
+import { useSearchParams } from "next/navigation"
 import { motion } from "framer-motion"
 import { useHeatmap } from "@/hooks/use-heatmap"
 import { usePelicanPanelContext } from "@/providers/pelican-panel-provider"
@@ -17,11 +18,32 @@ import { PageHeader, DataCell, pageEnter } from "@/components/ui/pelican"
 type ViewMode = "treemap" | "grid"
 
 export default function HeatmapPage() {
+  return (
+    <Suspense>
+      <HeatmapPageInner />
+    </Suspense>
+  )
+}
+
+function HeatmapPageInner() {
+  const searchParams = useSearchParams()
   const [viewMode, setViewMode] = useState<ViewMode>("treemap")
   const [selectedSectors, setSelectedSectors] = useState<SP500Sector[]>(getSectors())
   const [autoRefresh, setAutoRefresh] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
   const [dimensions, setDimensions] = useState({ width: 1200, height: 800 })
+
+  // Filter to a single sector if passed via query param (e.g. from sidebar)
+  useEffect(() => {
+    const sectorParam = searchParams.get('sector')
+    if (sectorParam) {
+      const allSectors = getSectors()
+      const match = allSectors.find(s => s === sectorParam)
+      if (match) {
+        setSelectedSectors([match])
+      }
+    }
+  }, [searchParams])
 
   const { stocks, isLoading, error, lastUpdated, refetch } = useHeatmap({
     autoRefresh,

@@ -1,11 +1,12 @@
 "use client"
 
 import { Card } from "@/components/ui/card"
-import { TrendUp, TrendDown, Pulse, Star, CaretDown, CaretUp, GraduationCap, X, Plus, ChartLineUp, ChatCircle, Briefcase, Trash, MagnifyingGlass } from "@phosphor-icons/react"
+import { TrendUp, TrendDown, Pulse, Star, CaretDown, CaretUp, CaretRight, GraduationCap, X, Plus, ChartLineUp, ChatCircle, Briefcase, Trash, MagnifyingGlass } from "@phosphor-icons/react"
 import { cn } from "@/lib/utils"
 import { useState, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useChart } from "@/providers/chart-provider"
+import { useRouter } from "next/navigation"
 import dynamic from "next/dynamic"
 import { EducationChat } from "./EducationChat"
 import { useWatchlist } from "@/hooks/use-watchlist"
@@ -82,6 +83,7 @@ export function TradingContextPanel({
   learningEnabled = false,
 }: TradingContextPanelProps) {
   const { mode, selectedTicker, showChart, showCalendar, closeChart } = useChart()
+  const router = useRouter()
   const [isCollapsed, setIsCollapsed] = useState(collapsed)
   const [editingWatchlist, setEditingWatchlist] = useState(false)
   const [addTickerInput, setAddTickerInput] = useState("")
@@ -119,6 +121,14 @@ export function TradingContextPanel({
     { name: "Healthcare", changePercent: null },
     { name: "Energy", changePercent: null },
   ]
+
+  // Map sidebar short names → SP500 sector names for heatmap filtering
+  const sectorToSP500: Record<string, string> = {
+    "Technology": "Information Technology",
+    "Financials": "Financials",
+    "Healthcare": "Health Care",
+    "Energy": "Energy",
+  }
 
   const handleAddTicker = async () => {
     const ticker = addTickerInput.trim().toUpperCase()
@@ -381,11 +391,15 @@ export function TradingContextPanel({
                 </h4>
                 <div className="space-y-1.5">
                   {defaultSectors.map((sector) => (
-                    <div
+                    <button
                       key={sector.name}
-                      className="flex items-center justify-between p-2 rounded-lg hover:bg-[var(--bg-elevated)] transition-colors duration-150"
+                      onClick={() => {
+                        const sp500Name = sectorToSP500[sector.name] || sector.name
+                        router.push(`/heatmap?sector=${encodeURIComponent(sp500Name)}`)
+                      }}
+                      className="w-full flex items-center justify-between p-2 rounded-lg hover:bg-[var(--bg-elevated)] transition-colors duration-150 cursor-pointer group"
                     >
-                      <span className="text-xs text-[var(--text-primary)]">{sector.name}</span>
+                      <span className="text-xs text-[var(--text-primary)] group-hover:text-[var(--accent-primary)] transition-colors duration-150">{sector.name}</span>
                       <div className="flex items-center gap-1.5">
                         <span className={cn("text-xs font-medium font-mono tabular-nums", getChangeColor(sector.changePercent))}>
                           {formatPercent(sector.changePercent)}
@@ -404,8 +418,9 @@ export function TradingContextPanel({
                             )}
                           </div>
                         )}
+                        <CaretRight size={12} weight="regular" className="text-[var(--text-muted)] opacity-0 group-hover:opacity-100 transition-opacity duration-150" />
                       </div>
-                    </div>
+                    </button>
                   ))}
                 </div>
               </div>
