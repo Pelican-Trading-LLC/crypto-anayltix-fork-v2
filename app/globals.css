@@ -47,6 +47,13 @@
   --color-positive-muted: rgba(22, 163, 74, 0.06);
   --color-negative-muted: rgba(220, 38, 38, 0.06);
 
+  /* --- Heatmap color scale (light mode — brighter for white bg) --- */
+  --heatmap-green-min-r: 200; --heatmap-green-min-g: 235; --heatmap-green-min-b: 210;
+  --heatmap-green-max-r: 0;   --heatmap-green-max-g: 160; --heatmap-green-max-b: 50;
+  --heatmap-red-min-r: 240;   --heatmap-red-min-g: 215;   --heatmap-red-min-b: 215;
+  --heatmap-red-max-r: 200;   --heatmap-red-max-g: 30;    --heatmap-red-max-b: 30;
+  --heatmap-flat-r: 230;      --heatmap-flat-g: 230;       --heatmap-flat-b: 230;
+
   /* --- Pelican compatibility aliases (light mode) --- */
   --bg-base: var(--background);
   --bg-surface: var(--card);
@@ -190,6 +197,13 @@
   --color-negative: #ef4444;
   --color-positive-muted: rgba(34, 197, 94, 0.1);
   --color-negative-muted: rgba(239, 68, 68, 0.1);
+
+  /* --- Heatmap color scale (dark mode — deeper tones) --- */
+  --heatmap-green-min-r: 20;  --heatmap-green-min-g: 60;  --heatmap-green-min-b: 30;
+  --heatmap-green-max-r: 0;   --heatmap-green-max-g: 180; --heatmap-green-max-b: 50;
+  --heatmap-red-min-r: 60;    --heatmap-red-min-g: 30;    --heatmap-red-min-b: 30;
+  --heatmap-red-max-r: 200;   --heatmap-red-max-g: 20;    --heatmap-red-max-b: 30;
+  --heatmap-flat-r: 42;       --heatmap-flat-g: 42;        --heatmap-flat-b: 58;
 
   /* --- Pelican compatibility aliases (dark mode) --- */
   --bg-base: var(--background);

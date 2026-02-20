@@ -9,9 +9,11 @@ interface SectorLegendProps {
   stocks: HeatmapStock[]
   selectedSectors: SP500Sector[]
   onToggleSector: (sector: SP500Sector) => void
+  onHighlightSector?: (sector: SP500Sector) => void
+  highlightedSector?: string | null
 }
 
-export function SectorLegend({ stocks, selectedSectors, onToggleSector }: SectorLegendProps) {
+export function SectorLegend({ stocks, selectedSectors, onToggleSector, onHighlightSector, highlightedSector }: SectorLegendProps) {
   const sectors = getSectors()
 
   // Calculate sector performance
@@ -74,6 +76,10 @@ export function SectorLegend({ stocks, selectedSectors, onToggleSector }: Sector
               key={sector}
               variants={staggerItem}
               onClick={() => onToggleSector(sector)}
+              onDoubleClick={(e) => {
+                e.preventDefault()
+                onHighlightSector?.(sector)
+              }}
               className={`
                 w-full group relative overflow-hidden rounded-md
                 px-3 py-2.5 text-left transition-all duration-150
@@ -81,6 +87,7 @@ export function SectorLegend({ stocks, selectedSectors, onToggleSector }: Sector
                   ? 'hover:bg-[var(--bg-elevated)] active:bg-[var(--bg-elevated)]'
                   : 'opacity-40 hover:opacity-60'
                 }
+                ${highlightedSector === sector ? 'ring-1 ring-[var(--accent-primary)]/50 bg-[var(--accent-muted)]' : ''}
               `}
             >
               {/* Performance bar background */}
