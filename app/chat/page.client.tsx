@@ -537,8 +537,8 @@ export default function ChatPage() {
         </div>
 
 
-        <div className="flex-1 flex flex-col overflow-hidden">
-          <div className="flex-1 overflow-y-auto overscroll-none pb-[120px] md:pb-0 chat-scroll-area flex flex-col">
+        <div className="flex-1 flex flex-col overflow-hidden relative">
+          <div className="flex-1 overflow-y-auto overscroll-none pb-[160px] chat-scroll-area flex flex-col">
             <div className="max-w-5xl mx-auto w-full px-4 sm:px-6 flex-1 flex flex-col">
               <OnboardingSkipBanner />
               {tiltAlerts.length > 0 && (
@@ -571,12 +571,12 @@ export default function ChatPage() {
           </div>
 
           <div className={cn(
-            "fixed bottom-0 left-0 right-0 md:relative md:bottom-auto",
+            "fixed bottom-0 left-0 right-0 md:absolute md:bottom-0 md:left-0 md:right-0",
             "chat-input-fixed",
-            "z-40"
+            "z-40 bg-transparent"
           )}>
-            <div className="h-12 bg-gradient-to-t from-background to-transparent pointer-events-none" />
-            <div className="px-4 sm:px-6 pb-4">
+            <div className="h-20 bg-gradient-to-t from-background to-transparent pointer-events-none" />
+            <div className="px-4 sm:px-6 pb-4 pt-0 bg-background">
             <div className="max-w-5xl mx-auto w-full relative">
               {outOfCredits && (
                 <div className="absolute inset-0 z-10 flex items-center justify-center px-4 sm:px-6 py-3">
