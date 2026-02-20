@@ -203,20 +203,29 @@ export function MessageActionBar({
   // Group actions by category
   const ANALYSIS_TYPES = new Set(['deep_dive', 'compare'])
   const TRADE_TYPES = new Set(['view_position', 'pelican_scan', 'close_trade', 'review_trade', 'review_trade_vs_plan', 'log_trade', 'add_watchlist', 'remove_watchlist'])
-  // Everything else is platform
+  const NAVIGATE_TYPES = new Set(['show_heatmap', 'show_correlations'])
+  // Everything else is tools
 
   const grouped = useMemo(() => {
     const analysis: MessageAction[] = []
     const trade: MessageAction[] = []
-    const platform: MessageAction[] = []
+    const navigate: MessageAction[] = []
+    const tools: MessageAction[] = []
 
     for (const action of actions) {
       if (ANALYSIS_TYPES.has(action.type)) analysis.push(action)
       else if (TRADE_TYPES.has(action.type)) trade.push(action)
-      else platform.push(action)
+      else if (NAVIGATE_TYPES.has(action.type)) navigate.push(action)
+      else tools.push(action)
     }
 
-    return [analysis, trade, platform].filter(g => g.length > 0)
+    const groups: { label: string; items: MessageAction[] }[] = []
+    if (analysis.length > 0) groups.push({ label: 'Analysis', items: analysis })
+    if (trade.length > 0) groups.push({ label: 'Trade Actions', items: trade })
+    if (navigate.length > 0) groups.push({ label: 'Navigate', items: navigate })
+    if (tools.length > 0) groups.push({ label: 'Tools', items: tools })
+
+    return groups
   }, [actions])
 
   if (actions.length === 0) return null
@@ -224,28 +233,30 @@ export function MessageActionBar({
   let buttonIndex = 0
 
   return (
-    <div className="space-y-2 mt-3 pt-3 border-t border-border/20">
-      {grouped.map((group, gi) => (
-        <div
-          key={gi}
-          className="flex flex-wrap items-center gap-1.5"
-        >
-          {group.map((action) => {
-            const idx = buttonIndex++
-            return (
-              <div
-                key={action.id}
-                className="action-button-enter"
-                style={{ animationDelay: `${idx * 40}ms` }}
-              >
-                <ActionButton
-                  action={action}
-                  onClick={handleAction}
-                  loading={loadingId === action.id}
-                />
-              </div>
-            )
-          })}
+    <div className="space-y-3 mt-3 pt-3 border-t border-border/20">
+      {grouped.map((group) => (
+        <div key={group.label}>
+          <span className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1.5 block">
+            {group.label}
+          </span>
+          <div className="flex flex-wrap items-center gap-1.5">
+            {group.items.map((action) => {
+              const idx = buttonIndex++
+              return (
+                <div
+                  key={action.id}
+                  className="action-button-enter"
+                  style={{ animationDelay: `${idx * 40}ms` }}
+                >
+                  <ActionButton
+                    action={action}
+                    onClick={handleAction}
+                    loading={loadingId === action.id}
+                  />
+                </div>
+              )
+            })}
+          </div>
         </div>
       ))}
     </div>
