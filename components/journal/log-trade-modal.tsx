@@ -7,9 +7,11 @@ import { TradeFormData, useTrades } from "@/hooks/use-trades"
 import { useTradingPlan } from "@/hooks/use-trading-plan"
 import { checkTradeAgainstPlan } from "@/lib/trading/plan-check"
 import { PelicanButton } from "@/components/ui/pelican"
-import { Warning, Shield, Check } from "@phosphor-icons/react"
+import { Warning, Shield, Check, Brain } from "@phosphor-icons/react"
 import type { PlanViolation } from "@/types/trading"
 import { useRiskBudget } from "@/hooks/use-risk-budget"
+import { useAntiTradeCheck } from "@/hooks/use-anti-trade-check"
+import { cn } from "@/lib/utils"
 import { BudgetWarningBanner } from "@/components/risk-budget/budget-warning-banner"
 
 interface LogTradeModalProps {
@@ -29,6 +31,7 @@ export function LogTradeModal({ open, onOpenChange, onSubmit, initialTicker = ""
   // Plan integration
   const { plan } = useTradingPlan()
   const { trades: existingTrades } = useTrades()
+  const { checkTrade, isReady: insightsReady } = useAntiTradeCheck()
 
   // Sync ticker when initialTicker changes (e.g., opened from different action buttons)
   useEffect(() => {
@@ -47,6 +50,15 @@ export function LogTradeModal({ open, onOpenChange, onSubmit, initialTicker = ""
   const [setupTags, setSetupTags] = useState("")
   const [conviction, setConviction] = useState("5")
   const [isPaper, setIsPaper] = useState(false)
+
+  // Behavioral pattern warnings
+  const antiTradeWarnings = useMemo(() => {
+    if (!insightsReady || !ticker) return []
+    const positionSize = quantity && entryPrice
+      ? parseFloat(quantity) * parseFloat(entryPrice)
+      : undefined
+    return checkTrade(ticker.toUpperCase(), direction, positionSize)
+  }, [insightsReady, ticker, direction, quantity, entryPrice, checkTrade])
 
   // Normalize ticker for crypto/forex to ensure valid pairs
   const normalizeTicker = (tickerValue: string, assetTypeValue: string): string => {
@@ -483,6 +495,45 @@ export function LogTradeModal({ open, onOpenChange, onSubmit, initialTicker = ""
 
           {/* Risk Budget Warning */}
           <RiskBudgetWarning />
+
+          {/* Behavioral Pattern Warnings */}
+          {antiTradeWarnings.length > 0 && (
+            <div className="space-y-2">
+              <div className="flex items-center gap-1.5 text-xs font-medium text-[var(--text-secondary)]">
+                <Brain size={14} weight="bold" />
+                Pelican Pattern Check
+              </div>
+              {antiTradeWarnings.map((warning, i) => (
+                <div
+                  key={i}
+                  className={cn(
+                    "flex items-start gap-2 px-3 py-2.5 rounded-lg text-xs",
+                    warning.severity === 'critical'
+                      ? 'bg-[var(--data-negative)]/10 border border-[var(--data-negative)]/20'
+                      : 'bg-[var(--data-warning)]/10 border border-[var(--data-warning)]/20'
+                  )}
+                >
+                  <Warning
+                    size={14}
+                    weight="bold"
+                    className={cn(
+                      "flex-shrink-0 mt-0.5",
+                      warning.severity === 'critical' ? 'text-[var(--data-negative)]' : 'text-[var(--data-warning)]'
+                    )}
+                  />
+                  <div>
+                    <div className={cn(
+                      "font-medium",
+                      warning.severity === 'critical' ? 'text-[var(--data-negative)]' : 'text-[var(--data-warning)]'
+                    )}>
+                      {warning.title}
+                    </div>
+                    <div className="text-[var(--text-muted)] mt-0.5">{warning.message}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
 
           {/* Plan Violations & Checklist */}
           <PlanCheckSection

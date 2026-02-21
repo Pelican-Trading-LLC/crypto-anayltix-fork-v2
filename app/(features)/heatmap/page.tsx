@@ -8,6 +8,7 @@ import { usePelicanPanelContext } from "@/providers/pelican-panel-provider"
 import { useTrades } from "@/hooks/use-trades"
 import { useWatchlist } from "@/hooks/use-watchlist"
 import { useMarketPulse } from "@/hooks/use-market-pulse"
+import { useBehavioralInsights } from "@/hooks/use-behavioral-insights"
 import { Treemap } from "@/components/heatmap/treemap"
 import { HeatmapGrid } from "@/components/heatmap/heatmap-grid"
 import { SectorLegend } from "@/components/heatmap/sector-legend"
@@ -159,6 +160,7 @@ function HeatmapPageInner() {
   const { openTrades } = useTrades({ status: 'open' })
   const { items: watchlistItems } = useWatchlist()
   const { data: marketPulse } = useMarketPulse()
+  const { data: behavioralInsights } = useBehavioralInsights()
 
   // Portfolio overlay data
   const emptyEarnings = useMemo(() => new Set<string>(), [])
@@ -169,6 +171,19 @@ function HeatmapPageInner() {
     openTrades.forEach(t => { if (t.pnl_percent != null) map.set(t.ticker, t.pnl_percent) })
     return map
   }, [openTrades])
+
+  // Ticker win rates from behavioral insights (for heatmap overlay)
+  const tickerWinRates = useMemo(() => {
+    const map = new Map<string, number>()
+    if (behavioralInsights?.ticker_performance) {
+      behavioralInsights.ticker_performance.forEach(t => {
+        if (t.total_trades >= 3) {
+          map.set(t.ticker, t.win_rate)
+        }
+      })
+    }
+    return map
+  }, [behavioralInsights])
 
   // Sector performance for context prompts
   const sectorPerformance = useMemo(() => {
@@ -466,6 +481,7 @@ function HeatmapPageInner() {
                     watchlistTickers={watchlistTickers}
                     positionPnl={positionPnl}
                     earningsToday={emptyEarnings}
+                    tickerWinRates={tickerWinRates}
                   />
                 </div>
               )}

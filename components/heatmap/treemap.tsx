@@ -20,6 +20,7 @@ interface TreemapProps {
   watchlistTickers?: Set<string>
   positionPnl?: Map<string, number>
   earningsToday?: Set<string>
+  tickerWinRates?: Map<string, number>
 }
 
 type StockNode = {
@@ -149,6 +150,7 @@ export function Treemap({
   watchlistTickers,
   positionPnl,
   earningsToday,
+  tickerWinRates,
 }: TreemapProps) {
 
   // Cache CSS color vars once per render cycle (not per tile)
@@ -367,6 +369,18 @@ export function Treemap({
                   pnl >= 0 ? 'text-emerald-400' : 'text-red-400'
                 )}>
                   {pnl >= 0 ? '+' : ''}{pnl.toFixed(1)}%
+                </span>
+              </div>
+            )}
+
+            {/* Historical win rate badge */}
+            {showMyStocks && isMyPosition && tickerWinRates?.has(stock.ticker) && tileW > 50 && (
+              <div className="absolute bottom-0.5 left-0.5 bg-black/60 rounded px-1 py-0.5">
+                <span className={cn(
+                  "text-[8px] font-mono font-bold tabular-nums",
+                  (tickerWinRates.get(stock.ticker) ?? 0) >= 50 ? 'text-emerald-400' : 'text-red-400'
+                )}>
+                  {tickerWinRates.get(stock.ticker)?.toFixed(0)}% WR
                 </span>
               </div>
             )}

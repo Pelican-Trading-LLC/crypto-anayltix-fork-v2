@@ -34,6 +34,10 @@ import { RiskDashboard } from "@/components/morning/risk-dashboard"
 import { SectorMiniHeatmap } from "@/components/morning/sector-mini-heatmap"
 import { NewsHeadlines } from "@/components/morning/news-headlines"
 import { Sparkline } from "@/components/morning/sparkline"
+import { useTodaysWarnings } from "@/hooks/use-todays-warnings"
+import { useBehavioralInsights } from "@/hooks/use-behavioral-insights"
+import { WarningBanner } from "@/components/insights/warning-banner"
+import { EdgeSummary } from "@/components/insights/edge-summary"
 import { useToast } from "@/hooks/use-toast"
 import { useMarketData } from "@/hooks/use-market-data"
 import { useSparklineData } from "@/hooks/use-sparkline-data"
@@ -109,6 +113,8 @@ export default function MorningPage() {
   const { openWithPrompt } = usePelicanPanelContext()
   const { items: watchlistItems } = useWatchlist()
   const { toast } = useToast()
+  const { warnings: todaysWarnings, warningCount } = useTodaysWarnings()
+  const { data: behavioralInsights } = useBehavioralInsights()
 
   // Get live quotes for open positions to calculate unrealized P&L
   const openTickersWithTypes = openTrades
@@ -308,7 +314,7 @@ export default function MorningPage() {
       `${m.ticker}: ${m.changePercent >= 0 ? '+' : ''}${m.changePercent.toFixed(1)}%`
     ).join(', ')
 
-    return `You are Pelican, an institutional-grade AI trading assistant delivering a comprehensive daily briefing.
+    let prompt = `You are Pelican, an institutional-grade AI trading assistant delivering a comprehensive daily briefing.
 
 Date: ${dateStr}
 Time: ${timeStr}
@@ -375,7 +381,17 @@ Generate my personalized daily brief covering ALL of the following sections. Be 
 - Times to pay attention to (data releases, market open, power hour)
 
 Keep it dense, actionable, and personalized to MY positions and watchlist. Use markdown headers for each section.`
-  }, [openTrades, watchlistItems, movers.gainers, movers.losers])
+
+    if (todaysWarnings.length > 0) {
+      prompt += `\n\nIMPORTANT CONTEXT — MY ACTIVE TRADING WARNINGS (based on my historical patterns):\n`
+      todaysWarnings.forEach(w => {
+        prompt += `- [${w.severity.toUpperCase()}] ${w.title}: ${w.message}\n`
+      })
+      prompt += `\nPlease acknowledge these warnings in my brief and factor them into your risk assessment and game plan sections.`
+    }
+
+    return prompt
+  }, [openTrades, watchlistItems, movers.gainers, movers.losers, todaysWarnings])
 
   const supabase = useMemo(() => createClient(), [])
   const briefAbortRef = useRef<AbortController | null>(null)
@@ -543,6 +559,16 @@ Keep it dense, actionable, and personalized to MY positions and watchlist. Use m
           }}
         />
       </div>
+
+      {/* Behavioral Warnings */}
+      {warningCount > 0 && (
+        <div className="mt-4">
+          <WarningBanner
+            warnings={todaysWarnings}
+            onAction={(w) => openWithPrompt(null, `I have a trading warning: ${w.title}. ${w.message} What should I do? ${w.action}`, 'morning')}
+          />
+        </div>
+      )}
 
       {/* Pelican Brief — full width, above the grid */}
       <motion.div
@@ -888,6 +914,17 @@ Keep it dense, actionable, and personalized to MY positions and watchlist. Use m
               onAnalyze={(ticker, prompt) => openWithPrompt(ticker, prompt, 'morning')}
             />
           </motion.div>
+
+          {/* Your Edge */}
+          {behavioralInsights?.has_enough_data && (
+            <motion.div variants={staggerItem}>
+              <EdgeSummary
+                insights={behavioralInsights}
+                onAskPelican={(prompt) => openWithPrompt(null, prompt, 'morning')}
+                compact
+              />
+            </motion.div>
+          )}
 
           {/* Risk Dashboard */}
           <motion.div variants={staggerItem}>

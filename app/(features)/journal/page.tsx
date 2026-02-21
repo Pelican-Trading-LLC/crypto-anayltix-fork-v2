@@ -16,7 +16,7 @@ import { TradesTable } from "@/components/journal/trades-table"
 import { TradeDetailPanel } from "@/components/journal/trade-detail-panel"
 import { buildScanPrompt } from "@/lib/journal/build-scan-prompt"
 import { PageHeader, PelicanButton, pageEnter, tabContent, backdrop } from "@/components/ui/pelican"
-import { Plus, ChartBar, Funnel, CalendarBlank, UserCircle, ClipboardText } from "@phosphor-icons/react"
+import { Plus, ChartBar, Funnel, CalendarBlank, UserCircle, ClipboardText, Brain } from "@phosphor-icons/react"
 
 const PositionsDashboardTab = dynamicImport(
   () => import("@/components/positions/positions-dashboard-tab").then((m) => ({ default: m.PositionsDashboardTab })),
@@ -38,7 +38,12 @@ const TradingPlanTab = dynamicImport(
   { ssr: false }
 )
 
-type TabKey = 'dashboard' | 'trades' | 'calendar' | 'profile' | 'plan'
+const InsightsTab = dynamicImport(
+  () => import("@/components/journal/insights-tab").then((m) => ({ default: m.InsightsTab })),
+  { ssr: false }
+)
+
+type TabKey = 'dashboard' | 'trades' | 'calendar' | 'profile' | 'plan' | 'insights'
 type ActivePanel = 'detail' | 'pelican' | null
 
 export default function JournalPage() {
@@ -55,7 +60,7 @@ export default function JournalPage() {
   // Handle ?tab= from settings modal links
   const tabParam = searchParams.get('tab') as TabKey | null
   useEffect(() => {
-    if (tabParam && ['dashboard', 'trades', 'calendar', 'profile', 'plan'].includes(tabParam)) {
+    if (tabParam && ['dashboard', 'trades', 'calendar', 'profile', 'plan', 'insights'].includes(tabParam)) {
       setActiveTab(tabParam)
     }
   }, [tabParam])
@@ -329,6 +334,20 @@ export default function JournalPage() {
             <ClipboardText size={16} weight={activeTab === 'plan' ? 'fill' : 'regular'} />
             Plan
           </button>
+          <button
+            onClick={() => setActiveTab('insights')}
+            className={`
+              px-4 py-2 rounded-lg text-sm font-medium transition-all duration-150 whitespace-nowrap flex-shrink-0 active:scale-[0.98] min-h-[44px] flex items-center gap-1.5
+              ${
+                activeTab === 'insights'
+                  ? 'bg-[var(--bg-elevated)] text-[var(--text-primary)]'
+                  : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-elevated)]'
+              }
+            `}
+          >
+            <Brain size={16} weight={activeTab === 'insights' ? 'fill' : 'regular'} />
+            Insights
+          </button>
         </div>
       </div>
 
@@ -425,6 +444,21 @@ export default function JournalPage() {
                 <TradingPlanTab
                   trades={trades}
                   onAskPelican={handleAskPelican}
+                />
+              </motion.div>
+            )}
+
+            {activeTab === 'insights' && (
+              <motion.div
+                key="insights"
+                variants={tabContent}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+              >
+                <InsightsTab
+                  onAskPelican={handleAskPelican}
+                  onLogTrade={() => setShowLogTradeModal(true)}
                 />
               </motion.div>
             )}
