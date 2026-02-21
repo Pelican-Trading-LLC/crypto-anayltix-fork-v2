@@ -174,7 +174,7 @@ export function PositionCard({
         </span>
         {position.risk_reward_ratio !== null && (
           <span className="font-mono tabular-nums text-xs text-[var(--text-secondary)]">
-            {position.risk_reward_ratio.toFixed(1)}R
+            {position.risk_reward_ratio > 10 ? '>10R' : `${position.risk_reward_ratio.toFixed(1)}R`}
           </span>
         )}
         {position.conviction !== null && (
@@ -194,7 +194,7 @@ export function PositionCard({
           <span className="text-red-400">
             Stop <span className="font-mono tabular-nums">${formatCompactPrice(position.stop_loss!)}</span>
             {position.distance_to_stop_pct !== null && (
-              <span className="text-[var(--text-muted)] ml-0.5">({Math.abs(position.distance_to_stop_pct).toFixed(1)}%)</span>
+              <span className="text-[var(--text-muted)] ml-0.5 font-mono tabular-nums">(-{Math.abs(position.distance_to_stop_pct).toFixed(1)}%)</span>
             )}
           </span>
         ) : (
@@ -204,7 +204,7 @@ export function PositionCard({
           <span className="text-emerald-400">
             Target <span className="font-mono tabular-nums">${formatCompactPrice(position.take_profit!)}</span>
             {position.distance_to_target_pct !== null && (
-              <span className="text-[var(--text-muted)] ml-0.5">({Math.abs(position.distance_to_target_pct).toFixed(1)}%)</span>
+              <span className="text-[var(--text-muted)] ml-0.5 font-mono tabular-nums">(+{Math.abs(position.distance_to_target_pct).toFixed(1)}%)</span>
             )}
           </span>
         ) : (

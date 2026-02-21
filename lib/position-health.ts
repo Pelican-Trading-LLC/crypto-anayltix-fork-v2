@@ -16,6 +16,7 @@ export interface PositionHealth {
 export interface PositionAlert {
   type:
     | 'tight_stop'
+    | 'absurd_stop'
     | 'no_stop'
     | 'no_target'
     | 'no_thesis'
@@ -60,6 +61,28 @@ function getAvgPositionSize(stats: PortfolioStats): number {
   return stats.total_exposure / stats.total_positions
 }
 
+/**
+ * Suggests a corrected stop price for absurd stops (likely typos).
+ */
+function suggestCorrectedStop(position: PortfolioPosition): string {
+  const entry = position.entry_price
+  const stop = position.stop_loss
+  if (!entry || !stop) return '?'
+
+  // Check if stop * 10 would be within 10% of entry (common typo: forgot a zero)
+  const stopTimes10 = stop * 10
+  const pctFromEntry10x = Math.abs((entry - stopTimes10) / entry * 100)
+  if (pctFromEntry10x < 10) {
+    return `$${stopTimes10.toLocaleString()}`
+  }
+
+  // Otherwise suggest a standard 5% stop
+  const suggestedStop = position.direction === 'long'
+    ? entry * 0.95
+    : entry * 1.05
+  return `$${suggestedStop.toLocaleString()}`
+}
+
 // ============================================================================
 // computePositionHealth
 // ============================================================================
@@ -72,13 +95,13 @@ export function computePositionHealth(
   let score = 100
   const issues: string[] = []
 
-  // 1. No stop loss: -25
+  // 1. No stop loss: -35
   if (!position.has_stop_loss) {
-    score -= 25
+    score -= 35
     issues.push('No stop loss — undefined risk')
   }
 
-  // 2. Stop < 1.5% from entry: -10
+  // 2a. Stop < 1.5% from entry: -10
   if (
     position.has_stop_loss &&
     position.distance_to_stop_pct !== null &&
@@ -87,6 +110,18 @@ export function computePositionHealth(
     score -= 10
     issues.push(
       `Stop loss only ${Math.abs(position.distance_to_stop_pct).toFixed(1)}% from entry — high probability of being stopped out on noise`,
+    )
+  }
+
+  // 2b. Absurd stop (>30% from entry): -15
+  if (
+    position.has_stop_loss &&
+    position.distance_to_stop_pct !== null &&
+    Math.abs(position.distance_to_stop_pct) > 30
+  ) {
+    score -= 15
+    issues.push(
+      `Stop is ${Math.abs(position.distance_to_stop_pct).toFixed(0)}% away — effectively unprotected. Did you mean ${suggestCorrectedStop(position)}?`,
     )
   }
 
@@ -140,17 +175,19 @@ export function computePositionHealth(
     )
   }
 
-  // 5. High conviction (>=7) but no thesis: -5
-  if (
-    position.conviction !== null &&
-    position.conviction >= 7 &&
-    !position.has_thesis
-  ) {
-    score -= 5
-    issues.push('High conviction without a written thesis — document your reasoning')
+  // 5. No thesis: -10
+  if (!position.has_thesis) {
+    score -= 10
+    issues.push('No thesis documented — you may forget why you entered this trade')
   }
 
-  // 6. Held 7+ days with 0 Pelican scans: -5
+  // 6. Low conviction (≤3): -10
+  if (position.conviction !== null && position.conviction <= 3) {
+    score -= 10
+    issues.push(`Conviction is ${position.conviction}/10 — consider if this trade is worth the capital`)
+  }
+
+  // 7. Held 7+ days with 0 Pelican scans: -5
   if (position.days_held >= 7 && position.pelican_scan_count === 0) {
     score -= 5
     issues.push('Held 7+ days without a Pelican scan — run one to reassess')
@@ -212,6 +249,19 @@ export function computeSmartAlerts(
       type: 'tight_stop',
       severity: 'warning',
       message: `Stop loss is only ${Math.abs(position.distance_to_stop_pct).toFixed(1)}% away — likely to get stopped out on normal volatility`,
+    })
+  }
+
+  // 2b. Absurd stop (warning)
+  if (
+    position.has_stop_loss &&
+    position.distance_to_stop_pct !== null &&
+    Math.abs(position.distance_to_stop_pct) > 30
+  ) {
+    alerts.push({
+      type: 'absurd_stop',
+      severity: 'warning',
+      message: `Stop loss is ${Math.abs(position.distance_to_stop_pct).toFixed(0)}% from entry — effectively unprotected. Did you mean ${suggestCorrectedStop(position)}?`,
     })
   }
 

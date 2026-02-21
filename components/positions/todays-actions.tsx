@@ -10,9 +10,11 @@ import {
   Crosshair,
   Scales,
   CheckCircle,
+  TrendUp,
+  TrendDown,
 } from '@phosphor-icons/react'
 import type { IconProps } from '@phosphor-icons/react'
-import type { PortfolioPosition } from '@/types/portfolio'
+import type { PortfolioPosition, PortfolioStats, RiskSummary } from '@/types/portfolio'
 import type { BehavioralInsights } from '@/hooks/use-behavioral-insights'
 import type { TodayWarning } from '@/hooks/use-todays-warnings'
 
@@ -24,6 +26,8 @@ interface TodaysActionsProps {
   positions: PortfolioPosition[]
   insights: BehavioralInsights | null
   warnings: TodayWarning[]
+  portfolioStats?: PortfolioStats
+  riskSummary?: RiskSummary
   onAction: (chatPrompt: string) => void
   onEditPosition: (position: PortfolioPosition) => void
 }
@@ -67,7 +71,7 @@ function buildScanPrompt(p: PortfolioPosition): string {
 // Component
 // ============================================================================
 
-export function TodaysActions({ positions, insights, warnings, onAction, onEditPosition }: TodaysActionsProps) {
+export function TodaysActions({ positions, insights, warnings, portfolioStats, riskSummary, onAction, onEditPosition }: TodaysActionsProps) {
   const avgSize = useMemo(() => {
     if (positions.length === 0) return 0
     return positions.reduce((s, p) => s + p.position_size_usd, 0) / positions.length
@@ -88,14 +92,86 @@ export function TodaysActions({ positions, insights, warnings, onAction, onEditP
       }
     }
 
-    for (const p of positions) {
-      // Priority 1 — Tight stop
-      if (p.has_stop_loss && p.distance_to_stop_pct != null && p.distance_to_stop_pct < 2) {
+    // Portfolio-level checks
+    if (riskSummary) {
+      const rr = riskSummary.portfolio_rr_ratio
+      if (rr !== null && rr < 0.5) {
+        list.push({
+          priority: 0, icon: ShieldWarning, iconColor: 'text-red-400',
+          label: `Portfolio R:R is ${rr.toFixed(2)}:1 — risking more than you stand to gain`,
+          detail: `Risk: ${formatNum(riskSummary.total_risk_usd)} vs Reward: ${formatNum(riskSummary.total_reward_usd)}`,
+          actionLabel: 'Fix R:R \u2192', actionType: 'chat',
+          chatPrompt: `My portfolio R:R ratio is ${rr.toFixed(2)}:1 — I'm risking ${formatNum(riskSummary.total_risk_usd)} to potentially make ${formatNum(riskSummary.total_reward_usd)}. Help me fix this. Which positions should I adjust targets or tighten stops on?`,
+        })
+      } else if (rr !== null && rr < 1) {
         list.push({
           priority: 1, icon: Warning, iconColor: 'text-amber-400',
-          label: `${p.ticker} stop is ${p.distance_to_stop_pct.toFixed(1)}% away`,
+          label: `Portfolio R:R is ${rr.toFixed(2)}:1 — below breakeven`,
+          detail: `Risk: ${formatNum(riskSummary.total_risk_usd)} vs Reward: ${formatNum(riskSummary.total_reward_usd)}`,
+          actionLabel: 'Improve \u2192', actionType: 'chat',
+          chatPrompt: `My portfolio R:R ratio is ${rr.toFixed(2)}:1. Help me improve it to at least 1.5:1. Which positions need wider targets or tighter stops?`,
+        })
+      }
+    }
+
+    if (portfolioStats) {
+      // Concentration check
+      const maxConc = portfolioStats.asset_breakdown.reduce(
+        (max, b) => b.pct_of_portfolio > max.pct ? { type: b.asset_type, pct: b.pct_of_portfolio } : max,
+        { type: '', pct: 0 },
+      )
+      if (maxConc.pct > 50 && portfolioStats.asset_breakdown.length > 1) {
+        list.push({
+          priority: 2, icon: Scales, iconColor: 'text-amber-400',
+          label: `${maxConc.pct.toFixed(0)}% concentrated in ${maxConc.type}s`,
+          detail: 'Heavy concentration increases risk. Consider diversifying.',
+          actionLabel: 'Review \u2192', actionType: 'chat',
+          chatPrompt: `My portfolio is ${maxConc.pct.toFixed(0)}% concentrated in ${maxConc.type}s. Is this too risky? Suggest ways to diversify without losing my edge.`,
+        })
+      }
+
+      // Directional bias check
+      const totalDir = portfolioStats.direction_breakdown.long.exposure + portfolioStats.direction_breakdown.short.exposure
+      if (totalDir > 0) {
+        const longPct = (portfolioStats.direction_breakdown.long.exposure / totalDir) * 100
+        if (longPct > 85) {
+          list.push({
+            priority: 2, icon: TrendUp, iconColor: 'text-amber-400',
+            label: `${longPct.toFixed(0)}% long — heavy directional bias`,
+            detail: 'Consider hedging with a short position or reducing long exposure.',
+            actionLabel: 'Hedge \u2192', actionType: 'chat',
+            chatPrompt: `My portfolio is ${longPct.toFixed(0)}% long. Should I hedge? Suggest short candidates or protective strategies for my current positions.`,
+          })
+        } else if (longPct < 15) {
+          list.push({
+            priority: 2, icon: TrendDown, iconColor: 'text-amber-400',
+            label: `${(100 - longPct).toFixed(0)}% short — heavy directional bias`,
+            detail: 'Extremely bearish positioning. Vulnerable to market rallies.',
+            actionLabel: 'Review \u2192', actionType: 'chat',
+            chatPrompt: `My portfolio is ${(100 - longPct).toFixed(0)}% short. Is this too bearish? What's the risk of a short squeeze or rally? Should I add long exposure?`,
+          })
+        }
+      }
+    }
+
+    for (const p of positions) {
+      // Priority 1 — Tight stop
+      if (p.has_stop_loss && p.distance_to_stop_pct != null && Math.abs(p.distance_to_stop_pct) < 2) {
+        list.push({
+          priority: 1, icon: Warning, iconColor: 'text-amber-400',
+          label: `${p.ticker} stop is ${Math.abs(p.distance_to_stop_pct).toFixed(1)}% away`,
           detail: `Tight stop at $${p.stop_loss}. Decide: widen, hold, or exit.`,
           actionLabel: 'Plan \u2192', actionType: 'chat', chatPrompt: buildScanPrompt(p),
+        })
+      }
+
+      // Priority 1 — Absurd stop (>30% from entry, likely a typo)
+      if (p.has_stop_loss && p.distance_to_stop_pct != null && Math.abs(p.distance_to_stop_pct) > 30) {
+        list.push({
+          priority: 1, icon: Warning, iconColor: 'text-red-400',
+          label: `${p.ticker} stop is ${Math.abs(p.distance_to_stop_pct).toFixed(0)}% away — not a real stop`,
+          detail: `Stop at $${p.stop_loss} is too far from entry $${p.entry_price}. Possible typo?`,
+          actionLabel: 'Fix stop \u2192', actionType: 'edit', position: p,
         })
       }
 
@@ -153,7 +229,7 @@ export function TodaysActions({ positions, insights, warnings, onAction, onEditP
 
     list.sort((a, b) => a.priority - b.priority)
     return list.slice(0, 5)
-  }, [positions, insights, warnings, avgSize])
+  }, [positions, insights, warnings, avgSize, portfolioStats, riskSummary])
 
   // ── Empty / all-clear state ──────────────────────────────────────────────
   if (actions.length === 0) {

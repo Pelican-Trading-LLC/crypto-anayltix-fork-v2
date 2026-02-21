@@ -2,7 +2,7 @@
 
 export const dynamic = "force-dynamic"
 
-import { useState, useCallback, useMemo } from "react"
+import { useState, useCallback, useMemo, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
 import { ArrowsClockwise, Brain } from "@phosphor-icons/react"
@@ -22,6 +22,7 @@ import { PositionsEmptyState } from "@/components/positions/positions-empty-stat
 import { CloseTradeModal } from "@/components/journal/close-trade-modal"
 import { LogTradeModal } from "@/components/journal/log-trade-modal"
 import { PelicanButton, pageEnter } from "@/components/ui/pelican"
+import { computePortfolioGrade } from "@/lib/portfolio-grade"
 import type { PortfolioPosition } from "@/types/portfolio"
 
 // ============================================================================
@@ -64,6 +65,21 @@ export default function PositionsPage() {
 
   // Post-close review loop
   const [showPostCloseReview, setShowPostCloseReview] = useState<PortfolioPosition | null>(null)
+
+  // Portfolio grade tooltip
+  const [showGradeTooltip, setShowGradeTooltip] = useState(false)
+  const gradeRef = useRef<HTMLButtonElement>(null)
+
+  // Compute portfolio grade
+  const portfolioGrade = useMemo(() => {
+    if (!portfolio) return null
+    return computePortfolioGrade(
+      portfolio.portfolio,
+      portfolio.risk,
+      portfolio.plan_compliance,
+      portfolio.positions,
+    )
+  }, [portfolio])
 
   // Chat integration — send rich prompt to Pelican panel
   const handleSendMessage = useCallback(async (message: string) => {
@@ -151,14 +167,55 @@ export default function PositionsPage() {
     >
       {/* Page header */}
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-lg sm:text-xl font-semibold text-[var(--text-primary)]">Positions</h1>
-          <p className="text-xs text-[var(--text-muted)] mt-0.5">
-            <span className="font-mono tabular-nums">{portfolio.portfolio.total_positions}</span> open
-            {portfolio.portfolio.avg_conviction > 0 && (
-              <> · <span className="font-mono tabular-nums">{portfolio.portfolio.avg_conviction.toFixed(1)}</span> avg conviction</>
-            )}
-          </p>
+        <div className="flex items-center gap-3">
+          <div>
+            <h1 className="text-lg sm:text-xl font-semibold text-[var(--text-primary)]">Positions</h1>
+            <p className="text-xs text-[var(--text-muted)] mt-0.5">
+              <span className="font-mono tabular-nums">{portfolio.portfolio.total_positions}</span> open
+              {portfolio.portfolio.avg_conviction > 0 && (
+                <> · <span className="font-mono tabular-nums">{portfolio.portfolio.avg_conviction.toFixed(1)}</span> avg conviction</>
+              )}
+            </p>
+          </div>
+          {portfolioGrade && (
+            <div className="relative">
+              <button
+                ref={gradeRef}
+                onMouseEnter={() => setShowGradeTooltip(true)}
+                onMouseLeave={() => setShowGradeTooltip(false)}
+                onClick={() => handleSendMessage(
+                  `My portfolio grade is ${portfolioGrade.letter} (${portfolioGrade.score}/100). ` +
+                  `Breakdown: ${portfolioGrade.factors.map(f => `${f.name}: ${f.score}/100 (${f.detail})`).join('. ')}. ` +
+                  `${portfolioGrade.summary}. What should I prioritize to improve my grade?`
+                )}
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-[var(--border-subtle)] hover:border-[var(--border-hover)] bg-[var(--bg-surface)] transition-all duration-150 hover:translate-y-[-1px] cursor-pointer"
+              >
+                <span
+                  className="text-lg font-bold font-mono"
+                  style={{ color: portfolioGrade.color }}
+                >
+                  {portfolioGrade.letter}
+                </span>
+                <span className="text-xs text-[var(--text-muted)] font-mono tabular-nums">
+                  {portfolioGrade.score}
+                </span>
+              </button>
+              {showGradeTooltip && (
+                <div className="absolute top-full left-0 mt-2 z-50 w-64 rounded-xl border border-[var(--border-default)] bg-[var(--bg-elevated)] p-3 shadow-lg">
+                  <p className="text-xs font-medium text-[var(--text-primary)] mb-2">{portfolioGrade.summary}</p>
+                  <div className="space-y-1.5">
+                    {portfolioGrade.factors.map((f) => (
+                      <div key={f.name} className="flex items-center justify-between text-xs">
+                        <span className="text-[var(--text-secondary)]">{f.name}</span>
+                        <span className="font-mono tabular-nums text-[var(--text-muted)]">{f.score}/100</span>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="text-[10px] text-[var(--text-muted)] mt-2">Click to discuss with Pelican</p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
         <button
           onClick={() => refreshPortfolio()}
@@ -183,6 +240,8 @@ export default function PositionsPage() {
         positions={portfolio.positions}
         insights={insights}
         warnings={warnings}
+        portfolioStats={portfolio.portfolio}
+        riskSummary={portfolio.risk}
         onAction={handleSendMessage}
         onEditPosition={handleEditPosition}
       />
@@ -192,7 +251,9 @@ export default function PositionsPage() {
         portfolio={portfolio.portfolio}
         risk={portfolio.risk}
         planCompliance={portfolio.plan_compliance}
+        positions={portfolio.positions}
         isLoading={portfolioLoading}
+        onSendMessage={handleSendMessage}
       />
 
       {/* Filters + Sort */}

@@ -12,6 +12,7 @@ import {
   CheckCircle,
   ArrowRight,
   ChartPie,
+  ChatCircle,
 } from '@phosphor-icons/react'
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts'
 import { PelicanCard, staggerContainer, staggerItem } from '@/components/ui/pelican'
@@ -21,13 +22,16 @@ import type {
   RiskSummary,
   PlanCompliance,
   AssetBreakdown,
+  PortfolioPosition,
 } from '@/types/portfolio'
 
 interface PortfolioOverviewProps {
   portfolio: PortfolioStats
   risk: RiskSummary
   planCompliance: PlanCompliance
+  positions: PortfolioPosition[]
   isLoading: boolean
+  onSendMessage?: (message: string) => void
 }
 
 // ── Color map for asset types ──────────────────────────────────────────
@@ -102,7 +106,9 @@ export function PortfolioOverview({
   portfolio,
   risk,
   planCompliance,
+  positions,
   isLoading,
+  onSendMessage,
 }: PortfolioOverviewProps) {
   // ── Loading State ──────────────────────────────────────────────────
   if (isLoading) {
@@ -128,6 +134,9 @@ export function PortfolioOverview({
       ? `${risk.portfolio_rr_ratio.toFixed(2)}:1`
       : '\u2014'
 
+  const longTickers = positions.filter(p => p.direction === 'long').map(p => p.ticker).join(', ')
+  const shortTickers = positions.filter(p => p.direction === 'short').map(p => p.ticker).join(', ')
+
   const metricCards = [
     {
       label: 'Total Exposure',
@@ -135,6 +144,7 @@ export function PortfolioOverview({
       color: 'var(--text-primary)',
       sub: `${portfolio.total_positions} position${portfolio.total_positions !== 1 ? 's' : ''}`,
       icon: Wallet,
+      prompt: `My total portfolio exposure is ${formatCompactDollar(portfolio.total_exposure)} across ${portfolio.total_positions} positions. Is this appropriate for a retail trader? How should I think about position sizing?`,
     },
     {
       label: 'Long',
@@ -142,6 +152,7 @@ export function PortfolioOverview({
       color: 'var(--data-positive)',
       sub: `${portfolio.direction_breakdown.long.count} position${portfolio.direction_breakdown.long.count !== 1 ? 's' : ''}`,
       icon: TrendUp,
+      prompt: `I have ${formatCompactDollar(portfolio.long_exposure)} in long exposure across ${portfolio.direction_breakdown.long.count} positions: ${longTickers || 'none'}. Analyze my long book — am I too concentrated? Any correlation risk?`,
     },
     {
       label: 'Short',
@@ -149,6 +160,7 @@ export function PortfolioOverview({
       color: 'var(--data-negative)',
       sub: `${portfolio.direction_breakdown.short.count} position${portfolio.direction_breakdown.short.count !== 1 ? 's' : ''}`,
       icon: TrendDown,
+      prompt: `I have ${formatCompactDollar(portfolio.short_exposure)} in short exposure across ${portfolio.direction_breakdown.short.count} positions: ${shortTickers || 'none'}. Analyze my short book — is my hedging adequate?`,
     },
     {
       label: 'Net Exposure',
@@ -161,6 +173,7 @@ export function PortfolioOverview({
             : 'var(--text-primary)',
       sub: portfolio.net_exposure > 0 ? 'Net long' : portfolio.net_exposure < 0 ? 'Net short' : 'Neutral',
       icon: Scales,
+      prompt: `My net exposure is ${formatCompactDollar(portfolio.net_exposure)} (${portfolio.net_exposure > 0 ? 'net long' : portfolio.net_exposure < 0 ? 'net short' : 'neutral'}). Long: ${formatCompactDollar(portfolio.long_exposure)}, Short: ${formatCompactDollar(portfolio.short_exposure)}. Given current market conditions, is this directional bias appropriate? Should I hedge more?`,
     },
     {
       label: 'R:R Ratio',
@@ -168,6 +181,9 @@ export function PortfolioOverview({
       color: 'var(--text-primary)',
       sub: risk.portfolio_rr_ratio !== null ? 'Risk to reward' : 'No risk defined',
       icon: ShieldCheck,
+      prompt: risk.portfolio_rr_ratio !== null
+        ? `My portfolio R:R ratio is ${risk.portfolio_rr_ratio.toFixed(2)}:1. Total risk: ${formatCompactDollar(risk.total_risk_usd)}, potential reward: ${formatCompactDollar(risk.total_reward_usd)}. ${risk.positions_without_risk} positions have no defined risk. Is this R:R acceptable? How can I improve it?`
+        : `I have ${risk.positions_without_risk} positions with no defined risk (no stop loss). Help me set appropriate stop losses for my open positions.`,
     },
   ]
 
@@ -224,18 +240,31 @@ export function PortfolioOverview({
       >
         {metricCards.map((card) => {
           const Icon = card.icon
+          const isClickable = !!onSendMessage
           return (
             <motion.div key={card.label} variants={staggerItem}>
-              <PelicanCard className="p-4">
+              <PelicanCard
+                className={`p-4 group ${isClickable ? 'cursor-pointer hover:translate-y-[-1px] hover:shadow-lg hover:border-[var(--border-hover)] transition-all duration-150' : ''}`}
+                onClick={isClickable ? () => onSendMessage(card.prompt) : undefined}
+              >
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-xs text-[var(--text-muted)] uppercase tracking-wider font-medium">
                     {card.label}
                   </span>
-                  <Icon
-                    size={16}
-                    weight="regular"
-                    className="text-[var(--text-muted)]"
-                  />
+                  <div className="relative">
+                    <Icon
+                      size={16}
+                      weight="regular"
+                      className={`text-[var(--text-muted)] ${isClickable ? 'group-hover:opacity-0 transition-opacity duration-150' : ''}`}
+                    />
+                    {isClickable && (
+                      <ChatCircle
+                        size={16}
+                        weight="fill"
+                        className="text-[var(--accent-primary)] absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-150"
+                      />
+                    )}
+                  </div>
                 </div>
                 <div
                   className="text-xl font-semibold font-mono tabular-nums"
@@ -312,20 +341,35 @@ export function PortfolioOverview({
 
                 {/* Legend */}
                 <div className="flex flex-wrap gap-x-4 gap-y-1.5 mt-3">
-                  {donutData.map((entry) => (
-                    <div key={entry.asset_type} className="flex items-center gap-1.5">
-                      <span
-                        className="w-2.5 h-2.5 rounded-full flex-shrink-0"
-                        style={{ backgroundColor: entry.fill }}
-                      />
-                      <span className="text-xs text-[var(--text-secondary)] capitalize">
-                        {entry.asset_type}
-                      </span>
-                      <span className="text-xs text-[var(--text-muted)] font-mono tabular-nums">
-                        {entry.pct_of_portfolio.toFixed(0)}%
-                      </span>
-                    </div>
-                  ))}
+                  {donutData.map((entry) => {
+                    const tickersInClass = positions
+                      .filter(p => p.asset_type.toLowerCase() === entry.asset_type.toLowerCase())
+                      .map(p => p.ticker)
+                      .join(', ')
+                    const isClickable = !!onSendMessage
+                    return (
+                      <button
+                        key={entry.asset_type}
+                        disabled={!isClickable}
+                        onClick={() => onSendMessage?.(
+                          `I have ${entry.pct_of_portfolio.toFixed(1)}% of my portfolio in ${entry.asset_type}s (${formatCompactDollar(entry.total_exposure)}, ${entry.count} positions: ${tickersInClass}). ` +
+                          `Is this too concentrated? What's the ideal allocation for this asset class?`
+                        )}
+                        className={`flex items-center gap-1.5 ${isClickable ? 'hover:bg-[var(--bg-elevated)] rounded-md px-1.5 py-0.5 -mx-1.5 -my-0.5 transition-colors duration-150 cursor-pointer' : ''}`}
+                      >
+                        <span
+                          className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+                          style={{ backgroundColor: entry.fill }}
+                        />
+                        <span className="text-xs text-[var(--text-secondary)] capitalize">
+                          {entry.asset_type}
+                        </span>
+                        <span className="text-xs text-[var(--text-muted)] font-mono tabular-nums">
+                          {entry.pct_of_portfolio.toFixed(0)}%
+                        </span>
+                      </button>
+                    )
+                  })}
                 </div>
               </>
             )}
@@ -413,6 +457,41 @@ export function PortfolioOverview({
                 {' '}positions ({riskDefinedPct}%) have defined risk
               </p>
             </div>
+
+            {/* Risk budget action button */}
+            {onSendMessage && totalPositions > 0 && (
+              <button
+                onClick={() => {
+                  const rr = risk.portfolio_rr_ratio
+                  if (rr === null || rr < 1) {
+                    onSendMessage(
+                      `My portfolio risk management needs help. R:R: ${rr !== null ? rr.toFixed(2) + ':1' : 'undefined'}. ` +
+                      `${risk.positions_without_risk} of ${totalPositions} positions have no stop loss. ` +
+                      `Total at risk: ${formatCompactDollar(risk.total_risk_usd)}. ` +
+                      `Help me fix this — suggest stop losses for my unprotected positions and improve my R:R.`
+                    )
+                  } else {
+                    onSendMessage(
+                      `Validate my risk budget: R:R ${rr.toFixed(2)}:1, ${risk.positions_with_defined_risk}/${totalPositions} have stops, ` +
+                      `total risk ${formatCompactDollar(risk.total_risk_usd)} vs reward ${formatCompactDollar(risk.total_reward_usd)}. ` +
+                      `Is this well-structured? Any improvements?`
+                    )
+                  }
+                }}
+                className="mt-4 w-full flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-medium transition-all duration-150 hover:translate-y-[-1px]"
+                style={{
+                  backgroundColor: riskDefinedPct > 80
+                    ? 'rgba(34, 197, 94, 0.08)'
+                    : riskDefinedPct >= 50
+                      ? 'rgba(245, 158, 11, 0.08)'
+                      : 'rgba(239, 68, 68, 0.08)',
+                  color: riskBarColor,
+                }}
+              >
+                <ChatCircle size={14} weight="fill" />
+                {riskDefinedPct > 80 ? 'Validate with Pelican' : 'Fix This with Pelican'}
+              </button>
+            )}
           </PelicanCard>
         </motion.div>
       </motion.div>
