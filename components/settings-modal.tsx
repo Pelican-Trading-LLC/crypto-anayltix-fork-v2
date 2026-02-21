@@ -77,7 +77,7 @@ export function SettingsModal({ open, onOpenChange }: SettingsModalProps) {
           <div className="space-y-3">
             <h3 className="text-sm font-medium text-[var(--foreground)]">Account</h3>
             <button
-              onClick={() => { onOpenChange(false); router.push('/profile') }}
+              onClick={() => { onOpenChange(false); router.push('/settings') }}
               className="flex items-center gap-2 text-sm text-[var(--text-secondary)] hover:text-[var(--foreground)] transition-colors"
             >
               <User weight="regular" className="w-4 h-4" />
