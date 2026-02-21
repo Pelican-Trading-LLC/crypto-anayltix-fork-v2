@@ -19,6 +19,7 @@ interface InputTextareaProps {
   onPaste: (e: React.ClipboardEvent) => void
   onFocus: () => void
   onBlur: () => void
+  onKeyDownCapture?: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void
 }
 
 export interface InputTextareaRef {
@@ -42,6 +43,7 @@ export const InputTextarea = forwardRef<InputTextareaRef, InputTextareaProps>(
       onPaste,
       onFocus,
       onBlur,
+      onKeyDownCapture,
     },
     ref,
   ) => {
@@ -101,6 +103,7 @@ export const InputTextarea = forwardRef<InputTextareaRef, InputTextareaProps>(
         ref={textareaRef}
         value={value}
         onChange={handleInputChange}
+        onKeyDownCapture={onKeyDownCapture}
         onKeyDown={handleKeyDown}
         onPaste={onPaste}
         onFocus={onFocus}

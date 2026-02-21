@@ -39,12 +39,14 @@ function getUnrealizedPnL(trade: Trade, quotes: Record<string, Quote>) {
   return { currentPrice, pnlAmount, pnlPercent, rMultiple }
 }
 
-type SortField = 'entry_date' | 'ticker' | 'pnl_amount' | 'pnl_percent'
+type SortField = 'entry_date' | 'exit_date' | 'ticker' | 'pnl_amount' | 'pnl_percent'
 type SortDirection = 'asc' | 'desc'
+type StatusFilter = 'all' | 'open' | 'closed' | 'cancelled'
 
 export function TradesTable({ trades, onSelectTrade, selectedTradeId, onScanTrade, onAskPelican }: TradesTableProps) {
   const [sortField, setSortField] = useState<SortField>('entry_date')
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc')
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
 
   // Get live quotes for open positions
   const openTickersWithTypes = trades
@@ -53,6 +55,31 @@ export function TradesTable({ trades, onSelectTrade, selectedTradeId, onScanTrad
     .filter((v, i, a) => a.indexOf(v) === i) // dedupe
 
   const { quotes } = useLiveQuotes(openTickersWithTypes)
+
+  // Status counts from unfiltered trades
+  const statusCounts = {
+    all: trades.length,
+    open: trades.filter(t => t.status === 'open').length,
+    closed: trades.filter(t => t.status === 'closed').length,
+    cancelled: trades.filter(t => t.status === 'cancelled').length,
+  }
+
+  // Apply status filter
+  const statusFilteredTrades = statusFilter === 'all'
+    ? trades
+    : trades.filter(t => t.status === statusFilter)
+
+  // When switching status filter, adjust default sort
+  const handleStatusFilter = (filter: StatusFilter) => {
+    setStatusFilter(filter)
+    if (filter === 'closed') {
+      setSortField('exit_date')
+      setSortDirection('desc')
+    } else if (filter === 'open') {
+      setSortField('entry_date')
+      setSortDirection('desc')
+    }
+  }
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -63,7 +90,7 @@ export function TradesTable({ trades, onSelectTrade, selectedTradeId, onScanTrad
     }
   }
 
-  const sortedTrades = [...trades].sort((a, b) => {
+  const sortedTrades = [...statusFilteredTrades].sort((a, b) => {
     let aVal: number | string | null
     let bVal: number | string | null
 
@@ -71,6 +98,10 @@ export function TradesTable({ trades, onSelectTrade, selectedTradeId, onScanTrad
       case 'entry_date':
         aVal = new Date(a.entry_date).getTime()
         bVal = new Date(b.entry_date).getTime()
+        break
+      case 'exit_date':
+        aVal = a.exit_date ? new Date(a.exit_date).getTime() : 0
+        bVal = b.exit_date ? new Date(b.exit_date).getTime() : 0
         break
       case 'ticker':
         aVal = a.ticker
@@ -120,10 +151,44 @@ export function TradesTable({ trades, onSelectTrade, selectedTradeId, onScanTrad
     )
   }
 
+  const statusFilters: { key: StatusFilter; label: string }[] = [
+    { key: 'all', label: 'All' },
+    { key: 'open', label: 'Open' },
+    { key: 'closed', label: 'Closed' },
+    { key: 'cancelled', label: 'Cancelled' },
+  ]
+
   const thClass = "text-[var(--text-muted)] uppercase text-xs tracking-wider font-medium"
 
   return (
     <>
+      {/* Status Filter Pills */}
+      <div className="flex items-center gap-1 mb-4 bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-lg p-0.5 w-fit">
+        {statusFilters.map(({ key, label }) => (
+          <button
+            key={key}
+            onClick={() => handleStatusFilter(key)}
+            className={`
+              px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-150 flex items-center gap-1.5
+              ${
+                statusFilter === key
+                  ? 'bg-[var(--accent-muted)] text-[var(--accent-primary)] border border-[var(--accent-primary)]/30'
+                  : 'bg-transparent text-[var(--text-muted)] border border-transparent hover:text-[var(--text-secondary)] hover:bg-[var(--bg-elevated)]'
+              }
+            `}
+          >
+            {label}
+            <span className={`font-mono tabular-nums text-[10px] px-1.5 py-0.5 rounded-full ${
+              statusFilter === key
+                ? 'bg-[var(--accent-primary)]/20 text-[var(--accent-primary)]'
+                : 'bg-[var(--bg-elevated)] text-[var(--text-muted)]'
+            }`}>
+              {statusCounts[key]}
+            </span>
+          </button>
+        ))}
+      </div>
+
       {/* Desktop Table View */}
       <div className="hidden md:block overflow-x-auto">
         <table className="w-full">
@@ -159,6 +224,17 @@ export function TradesTable({ trades, onSelectTrade, selectedTradeId, onScanTrad
             <th className="pb-3 px-4 text-right">
               <span className={thClass}>Exit</span>
             </th>
+            {statusFilter === 'closed' && (
+              <th className="pb-3 px-4">
+                <button
+                  onClick={() => handleSort('exit_date')}
+                  className={`flex items-center gap-1 ${thClass} hover:text-[var(--text-secondary)] transition-colors`}
+                >
+                  Exit Date
+                  <SortIcon field="exit_date" />
+                </button>
+              </th>
+            )}
             <th className="pb-3 px-4 text-right">
               <button
                 onClick={() => handleSort('pnl_amount')}
@@ -177,6 +253,11 @@ export function TradesTable({ trades, onSelectTrade, selectedTradeId, onScanTrad
                 <SortIcon field="pnl_percent" />
               </button>
             </th>
+            {statusFilter === 'closed' && (
+              <th className="pb-3 px-4 text-right">
+                <span className={thClass}>R</span>
+              </th>
+            )}
             <th className="pb-3 px-4">
               <span className={thClass}>Status</span>
             </th>
@@ -262,6 +343,11 @@ export function TradesTable({ trades, onSelectTrade, selectedTradeId, onScanTrad
                 <td className="py-3 px-4 text-right font-mono tabular-nums text-sm text-[var(--text-primary)]">
                   {trade.exit_price ? `$${trade.exit_price.toFixed(2)}` : <span className="text-[var(--text-disabled)]">—</span>}
                 </td>
+                {statusFilter === 'closed' && (
+                  <td className="py-3 px-4 text-sm font-mono tabular-nums text-[var(--text-secondary)]">
+                    {trade.exit_date ? new Date(trade.exit_date).toLocaleDateString() : <span className="text-[var(--text-disabled)]">—</span>}
+                  </td>
+                )}
                 <td className="py-3 px-4 text-right font-mono tabular-nums text-sm font-medium">
                   {displayPnL.amount !== null ? (
                     <span className={isWinner ? 'text-[var(--data-positive)]' : isLoser ? 'text-[var(--data-negative)]' : 'text-[var(--text-muted)]'}>
@@ -280,6 +366,17 @@ export function TradesTable({ trades, onSelectTrade, selectedTradeId, onScanTrad
                     <span className="text-[var(--text-disabled)]">—</span>
                   )}
                 </td>
+                {statusFilter === 'closed' && (
+                  <td className="py-3 px-4 text-right font-mono tabular-nums text-sm">
+                    {trade.r_multiple != null ? (
+                      <span className={trade.r_multiple > 0 ? 'text-[var(--data-positive)]' : trade.r_multiple < 0 ? 'text-[var(--data-negative)]' : 'text-[var(--text-muted)]'}>
+                        {trade.r_multiple >= 0 ? '+' : ''}{trade.r_multiple.toFixed(2)}R
+                      </span>
+                    ) : (
+                      <span className="text-[var(--text-disabled)]">—</span>
+                    )}
+                  </td>
+                )}
                 <td className="py-3 px-4">
                   <span
                     className={`inline-flex items-center gap-1.5 text-[10px] px-2 py-1 rounded-full font-medium uppercase ${
@@ -347,6 +444,13 @@ export function TradesTable({ trades, onSelectTrade, selectedTradeId, onScanTrad
         </tbody>
       </table>
       </div>
+
+      {/* Empty state after status filter */}
+      {sortedTrades.length === 0 && (
+        <div className="flex items-center justify-center py-12">
+          <p className="text-[var(--text-muted)] text-sm">No {statusFilter} trades</p>
+        </div>
+      )}
 
       {/* Mobile Card View */}
       <motion.div

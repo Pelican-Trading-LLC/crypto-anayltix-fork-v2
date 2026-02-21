@@ -14,6 +14,12 @@ import {
   DraftIndicator,
 } from "./input"
 import type { InputTextareaRef } from "./input"
+import {
+  SlashCommandMenu,
+  getFilteredCommands,
+  resolveSlashCommand,
+  type SlashCommand,
+} from "./slash-command-menu"
 
 // Re-export types so external consumers are unaffected
 export type { ChatInputRef, ChatInputProps } from "./input/types"
@@ -51,10 +57,15 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
     const [isDragOver, setIsDragOver] = useState(false)
     const [isFocused, setIsFocused] = useState(false)
     const [message, setMessage] = useState("")
+    const [slashMenuIndex, setSlashMenuIndex] = useState(0)
 
     const textareaRef = useRef<InputTextareaRef>(null)
     const containerRef = useRef<HTMLDivElement>(null)
     const isProcessingPaste = useRef(false)
+
+    // Slash command state
+    const showSlashMenu = message.startsWith("/") && getFilteredCommands(message).length > 0
+    const filteredCommands = showSlashMenu ? getFilteredCommands(message) : []
 
     useImperativeHandle(ref, () => ({
       focus: () => textareaRef.current?.focus(),
@@ -65,11 +76,73 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
       },
     }))
 
+    const handleSlashSelect = useCallback(
+      (cmd: SlashCommand) => {
+        if (!cmd.args) {
+          // No-arg command: send the prompt immediately
+          const prompt = cmd.prompt("")
+          onSendMessage(prompt)
+          setMessage("")
+        } else {
+          // Arg command: fill input with "/command " so user types the arg
+          setMessage(`${cmd.command} `)
+          setTimeout(() => textareaRef.current?.focus(), 0)
+        }
+      },
+      [onSendMessage],
+    )
+
+    const handleSlashClose = useCallback(() => {
+      // Menu hides naturally when input changes
+    }, [])
+
+    const handleSlashKeyDown = useCallback(
+      (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if (e.key === "ArrowDown") {
+          e.preventDefault()
+          setSlashMenuIndex((prev) =>
+            prev < filteredCommands.length - 1 ? prev + 1 : 0,
+          )
+        } else if (e.key === "ArrowUp") {
+          e.preventDefault()
+          setSlashMenuIndex((prev) =>
+            prev > 0 ? prev - 1 : filteredCommands.length - 1,
+          )
+        } else if (e.key === "Tab") {
+          e.preventDefault()
+          const cmd = filteredCommands[slashMenuIndex]
+          if (cmd) {
+            handleSlashSelect(cmd)
+          }
+        } else if (e.key === "Escape") {
+          e.preventDefault()
+          setMessage("")
+        }
+      },
+      [filteredCommands, slashMenuIndex, handleSlashSelect],
+    )
+
     const handleSubmit = () => {
-      if (message.trim() && !disabled && !isAIResponding && canSend && !disabledSend) {
-        onSendMessage(message)
+      if (!message.trim() || disabled || isAIResponding || !canSend || disabledSend) return
+
+      // Check if this is a slash command with args ready to send
+      const resolved = resolveSlashCommand(message)
+      if (resolved) {
+        onSendMessage(resolved)
         setMessage("")
+        return
       }
+
+      // If slash menu is showing, select the highlighted command
+      const selectedCmd = filteredCommands[slashMenuIndex]
+      if (showSlashMenu && selectedCmd) {
+        handleSlashSelect(selectedCmd)
+        return
+      }
+
+      // Normal message (also catches unresolved slash attempts — just send as-is)
+      onSendMessage(message)
+      setMessage("")
     }
 
     const handleQueueMessage = () => {
@@ -176,6 +249,17 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
             )}
           </AnimatePresence>
 
+          <div className="relative">
+            <SlashCommandMenu
+              inputValue={message}
+              onSelect={handleSlashSelect}
+              onClose={handleSlashClose}
+              visible={showSlashMenu}
+              selectedIndex={slashMenuIndex}
+              onSelectedIndexChange={setSlashMenuIndex}
+            />
+          </div>
+
           <div
             className={cn(
               "relative flex items-center gap-2 px-4 py-2",
@@ -205,6 +289,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
               onPaste={handlePaste}
               onFocus={() => setIsFocused(true)}
               onBlur={() => setIsFocused(false)}
+              onKeyDownCapture={showSlashMenu ? handleSlashKeyDown : undefined}
             />
 
             {characterCount >= 3500 && (

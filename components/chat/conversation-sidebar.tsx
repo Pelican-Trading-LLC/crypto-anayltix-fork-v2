@@ -50,8 +50,6 @@ import { useAuth } from "@/lib/providers/auth-provider"
 import { createClient } from "@/lib/supabase/client"
 import { getConversationClass, type ConversationClass } from "@/lib/chat/message-source"
 
-type SidebarSourceFilter = 'my_chats' | 'all' | 'actions'
-
 interface ConversationSidebarProps {
   currentConversationId?: string
   onConversationSelect: (conversationId: string) => void
@@ -243,7 +241,7 @@ export function ConversationSidebar({
   const [showSignOutDialog, setShowSignOutDialog] = useState(false)
   const [isAdmin, setIsAdmin] = useState(false)
   const [sidebarView, setSidebarView] = useState<'conversations' | 'insights'>('conversations')
-  const [sourceFilter, setSourceFilter] = useState<SidebarSourceFilter>('my_chats')
+  const [showActions, setShowActions] = useState(false)
   const [showProfileMenu, setShowProfileMenu] = useState(false)
   const profileMenuRef = useRef<HTMLDivElement>(null)
   const { items: savedInsights, deleteInsight } = useSavedInsights()
@@ -330,16 +328,13 @@ export function ConversationSidebar({
       const matchesSearch = conv.title.toLowerCase().includes(searchQuery.toLowerCase())
       if (!matchesSearch || conv.archived) return false
 
-      // Apply source filter
-      if (sourceFilter === 'my_chats') {
-        return getConversationClass(conv.metadata) !== 'action'
-      }
-      if (sourceFilter === 'actions') {
+      // When Actions is toggled on, show only actions; otherwise show non-action chats
+      if (showActions) {
         return getConversationClass(conv.metadata) === 'action'
       }
-      return true // 'all'
+      return getConversationClass(conv.metadata) !== 'action'
     })
-  }, [conversations, searchQuery, sourceFilter])
+  }, [conversations, searchQuery, showActions])
 
   // Group conversations by time
   const groupedConversations = useMemo(() => {
@@ -448,29 +443,20 @@ export function ConversationSidebar({
         </div>
       )}
       {/* Header */}
-      <div className="p-3 space-y-2 border-b border-sidebar-border/30">
-        {/* New Chat + Search + Collapse Row */}
-        <div className="flex gap-2 items-center">
+      <div className="p-3 space-y-0.5 border-b border-sidebar-border/30">
+        {/* Top row: New Chat + Collapse */}
+        <div className="flex items-center">
           <button
             onClick={onNewConversation}
-            className="flex items-center gap-1.5 h-7 px-3 rounded-md text-muted-foreground text-xs font-medium hover:text-foreground hover:bg-accent/10 border border-border/30 hover:border-border/50 transition-all duration-150"
+            className="flex items-center gap-2.5 flex-1 px-3 py-2 rounded-lg text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-hover)] transition-colors text-left"
           >
-            <Plus size={14} weight="bold" />
-            New
-          </button>
-          <button
-            onClick={() => setSearchExpanded(!searchExpanded)}
-            className={cn(
-              "h-7 w-7 flex items-center justify-center rounded-md flex-shrink-0 transition-colors",
-              searchExpanded ? "bg-[var(--surface-2)] text-[var(--accent-indigo)]" : "text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:bg-[var(--surface-1)]"
-            )}
-          >
-            <MagnifyingGlass size={14} weight="regular" />
+            <Plus size={16} weight="bold" />
+            New Chat
           </button>
           {onToggleCollapse && !isMobileSheet && (
             <button
               onClick={onToggleCollapse}
-              className="h-7 w-7 flex items-center justify-center rounded-md flex-shrink-0 text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:bg-[var(--surface-1)] transition-colors ml-auto"
+              className="h-8 w-8 flex items-center justify-center rounded-lg flex-shrink-0 text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] transition-colors"
               title="Collapse sidebar"
             >
               <CaretLeft size={14} weight="regular" />
@@ -478,64 +464,76 @@ export function ConversationSidebar({
           )}
         </div>
 
-        {/* Expandable Search Input */}
-        {searchExpanded && (
+        {/* Search row */}
+        {!searchExpanded ? (
+          <button
+            onClick={() => setSearchExpanded(true)}
+            className="flex items-center gap-2.5 w-full px-3 py-2 rounded-lg text-sm text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] transition-colors text-left"
+          >
+            <MagnifyingGlass size={16} weight="regular" />
+            Search
+          </button>
+        ) : (
           <div className="relative">
             <MagnifyingGlass size={16} weight="regular" className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
             <Input
               placeholder={t.common.search}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              onBlur={() => {
+                if (!searchQuery) setSearchExpanded(false)
+              }}
               className="h-8 pl-10 pr-3 bg-sidebar/50 border-sidebar-border/50 text-sm"
               autoFocus
             />
           </div>
         )}
-
-        {/* Source filter chips */}
-        <div className="flex items-center gap-1">
-          {(['my_chats', 'all', 'actions'] as const).map((f) => (
-            <button
-              key={f}
-              onClick={() => setSourceFilter(f)}
-              className={cn(
-                "px-2.5 py-1 text-xs rounded-md transition-colors",
-                sourceFilter === f
-                  ? "bg-[var(--accent-primary)] text-white font-medium"
-                  : "bg-[var(--bg-base)] text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
-              )}
-            >
-              {f === 'my_chats' ? 'My Chats' : f === 'all' ? 'All' : 'Actions'}
-            </button>
-          ))}
-        </div>
       </div>
 
-      {/* Saved Insights toggle */}
-      {savedInsights.length > 0 && (
-        <div className="border-b border-sidebar-border/30">
+      {/* Nav section: Saved Insights + Actions */}
+      <div className="px-3 py-1.5 space-y-0.5 border-b border-sidebar-border/30">
+        {/* Saved Insights row */}
+        {savedInsights.length > 0 && (
           <button
             onClick={() => setSidebarView(sidebarView === 'insights' ? 'conversations' : 'insights')}
-            className="flex items-center justify-between w-full px-4 py-2 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider hover:bg-[var(--surface-hover)] transition-colors"
+            className={cn(
+              "flex items-center justify-between w-full px-3 py-1.5 rounded-lg text-sm transition-colors text-left",
+              sidebarView === 'insights'
+                ? "text-[var(--accent-primary)] bg-[var(--accent-muted)]"
+                : "text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:bg-[var(--surface-hover)]"
+            )}
           >
-            <span className="flex items-center gap-1.5">
-              <BookmarkSimple size={12} weight={sidebarView === 'insights' ? 'fill' : 'bold'} />
+            <span className="flex items-center gap-2.5">
+              <BookmarkSimple size={16} weight={sidebarView === 'insights' ? 'fill' : 'regular'} />
               Saved Insights
-              <span className="text-[10px] text-muted-foreground">
-                {savedInsights.length}
+              <span className="text-xs text-[var(--text-muted)]">
+                ({savedInsights.length})
               </span>
             </span>
             <CaretDown
-              size={10}
+              size={12}
               style={{
                 transform: sidebarView === 'insights' ? 'rotate(180deg)' : 'rotate(0)',
                 transition: 'transform 150ms ease',
-                color: 'var(--text-muted)',
               }}
             />
           </button>
-        </div>
-      )}
+        )}
+
+        {/* Actions row */}
+        <button
+          onClick={() => setShowActions(!showActions)}
+          className={cn(
+            "flex items-center gap-2.5 w-full px-3 py-1.5 rounded-lg text-sm transition-colors text-left",
+            showActions
+              ? "text-[var(--accent-primary)] bg-[var(--accent-muted)]"
+              : "text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:bg-[var(--surface-hover)]"
+          )}
+        >
+          <Lightning size={16} weight={showActions ? 'fill' : 'regular'} />
+          Actions
+        </button>
+      </div>
 
       {/* Main content area — conversations or saved insights */}
       <ScrollArea className="flex-1 min-h-0 [&_[data-slot=scroll-area-viewport]>div]:!min-w-0 [&_[data-slot=scroll-area-viewport]>div]:!block">
@@ -567,7 +565,7 @@ export function ConversationSidebar({
                 {/* Today */}
                 {groupedConversations.today.length > 0 && (
                   <div>
-                    <h4 className="px-3 py-1.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+                    <h4 className="px-3 py-1 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
                       Today
                     </h4>
                     <div className="space-y-0.5">
@@ -595,7 +593,7 @@ export function ConversationSidebar({
                 {/* Yesterday */}
                 {groupedConversations.yesterday.length > 0 && (
                   <div>
-                    <h4 className="px-3 py-1.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+                    <h4 className="px-3 py-1 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
                       Yesterday
                     </h4>
                     <div className="space-y-0.5">
@@ -623,7 +621,7 @@ export function ConversationSidebar({
                 {/* Previous 7 Days */}
                 {groupedConversations.previous7Days.length > 0 && (
                   <div>
-                    <h4 className="px-3 py-1.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+                    <h4 className="px-3 py-1 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
                       Previous 7 Days
                     </h4>
                     <div className="space-y-0.5">
@@ -651,7 +649,7 @@ export function ConversationSidebar({
                 {/* Previous 30 Days */}
                 {groupedConversations.previous30Days.length > 0 && (
                   <div>
-                    <h4 className="px-3 py-1.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+                    <h4 className="px-3 py-1 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
                       Previous 30 Days
                     </h4>
                     <div className="space-y-0.5">
@@ -679,7 +677,7 @@ export function ConversationSidebar({
                 {/* Older */}
                 {groupedConversations.older.length > 0 && (
                   <div>
-                    <h4 className="px-3 py-1.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+                    <h4 className="px-3 py-1 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
                       Older
                     </h4>
                     <div className="space-y-0.5">

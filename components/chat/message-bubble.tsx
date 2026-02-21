@@ -5,7 +5,7 @@ import Image from "next/image"
 
 import { motion } from "framer-motion"
 import { useState, useCallback, useMemo, useRef, useEffect, memo } from "react"
-import { Copy, Check, PencilSimple, ArrowsClockwise, SpinnerGap } from "@phosphor-icons/react"
+import { Copy, Check, PencilSimple, ArrowsClockwise, SpinnerGap, CaretDown, CaretUp } from "@phosphor-icons/react"
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/hooks/use-toast"
 import { getMessageAnimationVariant } from "@/lib/animation-config"
@@ -76,6 +76,11 @@ export const MessageBubble = memo(function MessageBubble({
   const { toast } = useToast()
   const isUser = message.role === "user"
 
+  const MESSAGE_COLLAPSE_HEIGHT = 300
+  const [isExpanded, setIsExpanded] = useState(false)
+  const [needsCollapse, setNeedsCollapse] = useState(false)
+  const contentRef = useRef<HTMLDivElement>(null)
+
   const tradingMeta = useMemo(
     () => (!isUser && !isStreaming ? extractTradingMetadata(message.content) : null),
     [message.content, isUser, isStreaming]
@@ -133,6 +138,15 @@ export const MessageBubble = memo(function MessageBubble({
         ta.style.height = Math.min(ta.scrollHeight, 300) + 'px'
       }
     }, [isEditing])
+
+    // Detect tall messages that need collapse
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useEffect(() => {
+      if (contentRef.current) {
+        const height = contentRef.current.scrollHeight
+        setNeedsCollapse(height > MESSAGE_COLLAPSE_HEIGHT)
+      }
+    }, [message.content, MESSAGE_COLLAPSE_HEIGHT])
 
     const handleSubmitEdit = () => {
       const trimmed = editContent.trim()
@@ -197,11 +211,44 @@ export const MessageBubble = memo(function MessageBubble({
                 </div>
               ) : (
                 <>
-                  <div className="rounded-2xl rounded-br-sm bg-primary/10 border border-primary/15 px-4 py-3">
-                    <div className="text-[15px] sm:text-base leading-relaxed break-words text-foreground">
-                      <AttachmentDisplay attachments={message.attachments} />
-                      {message.content}
+                  <div className="relative">
+                    <div
+                      ref={contentRef}
+                      className={[
+                        "rounded-2xl rounded-br-sm bg-primary/10 border border-primary/15 px-4 py-3 transition-[max-height] duration-300 ease-in-out overflow-hidden",
+                        needsCollapse && !isExpanded ? "max-h-[300px]" : ""
+                      ].join(" ")}
+                    >
+                      <div className="text-[15px] sm:text-base leading-relaxed break-words text-foreground">
+                        <AttachmentDisplay attachments={message.attachments} />
+                        {message.content}
+                      </div>
                     </div>
+
+                    {/* Gradient fade when collapsed */}
+                    {needsCollapse && !isExpanded && (
+                      <div className="absolute bottom-0 left-0 right-0 h-16 rounded-b-2xl bg-gradient-to-t from-[hsl(var(--background))] to-transparent pointer-events-none" />
+                    )}
+
+                    {/* Show more/less button */}
+                    {needsCollapse && (
+                      <button
+                        onClick={() => setIsExpanded(!isExpanded)}
+                        className="flex items-center gap-1 mt-1.5 px-2.5 py-1 text-xs text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors rounded-md hover:bg-[var(--bg-elevated)]"
+                      >
+                        {isExpanded ? (
+                          <>
+                            <CaretUp size={12} weight="bold" />
+                            Show less
+                          </>
+                        ) : (
+                          <>
+                            <CaretDown size={12} weight="bold" />
+                            Show more
+                          </>
+                        )}
+                      </button>
+                    )}
                   </div>
 
                   <div className="flex items-center gap-1 mt-2 justify-end">

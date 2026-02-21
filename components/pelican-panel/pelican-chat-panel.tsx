@@ -1,8 +1,10 @@
 "use client"
 
-import React, { useRef, useEffect, useState } from 'react'
+import React, { useRef, useEffect, useState, useCallback } from 'react'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import { X, Send, Loader2, RefreshCw } from 'lucide-react'
+import { ArrowsOut } from '@phosphor-icons/react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { motion } from 'framer-motion'
@@ -124,6 +126,16 @@ function PelicanChatPanelInternal({
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const lastNotifiedConversationRef = useRef<string | null>(null)
+  const router = useRouter()
+
+  const handleExpandToFullChat = useCallback(() => {
+    if (conversationId) {
+      router.push(`/chat?conversation=${conversationId}`)
+    } else {
+      router.push('/chat')
+    }
+    onClose()
+  }, [conversationId, router, onClose])
 
   // Auto-scroll to bottom on new messages
   useEffect(() => {
@@ -198,14 +210,25 @@ function PelicanChatPanelInternal({
               )}
             </div>
           </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onClose}
-            className="h-9 w-9"
-          >
-            <X className="h-5 w-5" />
-          </Button>
+          <div className="flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleExpandToFullChat}
+              className="h-9 w-9"
+              title="Expand to full chat"
+            >
+              <ArrowsOut className="h-4 w-4" weight="regular" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onClose}
+              className="h-9 w-9"
+            >
+              <X className="h-5 w-5" />
+            </Button>
+          </div>
         </div>
 
         {/* Messages — scrollable middle */}
@@ -288,14 +311,25 @@ function PelicanChatPanelInternal({
               )}
             </div>
           </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onClose}
-            className="h-8 w-8 hover:bg-white/[0.06]"
-          >
-            <X className="h-4 w-4" />
-          </Button>
+          <div className="flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleExpandToFullChat}
+              className="h-8 w-8 hover:bg-white/[0.06]"
+              title="Expand to full chat"
+            >
+              <ArrowsOut className="h-3.5 w-3.5" weight="regular" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onClose}
+              className="h-8 w-8 hover:bg-white/[0.06]"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
 
         {/* Messages — scrollable middle */}

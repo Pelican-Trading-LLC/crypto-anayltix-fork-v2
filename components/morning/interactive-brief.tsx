@@ -1,7 +1,12 @@
 'use client'
 
 import { useState, useMemo, useRef, useEffect, useCallback } from 'react'
-import { CaretRight, Export, Copy, FileText, XLogo } from '@phosphor-icons/react'
+import {
+  CaretDown, CaretUp, Export, Copy, FileText, XLogo,
+  Moon, Target, Briefcase, Eye, Globe, Factory,
+  TrendUp, Lightbulb, Warning, GameController, Article
+} from '@phosphor-icons/react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { formatLine, applyTickerLinks } from '@/components/chat/message/format-utils'
 import { SP500_TICKERS, NASDAQ_100 } from '@/lib/trading/ticker-lists'
@@ -29,6 +34,19 @@ const BRIEF_SECTIONS = [
   { pattern: /risk warning/i, id: 'risk', label: 'Risk' },
   { pattern: /game plan/i, id: 'plan', label: 'Game Plan' },
 ]
+
+const SECTION_ICONS: Record<string, React.ElementType> = {
+  overnight: Moon,
+  levels: Target,
+  positions: Briefcase,
+  watchlist: Eye,
+  macro: Globe,
+  sectors: Factory,
+  movers: TrendUp,
+  ideas: Lightbulb,
+  risk: Warning,
+  plan: GameController,
+}
 
 interface InteractiveBriefProps {
   content: string
@@ -89,9 +107,41 @@ function renderMarkdown(text: string, enableTickers: boolean): string {
   return html
 }
 
+/** Extract a TL;DR from the brief content — first meaningful sentence. */
+function extractTldr(content: string): string {
+  // Strip markdown headers and bold markers
+  const cleaned = content.replace(/^#{1,3}\s*/gm, '').replace(/\*\*/g, '')
+  const lines = cleaned.split('\n').map(l => l.trim()).filter(Boolean)
+
+  for (const line of lines) {
+    // Skip section numbers like "1. MARKET OVERNIGHT RECAP"
+    if (/^\d+\.\s*[A-Z\s]{5,}$/.test(line)) continue
+    // Skip lines that are just dashes or bullets with no real content
+    if (/^[-—*]+$/.test(line)) continue
+    // Found a meaningful line — take the first sentence
+    const sentenceMatch = line.match(/^(.+?[.!?])(?:\s|$)/)
+    if (sentenceMatch) return sentenceMatch[1]!
+    // If no sentence-ending punctuation, return the whole line (capped)
+    if (line.length > 10) return line.length > 120 ? line.slice(0, 117) + '...' : line
+  }
+  return 'Your morning market brief is ready.'
+}
+
 export function InteractiveBrief({ content, isStreaming, onTickerClick, onShare }: InteractiveBriefProps) {
   const [collapsedSections, setCollapsedSections] = useState<Set<string>>(new Set())
+  const [briefCollapsed, setBriefCollapsed] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false
+    return localStorage.getItem('pelican-brief-collapsed') === 'true'
+  })
   const containerRef = useRef<HTMLDivElement>(null)
+
+  const toggleBriefCollapsed = useCallback(() => {
+    setBriefCollapsed(prev => {
+      const next = !prev
+      localStorage.setItem('pelican-brief-collapsed', String(next))
+      return next
+    })
+  }, [])
 
   const toggleSection = (id: string) => {
     setCollapsedSections(prev => {
@@ -126,6 +176,11 @@ export function InteractiveBrief({ content, isStreaming, onTickerClick, onShare 
     return () => el.removeEventListener('click', handleClick)
   }, [handleClick])
 
+  const tldr = useMemo(() => {
+    if (!content) return ''
+    return extractTldr(content)
+  }, [content])
+
   // During streaming, render raw content (no section parsing)
   if (isStreaming || !parsed || parsed.sections.length === 0) {
     const html = content
@@ -143,90 +198,167 @@ export function InteractiveBrief({ content, isStreaming, onTickerClick, onShare 
 
   return (
     <div ref={containerRef}>
-      {/* Section TOC */}
-      <div className="flex flex-wrap gap-1.5 mb-4 pb-3 border-b border-[var(--border-subtle)]">
-        {parsed.sections.map(s => (
-          <button
-            key={s.id}
-            onClick={() => {
-              document.getElementById(`brief-${s.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-            }}
-            className="px-2 py-0.5 rounded-md text-xs text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-elevated)] transition-colors"
-          >
-            {s.label}
-          </button>
-        ))}
-
-        {/* Share dropdown */}
-        <div className="ml-auto">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="flex items-center gap-1.5 px-2 py-0.5 rounded-md text-xs text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-elevated)] transition-colors">
-                <Export className="h-3.5 w-3.5" weight="regular" />
-                Share
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => onShare('full')}>
-                <Copy className="h-3.5 w-3.5 mr-2" weight="regular" />
-                Copy Full Brief
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onShare('summary')}>
-                <FileText className="h-3.5 w-3.5 mr-2" weight="regular" />
-                Copy Summary
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onShare('twitter')}>
-                <XLogo className="h-3.5 w-3.5 mr-2" weight="regular" />
-                Copy for X/Twitter
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+      {/* Overall brief collapse header */}
+      <div className="flex items-center gap-2 mb-3">
+        <button
+          onClick={toggleBriefCollapsed}
+          className="flex items-center gap-1.5 group"
+          aria-label={briefCollapsed ? 'Expand brief' : 'Collapse brief'}
+        >
+          <CaretDown
+            className={cn(
+              "h-4 w-4 text-[var(--text-muted)] transition-transform duration-200 shrink-0",
+              briefCollapsed && "-rotate-90"
+            )}
+            weight="bold"
+          />
+          <span className="text-xs font-medium text-[var(--text-muted)] group-hover:text-[var(--text-primary)] transition-colors uppercase tracking-wider">
+            {briefCollapsed ? 'Show Brief' : 'Hide Brief'}
+          </span>
+        </button>
       </div>
 
-      {/* Intro content (before first section) */}
-      {parsed.intro && (
-        <div
-          className="text-[var(--text-secondary)] leading-relaxed mb-4"
-          dangerouslySetInnerHTML={{ __html: renderMarkdown(parsed.intro, true) }}
-        />
+      {/* TL;DR card — always visible */}
+      {tldr && (
+        <div className="rounded-lg bg-[var(--accent-muted)] border border-[var(--accent-primary)]/20 px-4 py-3 mb-3">
+          <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+            {tldr}
+          </p>
+        </div>
       )}
 
-      {/* Sections */}
-      <div className="space-y-3">
-        {parsed.sections.map(section => {
-          const isCollapsed = collapsedSections.has(section.id)
-          return (
-            <div key={section.id} id={`brief-${section.id}`}>
-              {/* Section header (clickable to collapse) */}
-              <button
-                onClick={() => toggleSection(section.id)}
-                className="flex items-center gap-2 w-full text-left py-1.5 group"
-              >
-                <CaretRight
-                  className={cn(
-                    "h-3.5 w-3.5 text-[var(--text-muted)] transition-transform duration-150 shrink-0",
-                    !isCollapsed && "rotate-90"
-                  )}
-                  weight="bold"
-                />
-                <span className="text-sm font-semibold text-[var(--text-primary)] group-hover:text-[var(--accent-primary)] transition-colors">
-                  {section.title}
-                </span>
-              </button>
+      {/* Collapsible brief body */}
+      <AnimatePresence initial={false}>
+        {!briefCollapsed && (
+          <motion.div
+            key="brief-body"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.25, ease: [0.25, 0.1, 0.25, 1] }}
+            className="overflow-hidden"
+          >
+            <div className="max-h-[70vh] overflow-y-auto">
+              {/* Section TOC + controls */}
+              <div className="flex flex-wrap items-center gap-1.5 mb-4 pb-3 border-b border-[var(--border-subtle)]">
+                {parsed.sections.map(s => (
+                  <button
+                    key={s.id}
+                    onClick={() => {
+                      document.getElementById(`brief-${s.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                    }}
+                    className="px-2 py-0.5 rounded-md text-xs text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-elevated)] transition-colors"
+                  >
+                    {s.label}
+                  </button>
+                ))}
 
-              {/* Section content */}
-              {!isCollapsed && (
+                {/* Collapse/Expand all + Share */}
+                <div className="ml-auto flex items-center gap-2">
+                  <button
+                    onClick={() => {
+                      const allExpanded = collapsedSections.size === 0
+                      if (allExpanded) {
+                        setCollapsedSections(new Set(parsed.sections.map(s => s.id)))
+                      } else {
+                        setCollapsedSections(new Set())
+                      }
+                    }}
+                    className="flex items-center gap-1 px-2 py-0.5 rounded-md text-xs text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-elevated)] transition-colors"
+                  >
+                    {collapsedSections.size === 0 ? (
+                      <><CaretUp size={12} weight="bold" /> Collapse all</>
+                    ) : (
+                      <><CaretDown size={12} weight="bold" /> Expand all</>
+                    )}
+                  </button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button className="flex items-center gap-1.5 px-2 py-0.5 rounded-md text-xs text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-elevated)] transition-colors">
+                        <Export className="h-3.5 w-3.5" weight="regular" />
+                        Share
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={() => onShare('full')}>
+                        <Copy className="h-3.5 w-3.5 mr-2" weight="regular" />
+                        Copy Full Brief
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onShare('summary')}>
+                        <FileText className="h-3.5 w-3.5 mr-2" weight="regular" />
+                        Copy Summary
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onShare('twitter')}>
+                        <XLogo className="h-3.5 w-3.5 mr-2" weight="regular" />
+                        Copy for X/Twitter
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </div>
+
+              {/* Intro content (before first section) */}
+              {parsed.intro && (
                 <div
-                  className="text-[var(--text-secondary)] leading-relaxed mt-1"
-                  style={{ paddingLeft: '22px' }}
-                  dangerouslySetInnerHTML={{ __html: renderMarkdown(section.content, true) }}
+                  className="text-[var(--text-secondary)] leading-relaxed mb-4"
+                  dangerouslySetInnerHTML={{ __html: renderMarkdown(parsed.intro, true) }}
                 />
               )}
+
+              {/* Sections */}
+              <div className="space-y-2">
+                {parsed.sections.map(section => {
+                  const isCollapsed = collapsedSections.has(section.id)
+                  const SectionIcon = SECTION_ICONS[section.id] || Article
+                  return (
+                    <div
+                      key={section.id}
+                      id={`brief-${section.id}`}
+                      className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] overflow-hidden"
+                    >
+                      {/* Section header (clickable to collapse) */}
+                      <button
+                        onClick={() => toggleSection(section.id)}
+                        className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-[var(--bg-elevated)] transition-colors"
+                      >
+                        <SectionIcon
+                          size={16}
+                          weight="regular"
+                          className="text-[var(--accent-primary)] flex-shrink-0"
+                        />
+                        <span className="font-medium text-sm text-[var(--text-primary)] flex-1">
+                          {section.title}
+                        </span>
+                        <CaretDown
+                          size={14}
+                          weight="bold"
+                          className={cn(
+                            "text-[var(--text-muted)] transition-transform duration-200",
+                            !isCollapsed && "rotate-180"
+                          )}
+                        />
+                      </button>
+
+                      {/* Section content */}
+                      {!isCollapsed && (
+                        <div className="px-4 pb-4 pt-0 border-t border-[var(--border-subtle)]">
+                          <div
+                            className="text-sm text-[var(--text-secondary)] leading-relaxed space-y-2 pt-3
+                                       [&_strong]:text-[var(--text-primary)] [&_strong]:font-medium
+                                       [&_code]:text-[var(--accent-primary)] [&_code]:bg-[var(--accent-muted)] [&_code]:px-1 [&_code]:rounded
+                                       [&_ul]:space-y-1 [&_li]:text-[var(--text-secondary)]"
+                            dangerouslySetInnerHTML={{ __html: renderMarkdown(section.content, true) }}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
             </div>
-          )
-        })}
-      </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }

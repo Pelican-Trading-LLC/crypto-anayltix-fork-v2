@@ -40,6 +40,8 @@ export function LogTradeModal({ open, onOpenChange, onSubmit, initialTicker = ""
   }, [open, initialTicker])
   const [direction, setDirection] = useState<'long' | 'short'>('long')
   const [quantity, setQuantity] = useState("")
+  const [forexLotType, setForexLotType] = useState<'standard' | 'mini' | 'micro'>('standard')
+  const [forexLotCount, setForexLotCount] = useState("1")
   const [entryPrice, setEntryPrice] = useState("")
   const [stopLoss, setStopLoss] = useState("")
   const [takeProfit, setTakeProfit] = useState("")
@@ -49,6 +51,32 @@ export function LogTradeModal({ open, onOpenChange, onSubmit, initialTicker = ""
   const [setupTags, setSetupTags] = useState("")
   const [conviction, setConviction] = useState("5")
   const [isPaper, setIsPaper] = useState(false)
+
+  // Forex lot sizes
+  const FOREX_LOT_SIZES = {
+    standard: { label: 'Standard', units: 100_000, shortLabel: '100K' },
+    mini: { label: 'Mini', units: 10_000, shortLabel: '10K' },
+    micro: { label: 'Micro', units: 1_000, shortLabel: '1K' },
+  } as const
+
+  // Auto-calculate quantity from forex lot sizing
+  useEffect(() => {
+    if (assetType === 'forex' && forexLotCount) {
+      const lots = parseFloat(forexLotCount)
+      if (!isNaN(lots) && lots > 0) {
+        const calculatedQty = lots * FOREX_LOT_SIZES[forexLotType].units
+        setQuantity(String(calculatedQty))
+      }
+    }
+  }, [assetType, forexLotType, forexLotCount])
+
+  // Reset forex lot state when switching away from forex
+  useEffect(() => {
+    if (assetType !== 'forex') {
+      setForexLotType('standard')
+      setForexLotCount('1')
+    }
+  }, [assetType])
 
   // Behavioral pattern warnings
   const antiTradeWarnings = useMemo(() => {
@@ -161,6 +189,8 @@ export function LogTradeModal({ open, onOpenChange, onSubmit, initialTicker = ""
       setAssetType('stock')
       setDirection('long')
       setQuantity("")
+      setForexLotType('standard')
+      setForexLotCount('1')
       setEntryPrice("")
       setStopLoss("")
       setTakeProfit("")
@@ -303,50 +333,132 @@ export function LogTradeModal({ open, onOpenChange, onSubmit, initialTicker = ""
           {/* Section Divider */}
           <div className="border-t border-[var(--border-subtle)] my-2" />
 
-          {/* Quantity & Entry Price */}
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className={labelClass}>
-                Quantity <span className="text-[var(--data-negative)]">*</span>
-              </label>
-              <input
-                type="number"
-                value={quantity}
-                onChange={(e) => setQuantity(e.target.value)}
-                step="any"
-                min="0"
-                required
-                className={inputClass}
-                placeholder="100"
-              />
-            </div>
-            <div>
-              <label className={labelClass}>
-                Entry Price <span className="text-[var(--data-negative)]">*</span>
-              </label>
-              <input
-                type="number"
-                value={entryPrice}
-                onChange={(e) => setEntryPrice(e.target.value)}
-                step="any"
-                min="0"
-                required
-                className={inputClass}
-                placeholder="150.00"
-              />
-            </div>
-          </div>
+          {/* Quantity / Lot Sizing & Entry Price */}
+          {assetType === 'forex' ? (
+            <>
+              {/* Forex Lot Type Selector */}
+              <div>
+                <label className={labelClass}>
+                  Lot Size <span className="text-[var(--data-negative)]">*</span>
+                </label>
+                <div className="flex gap-1.5 flex-wrap">
+                  {(Object.entries(FOREX_LOT_SIZES) as [keyof typeof FOREX_LOT_SIZES, typeof FOREX_LOT_SIZES[keyof typeof FOREX_LOT_SIZES]][]).map(([key, { label, shortLabel }]) => (
+                    <button
+                      key={key}
+                      type="button"
+                      onClick={() => setForexLotType(key)}
+                      className={`
+                        px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 border
+                        ${forexLotType === key
+                          ? 'bg-[var(--accent-muted)] border-[var(--accent-primary)]/40 text-[var(--accent-primary)]'
+                          : 'bg-transparent border-[var(--border-subtle)] text-[var(--text-muted)] hover:bg-[var(--bg-elevated)]'
+                        }
+                      `}
+                    >
+                      {label} ({shortLabel})
+                    </button>
+                  ))}
+                </div>
+              </div>
 
-          {/* Position Size Calculation */}
-          {quantity && entryPrice && (
-            <div className="flex items-center justify-between px-3 py-2 rounded-lg bg-[var(--accent-glow)] border border-[var(--accent-primary)]/10">
-              <span className="text-xs text-[var(--text-muted)]">Position Size</span>
-              <span className="text-sm font-mono font-semibold tabular-nums text-[var(--accent-primary)]">
-                ${(parseFloat(quantity) * parseFloat(entryPrice)).toLocaleString(
-                  'en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }
-                )}
-              </span>
-            </div>
+              {/* Number of Lots & Entry Price */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className={labelClass}>
+                    Number of Lots <span className="text-[var(--data-negative)]">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    value={forexLotCount}
+                    onChange={(e) => setForexLotCount(e.target.value)}
+                    step="any"
+                    min="0.01"
+                    required
+                    className={inputClass}
+                    placeholder="1"
+                  />
+                </div>
+                <div>
+                  <label className={labelClass}>
+                    Entry Price <span className="text-[var(--data-negative)]">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    value={entryPrice}
+                    onChange={(e) => setEntryPrice(e.target.value)}
+                    step="any"
+                    min="0"
+                    required
+                    className={inputClass}
+                    placeholder="1.0850"
+                  />
+                </div>
+              </div>
+
+              {/* Position Value for Forex */}
+              {forexLotCount && entryPrice && (
+                <div className="flex items-center justify-between px-3 py-2 rounded-lg bg-[var(--accent-glow)] border border-[var(--accent-primary)]/10">
+                  <span className="text-xs text-[var(--text-muted)]">
+                    Position value
+                    <span className="text-[var(--text-disabled)] ml-1">
+                      ({forexLotCount} {FOREX_LOT_SIZES[forexLotType].label.toLowerCase()} lot{parseFloat(forexLotCount) !== 1 ? 's' : ''} = <span className="font-mono tabular-nums">{Number(quantity).toLocaleString()}</span> units)
+                    </span>
+                  </span>
+                  <span className="text-sm font-mono font-semibold tabular-nums text-[var(--accent-primary)]">
+                    ${(parseFloat(quantity) * parseFloat(entryPrice)).toLocaleString(
+                      'en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+                    )}
+                  </span>
+                </div>
+              )}
+            </>
+          ) : (
+            <>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className={labelClass}>
+                    {assetType === 'future' ? 'Contracts' : 'Quantity'} <span className="text-[var(--data-negative)]">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    value={quantity}
+                    onChange={(e) => setQuantity(e.target.value)}
+                    step="any"
+                    min="0"
+                    required
+                    className={inputClass}
+                    placeholder={assetType === 'future' ? '1' : '100'}
+                  />
+                </div>
+                <div>
+                  <label className={labelClass}>
+                    Entry Price <span className="text-[var(--data-negative)]">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    value={entryPrice}
+                    onChange={(e) => setEntryPrice(e.target.value)}
+                    step="any"
+                    min="0"
+                    required
+                    className={inputClass}
+                    placeholder="150.00"
+                  />
+                </div>
+              </div>
+
+              {/* Position Size Calculation */}
+              {quantity && entryPrice && (
+                <div className="flex items-center justify-between px-3 py-2 rounded-lg bg-[var(--accent-glow)] border border-[var(--accent-primary)]/10">
+                  <span className="text-xs text-[var(--text-muted)]">Position Size</span>
+                  <span className="text-sm font-mono font-semibold tabular-nums text-[var(--accent-primary)]">
+                    ${(parseFloat(quantity) * parseFloat(entryPrice)).toLocaleString(
+                      'en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+                    )}
+                  </span>
+                </div>
+              )}
+            </>
           )}
 
           {/* Risk at Stop Calculation */}
