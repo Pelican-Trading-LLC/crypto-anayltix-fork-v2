@@ -59,6 +59,11 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
 
     useImperativeHandle(ref, () => ({
       focus: () => textareaRef.current?.focus(),
+      setMessage: (text: string) => {
+        setMessage(text)
+        // Focus after state update
+        setTimeout(() => textareaRef.current?.focus(), 0)
+      },
     }))
 
     const handleSubmit = () => {

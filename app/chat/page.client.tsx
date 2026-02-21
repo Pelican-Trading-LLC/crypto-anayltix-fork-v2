@@ -585,6 +585,7 @@ export default function ChatPage() {
                 onSubmitPrompt={messageHandler.handleSendMessage}
                 onSaveInsight={handleSaveInsight}
                 pendingDraft={messageHandler.pendingDraft}
+                onPrefillInput={(text) => chatInputRef.current?.setMessage(text)}
               />
             </div>
           </div>

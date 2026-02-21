@@ -20,6 +20,7 @@ import { SystemMessage } from "./SystemMessage"
 import { ConversationHistorySkeleton } from "./conversation-history-skeleton"
 import { NewMessagesPill } from "./new-messages-pill"
 import { ErrorMessage } from "./error-message"
+import { SelectionReply } from "./selection-reply"
 
 interface ChatContainerProps {
   messages: Message[]
@@ -46,6 +47,7 @@ interface ChatContainerProps {
   onSubmitPrompt?: (prompt: string) => void
   onSaveInsight?: (content: string, tickers: string[]) => Promise<boolean>
   pendingDraft?: string | null
+  onPrefillInput?: (text: string) => void
 }
 
 export function ChatContainer({
@@ -72,6 +74,7 @@ export function ChatContainer({
   onSubmitPrompt,
   onSaveInsight,
   pendingDraft,
+  onPrefillInput,
 }: ChatContainerProps) {
   const { toast } = useToast()
   const elapsedSeconds = useResponseTimer(isLoading)
@@ -337,10 +340,16 @@ export function ChatContainer({
         onScrollToBottom={() => scrollToBottom("smooth")}
       >
         <div
-          className="w-full pb-6"
+          className="w-full pb-6 relative"
           aria-live="polite"
           aria-label="Chat messages"
         >
+          {onPrefillInput && (
+            <SelectionReply
+              containerRef={containerRef}
+              onReply={onPrefillInput}
+            />
+          )}
           {/* Loading skeleton when switching conversations */}
           {isLoadingHistory && messages.length === 0 && (
             <div className="space-y-6">

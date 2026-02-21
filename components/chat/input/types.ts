@@ -34,4 +34,5 @@ export interface ChatInputProps {
 
 export interface ChatInputRef {
   focus: () => void
+  setMessage: (text: string) => void
 }
