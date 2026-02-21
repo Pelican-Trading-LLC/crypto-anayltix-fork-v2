@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback } from "react"
+import { useState, useCallback, useEffect } from "react"
 import { motion } from "framer-motion"
 import { ArrowsClockwise, Warning, Lightning } from "@phosphor-icons/react"
 import { useBehavioralInsights } from "@/hooks/use-behavioral-insights"
@@ -16,6 +16,7 @@ import { HoldingPeriodChart } from "@/components/journal/insights/holding-period
 import { TickerScorecard } from "@/components/journal/insights/ticker-scorecard"
 import { StreaksCard } from "@/components/journal/insights/streaks-card"
 import { CalendarCard } from "@/components/journal/insights/calendar-card"
+import { useOnboardingProgress } from "@/hooks/use-onboarding-progress"
 
 // ============================================================================
 // Types
@@ -102,6 +103,12 @@ export function InsightsTab({ onAskPelican, onLogTrade }: InsightsTabProps) {
   const { detect, isDetecting } = useDetectPatterns()
   const { toast } = useToast()
   const [isRefreshing, setIsRefreshing] = useState(false)
+  const { completeMilestone } = useOnboardingProgress()
+
+  // Milestone: first insight unlocked
+  useEffect(() => {
+    if (insights?.has_enough_data) completeMilestone("first_insight")
+  }, [insights?.has_enough_data, completeMilestone])
 
   const handleRefresh = useCallback(async () => {
     setIsRefreshing(true)

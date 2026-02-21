@@ -39,6 +39,7 @@ import { useBehavioralInsights } from "@/hooks/use-behavioral-insights"
 import { WarningBanner } from "@/components/insights/warning-banner"
 import { EdgeSummary } from "@/components/insights/edge-summary"
 import { useToast } from "@/hooks/use-toast"
+import { useOnboardingProgress } from "@/hooks/use-onboarding-progress"
 import { useMarketData } from "@/hooks/use-market-data"
 import { useSparklineData } from "@/hooks/use-sparkline-data"
 import type { Mover } from "@/hooks/use-morning-brief"
@@ -113,6 +114,10 @@ export default function MorningPage() {
   const { openWithPrompt } = usePelicanPanelContext()
   const { items: watchlistItems } = useWatchlist()
   const { toast } = useToast()
+
+  // Onboarding milestone
+  const { completeMilestone } = useOnboardingProgress()
+  useEffect(() => { completeMilestone("visited_brief") }, [completeMilestone])
   const { warnings: todaysWarnings, warningCount } = useTodaysWarnings()
   const { data: behavioralInsights } = useBehavioralInsights()
 

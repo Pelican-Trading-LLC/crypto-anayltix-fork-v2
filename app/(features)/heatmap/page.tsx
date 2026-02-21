@@ -14,6 +14,7 @@ import { HeatmapGrid } from "@/components/heatmap/heatmap-grid"
 import { SectorLegend } from "@/components/heatmap/sector-legend"
 import { getSectors, type SP500Sector } from "@/lib/data/sp500-constituents"
 import { ArrowsClockwise, GridFour, SquaresFour, Lightning, Crosshair } from "@phosphor-icons/react"
+import { useOnboardingProgress } from "@/hooks/use-onboarding-progress"
 import { getMarketStatus } from "@/hooks/use-market-data"
 import { PageHeader, DataCell, pageEnter } from "@/components/ui/pelican"
 import type { HeatmapStock } from "@/app/api/heatmap/route"
@@ -139,6 +140,10 @@ function HeatmapPageInner() {
   const [highlightedSector, setHighlightedSector] = useState<string | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const [dimensions, setDimensions] = useState({ width: 1200, height: 800 })
+
+  // Onboarding milestone
+  const { completeMilestone } = useOnboardingProgress()
+  useEffect(() => { completeMilestone("visited_heatmap") }, [completeMilestone])
 
   // Filter to a single sector if passed via query param
   useEffect(() => {

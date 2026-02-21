@@ -17,6 +17,7 @@ import { TradeDetailPanel } from "@/components/journal/trade-detail-panel"
 import { buildScanPrompt } from "@/lib/journal/build-scan-prompt"
 import { PageHeader, PelicanButton, pageEnter, tabContent, backdrop } from "@/components/ui/pelican"
 import { Plus, ChartBar, Funnel, CalendarBlank, UserCircle, ClipboardText, Brain } from "@phosphor-icons/react"
+import { useOnboardingProgress } from "@/hooks/use-onboarding-progress"
 
 const PositionsDashboardTab = dynamicImport(
   () => import("@/components/positions/positions-dashboard-tab").then((m) => ({ default: m.PositionsDashboardTab })),
@@ -187,10 +188,17 @@ export default function JournalPage() {
     setShowCloseTradeModal(true)
   }
 
+  const { completeMilestone } = useOnboardingProgress()
+
   const handleLogTrade = async (data: Parameters<typeof logTrade>[0]) => {
     // Let errors propagate to the modal's error handler
     await logTrade(data)
     refetch()
+
+    // Onboarding milestones
+    completeMilestone("first_trade")
+    const totalTrades = trades.length + 1
+    if (totalTrades >= 5) completeMilestone("five_trades")
   }
 
   const handleCloseTrade = async (data: Parameters<typeof closeTrade>[1]) => {

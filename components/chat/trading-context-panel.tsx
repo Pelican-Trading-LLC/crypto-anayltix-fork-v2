@@ -13,6 +13,7 @@ import { EducationChat } from "./EducationChat"
 import { useWatchlist } from "@/hooks/use-watchlist"
 import { useLiveQuotes } from "@/hooks/use-live-quotes"
 import { useTrades } from "@/hooks/use-trades"
+import { useOnboardingProgress } from "@/hooks/use-onboarding-progress"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -106,6 +107,7 @@ export function TradingContextPanel({
 
   // Open trades
   const { openTrades } = useTrades()
+  const { completeMilestone } = useOnboardingProgress()
 
   const defaultIndices: MarketIndex[] = indices || [
     { symbol: "SPX", name: "S&P 500", price: null, change: null, changePercent: null },
@@ -157,6 +159,7 @@ export function TradingContextPanel({
       return
     }
     await addToWatchlist(ticker)
+    completeMilestone("first_watchlist")
     setAddTickerInput("")
     addInputRef.current?.focus()
   }

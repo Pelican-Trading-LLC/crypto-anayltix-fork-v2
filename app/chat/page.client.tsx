@@ -38,6 +38,10 @@ import { useTiltDetection } from "@/hooks/use-tilt-detection"
 import { TiltAlertBanner } from "@/components/tilt/tilt-alert-banner"
 import { TiltIndicator } from "@/components/tilt/tilt-indicator"
 import type { ActionTrade } from "@/types/action-buttons"
+import { ActionBar } from "@/components/chat/action-bar"
+import { ActionExpanders, type ExpanderKey } from "@/components/chat/action-expanders"
+import { useFirstSession } from "@/hooks/use-first-session"
+import { useOnboardingProgress } from "@/hooks/use-onboarding-progress"
 
 const SettingsModal = dynamic(() => import("@/components/settings-modal").then(m => ({ default: m.SettingsModal })))
 const LogTradeModal = dynamic(() => import("@/components/journal/log-trade-modal").then(m => ({ default: m.LogTradeModal })))
@@ -148,6 +152,9 @@ export default function ChatPage() {
   // Tilt detection
   const { alerts: tiltAlerts, isOnTilt } = useTiltDetection()
 
+  // Action bar expander state
+  const [activeExpander, setActiveExpander] = useState<ExpanderKey | null>(null)
+
   // Action buttons — shared state
   const { trades: allTradesRaw, closeTrade: closeTradeAction, logTrade: logTradeAction } = useTrades()
   const { asActionItems: watchlistItems, addToWatchlist, removeFromWatchlist } = useWatchlist()
@@ -192,6 +199,9 @@ export default function ChatPage() {
     refreshInterval: 60000,
     autoRefresh: true,
   })
+
+  // Onboarding milestone tracking
+  const { completeMilestone } = useOnboardingProgress()
 
   // One-time terms acceptance check
   const [termsChecked, setTermsChecked] = useState(false)
@@ -295,6 +305,9 @@ export default function ChatPage() {
       }
 
       window.dispatchEvent(new CustomEvent('pelican:conversation-created'))
+
+      // Milestone: first message
+      completeMilestone("first_message")
     },
     onConversationCreated: (conversationId: string) => {
       latestConversationIdRef.current = conversationId
@@ -373,6 +386,12 @@ export default function ChatPage() {
     }
     prevConversationRef.current = conversationIdFromUrl
   }, [conversationIdFromUrl, clearUploadedFiles])
+
+  // First-session auto welcome message
+  useFirstSession(
+    outOfCredits ? undefined : messageHandler.handleSendMessage,
+    messages.length > 0,
+  )
 
   const handleQuickStart = (message: string) => {
     messageHandler.handleSendMessage(message)
@@ -588,6 +607,23 @@ export default function ChatPage() {
                   </div>
                 </div>
               )}
+              <ActionExpanders
+                active={activeExpander}
+                onClose={() => setActiveExpander(null)}
+                onSend={(msg) => {
+                  messageHandler.handleSendMessage(msg)
+                  setActiveExpander(null)
+                }}
+                openTrades={allTradesRaw.filter(t => t.status === "open")}
+              />
+              <ActionBar
+                active={activeExpander}
+                onToggle={setActiveExpander}
+                onFocusInput={() => chatInputRef.current?.focus()}
+                hasOpenTrades={allTradesRaw.some(t => t.status === "open")}
+                disabled={outOfCredits}
+                isAIResponding={chatLoading}
+              />
               <ChatInput
                 ref={chatInputRef}
                 onSendMessage={handleSendMessageWithFiles}
