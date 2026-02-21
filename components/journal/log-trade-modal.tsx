@@ -5,10 +5,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { TickerAutocomplete } from "./ticker-autocomplete"
 import { TradeFormData, useTrades } from "@/hooks/use-trades"
 import { useTradingPlan } from "@/hooks/use-trading-plan"
-import { checkTradeAgainstPlan } from "@/lib/trading/plan-check"
+import { checkTradeAgainstPlan, deriveComplianceData } from "@/lib/trading/plan-check"
 import { PelicanButton } from "@/components/ui/pelican"
 import { Warning, Shield, Check, Brain } from "@phosphor-icons/react"
-import type { PlanViolation } from "@/types/trading"
 import { useRiskBudget } from "@/hooks/use-risk-budget"
 import { useAntiTradeCheck } from "@/hooks/use-anti-trade-check"
 import { cn } from "@/lib/utils"
@@ -101,6 +100,45 @@ export function LogTradeModal({ open, onOpenChange, onSubmit, initialTicker = ""
       // Normalize ticker before saving
       const normalizedTicker = normalizeTicker(ticker, assetType)
 
+      // Compute plan compliance data
+      let planComplianceData: {
+        plan_rules_followed?: string[]
+        plan_rules_violated?: string[]
+        plan_checklist_completed?: Record<string, boolean>
+      } = {}
+
+      if (plan) {
+        const planCheckResult = checkTradeAgainstPlan(
+          {
+            ticker: normalizedTicker,
+            asset_type: assetType,
+            direction,
+            quantity: parseFloat(quantity),
+            entry_price: parseFloat(entryPrice),
+            stop_loss: stopLoss ? parseFloat(stopLoss) : null,
+            take_profit: takeProfit ? parseFloat(takeProfit) : null,
+            entry_date: entryDate,
+            thesis: thesis || null,
+            setup_tags: tags.length > 0 ? tags : undefined,
+          },
+          plan,
+          existingTrades,
+        )
+
+        const { followed, violated, checklistCompleted } = deriveComplianceData(
+          plan,
+          planCheckResult.violations,
+          planCheckResult.checklistItems,
+          checklistChecked,
+        )
+
+        planComplianceData = {
+          plan_rules_followed: followed,
+          plan_rules_violated: violated,
+          plan_checklist_completed: checklistCompleted,
+        }
+      }
+
       await onSubmit({
         ticker: normalizedTicker,
         asset_type: assetType,
@@ -115,6 +153,7 @@ export function LogTradeModal({ open, onOpenChange, onSubmit, initialTicker = ""
         setup_tags: tags.length > 0 ? tags : undefined,
         conviction: parseInt(conviction),
         is_paper: isPaper,
+        ...planComplianceData,
       })
 
       // Reset form

@@ -107,6 +107,24 @@ export interface PlanViolation {
   severity: 'warning' | 'violation'
 }
 
+// ── Rule Compliance Stats (from get_plan_compliance_stats RPC) ──
+
+export interface RuleComplianceStat {
+  rule_key: string
+  times_followed: number
+  wins_when_followed: number
+  losses_when_followed: number
+  pnl_when_followed: number
+  wr_when_followed: number
+  times_violated: number
+  wins_when_violated: number
+  losses_when_violated: number
+  pnl_when_violated: number
+  wr_when_violated: number
+  follow_rate: number
+  edge: number
+}
+
 // ── Behavioral Insights ──
 
 export type InsightCategory =

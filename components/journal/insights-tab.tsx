@@ -16,6 +16,11 @@ import { HoldingPeriodChart } from "@/components/journal/insights/holding-period
 import { TickerScorecard } from "@/components/journal/insights/ticker-scorecard"
 import { StreaksCard } from "@/components/journal/insights/streaks-card"
 import { CalendarCard } from "@/components/journal/insights/calendar-card"
+import { PlanComplianceCard } from "@/components/journal/insights/plan-compliance-card"
+import { usePlanCompliance } from "@/hooks/use-plan-compliance"
+import { useTradingPlan } from "@/hooks/use-trading-plan"
+import { useTradeStats } from "@/hooks/use-trade-stats"
+import { buildPlanReviewPrompt } from "@/lib/trading/plan-check"
 import { useOnboardingProgress } from "@/hooks/use-onboarding-progress"
 
 // ============================================================================
@@ -104,6 +109,17 @@ export function InsightsTab({ onAskPelican, onLogTrade }: InsightsTabProps) {
   const { toast } = useToast()
   const [isRefreshing, setIsRefreshing] = useState(false)
   const { completeMilestone } = useOnboardingProgress()
+  const { stats: complianceStats, isLoading: complianceLoading } = usePlanCompliance()
+  const { plan } = useTradingPlan()
+  const { stats: tradeStats } = useTradeStats()
+
+  const handleComplianceAskPelican = useCallback((prompt: string) => {
+    if (prompt === '__plan_review__' && plan) {
+      onAskPelican(buildPlanReviewPrompt(plan, complianceStats, tradeStats))
+    } else {
+      onAskPelican(prompt)
+    }
+  }, [plan, complianceStats, tradeStats, onAskPelican])
 
   // Milestone: first insight unlocked
   useEffect(() => {
@@ -188,6 +204,15 @@ export function InsightsTab({ onAskPelican, onLogTrade }: InsightsTabProps) {
           />
           {refreshing ? "Analyzing..." : "Refresh Patterns"}
         </PelicanButton>
+      </motion.div>
+
+      {/* Row 0: Plan Compliance (full width) */}
+      <motion.div variants={staggerItem} className="mb-6">
+        <PlanComplianceCard
+          stats={complianceStats}
+          onAskPelican={handleComplianceAskPelican}
+          isLoading={complianceLoading}
+        />
       </motion.div>
 
       {/* Row 1: Edge Summary + Active Warnings */}

@@ -26,6 +26,9 @@ export interface Trade {
   setup_tags: string[] | null
   conviction: number | null
   ai_grade: Record<string, unknown> | null
+  plan_rules_followed: string[] | null
+  plan_rules_violated: string[] | null
+  plan_checklist_completed: Record<string, boolean> | null
   is_paper: boolean
   created_at: string
   updated_at: string
@@ -45,6 +48,9 @@ export interface TradeFormData {
   setup_tags?: string[]
   conviction?: number | null
   is_paper?: boolean
+  plan_rules_followed?: string[]
+  plan_rules_violated?: string[]
+  plan_checklist_completed?: Record<string, boolean>
 }
 
 export interface CloseTradeData {
@@ -135,6 +141,9 @@ export function useTrades({
         setup_tags: tradeData.setup_tags || [],
         conviction: tradeData.conviction,
         is_paper: tradeData.is_paper ?? false,
+        plan_rules_followed: tradeData.plan_rules_followed || [],
+        plan_rules_violated: tradeData.plan_rules_violated || [],
+        plan_checklist_completed: tradeData.plan_checklist_completed || {},
         status: 'open',
         position_size_usd: tradeData.entry_price * tradeData.quantity,
       })

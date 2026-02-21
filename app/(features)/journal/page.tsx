@@ -9,6 +9,7 @@ import dynamicImport from "next/dynamic"
 import { motion, AnimatePresence } from "framer-motion"
 import { useTrades, Trade } from "@/hooks/use-trades"
 import { useTradeStats } from "@/hooks/use-trade-stats"
+import { usePlanCompliance } from "@/hooks/use-plan-compliance"
 import { usePelicanPanelContext } from "@/providers/pelican-panel-provider"
 import { useLiveQuotes } from "@/hooks/use-live-quotes"
 import { LogTradeModal } from "@/components/journal/log-trade-modal"
@@ -116,6 +117,7 @@ export default function JournalPage() {
     return () => clearTimeout(timer)
   }, [highlightTradeId, trades, tradesLoading])
   const { stats, equityCurve, isLoading: statsLoading } = useTradeStats()
+  const { stats: complianceStats } = usePlanCompliance()
   const { openWithPrompt } = usePelicanPanelContext()
 
   // Get live quotes for all open positions (ticker:asset_type format for Polygon routing)
@@ -400,6 +402,8 @@ export default function JournalPage() {
                 <TradingPlanTab
                   trades={trades}
                   onAskPelican={handleAskPelican}
+                  complianceStats={complianceStats}
+                  tradeStats={stats}
                 />
               </motion.div>
             )}

@@ -12,17 +12,21 @@ import {
   Trash,
   CaretDown,
   CaretRight,
+  Sparkle,
 } from '@phosphor-icons/react'
 import { toast } from 'sonner'
 import type { Trade } from '@/hooks/use-trades'
 import { useTradingPlan, type CreatePlanData } from '@/hooks/use-trading-plan'
-import type { TradingPlan } from '@/types/trading'
-import { buildPlanComplianceSummary } from '@/lib/trading/plan-check'
+import type { TradingPlan, RuleComplianceStat } from '@/types/trading'
+import type { TradeStats } from '@/hooks/use-trade-stats'
+import { buildPlanComplianceSummary, buildPlanReviewPrompt } from '@/lib/trading/plan-check'
 import { PelicanButton, PelicanCard, staggerContainer, staggerItem, SkeletonCard } from '@/components/ui/pelican'
 
 interface TradingPlanTabProps {
   trades: Trade[]
   onAskPelican: (prompt: string) => void
+  complianceStats?: RuleComplianceStat[]
+  tradeStats?: TradeStats | null
 }
 
 const ASSET_TYPES = ['stock', 'option', 'future', 'forex', 'crypto', 'etf']
@@ -167,7 +171,7 @@ function ToggleSwitch({
 
 // ── Main Component ──
 
-export function TradingPlanTab({ trades, onAskPelican }: TradingPlanTabProps) {
+export function TradingPlanTab({ trades, onAskPelican, complianceStats, tradeStats }: TradingPlanTabProps) {
   const { plan, isLoading, createPlan, updatePlan, deletePlan } = useTradingPlan()
   const [mode, setMode] = useState<'view' | 'create' | 'edit'>('view')
   const [form, setForm] = useState<CreatePlanData>(DEFAULT_FORM)
@@ -679,13 +683,23 @@ export function TradingPlanTab({ trades, onAskPelican }: TradingPlanTabProps) {
               <RuleValue label="Daily P&L" value={`$${compliance.todayPnl.toFixed(2)} / -$${compliance.dailyLossMax}`} status={compliance.dailyLossStatus} />
             )}
           </div>
-          <PelicanButton
-            onClick={() => onAskPelican(buildPlanComplianceSummary(plan, trades) + '\n\nAm I following my trading plan today? Analyze my compliance and give me feedback.')}
-            variant="secondary"
-            size="sm"
-          >
-            Ask Pelican about my compliance
-          </PelicanButton>
+          <div className="flex items-center gap-2">
+            <PelicanButton
+              onClick={() => onAskPelican(buildPlanComplianceSummary(plan, trades) + '\n\nAm I following my trading plan today? Analyze my compliance and give me feedback.')}
+              variant="secondary"
+              size="sm"
+            >
+              Ask about today
+            </PelicanButton>
+            <PelicanButton
+              onClick={() => onAskPelican(buildPlanReviewPrompt(plan, complianceStats || null, tradeStats || null))}
+              variant="secondary"
+              size="sm"
+            >
+              <Sparkle size={14} weight="bold" />
+              Review my plan
+            </PelicanButton>
+          </div>
         </PelicanCard>
       </motion.div>
     </motion.div>
