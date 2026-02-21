@@ -3,6 +3,7 @@
 export const dynamic = "force-dynamic"
 
 import { useState, useEffect } from "react"
+import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import dynamicImport from "next/dynamic"
 import { motion, AnimatePresence } from "framer-motion"
@@ -230,10 +231,14 @@ export default function JournalPage() {
       <div className="flex-shrink-0 px-4 sm:px-6 py-4 border-b border-[var(--border-subtle)]">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
           <div>
-            <h1 className="text-lg sm:text-2xl font-semibold text-[var(--text-primary)]">Positions</h1>
+            <h1 className="text-lg sm:text-2xl font-semibold text-[var(--text-primary)]">Journal</h1>
             <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-              <span className="font-mono tabular-nums">{trades.length}</span> total positions
+              <span className="font-mono tabular-nums">{trades.length}</span> total trades
               {stats?.win_rate != null && <> · <span className="font-mono tabular-nums">{stats.win_rate.toFixed(1)}%</span> win rate</>}
+              <span className="mx-1.5">·</span>
+              <Link href="/positions" className="text-[var(--accent-primary)] hover:text-[var(--accent-hover)] transition-colors">
+                View live positions
+              </Link>
             </p>
           </div>
 
