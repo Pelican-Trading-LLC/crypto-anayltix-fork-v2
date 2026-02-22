@@ -12,6 +12,7 @@ import { useTodaysWarnings } from "@/hooks/use-todays-warnings"
 import { usePelicanPanelContext } from "@/providers/pelican-panel-provider"
 import { useTrades } from "@/hooks/use-trades"
 import { useTickerHistory } from "@/hooks/use-ticker-history"
+import { useTraderProfile } from "@/hooks/use-trader-profile"
 import { WarningBanner } from "@/components/insights/warning-banner"
 import { TodaysActions } from "@/components/positions/todays-actions"
 import { PortfolioOverview } from "@/components/positions/portfolio-overview"
@@ -21,6 +22,8 @@ import { PortfolioIntelligence } from "@/components/positions/portfolio-intellig
 import { PositionsEmptyState } from "@/components/positions/positions-empty-state"
 import { CloseTradeModal } from "@/components/journal/close-trade-modal"
 import { LogTradeModal } from "@/components/journal/log-trade-modal"
+import { SessionIndicator } from "@/components/positions/session-indicator"
+import { MarketSessionsStrip } from "@/components/positions/market-sessions-strip"
 import { PelicanButton, pageEnter } from "@/components/ui/pelican"
 import { computePortfolioGrade } from "@/lib/portfolio-grade"
 import type { PortfolioPosition } from "@/types/portfolio"
@@ -47,6 +50,9 @@ export default function PositionsPage() {
   const { warnings } = useTodaysWarnings()
   const { openWithPrompt } = usePelicanPanelContext()
   const { closeTrade, refetch: refetchTrades, logTrade } = useTrades()
+  const { survey } = useTraderProfile()
+  const marketsTraded = survey?.markets_traded || ['stocks']
+  const primaryMarket = marketsTraded[0] || 'stocks'
 
   // Ticker history for position cards
   const openTickers = useMemo(
@@ -169,13 +175,21 @@ export default function PositionsPage() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div>
-            <h1 className="text-lg sm:text-xl font-semibold text-[var(--text-primary)]">Positions</h1>
-            <p className="text-xs text-[var(--text-muted)] mt-0.5">
-              <span className="font-mono tabular-nums">{portfolio.portfolio.total_positions}</span> open
-              {portfolio.portfolio.avg_conviction > 0 && (
-                <> · <span className="font-mono tabular-nums">{portfolio.portfolio.avg_conviction.toFixed(1)}</span> avg conviction</>
+            <div className="flex items-center gap-3">
+              <h1 className="text-lg sm:text-xl font-semibold text-[var(--text-primary)]">Positions</h1>
+              <SessionIndicator assetType={primaryMarket} />
+            </div>
+            <div className="flex items-center gap-3 mt-0.5">
+              <p className="text-xs text-[var(--text-muted)]">
+                <span className="font-mono tabular-nums">{portfolio.portfolio.total_positions}</span> open
+                {portfolio.portfolio.avg_conviction > 0 && (
+                  <> · <span className="font-mono tabular-nums">{portfolio.portfolio.avg_conviction.toFixed(1)}</span> avg conviction</>
+                )}
+              </p>
+              {marketsTraded.length > 1 && (
+                <MarketSessionsStrip marketsTraded={marketsTraded} />
               )}
-            </p>
+            </div>
           </div>
           {portfolioGrade && (
             <div className="relative">
