@@ -222,13 +222,20 @@ function HeatmapPageInner() {
   const { survey } = useTraderProfile()
   const marketsTraded = survey?.markets_traded || ['stocks']
 
-  const marketTabs = useMemo(() => {
-    const tabs: { id: HeatmapMarket; label: string }[] = []
-    if (marketsTraded.includes('stocks')) tabs.push({ id: 'stocks', label: 'Stocks' })
-    if (marketsTraded.includes('forex')) tabs.push({ id: 'forex', label: 'Forex' })
-    if (marketsTraded.includes('crypto')) tabs.push({ id: 'crypto', label: 'Crypto' })
-    if (tabs.length === 0) tabs.push({ id: 'stocks', label: 'Stocks' })
-    return tabs
+  // All market tabs always visible — profile controls defaults, not access
+  const ALL_MARKETS: { id: HeatmapMarket; label: string }[] = [
+    { id: 'stocks', label: 'Stocks' },
+    { id: 'crypto', label: 'Crypto' },
+    { id: 'forex', label: 'Forex' },
+  ]
+
+  const marketTabs = useMemo((): { id: HeatmapMarket; label: string }[] => {
+    const primary = (marketsTraded[0] as HeatmapMarket) || 'stocks'
+    // Put user's primary market first, then the rest in alphabetical order
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const primaryTab = ALL_MARKETS.find(t => t.id === primary) ?? ALL_MARKETS[0]!
+    const rest = ALL_MARKETS.filter(t => t.id !== primaryTab.id).sort((a, b) => a.label.localeCompare(b.label))
+    return [primaryTab, ...rest]
   }, [marketsTraded])
 
   const defaultMarket: HeatmapMarket = (marketsTraded[0] as HeatmapMarket) || 'stocks'
@@ -405,24 +412,22 @@ function HeatmapPageInner() {
       {/* Header */}
       <div className="flex-shrink-0 px-6 py-4 bg-gradient-to-b from-white/[0.03] to-transparent border-b border-[var(--border-subtle)]">
         {/* Market tabs */}
-        {marketTabs.length > 1 && (
-          <div className="flex items-center gap-1 mb-3 bg-[var(--bg-elevated)] border border-[var(--border-default)] rounded-lg p-0.5 w-fit">
-            {marketTabs.map(tab => (
-              <button
-                key={tab.id}
-                onClick={() => handleMarketChange(tab.id)}
-                className={cn(
-                  "px-4 py-1.5 rounded-md text-sm font-medium transition-colors",
-                  activeMarket === tab.id
-                    ? "bg-[var(--accent-muted)] text-[var(--accent-primary)] shadow-sm"
-                    : "text-[var(--text-muted)] hover:text-[var(--text-primary)]"
-                )}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-        )}
+        <div className="flex items-center gap-1 mb-3 bg-[var(--bg-elevated)] border border-[var(--border-default)] rounded-lg p-0.5 w-fit">
+          {marketTabs.map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => handleMarketChange(tab.id)}
+              className={cn(
+                "px-4 py-1.5 rounded-md text-sm font-medium transition-colors",
+                activeMarket === tab.id
+                  ? "bg-[var(--accent-muted)] text-[var(--accent-primary)] shadow-sm"
+                  : "text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+              )}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
 
         <PageHeader
           title={getPageTitle(activeMarket)}
