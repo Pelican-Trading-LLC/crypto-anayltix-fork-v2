@@ -6,6 +6,7 @@ import { Paperclip } from "@phosphor-icons/react"
 import { cn } from "@/lib/utils"
 import { motion } from "framer-motion"
 import { useT } from "@/lib/providers/translation-provider"
+import { IconTooltip } from "@/components/ui/icon-tooltip"
 
 interface AttachButtonProps {
   disabled: boolean
@@ -26,21 +27,22 @@ export function AttachButton({ disabled, onFileSelect }: AttachButtonProps) {
 
   return (
     <>
-      <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={() => fileInputRef.current?.click()}
-        disabled={disabled}
-        className={cn(
-          "flex-shrink-0 w-11 h-11 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center",
-          "transition-all duration-200",
-          "hover:bg-[var(--bg-elevated)]",
-          disabled && "opacity-50 cursor-not-allowed",
-        )}
-        title={t.chat.attachFile}
-      >
-        <Paperclip size={20} weight="regular" className="text-muted-foreground" />
-      </motion.button>
+      <IconTooltip label={t.chat.attachFile} side="top">
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => fileInputRef.current?.click()}
+          disabled={disabled}
+          className={cn(
+            "flex-shrink-0 w-11 h-11 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center",
+            "transition-all duration-200",
+            "hover:bg-[var(--bg-elevated)]",
+            disabled && "opacity-50 cursor-not-allowed",
+          )}
+        >
+          <Paperclip size={20} weight="regular" className="text-muted-foreground" />
+        </motion.button>
+      </IconTooltip>
 
       <input
         ref={fileInputRef}

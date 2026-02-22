@@ -13,7 +13,10 @@ import {
   Clock,
   Hash,
   CreditCard,
+  ArrowUpRight,
 } from 'lucide-react'
+import Link from 'next/link'
+import { IconTooltip } from '@/components/ui/icon-tooltip'
 
 interface UserDetailProps {
   user: {
@@ -300,21 +303,32 @@ export function UserDetail({ user }: UserDetailProps) {
 
               return (
                 <div key={conv.id}>
-                  <button
-                    onClick={(e) => { e.stopPropagation(); handleConvoToggle(conv.id) }}
-                    className="w-full flex items-center gap-2 text-sm p-2 rounded-md hover:bg-muted/50 transition-colors text-left"
-                  >
-                    <MessageSquare className="size-3.5 shrink-0 text-muted-foreground" />
-                    <span className="truncate flex-1 font-medium">{conv.title}</span>
-                    <span className="text-xs text-muted-foreground shrink-0">
-                      {conv.messageCount} msgs &middot; {formatShortDate(conv.createdAt)}
-                    </span>
-                    {isExpanded ? (
-                      <ChevronUp className="size-3.5 shrink-0 text-muted-foreground" />
-                    ) : (
-                      <ChevronDown className="size-3.5 shrink-0 text-muted-foreground" />
-                    )}
-                  </button>
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={(e) => { e.stopPropagation(); handleConvoToggle(conv.id) }}
+                      className="flex-1 flex items-center gap-2 text-sm p-2 rounded-md hover:bg-muted/50 transition-colors text-left min-w-0"
+                    >
+                      <MessageSquare className="size-3.5 shrink-0 text-muted-foreground" />
+                      <span className="truncate flex-1 font-medium">{conv.title}</span>
+                      <span className="text-xs text-muted-foreground shrink-0">
+                        {conv.messageCount} msgs &middot; {formatShortDate(conv.createdAt)}
+                      </span>
+                      {isExpanded ? (
+                        <ChevronUp className="size-3.5 shrink-0 text-muted-foreground" />
+                      ) : (
+                        <ChevronDown className="size-3.5 shrink-0 text-muted-foreground" />
+                      )}
+                    </button>
+                    <IconTooltip label="Open full view">
+                      <Link
+                        href={`/admin/conversations/${conv.id}`}
+                        className="shrink-0 p-1.5 rounded hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <ArrowUpRight className="size-3.5" />
+                      </Link>
+                    </IconTooltip>
+                  </div>
 
                   {isExpanded && (
                     <div className="ml-6 mr-2 mb-2 mt-1 border-l-2 border-border pl-3 space-y-2">

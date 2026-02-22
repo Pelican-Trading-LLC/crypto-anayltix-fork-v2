@@ -5,6 +5,7 @@ export const dynamic = "force-dynamic"
 import { useState, useCallback } from "react"
 import { motion } from "framer-motion"
 import { Plus } from "@phosphor-icons/react"
+import { IconTooltip } from "@/components/ui/icon-tooltip"
 import { usePlaybooks } from "@/hooks/use-playbooks"
 import {
   PageHeader,
@@ -121,13 +122,15 @@ export default function PlaybooksPage() {
 
       {/* Mobile FAB */}
       {playbooks.length > 0 && (
-        <button
-          onClick={() => setShowCreateModal(true)}
-          className="sm:hidden fixed bottom-6 right-6 z-40 w-14 h-14 bg-[var(--accent-primary)] rounded-full shadow-lg shadow-[var(--accent-primary)]/25 flex items-center justify-center active:scale-95 transition-transform"
-          aria-label="New Playbook"
-        >
-          <Plus size={24} weight="bold" className="text-white" />
-        </button>
+        <IconTooltip label="New Playbook" side="left">
+          <button
+            onClick={() => setShowCreateModal(true)}
+            className="sm:hidden fixed bottom-6 right-6 z-40 w-14 h-14 bg-[var(--accent-primary)] rounded-full shadow-lg shadow-[var(--accent-primary)]/25 flex items-center justify-center active:scale-95 transition-transform"
+            aria-label="New Playbook"
+          >
+            <Plus size={24} weight="bold" className="text-white" />
+          </button>
+        </IconTooltip>
       )}
     </motion.div>
   )

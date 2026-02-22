@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Menu } from "lucide-react"
 import { CaretRight, Plus as PlusIcon } from "@phosphor-icons/react"
+import { IconTooltip } from "@/components/ui/icon-tooltip"
 import { ThemeToggle } from "@/components/theme-toggle"
 import Link from "next/link"
 import Image from "next/image"
@@ -467,20 +468,22 @@ export default function ChatPage() {
       <div className="hidden xl:block flex-shrink-0">
         {sidebarCollapsed ? (
           <div className="w-12 h-full flex flex-col items-center pt-3 gap-3 border-r border-[var(--border-subtle)] bg-sidebar">
-            <button
-              onClick={handleSidebarToggle}
-              className="h-8 w-8 flex items-center justify-center rounded-md text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] transition-colors"
-              title="Open sidebar"
-            >
-              <CaretRight size={16} weight="regular" />
-            </button>
-            <button
-              onClick={handleNewConversation}
-              className="h-8 w-8 flex items-center justify-center rounded-md text-[var(--accent-indigo)] hover:bg-[var(--accent-indigo-muted)] transition-colors"
-              title="New chat"
-            >
-              <PlusIcon size={16} weight="bold" />
-            </button>
+            <IconTooltip label="Open sidebar" side="right">
+              <button
+                onClick={handleSidebarToggle}
+                className="h-8 w-8 flex items-center justify-center rounded-md text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] transition-colors"
+              >
+                <CaretRight size={16} weight="regular" />
+              </button>
+            </IconTooltip>
+            <IconTooltip label="New chat" side="right" kbd="N">
+              <button
+                onClick={handleNewConversation}
+                className="h-8 w-8 flex items-center justify-center rounded-md text-[var(--accent-indigo)] hover:bg-[var(--accent-indigo-muted)] transition-colors"
+              >
+                <PlusIcon size={16} weight="bold" />
+              </button>
+            </IconTooltip>
           </div>
         ) : (
           <ConversationSidebar
@@ -531,14 +534,16 @@ export default function ChatPage() {
         <div className="xl:hidden border-b border-[var(--border-subtle)] p-4 flex items-center justify-between bg-background touch-manipulation">
           <Sheet open={mobileSheetOpen} onOpenChange={setMobileSheetOpen}>
             <SheetTrigger asChild>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-11 w-11 min-h-[44px] min-w-[44px] glow-button glow-ghost"
-                aria-label="Open sidebar"
-              >
-                <Menu className="h-5 w-5 text-foreground" />
-              </Button>
+              <IconTooltip label="Open sidebar" side="bottom">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-11 w-11 min-h-[44px] min-w-[44px] glow-button glow-ghost"
+                  aria-label="Open sidebar"
+                >
+                  <Menu className="h-5 w-5 text-foreground" />
+                </Button>
+              </IconTooltip>
             </SheetTrigger>
           </Sheet>
           <div className="flex items-center gap-2">

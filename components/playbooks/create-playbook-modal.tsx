@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dialog"
 import { PelicanButton } from "@/components/ui/pelican"
 import { X } from "@phosphor-icons/react"
+import { IconTooltip } from "@/components/ui/icon-tooltip"
 import { cn } from "@/lib/utils"
 
 const INPUT_CLASS =
@@ -272,13 +273,15 @@ export function CreatePlaybookModal({
                         {i + 1}.
                       </span>
                       <span className="flex-1">{item}</span>
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveChecklistItem(i)}
-                        className="text-[var(--text-muted)] hover:text-[var(--data-negative)] transition-colors p-0.5"
-                      >
-                        <X size={14} weight="bold" />
-                      </button>
+                      <IconTooltip label="Remove item" side="left">
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveChecklistItem(i)}
+                          className="text-[var(--text-muted)] hover:text-[var(--data-negative)] transition-colors p-0.5"
+                        >
+                          <X size={14} weight="bold" />
+                        </button>
+                      </IconTooltip>
                     </li>
                   ))}
                 </ol>

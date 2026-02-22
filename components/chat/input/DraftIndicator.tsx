@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion"
 import { X } from "@phosphor-icons/react"
+import { IconTooltip } from "@/components/ui/icon-tooltip"
 
 interface DraftIndicatorProps {
   pendingDraft: string
@@ -28,13 +29,14 @@ export function DraftIndicator({ pendingDraft, onCancel, onEdit }: DraftIndicato
           {pendingDraft.length > 40 ? "..." : ""}&quot;
         </button>
         {onCancel && (
-          <button
-            onClick={onCancel}
-            className="p-0.5 rounded-full hover:bg-[var(--data-warning)]/20 transition-colors shrink-0"
-            title="Cancel queued message"
-          >
-            <X size={12} weight="bold" />
-          </button>
+          <IconTooltip label="Cancel queued message" side="top">
+            <button
+              onClick={onCancel}
+              className="p-0.5 rounded-full hover:bg-[var(--data-warning)]/20 transition-colors shrink-0"
+            >
+              <X size={12} weight="bold" />
+            </button>
+          </IconTooltip>
         )}
       </div>
     </motion.div>

@@ -21,6 +21,7 @@ import {
   ArrowDownRight,
 } from 'lucide-react'
 import Link from 'next/link'
+import { IconTooltip } from '@/components/ui/icon-tooltip'
 import {
   AreaChart,
   Area,
@@ -63,12 +64,19 @@ interface AnalyticsData {
   active_users_30d: number
 }
 
+interface ConvoTag {
+  owner: string
+  classification: string
+  source?: string
+}
+
 interface ConversationRow {
   id: string
   title: string | null
   userName: string | null
   createdAt: string
   messageCount?: number | null
+  tag?: ConvoTag
 }
 
 interface ConvoMessage {
@@ -104,7 +112,6 @@ function planVariant(plan: string) {
     case 'power':
       return 'default' as const
     case 'starter':
-    case 'base':
       return 'secondary' as const
     default:
       return 'outline' as const
@@ -584,26 +591,50 @@ export default function AdminDashboardPage() {
 
                   return (
                     <div key={conv.id}>
-                      <button
-                        onClick={() => handleToggleConvo(conv.id)}
-                        className="flex items-center justify-between w-full text-sm text-left hover:bg-muted/50 -mx-2 px-2 py-1.5 rounded-md transition-colors"
-                      >
-                        <div className="min-w-0 flex-1">
-                          <p className="truncate font-medium text-sm">
-                            {conv.title || 'Untitled'}
-                          </p>
-                          <p className="text-xs text-muted-foreground truncate">
-                            {conv.userName || 'Unknown'} &middot; {timeAgo(conv.createdAt)}
-                          </p>
-                        </div>
-                        <div className="ml-2 shrink-0">
-                          {isExpanded ? (
-                            <ChevronUp className="size-4 text-muted-foreground" />
-                          ) : (
-                            <ChevronDown className="size-4 text-muted-foreground" />
-                          )}
-                        </div>
-                      </button>
+                      <div className="flex items-center hover:bg-muted/50 -mx-2 px-2 py-1.5 rounded-md transition-colors">
+                        <button
+                          onClick={() => handleToggleConvo(conv.id)}
+                          className="flex items-center justify-between flex-1 text-sm text-left min-w-0"
+                        >
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center gap-1.5">
+                              <p className="truncate font-medium text-sm">
+                                {conv.title || 'Untitled'}
+                              </p>
+                              {conv.tag && (
+                                <Badge
+                                  variant="outline"
+                                  className={`text-[9px] px-1 py-0 shrink-0 ${
+                                    conv.tag.owner === 'team'
+                                      ? 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+                                      : 'bg-blue-500/10 text-blue-400 border-blue-500/20'
+                                  }`}
+                                >
+                                  {conv.tag.owner === 'team' ? 'TEAM' : 'USER'}
+                                </Badge>
+                              )}
+                            </div>
+                            <p className="text-xs text-muted-foreground truncate">
+                              {conv.userName || 'Unknown'} &middot; {timeAgo(conv.createdAt)}
+                            </p>
+                          </div>
+                          <div className="ml-2 shrink-0">
+                            {isExpanded ? (
+                              <ChevronUp className="size-4 text-muted-foreground" />
+                            ) : (
+                              <ChevronDown className="size-4 text-muted-foreground" />
+                            )}
+                          </div>
+                        </button>
+                        <IconTooltip label="Open full view">
+                          <Link
+                            href={`/admin/conversations/${conv.id}`}
+                            className="ml-1 shrink-0 p-1 rounded hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+                          >
+                            <ArrowUpRight className="size-3.5" />
+                          </Link>
+                        </IconTooltip>
+                      </div>
 
                       {isExpanded && (
                         <div className="ml-2 mb-2 border-l-2 border-border pl-3 max-h-[300px] overflow-y-auto">

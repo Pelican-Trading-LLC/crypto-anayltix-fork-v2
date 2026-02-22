@@ -17,6 +17,7 @@ import { getSectors, type SP500Sector } from "@/lib/data/sp500-constituents"
 import { getForexCategories } from "@/lib/data/forex-pairs"
 import { getCryptoCategories } from "@/lib/data/crypto-tokens"
 import { ArrowsClockwise, GridFour, SquaresFour, Lightning, Crosshair } from "@phosphor-icons/react"
+import { IconTooltip } from "@/components/ui/icon-tooltip"
 import { useOnboardingProgress } from "@/hooks/use-onboarding-progress"
 import { getMarketStatus } from "@/hooks/use-market-data"
 import { PageHeader, DataCell, pageEnter } from "@/components/ui/pelican"
@@ -484,38 +485,44 @@ function HeatmapPageInner() {
               </button>
 
               {/* Manual refresh */}
-              <button
-                onClick={() => refetch()}
-                disabled={isLoading}
-                className="px-3 py-1.5 rounded-lg bg-[var(--bg-elevated)] border border-[var(--border-default)] hover:border-[var(--border-hover)] transition-all duration-150 disabled:opacity-50"
-              >
-                <ArrowsClockwise className={cn("w-4 h-4 text-[var(--text-secondary)]", isLoading && 'animate-spin')} />
-              </button>
+              <IconTooltip label="Refresh data" side="bottom">
+                <button
+                  onClick={() => refetch()}
+                  disabled={isLoading}
+                  className="px-3 py-1.5 rounded-lg bg-[var(--bg-elevated)] border border-[var(--border-default)] hover:border-[var(--border-hover)] transition-all duration-150 disabled:opacity-50"
+                >
+                  <ArrowsClockwise className={cn("w-4 h-4 text-[var(--text-secondary)]", isLoading && 'animate-spin')} />
+                </button>
+              </IconTooltip>
 
               {/* View mode toggle */}
               <div className="hidden sm:flex items-center gap-1 bg-[var(--bg-elevated)] border border-[var(--border-default)] rounded-lg p-1">
-                <button
-                  onClick={() => setViewMode('treemap')}
-                  className={cn(
-                    "px-3 py-1.5 rounded text-xs font-medium transition-all duration-150",
-                    viewMode === 'treemap'
-                      ? 'bg-[var(--accent-muted)] text-[var(--accent-primary)]'
-                      : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-                  )}
-                >
-                  <SquaresFour className="w-4 h-4" weight={viewMode === 'treemap' ? "fill" : "regular"} />
-                </button>
-                <button
-                  onClick={() => setViewMode('grid')}
-                  className={cn(
-                    "px-3 py-1.5 rounded text-xs font-medium transition-all duration-150",
-                    viewMode === 'grid'
-                      ? 'bg-[var(--accent-muted)] text-[var(--accent-primary)]'
-                      : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-                  )}
-                >
-                  <GridFour className="w-4 h-4" weight={viewMode === 'grid' ? "fill" : "regular"} />
-                </button>
+                <IconTooltip label="Treemap view" side="bottom">
+                  <button
+                    onClick={() => setViewMode('treemap')}
+                    className={cn(
+                      "px-3 py-1.5 rounded text-xs font-medium transition-all duration-150",
+                      viewMode === 'treemap'
+                        ? 'bg-[var(--accent-muted)] text-[var(--accent-primary)]'
+                        : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                    )}
+                  >
+                    <SquaresFour className="w-4 h-4" weight={viewMode === 'treemap' ? "fill" : "regular"} />
+                  </button>
+                </IconTooltip>
+                <IconTooltip label="Grid view" side="bottom">
+                  <button
+                    onClick={() => setViewMode('grid')}
+                    className={cn(
+                      "px-3 py-1.5 rounded text-xs font-medium transition-all duration-150",
+                      viewMode === 'grid'
+                        ? 'bg-[var(--accent-muted)] text-[var(--accent-primary)]'
+                        : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                    )}
+                  >
+                    <GridFour className="w-4 h-4" weight={viewMode === 'grid' ? "fill" : "regular"} />
+                  </button>
+                </IconTooltip>
               </div>
             </div>
           }

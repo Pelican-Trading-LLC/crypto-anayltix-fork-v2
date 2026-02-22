@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react'
 import { Search, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Download } from 'lucide-react'
+import { IconTooltip } from '@/components/ui/icon-tooltip'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -39,7 +40,7 @@ interface UsersResponse {
   totalPages: number
 }
 
-const PLAN_OPTIONS = ['all', 'none', 'trial', 'base', 'pro', 'power', 'founder'] as const
+const PLAN_OPTIONS = ['all', 'none', 'starter', 'pro', 'power', 'founder', 'past_due'] as const
 const ACTIVITY_OPTIONS = [
   { value: 'all', label: 'All Activity' },
   { value: 'active', label: 'Active (7d)' },
@@ -57,12 +58,12 @@ function planVariant(plan: string) {
   switch (plan) {
     case 'pro':
     case 'power':
-      return 'default' as const
-    case 'base':
-    case 'starter':
-      return 'secondary' as const
     case 'founder':
       return 'default' as const
+    case 'starter':
+      return 'secondary' as const
+    case 'past_due':
+      return 'destructive' as const
     default:
       return 'outline' as const
   }
@@ -76,9 +77,10 @@ function planColor(plan: string) {
       return 'bg-amber-500/10 text-amber-400 border-amber-500/20'
     case 'founder':
       return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
-    case 'base':
     case 'starter':
-      return 'bg-blue-500/10 text-blue-400 border-blue-500/20'
+      return 'bg-green-500/10 text-green-400 border-green-500/20'
+    case 'past_due':
+      return 'bg-red-500/10 text-red-400 border-red-500/20'
     default:
       return ''
   }
@@ -248,10 +250,12 @@ export function UsersTable({ initialData }: { initialData: UsersResponse }) {
             ))}
           </select>
 
-          <Button variant="outline" size="sm" onClick={handleExport} title="Export CSV">
-            <Download className="size-4 mr-1" />
-            CSV
-          </Button>
+          <IconTooltip label="Export CSV">
+            <Button variant="outline" size="sm" onClick={handleExport}>
+              <Download className="size-4 mr-1" />
+              CSV
+            </Button>
+          </IconTooltip>
         </div>
       </div>
 
@@ -354,22 +358,26 @@ export function UsersTable({ initialData }: { initialData: UsersResponse }) {
             Page {data.page} of {data.totalPages} ({data.total} users)
           </span>
           <div className="flex gap-1">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => goToPage(data.page - 1)}
-              disabled={data.page <= 1 || loading}
-            >
-              <ChevronLeft className="size-4" />
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => goToPage(data.page + 1)}
-              disabled={data.page >= data.totalPages || loading}
-            >
-              <ChevronRight className="size-4" />
-            </Button>
+            <IconTooltip label="Previous page">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => goToPage(data.page - 1)}
+                disabled={data.page <= 1 || loading}
+              >
+                <ChevronLeft className="size-4" />
+              </Button>
+            </IconTooltip>
+            <IconTooltip label="Next page">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => goToPage(data.page + 1)}
+                disabled={data.page >= data.totalPages || loading}
+              >
+                <ChevronRight className="size-4" />
+              </Button>
+            </IconTooltip>
           </div>
         </div>
       )}

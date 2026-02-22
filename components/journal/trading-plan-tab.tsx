@@ -15,6 +15,7 @@ import {
   Sparkle,
 } from '@phosphor-icons/react'
 import { toast } from 'sonner'
+import { IconTooltip } from '@/components/ui/icon-tooltip'
 import type { Trade } from '@/hooks/use-trades'
 import { useTradingPlan, type CreatePlanData } from '@/hooks/use-trading-plan'
 import type { TradingPlan, RuleComplianceStat } from '@/types/trading'
@@ -377,9 +378,11 @@ export function TradingPlanTab({ trades, onAskPelican, complianceStats, tradeSta
                 placeholder="Add checklist item..."
                 className="flex-1 bg-[var(--bg-elevated)] border border-[var(--border-subtle)] rounded-lg px-3 py-1.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-primary)] transition-colors"
               />
-              <button type="button" onClick={addChecklistItem} className="text-[var(--accent-primary)] hover:text-[var(--accent-hover)] transition-colors">
-                <Plus size={18} weight="bold" />
-              </button>
+              <IconTooltip label="Add item" side="top">
+                <button type="button" onClick={addChecklistItem} className="text-[var(--accent-primary)] hover:text-[var(--accent-hover)] transition-colors">
+                  <Plus size={18} weight="bold" />
+                </button>
+              </IconTooltip>
             </div>
           </div>
         </PelicanCard>
@@ -427,9 +430,11 @@ export function TradingPlanTab({ trades, onAskPelican, complianceStats, tradeSta
               placeholder="e.g. MEME"
               className="flex-1 bg-[var(--bg-elevated)] border border-[var(--border-subtle)] rounded-lg px-3 py-1.5 text-sm font-mono text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-[var(--accent-primary)] transition-colors"
             />
-            <button type="button" onClick={addBlockedTicker} className="text-[var(--accent-primary)] hover:text-[var(--accent-hover)] transition-colors">
-              <Plus size={18} weight="bold" />
-            </button>
+            <IconTooltip label="Add ticker" side="top">
+              <button type="button" onClick={addBlockedTicker} className="text-[var(--accent-primary)] hover:text-[var(--accent-hover)] transition-colors">
+                <Plus size={18} weight="bold" />
+              </button>
+            </IconTooltip>
           </div>
         </PelicanCard>
 
@@ -491,12 +496,16 @@ export function TradingPlanTab({ trades, onAskPelican, complianceStats, tradeSta
               )}
             </div>
             <div className="flex items-center gap-2">
-              <button onClick={startEdit} className="p-1.5 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-elevated)] transition-colors">
-                <Pencil size={16} />
-              </button>
-              <button onClick={handleDelete} className="p-1.5 rounded-lg text-[var(--text-muted)] hover:text-[var(--data-negative)] hover:bg-[var(--bg-elevated)] transition-colors">
-                <Trash size={16} />
-              </button>
+              <IconTooltip label="Edit plan" side="top">
+                <button onClick={startEdit} className="p-1.5 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-elevated)] transition-colors">
+                  <Pencil size={16} />
+                </button>
+              </IconTooltip>
+              <IconTooltip label="Delete plan" side="top">
+                <button onClick={handleDelete} className="p-1.5 rounded-lg text-[var(--text-muted)] hover:text-[var(--data-negative)] hover:bg-[var(--bg-elevated)] transition-colors">
+                  <Trash size={16} />
+                </button>
+              </IconTooltip>
             </div>
           </div>
         </PelicanCard>

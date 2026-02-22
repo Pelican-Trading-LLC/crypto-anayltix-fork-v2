@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils'
 import { useStreaks } from '@/hooks/use-streaks'
 import { useCreditsContext } from '@/providers/credits-provider'
 import { useTraderProfile } from '@/hooks/use-trader-profile'
+import { IconTooltip } from '@/components/ui/icon-tooltip'
 
 // =============================================================================
 // TYPES
@@ -156,20 +157,24 @@ export function TopNav({ className }: TopNavProps) {
         {/* Right: Streak + Credits */}
         <div className="flex items-center gap-2 sm:gap-3 ml-auto flex-shrink-0">
           {/* Streak */}
-          <div className="flex items-center gap-1 sm:gap-1.5 text-sm text-[var(--text-secondary)]">
-            <span className={`${journalStreak > 0 ? 'text-base sm:text-lg filter drop-shadow-[0_0_6px_rgba(251,146,60,0.4)]' : ''}`}>🔥</span>
-            <span className="font-mono font-medium text-[var(--text-primary)] tabular-nums text-sm sm:text-base">{journalStreak}</span>
-            <span className="text-xs hidden sm:inline">days</span>
-          </div>
+          <IconTooltip label={`${journalStreak}-day journal streak`} side="bottom">
+            <div className="flex items-center gap-1 sm:gap-1.5 text-sm text-[var(--text-secondary)]">
+              <span className={`${journalStreak > 0 ? 'text-base sm:text-lg filter drop-shadow-[0_0_6px_rgba(251,146,60,0.4)]' : ''}`}>🔥</span>
+              <span className="font-mono font-medium text-[var(--text-primary)] tabular-nums text-sm sm:text-base">{journalStreak}</span>
+              <span className="text-xs hidden sm:inline">days</span>
+            </div>
+          </IconTooltip>
 
           {/* Credits */}
-          <Link
-            href="/pricing"
-            className="px-2 sm:px-3 py-1 rounded-full border border-[var(--border-default)] bg-[var(--bg-surface)] text-xs sm:text-sm font-mono text-[var(--text-primary)] hover:border-[var(--border-hover)] hover:bg-[var(--bg-elevated)] active:scale-95 transition-all tabular-nums"
-          >
-            <span className="hidden sm:inline">{(credits?.balance ?? 0).toLocaleString()} credits</span>
-            <span className="sm:hidden">{(credits?.balance ?? 0).toLocaleString()}</span>
-          </Link>
+          <IconTooltip label="Credit balance" side="bottom">
+            <Link
+              href="/pricing"
+              className="px-2 sm:px-3 py-1 rounded-full border border-[var(--border-default)] bg-[var(--bg-surface)] text-xs sm:text-sm font-mono text-[var(--text-primary)] hover:border-[var(--border-hover)] hover:bg-[var(--bg-elevated)] active:scale-95 transition-all tabular-nums"
+            >
+              <span className="hidden sm:inline">{(credits?.balance ?? 0).toLocaleString()} credits</span>
+              <span className="sm:hidden">{(credits?.balance ?? 0).toLocaleString()}</span>
+            </Link>
+          </IconTooltip>
         </div>
       </div>
     </nav>

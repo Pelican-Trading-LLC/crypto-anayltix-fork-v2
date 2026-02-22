@@ -46,6 +46,7 @@ import { useSavedInsights } from "@/hooks/use-saved-insights"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useT } from "@/lib/providers/translation-provider"
+import { IconTooltip } from "@/components/ui/icon-tooltip"
 import { useAuth } from "@/lib/providers/auth-provider"
 import { createClient } from "@/lib/supabase/client"
 import { getConversationClass, type ConversationClass } from "@/lib/chat/message-source"
@@ -454,13 +455,14 @@ export function ConversationSidebar({
             New Chat
           </button>
           {onToggleCollapse && !isMobileSheet && (
-            <button
-              onClick={onToggleCollapse}
-              className="h-8 w-8 flex items-center justify-center rounded-lg flex-shrink-0 text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] transition-colors"
-              title="Collapse sidebar"
-            >
-              <CaretLeft size={14} weight="regular" />
-            </button>
+            <IconTooltip label="Collapse sidebar" side="bottom">
+              <button
+                onClick={onToggleCollapse}
+                className="h-8 w-8 flex items-center justify-center rounded-lg flex-shrink-0 text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] transition-colors"
+              >
+                <CaretLeft size={14} weight="regular" />
+              </button>
+            </IconTooltip>
           )}
         </div>
 
@@ -797,17 +799,18 @@ export function ConversationSidebar({
                       <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
                         {getRelativeTime(insight.created_at)}
                       </span>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          deleteInsight(insight.id)
-                        }}
-                        className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded hover:bg-red-500/20"
-                        style={{ color: 'var(--text-muted)' }}
-                        title="Remove"
-                      >
-                        <Trash size={12} />
-                      </button>
+                      <IconTooltip label="Remove" side="left">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            deleteInsight(insight.id)
+                          }}
+                          className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded hover:bg-red-500/20"
+                          style={{ color: 'var(--text-muted)' }}
+                        >
+                          <Trash size={12} />
+                        </button>
+                      </IconTooltip>
                     </div>
                   </div>
                 ))}

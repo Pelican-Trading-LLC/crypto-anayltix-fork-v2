@@ -25,6 +25,7 @@ import {
   Lightning,
   Briefcase,
 } from "@phosphor-icons/react"
+import { IconTooltip } from "@/components/ui/icon-tooltip"
 import { getMarketStatus } from "@/hooks/use-market-data"
 import { LogoImg } from "@/components/ui/logo-img"
 import { MarketPulseStrip } from "@/components/morning/market-pulse-strip"
@@ -701,15 +702,17 @@ Keep it dense, actionable, and personalized to MY positions and watchlist. Use m
         subtitle={new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
         actions={
           <div className="flex items-center gap-2">
-            <PelicanButton
-              variant="secondary"
-              size="sm"
-              onClick={() => refetchMovers()}
-              disabled={moversLoading}
-              aria-label="Refresh movers"
-            >
-              <ArrowsClockwise className={`h-4 w-4 ${moversLoading ? "animate-spin" : ""}`} weight="bold" />
-            </PelicanButton>
+            <IconTooltip label="Refresh movers" side="bottom">
+              <PelicanButton
+                variant="secondary"
+                size="sm"
+                onClick={() => refetchMovers()}
+                disabled={moversLoading}
+                aria-label="Refresh movers"
+              >
+                <ArrowsClockwise className={`h-4 w-4 ${moversLoading ? "animate-spin" : ""}`} weight="bold" />
+              </PelicanButton>
+            </IconTooltip>
           </div>
         }
       />

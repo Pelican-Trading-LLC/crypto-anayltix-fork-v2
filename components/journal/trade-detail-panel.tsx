@@ -2,6 +2,7 @@
 
 import { Trade } from "@/hooks/use-trades"
 import { X, PlayCircle } from "@phosphor-icons/react"
+import { IconTooltip } from "@/components/ui/icon-tooltip"
 import { PelicanCard, PelicanButton, DataCell } from "@/components/ui/pelican"
 import { TradeGradeCard } from "@/components/grading/trade-grade-card"
 import type { TradeGrade } from "@/lib/grading/trade-grader"
@@ -39,12 +40,14 @@ export function TradeDetailPanel({ trade, onClose, onCloseTrade, onReplay }: Tra
             </span>
           )}
         </div>
-        <button
-          onClick={onClose}
-          className="p-1 hover:bg-[var(--bg-elevated)] rounded-lg transition-colors active:scale-95 min-h-[44px] min-w-[44px] flex items-center justify-center"
-        >
-          <X size={20} className="text-[var(--text-muted)]" />
-        </button>
+        <IconTooltip label="Close" side="left">
+          <button
+            onClick={onClose}
+            className="p-1 hover:bg-[var(--bg-elevated)] rounded-lg transition-colors active:scale-95 min-h-[44px] min-w-[44px] flex items-center justify-center"
+          >
+            <X size={20} className="text-[var(--text-muted)]" />
+          </button>
+        </IconTooltip>
       </div>
 
       {/* Content */}

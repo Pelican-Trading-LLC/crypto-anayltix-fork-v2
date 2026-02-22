@@ -16,6 +16,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { Trash2, ImageIcon } from "lucide-react"
+import { IconTooltip } from "@/components/ui/icon-tooltip"
 import { createClient } from "@/lib/supabase/client"
 import { toast } from "sonner"
 import { logger } from "@/lib/logger"
@@ -193,15 +194,17 @@ export function UploadedImagesSection({ userId }: UploadedImagesSectionProps) {
                       unoptimized
                       className="absolute inset-0 w-full h-full object-cover"
                     />
-                    <Button
-                      variant="destructive"
-                      size="icon"
-                      className="absolute top-1.5 right-1.5 h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity shadow-md"
-                      onClick={() => setDeleteTarget(img)}
-                      disabled={deleting}
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </Button>
+                    <IconTooltip label="Delete image">
+                      <Button
+                        variant="destructive"
+                        size="icon"
+                        className="absolute top-1.5 right-1.5 h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity shadow-md"
+                        onClick={() => setDeleteTarget(img)}
+                        disabled={deleting}
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </Button>
+                    </IconTooltip>
                   </div>
                   <div className="p-2 space-y-0.5">
                     <p className="text-xs font-medium truncate" title={img.file.name}>

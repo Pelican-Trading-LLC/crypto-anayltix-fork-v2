@@ -12,6 +12,7 @@ import { PortfolioCorrelations } from '@/components/correlations/portfolio-corre
 import { CorrelationListView } from '@/components/correlations/correlation-list-view'
 import { DataFreshness } from '@/components/correlations/data-freshness'
 import { BeginnerToggle, useBeginnerMode } from '@/components/correlations/beginner-toggle'
+import { IconTooltip } from '@/components/ui/icon-tooltip'
 
 type ViewTab = 'market' | 'portfolio'
 
@@ -198,15 +199,16 @@ export default function CorrelationsPageClient() {
 
             <div className="flex items-center gap-2">
               <BeginnerToggle value={beginnerMode} onChange={setBeginnerMode} />
-              <button
-                onClick={handleCalculate}
-                disabled={calculating}
-                className="p-1.5 rounded-lg transition-colors"
-                style={{ color: 'var(--text-muted)', background: 'var(--bg-base)' }}
-                title="Recalculate correlations (admin)"
-              >
-                <ArrowsClockwise weight="bold" className={`w-4 h-4 ${calculating ? 'animate-spin' : ''}`} />
-              </button>
+              <IconTooltip label="Recalculate correlations" side="bottom">
+                <button
+                  onClick={handleCalculate}
+                  disabled={calculating}
+                  className="p-1.5 rounded-lg transition-colors"
+                  style={{ color: 'var(--text-muted)', background: 'var(--bg-base)' }}
+                >
+                  <ArrowsClockwise weight="bold" className={`w-4 h-4 ${calculating ? 'animate-spin' : ''}`} />
+                </button>
+              </IconTooltip>
             </div>
           </div>
         )}

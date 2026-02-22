@@ -12,6 +12,7 @@ import { useTraderProfile } from "@/hooks/use-trader-profile"
 import { usePelicanPanelContext } from "@/providers/pelican-panel-provider"
 import { cn } from "@/lib/utils"
 import { PageHeader, PelicanButton, staggerContainer, staggerItem } from "@/components/ui/pelican"
+import { IconTooltip } from "@/components/ui/icon-tooltip"
 import { EarningsSpotlight } from "@/components/earnings/earnings-spotlight"
 import { EarningsFilters } from "@/components/earnings/earnings-filters"
 import { EarningsSection } from "@/components/earnings/earnings-section"
@@ -248,25 +249,29 @@ What are the key things to watch? Any whisper numbers or sentiment shifts? How h
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
             {/* Week navigator */}
             <div className="flex items-center gap-2">
-              <PelicanButton
-                variant="ghost"
-                size="sm"
-                onClick={prevWeek}
-                className="min-h-[44px] min-w-[44px]"
-              >
-                <CaretLeft weight="bold" className="h-4 w-4" />
-              </PelicanButton>
+              <IconTooltip label="Previous week" side="bottom">
+                <PelicanButton
+                  variant="ghost"
+                  size="sm"
+                  onClick={prevWeek}
+                  className="min-h-[44px] min-w-[44px]"
+                >
+                  <CaretLeft weight="bold" className="h-4 w-4" />
+                </PelicanButton>
+              </IconTooltip>
               <span className="text-sm font-medium text-[var(--text-primary)] min-w-[220px] text-center">
                 {formatWeekRange()}
               </span>
-              <PelicanButton
-                variant="ghost"
-                size="sm"
-                onClick={nextWeek}
-                className="min-h-[44px] min-w-[44px]"
-              >
-                <CaretRight weight="bold" className="h-4 w-4" />
-              </PelicanButton>
+              <IconTooltip label="Next week" side="bottom">
+                <PelicanButton
+                  variant="ghost"
+                  size="sm"
+                  onClick={nextWeek}
+                  className="min-h-[44px] min-w-[44px]"
+                >
+                  <CaretRight weight="bold" className="h-4 w-4" />
+                </PelicanButton>
+              </IconTooltip>
               {weekOffset !== 0 && (
                 <PelicanButton
                   variant="secondary"
@@ -279,15 +284,17 @@ What are the key things to watch? Any whisper numbers or sentiment shifts? How h
               )}
             </div>
 
-            <PelicanButton
-              variant="ghost"
-              size="sm"
-              onClick={() => refetch()}
-              disabled={isLoading}
-              className="min-h-[44px] min-w-[44px]"
-            >
-              <ArrowsClockwise className={cn("h-4 w-4", isLoading && "animate-spin")} />
-            </PelicanButton>
+            <IconTooltip label="Refresh" side="bottom">
+              <PelicanButton
+                variant="ghost"
+                size="sm"
+                onClick={() => refetch()}
+                disabled={isLoading}
+                className="min-h-[44px] min-w-[44px]"
+              >
+                <ArrowsClockwise className={cn("h-4 w-4", isLoading && "animate-spin")} />
+              </PelicanButton>
+            </IconTooltip>
           </div>
         }
       />

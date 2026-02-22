@@ -2,6 +2,7 @@
 
 import { Card } from "@/components/ui/card"
 import { TrendUp, TrendDown, Pulse, Star, CaretDown, CaretUp, CaretRight, GraduationCap, X, Plus, ChartLineUp, ChatCircle, Briefcase, Trash, MagnifyingGlass } from "@phosphor-icons/react"
+import { IconTooltip } from "@/components/ui/icon-tooltip"
 import { cn, normalizeTicker } from "@/lib/utils"
 import { useState, useRef } from "react"
 import type { Trade } from "@/hooks/use-trades"
@@ -423,23 +424,25 @@ export function TradingContextPanel({
           })}
         </div>
         <div className="flex items-center gap-0.5 px-1.5">
-          <button
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            className="text-muted-foreground hover:text-foreground transition-colors duration-150 p-0.5"
-            title={isCollapsed ? "Expand sections" : "Collapse sections"}
-          >
-            {isCollapsed ? <CaretUp size={14} weight="regular" /> : <CaretDown size={14} weight="regular" />}
-          </button>
-          {onToggleCollapse && (
+          <IconTooltip label={isCollapsed ? "Expand sections" : "Collapse sections"} side="left">
             <button
-              onClick={onToggleCollapse}
+              onClick={() => setIsCollapsed(!isCollapsed)}
               className="text-muted-foreground hover:text-foreground transition-colors duration-150 p-0.5"
-              title="Hide Market Overview"
             >
-              <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
+              {isCollapsed ? <CaretUp size={14} weight="regular" /> : <CaretDown size={14} weight="regular" />}
             </button>
+          </IconTooltip>
+          {onToggleCollapse && (
+            <IconTooltip label="Hide Market Overview" side="left">
+              <button
+                onClick={onToggleCollapse}
+                className="text-muted-foreground hover:text-foreground transition-colors duration-150 p-0.5"
+              >
+                <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </IconTooltip>
           )}
         </div>
       </div>

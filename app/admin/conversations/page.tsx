@@ -3,6 +3,8 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
+import Link from 'next/link'
 import {
   Search,
   MessageSquare,
@@ -12,8 +14,11 @@ import {
   User,
   Bot,
   Filter,
+  ArrowUpRight,
 } from 'lucide-react'
+import { IconTooltip } from '@/components/ui/icon-tooltip'
 import { formatLine } from '@/components/chat/message/format-utils'
+import type { ConvoTag } from '@/lib/admin/classify-conversation'
 
 // =============================================================================
 // TYPES
@@ -26,6 +31,7 @@ interface ConversationRow {
   createdAt: string
   messageCount?: number | null
   metadata?: Record<string, unknown> | null
+  tag?: ConvoTag
 }
 
 interface ConvoMessage {
@@ -62,6 +68,28 @@ function renderFormattedContent(content: string): string {
     .split('\n')
     .map((line) => formatLine(line))
     .join('<br />')
+}
+
+function OwnerBadge({ owner }: { owner: string }) {
+  if (owner === 'team') {
+    return <Badge variant="outline" className="text-[10px] px-1.5 py-0 bg-amber-500/10 text-amber-400 border-amber-500/20">TEAM</Badge>
+  }
+  return <Badge variant="outline" className="text-[10px] px-1.5 py-0 bg-blue-500/10 text-blue-400 border-blue-500/20">USER</Badge>
+}
+
+function TypeBadge({ classification, source }: { classification: string; source?: string }) {
+  switch (classification) {
+    case 'action':
+      return (
+        <Badge variant="outline" className="text-[10px] px-1.5 py-0 bg-purple-500/10 text-purple-400 border-purple-500/20">
+          {source || 'ACTION'}
+        </Badge>
+      )
+    case 'brief':
+      return <Badge variant="outline" className="text-[10px] px-1.5 py-0 bg-orange-500/10 text-orange-400 border-orange-500/20">BRIEF</Badge>
+    default:
+      return <Badge variant="outline" className="text-[10px] px-1.5 py-0 bg-emerald-500/10 text-emerald-400 border-emerald-500/20">ORGANIC</Badge>
+  }
 }
 
 // =============================================================================
@@ -134,6 +162,8 @@ function MessageRow({ msg }: { msg: ConvoMessage }) {
 
 type SortOption = 'newest' | 'oldest' | 'most_messages'
 type PeriodOption = 'all' | 'today' | '7d' | '30d'
+type OwnerOption = '' | 'user' | 'team'
+type TypeOption = '' | 'organic' | 'action' | 'brief'
 
 export default function AdminConversationsPage() {
   // Data
@@ -149,6 +179,8 @@ export default function AdminConversationsPage() {
   const [debouncedEmail, setDebouncedEmail] = useState('')
   const [sort, setSort] = useState<SortOption>('newest')
   const [period, setPeriod] = useState<PeriodOption>('all')
+  const [ownerFilter, setOwnerFilter] = useState<OwnerOption>('user')
+  const [typeFilter, setTypeFilter] = useState<TypeOption>('')
 
   // Expansion
   const [expandedId, setExpandedId] = useState<string | null>(null)
@@ -191,6 +223,8 @@ export default function AdminConversationsPage() {
         if (cursor) params.set('cursor', cursor)
         if (debouncedSearch) params.set('content', debouncedSearch)
         if (debouncedEmail) params.set('email', debouncedEmail)
+        if (ownerFilter) params.set('owner', ownerFilter)
+        if (typeFilter) params.set('type', typeFilter)
 
         const res = await fetch(`/api/admin/conversations?${params}`)
         if (!res.ok) throw new Error('Failed to fetch')
@@ -211,7 +245,7 @@ export default function AdminConversationsPage() {
         setLoadingMore(false)
       }
     },
-    [debouncedSearch, debouncedEmail]
+    [debouncedSearch, debouncedEmail, ownerFilter, typeFilter]
   )
 
   // Initial load + refetch on filter changes
@@ -319,6 +353,8 @@ export default function AdminConversationsPage() {
     [messagesCache, loadingMoreMessages, fetchMessages]
   )
 
+  const isFiltered = !!(debouncedSearch || debouncedEmail || period !== 'all' || ownerFilter || typeFilter)
+
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold">Conversations</h1>
@@ -348,6 +384,29 @@ export default function AdminConversationsPage() {
                 className="pl-8 h-9"
               />
             </div>
+
+            {/* Owner filter */}
+            <select
+              value={ownerFilter}
+              onChange={(e) => setOwnerFilter(e.target.value as OwnerOption)}
+              className="h-9 text-sm rounded-md border border-border bg-background text-foreground px-3 focus:outline-none focus:ring-1 focus:ring-primary"
+            >
+              <option value="">All Users</option>
+              <option value="user">Real Users Only</option>
+              <option value="team">Team Only</option>
+            </select>
+
+            {/* Type filter */}
+            <select
+              value={typeFilter}
+              onChange={(e) => setTypeFilter(e.target.value as TypeOption)}
+              className="h-9 text-sm rounded-md border border-border bg-background text-foreground px-3 focus:outline-none focus:ring-1 focus:ring-primary"
+            >
+              <option value="">All Types</option>
+              <option value="organic">Organic</option>
+              <option value="action">Actions</option>
+              <option value="brief">Briefs</option>
+            </select>
 
             {/* Period */}
             <select
@@ -383,7 +442,7 @@ export default function AdminConversationsPage() {
               <MessageSquare className="size-4" />
               {loading ? 'Loading...' : `${displayConversations.length} conversations`}
             </CardTitle>
-            {(debouncedSearch || debouncedEmail || period !== 'all') && (
+            {isFiltered && (
               <div className="flex items-center gap-1 text-xs text-muted-foreground">
                 <Filter className="size-3" />
                 Filtered
@@ -408,7 +467,7 @@ export default function AdminConversationsPage() {
             <div className="text-center py-8">
               <MessageSquare className="size-8 mx-auto text-muted-foreground/50 mb-2" />
               <p className="text-sm text-muted-foreground">
-                {debouncedSearch || debouncedEmail
+                {isFiltered
                   ? 'No conversations match your filters'
                   : 'No conversations yet'}
               </p>
@@ -425,39 +484,60 @@ export default function AdminConversationsPage() {
                 return (
                   <div key={conv.id} className="py-1">
                     {/* Row */}
-                    <button
-                      onClick={() => handleToggle(conv.id)}
-                      className="flex items-center gap-3 w-full text-left p-3 rounded-md hover:bg-muted/50 transition-colors"
-                    >
-                      <MessageSquare className="size-4 text-muted-foreground shrink-0" />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium truncate">
-                          {conv.title || 'Untitled conversation'}
-                        </p>
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground mt-0.5">
-                          <span className="truncate">{conv.userName || 'Unknown user'}</span>
-                          {conv.messageCount != null && (
-                            <>
-                              <span>&middot;</span>
-                              <span className="font-mono tabular-nums shrink-0">
-                                {conv.messageCount} msgs
-                              </span>
-                            </>
-                          )}
-                          <span>&middot;</span>
-                          <span className="font-mono tabular-nums shrink-0">
-                            {timeAgo(conv.createdAt)}
-                          </span>
+                    <div className="flex items-center gap-3 w-full p-3 rounded-md hover:bg-muted/50 transition-colors">
+                      <button
+                        onClick={() => handleToggle(conv.id)}
+                        className="flex items-center gap-3 flex-1 min-w-0 text-left"
+                      >
+                        <MessageSquare className="size-4 text-muted-foreground shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <p className="text-sm font-medium truncate">
+                              {conv.title || 'Untitled conversation'}
+                            </p>
+                            {conv.tag && (
+                              <div className="flex items-center gap-1 shrink-0">
+                                <OwnerBadge owner={conv.tag.owner} />
+                                <TypeBadge classification={conv.tag.classification} source={conv.tag.source} />
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground mt-0.5">
+                            <span className="truncate">{conv.userName || 'Unknown user'}</span>
+                            {conv.messageCount != null && (
+                              <>
+                                <span>&middot;</span>
+                                <span className="font-mono tabular-nums shrink-0">
+                                  {conv.messageCount} msgs
+                                </span>
+                              </>
+                            )}
+                            <span>&middot;</span>
+                            <span className="font-mono tabular-nums shrink-0">
+                              {timeAgo(conv.createdAt)}
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                      <div className="shrink-0">
-                        {isExpanded ? (
-                          <ChevronUp className="size-4 text-muted-foreground" />
-                        ) : (
-                          <ChevronDown className="size-4 text-muted-foreground" />
-                        )}
-                      </div>
-                    </button>
+                        <div className="shrink-0">
+                          {isExpanded ? (
+                            <ChevronUp className="size-4 text-muted-foreground" />
+                          ) : (
+                            <ChevronDown className="size-4 text-muted-foreground" />
+                          )}
+                        </div>
+                      </button>
+
+                      {/* Open Full link */}
+                      <IconTooltip label="Open full view">
+                        <Link
+                          href={`/admin/conversations/${conv.id}`}
+                          className="shrink-0 p-1.5 rounded-md hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <ArrowUpRight className="size-4" />
+                        </Link>
+                      </IconTooltip>
+                    </div>
 
                     {/* Expanded messages */}
                     {isExpanded && (
@@ -495,6 +575,13 @@ export default function AdminConversationsPage() {
                                   </span>
                                 </>
                               )}
+                              <span>&middot;</span>
+                              <Link
+                                href={`/admin/conversations/${conv.id}`}
+                                className="text-blue-400 hover:text-blue-300 transition-colors"
+                              >
+                                Open full view &rarr;
+                              </Link>
                             </div>
 
                             <div className="max-h-[500px] overflow-y-auto">

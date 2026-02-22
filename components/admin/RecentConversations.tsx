@@ -24,6 +24,7 @@ import {
 import { formatLine } from '@/components/chat/message/format-utils'
 import { getSourceLabel, getConversationClass, isActionSource, type MessageSource, type ConversationSourceMetadata, type ConversationClass } from '@/lib/chat/message-source'
 import { cn } from '@/lib/utils'
+import { IconTooltip } from '@/components/ui/icon-tooltip'
 
 // =============================================================================
 // TYPES
@@ -219,17 +220,18 @@ function CopyEmailButton({ email }: { email: string }) {
   }
 
   return (
-    <button
-      onClick={handleCopy}
-      className="ml-1 text-muted-foreground/40 hover:text-blue-400 transition-colors inline-flex items-center"
-      title="Copy email"
-    >
-      {copied ? (
-        <Check className="w-3 h-3 text-green-400" />
-      ) : (
-        <Copy className="w-3 h-3" />
-      )}
-    </button>
+    <IconTooltip label="Copy email">
+      <button
+        onClick={handleCopy}
+        className="ml-1 text-muted-foreground/40 hover:text-blue-400 transition-colors inline-flex items-center"
+      >
+        {copied ? (
+          <Check className="w-3 h-3 text-green-400" />
+        ) : (
+          <Copy className="w-3 h-3" />
+        )}
+      </button>
+    </IconTooltip>
   )
 }
 
@@ -791,16 +793,17 @@ export function RecentConversations({
                         </div>
                       </button>
                       <div className="flex items-center gap-1 shrink-0 mt-0.5">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            setModalConv(conv)
-                          }}
-                          className="p-1 rounded text-muted-foreground/50 hover:text-blue-400 transition-colors"
-                          title="Open in modal"
-                        >
-                          <Maximize2 className="size-3.5" />
-                        </button>
+                        <IconTooltip label="Open in modal">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              setModalConv(conv)
+                            }}
+                            className="p-1 rounded text-muted-foreground/50 hover:text-blue-400 transition-colors"
+                          >
+                            <Maximize2 className="size-3.5" />
+                          </button>
+                        </IconTooltip>
                         <button
                           onClick={() => handleToggle(conv.id)}
                           className="p-1 rounded text-muted-foreground/50 hover:text-foreground transition-colors"

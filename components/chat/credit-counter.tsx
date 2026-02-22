@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react'
 import { Lightning } from '@phosphor-icons/react'
 import Link from 'next/link'
 import { useCreditsContext } from '@/providers/credits-provider'
+import { IconTooltip } from '@/components/ui/icon-tooltip'
 
 export function ChatCreditCounter() {
   const { credits, loading, isFounder, isTrial } = useCreditsContext()
@@ -74,7 +75,7 @@ export function ChatCreditCounter() {
     ? 'text-amber-400'
     : 'text-muted-foreground'
 
-  const planLabel = credits.plan === 'base' ? 'Base' : credits.plan === 'pro' ? 'Pro' : credits.plan === 'power' ? 'Power' : credits.plan
+  const planLabel = credits.plan === 'starter' ? 'Starter' : credits.plan === 'pro' ? 'Pro' : credits.plan === 'power' ? 'Power' : credits.plan.charAt(0).toUpperCase() + credits.plan.slice(1)
 
   const resetDate = credits.billingCycleStart
     ? new Date(new Date(credits.billingCycleStart).getTime() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
@@ -86,15 +87,16 @@ export function ChatCreditCounter() {
 
   return (
     <div className="relative">
+      <IconTooltip label="Credit balance" side="bottom">
       <button
         ref={triggerRef}
         onClick={() => setShowPopover(!showPopover)}
         className={`flex items-center gap-1.5 px-2 py-1 rounded-md transition-colors hover:bg-muted/50 ${colorClass}`}
-        title="Credit balance"
       >
         <Lightning size={14} weight="fill" />
         <span className="text-xs font-medium font-mono tabular-nums">{balance.toLocaleString()}</span>
       </button>
+      </IconTooltip>
 
       {showPopover && (
         <div

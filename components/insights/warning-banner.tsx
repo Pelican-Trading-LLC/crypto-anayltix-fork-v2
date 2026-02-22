@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Warning, ShieldWarning, CaretDown, CaretUp, X } from '@phosphor-icons/react'
 import { PelicanButton } from '@/components/ui/pelican'
 import { cn } from '@/lib/utils'
+import { IconTooltip } from '@/components/ui/icon-tooltip'
 
 // ============================================================================
 // Types
@@ -83,13 +84,15 @@ function WarningRow({
       >
         {warning.action}
       </PelicanButton>
-      <button
-        onClick={onDismiss}
-        className="shrink-0 p-1 rounded-md text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:bg-white/5 transition-colors duration-150"
-        aria-label="Dismiss warning"
-      >
-        <X size={14} weight="regular" />
-      </button>
+      <IconTooltip label="Dismiss warning" side="bottom">
+        <button
+          onClick={onDismiss}
+          className="shrink-0 p-1 rounded-md text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:bg-white/5 transition-colors duration-150"
+          aria-label="Dismiss warning"
+        >
+          <X size={14} weight="regular" />
+        </button>
+      </IconTooltip>
     </div>
   )
 }

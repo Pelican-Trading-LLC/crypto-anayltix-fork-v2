@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { X, FileText, FileSpreadsheet, ImageIcon, File, RotateCcw, AlertCircle } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { IconTooltip } from "@/components/ui/icon-tooltip"
 
 interface AttachmentChipProps {
   name: string
@@ -75,30 +76,33 @@ export function AttachmentChip({ name, type, onRemove, onClick, isError, onRetry
           Upload failed
         </span>
         {onRetry && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onRetry}
-            className="h-6 w-6 min-h-[44px] min-w-[44px] p-0 ml-1 hover:bg-red-100 dark:hover:bg-red-900/50"
-            title="Retry upload"
-          >
-            <RotateCcw className="h-4 w-4" />
-            <span className="sr-only">Retry upload</span>
-          </Button>
+          <IconTooltip label="Retry upload" side="top">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onRetry}
+              className="h-6 w-6 min-h-[44px] min-w-[44px] p-0 ml-1 hover:bg-red-100 dark:hover:bg-red-900/50"
+            >
+              <RotateCcw className="h-4 w-4" />
+              <span className="sr-only">Retry upload</span>
+            </Button>
+          </IconTooltip>
         )}
         {onRemove && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={(e) => {
-              e.stopPropagation()
-              onRemove()
-            }}
-            className="h-6 w-6 min-h-[44px] min-w-[44px] p-0 ml-1 hover:bg-red-100 dark:hover:bg-red-900/50"
-          >
-            <X className="h-4 w-4" />
-            <span className="sr-only">Remove attachment</span>
-          </Button>
+          <IconTooltip label="Remove attachment" side="top">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={(e) => {
+                e.stopPropagation()
+                onRemove()
+              }}
+              className="h-6 w-6 min-h-[44px] min-w-[44px] p-0 ml-1 hover:bg-red-100 dark:hover:bg-red-900/50"
+            >
+              <X className="h-4 w-4" />
+              <span className="sr-only">Remove attachment</span>
+            </Button>
+          </IconTooltip>
         )}
       </Badge>
     )
@@ -122,18 +126,20 @@ export function AttachmentChip({ name, type, onRemove, onClick, isError, onRetry
       </span>
       <span className="text-[10px] font-semibold opacity-70 ml-1">{fileTypeLabel}</span>
       {onRemove && (
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={(e) => {
-            e.stopPropagation()
-            onRemove()
-          }}
-          className="h-6 w-6 min-h-[44px] min-w-[44px] p-0 ml-1 hover:bg-blue-100 dark:hover:bg-blue-900/50"
-        >
-          <X className="h-4 w-4" />
-          <span className="sr-only">Remove attachment</span>
-        </Button>
+        <IconTooltip label="Remove attachment" side="top">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={(e) => {
+              e.stopPropagation()
+              onRemove()
+            }}
+            className="h-6 w-6 min-h-[44px] min-w-[44px] p-0 ml-1 hover:bg-blue-100 dark:hover:bg-blue-900/50"
+          >
+            <X className="h-4 w-4" />
+            <span className="sr-only">Remove attachment</span>
+          </Button>
+        </IconTooltip>
       )}
     </Badge>
   )

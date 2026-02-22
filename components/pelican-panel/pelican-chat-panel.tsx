@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { X, PaperPlaneRight, SpinnerGap, ArrowsClockwise, ArrowsOut } from '@phosphor-icons/react'
 import { Button } from '@/components/ui/button'
+import { IconTooltip } from '@/components/ui/icon-tooltip'
 import { cn } from '@/lib/utils'
 import { motion } from 'framer-motion'
 import type { Message } from '@/lib/chat-utils'
@@ -210,23 +211,26 @@ function PelicanChatPanelInternal({
             </div>
           </div>
           <div className="flex items-center gap-1">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleExpandToFullChat}
-              className="h-9 w-9"
-              title="Expand to full chat"
-            >
-              <ArrowsOut className="h-4 w-4" weight="regular" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={onClose}
-              className="h-9 w-9"
-            >
-              <X className="h-5 w-5" weight="bold" />
-            </Button>
+            <IconTooltip label="Expand to full chat" side="bottom">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleExpandToFullChat}
+                className="h-9 w-9"
+              >
+                <ArrowsOut className="h-4 w-4" weight="regular" />
+              </Button>
+            </IconTooltip>
+            <IconTooltip label="Close panel" side="bottom">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onClose}
+                className="h-9 w-9"
+              >
+                <X className="h-5 w-5" weight="bold" />
+              </Button>
+            </IconTooltip>
           </div>
         </div>
 
@@ -261,18 +265,20 @@ function PelicanChatPanelInternal({
               className="flex-1 bg-white/[0.06] border border-[var(--border-subtle)] rounded-lg px-3 py-2 text-sm leading-relaxed text-[var(--text-primary)] resize-none focus:outline-none focus:ring-1 focus:ring-[var(--accent-primary)] disabled:opacity-50 min-h-[40px] max-h-[120px]"
               rows={1}
             />
-            <Button
-              onClick={handleSend}
-              disabled={!inputValue.trim() || isStreaming}
-              size="icon"
-              className="h-10 w-10 bg-[var(--accent-primary)] hover:bg-[var(--accent-hover)] disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
-            >
-              {isStreaming ? (
-                <SpinnerGap className="h-4 w-4 animate-spin" weight="bold" />
-              ) : (
-                <PaperPlaneRight className="h-4 w-4" weight="fill" />
-              )}
-            </Button>
+            <IconTooltip label={isStreaming ? "Generating..." : "Send message"} side="top" kbd={isStreaming ? undefined : "↵"}>
+              <Button
+                onClick={handleSend}
+                disabled={!inputValue.trim() || isStreaming}
+                size="icon"
+                className="h-10 w-10 bg-[var(--accent-primary)] hover:bg-[var(--accent-hover)] disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
+              >
+                {isStreaming ? (
+                  <SpinnerGap className="h-4 w-4 animate-spin" weight="bold" />
+                ) : (
+                  <PaperPlaneRight className="h-4 w-4" weight="fill" />
+                )}
+              </Button>
+            </IconTooltip>
           </div>
         </div>
       </div>
@@ -311,23 +317,26 @@ function PelicanChatPanelInternal({
             </div>
           </div>
           <div className="flex items-center gap-1">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleExpandToFullChat}
-              className="h-8 w-8 hover:bg-white/[0.06]"
-              title="Expand to full chat"
-            >
-              <ArrowsOut className="h-3.5 w-3.5" weight="regular" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={onClose}
-              className="h-8 w-8 hover:bg-white/[0.06]"
-            >
-              <X className="h-4 w-4" weight="bold" />
-            </Button>
+            <IconTooltip label="Expand to full chat" side="bottom">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleExpandToFullChat}
+                className="h-8 w-8 hover:bg-white/[0.06]"
+              >
+                <ArrowsOut className="h-3.5 w-3.5" weight="regular" />
+              </Button>
+            </IconTooltip>
+            <IconTooltip label="Close panel" side="bottom">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onClose}
+                className="h-8 w-8 hover:bg-white/[0.06]"
+              >
+                <X className="h-4 w-4" weight="bold" />
+              </Button>
+            </IconTooltip>
           </div>
         </div>
 
@@ -391,18 +400,20 @@ function PelicanChatPanelInternal({
               className="flex-1 bg-white/[0.06] border border-[var(--border-subtle)] rounded-lg px-3 py-2 text-sm leading-relaxed text-[var(--text-primary)] resize-none focus:outline-none focus:ring-1 focus:ring-[var(--accent-primary)] disabled:opacity-50 min-h-[40px] max-h-[120px]"
               rows={1}
             />
-            <Button
-              onClick={handleSend}
-              disabled={!inputValue.trim() || isStreaming}
-              size="icon"
-              className="h-10 w-10 bg-[var(--accent-primary)] hover:bg-[var(--accent-hover)] disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
-            >
-              {isStreaming ? (
-                <SpinnerGap className="h-4 w-4 animate-spin" weight="bold" />
-              ) : (
-                <PaperPlaneRight className="h-4 w-4" weight="fill" />
-              )}
-            </Button>
+            <IconTooltip label={isStreaming ? "Generating..." : "Send message"} side="top" kbd={isStreaming ? undefined : "↵"}>
+              <Button
+                onClick={handleSend}
+                disabled={!inputValue.trim() || isStreaming}
+                size="icon"
+                className="h-10 w-10 bg-[var(--accent-primary)] hover:bg-[var(--accent-hover)] disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
+              >
+                {isStreaming ? (
+                  <SpinnerGap className="h-4 w-4 animate-spin" weight="bold" />
+                ) : (
+                  <PaperPlaneRight className="h-4 w-4" weight="fill" />
+                )}
+              </Button>
+            </IconTooltip>
           </div>
         </div>
       </motion.div>

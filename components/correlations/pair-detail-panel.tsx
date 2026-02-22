@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { X, TrendUp, TrendDown, Minus, CalendarBlank, ChatCircleDots, Briefcase } from '@phosphor-icons/react'
+import { IconTooltip } from '@/components/ui/icon-tooltip'
 import { RollingChart } from './rolling-chart'
 import { findSignalForPair } from '@/lib/correlation-signals'
 import { useCorrelationPair } from '@/hooks/use-correlations'
@@ -115,13 +116,15 @@ export function PairDetailPanel({
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
-          <button
-            onClick={onClose}
-            className="p-1 rounded transition-colors"
-            style={{ color: 'var(--text-muted)' }}
-          >
-            <X weight="bold" className="w-4 h-4" />
-          </button>
+          <IconTooltip label="Close" side="bottom">
+            <button
+              onClick={onClose}
+              className="p-1 rounded transition-colors"
+              style={{ color: 'var(--text-muted)' }}
+            >
+              <X weight="bold" className="w-4 h-4" />
+            </button>
+          </IconTooltip>
           <h3 className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>
             {nameA} / {nameB}
           </h3>
