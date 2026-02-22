@@ -603,6 +603,7 @@ export default function JournalPage() {
                 trade={selectedTrade}
                 onClose={handleCloseDetailPanel}
                 onCloseTrade={handleOpenCloseTrade}
+                onReplay={handleReplayTrade}
               />
             </motion.div>
           </motion.div>

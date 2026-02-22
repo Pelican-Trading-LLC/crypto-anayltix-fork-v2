@@ -71,6 +71,17 @@ export function TradeDetailPanel({ trade, onClose, onCloseTrade, onReplay }: Tra
           </span>
         </div>
 
+        {/* Replay Trade (closed only) */}
+        {trade.status === 'closed' && onReplay && (
+          <button
+            onClick={() => onReplay(trade)}
+            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-purple-600 hover:bg-purple-500 text-white text-sm font-medium rounded-lg transition-colors active:scale-[0.98]"
+          >
+            <PlayCircle size={16} weight="fill" />
+            Replay Trade
+          </button>
+        )}
+
         {/* P&L (if closed) */}
         {trade.status === 'closed' && trade.pnl_amount !== null && (
           <PelicanCard className={`${
@@ -246,17 +257,6 @@ export function TradeDetailPanel({ trade, onClose, onCloseTrade, onReplay }: Tra
 
       {/* Actions */}
       <div className="flex-shrink-0 p-4 border-t border-[var(--border-subtle)] space-y-2">
-        {/* Replay button for closed trades */}
-        {trade.status === 'closed' && onReplay && (
-          <button
-            onClick={() => onReplay(trade)}
-            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-[var(--accent-muted)] text-[var(--accent-primary)] text-sm font-medium hover:bg-[var(--accent-primary)]/20 transition-colors active:scale-[0.98]"
-          >
-            <PlayCircle size={16} weight="fill" />
-            Replay Trade
-          </button>
-        )}
-
         {/* Close trade button for open trades */}
         {trade.status === 'open' && onCloseTrade && (
           <PelicanButton
