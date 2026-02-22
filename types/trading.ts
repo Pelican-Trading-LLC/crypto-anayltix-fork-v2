@@ -173,6 +173,17 @@ export interface MilestoneProgress {
 }
 
 // ── Playbook (matches DB: playbooks) ──
+// Migration needed for new columns:
+//   ALTER TABLE playbooks ADD COLUMN IF NOT EXISTS market_type text DEFAULT 'all';
+//   ALTER TABLE playbooks ADD COLUMN IF NOT EXISTS instruments text[];
+//   ALTER TABLE playbooks ADD COLUMN IF NOT EXISTS notes text;
+//   ALTER TABLE playbooks ADD COLUMN IF NOT EXISTS ai_summary text;
+//   ALTER TABLE playbooks ADD COLUMN IF NOT EXISTS last_graded_at timestamptz;
+//   ALTER TABLE playbooks ADD COLUMN IF NOT EXISTS display_order integer DEFAULT 0;
+//   ALTER TABLE playbooks ADD COLUMN IF NOT EXISTS profit_factor numeric;
+//   ALTER TABLE playbooks ADD COLUMN IF NOT EXISTS expectancy numeric;
+//   ALTER TABLE playbooks ADD COLUMN IF NOT EXISTS best_trade_pnl numeric;
+//   ALTER TABLE playbooks ADD COLUMN IF NOT EXISTS worst_trade_pnl numeric;
 
 export interface Playbook {
   id: string
@@ -192,6 +203,16 @@ export interface Playbook {
   avg_pnl_percent: number | null
   win_rate: number | null
   is_active: boolean
+  market_type: string          // 'stocks' | 'forex' | 'crypto' | 'futures' | 'all'
+  instruments: string[] | null // specific tickers this playbook applies to
+  notes: string | null
+  ai_summary: string | null    // Pelican's latest analysis
+  last_graded_at: string | null
+  display_order: number
+  profit_factor: number | null
+  expectancy: number | null
+  best_trade_pnl: number | null
+  worst_trade_pnl: number | null
   created_at: string
   updated_at: string
 }

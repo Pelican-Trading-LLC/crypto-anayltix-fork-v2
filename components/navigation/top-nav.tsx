@@ -36,6 +36,7 @@ const NAV_TABS: NavTab[] = [
   { key: 'chat', label: 'Chat', href: '/chat', alwaysShow: true },
   { key: 'positions', label: 'Positions', href: '/positions', alwaysShow: true },
   { key: 'journal', label: 'Journal', href: '/journal', alwaysShow: true },
+  { key: 'playbooks', label: 'Playbooks', href: '/playbooks', alwaysShow: true },
   { key: 'heatmap', label: 'Heatmap', href: '/heatmap', alwaysShow: true },
   { key: 'correlations', label: 'Correlations', href: '/correlations', alwaysShow: true },
   { key: 'earnings', label: 'Earnings', href: '/earnings', markets: ['stocks', 'options'] },
@@ -81,6 +82,7 @@ export function TopNav({ className }: TopNavProps) {
     if (pathname.startsWith('/correlations')) return 'correlations'
     if (pathname.startsWith('/positions')) return 'positions'
     if (pathname.startsWith('/journal')) return 'journal'
+    if (pathname.startsWith('/playbooks')) return 'playbooks'
     if (pathname.startsWith('/earnings')) return 'earnings'
     return 'chat' // Default
   }
