@@ -150,98 +150,101 @@ export function PairDetailPanel({
         </div>
       </div>
 
-      {/* Stats row + period comparison */}
-      <div className="grid grid-cols-1 sm:grid-cols-5 gap-4 mb-4">
-        <div className="sm:col-span-3 grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <div>
-            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Current</p>
-            <p
-              className="text-lg font-mono font-bold tabular-nums"
-              style={{ color: currentData.correlation > 0 ? 'var(--data-positive)' : 'var(--data-negative)' }}
-            >
-              {currentData.correlation > 0 ? '+' : ''}{currentData.correlation.toFixed(3)}
-            </p>
-          </div>
-          <div>
-            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Historical Mean</p>
-            <p className="text-lg font-mono tabular-nums" style={{ color: 'var(--text-primary)' }}>
-              {currentData.historical_mean > 0 ? '+' : ''}{currentData.historical_mean.toFixed(3)}
-            </p>
-          </div>
-          <div>
-            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Z-Score</p>
-            <p
-              className="text-lg font-mono font-bold tabular-nums"
-              style={{ color: Math.abs(currentData.z_score) > 1.5 ? 'var(--data-negative)' : 'var(--text-primary)' }}
-            >
-              {currentData.z_score > 0 ? '+' : ''}{currentData.z_score.toFixed(1)}{beginnerMode ? ' SD' : 'σ'}
-            </p>
-          </div>
-          <div>
-            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Regime</p>
-            <p
-              className="text-sm font-semibold capitalize"
-              style={{ color: regimeColors[currentData.regime] }}
-            >
-              {currentData.regime}
-            </p>
-          </div>
+      {/* Key Metrics — 2x2 grid */}
+      <div className="grid grid-cols-2 gap-3 mb-4">
+        <div className="rounded-lg p-3" style={{ background: 'var(--bg-base)' }}>
+          <p className="text-[10px] uppercase tracking-wider mb-1" style={{ color: 'var(--text-muted)' }}>Current</p>
+          <p
+            className="text-lg font-mono font-bold tabular-nums"
+            style={{ color: currentData.correlation > 0 ? 'var(--data-positive)' : 'var(--data-negative)' }}
+          >
+            {currentData.correlation > 0 ? '+' : ''}{currentData.correlation.toFixed(3)}
+          </p>
         </div>
-
-        {/* Period Comparison Mini-Bars */}
-        <div className="sm:col-span-2">
-          <h4 className="text-xs font-semibold mb-2" style={{ color: 'var(--text-muted)' }}>
-            Period Comparison
-          </h4>
-          <div className="space-y-1.5">
-            {[
-              { label: '30d', data: data30d },
-              { label: '90d', data: data90d },
-              { label: '1y', data: data1y },
-            ].map(({ label, data: d }) => d && (
-              <div key={label} className="flex items-center gap-2">
-                <span
-                  className="text-[10px] font-mono w-6 shrink-0"
-                  style={{ color: activePeriod === d.period ? 'var(--accent-indigo)' : 'var(--text-muted)' }}
-                >
-                  {label}
-                </span>
-                <div className="flex-1 h-3 rounded-sm overflow-hidden relative" style={{ background: 'var(--bg-base)' }}>
-                  <div
-                    className="h-full rounded-sm transition-all duration-300 absolute top-0"
-                    style={{
-                      width: `${Math.abs(d.correlation) * 50}%`,
-                      left: d.correlation >= 0 ? '50%' : `${50 - Math.abs(d.correlation) * 50}%`,
-                      background: d.correlation >= 0 ? 'var(--data-positive)' : 'var(--data-negative)',
-                      opacity: activePeriod === d.period ? 1 : 0.5,
-                    }}
-                  />
-                  {/* Center line */}
-                  <div className="absolute top-0 left-1/2 w-px h-full" style={{ background: 'var(--border-default)' }} />
-                </div>
-                <span
-                  className="text-[10px] font-mono tabular-nums w-10 text-right"
-                  style={{ color: activePeriod === d.period ? 'var(--text-primary)' : 'var(--text-muted)' }}
-                >
-                  {d.correlation > 0 ? '+' : ''}{d.correlation.toFixed(2)}
-                </span>
-              </div>
-            ))}
+        <div className="rounded-lg p-3" style={{ background: 'var(--bg-base)' }}>
+          <p className="text-[10px] uppercase tracking-wider mb-1" style={{ color: 'var(--text-muted)' }}>Historical Mean</p>
+          <p className="text-lg font-mono tabular-nums" style={{ color: 'var(--text-primary)' }}>
+            {currentData.historical_mean > 0 ? '+' : ''}{currentData.historical_mean.toFixed(3)}
+          </p>
+        </div>
+        <div className="rounded-lg p-3" style={{ background: 'var(--bg-base)' }}>
+          <p className="text-[10px] uppercase tracking-wider mb-1" style={{ color: 'var(--text-muted)' }}>Z-Score</p>
+          <p
+            className="text-lg font-mono font-bold tabular-nums"
+            style={{
+              color: Math.abs(currentData.z_score) >= 2.0
+                ? 'var(--data-negative)'
+                : Math.abs(currentData.z_score) >= 1.5
+                  ? 'var(--data-warning)'
+                  : 'var(--text-primary)',
+            }}
+          >
+            {currentData.z_score > 0 ? '+' : ''}{currentData.z_score.toFixed(1)}{beginnerMode ? ' SD' : 'σ'}
+          </p>
+        </div>
+        <div className="rounded-lg p-3" style={{ background: 'var(--bg-base)' }}>
+          <p className="text-[10px] uppercase tracking-wider mb-1" style={{ color: 'var(--text-muted)' }}>Regime</p>
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full shrink-0" style={{ background: regimeColors[currentData.regime] ?? 'var(--text-muted)' }} />
+            <span className="text-sm font-semibold capitalize" style={{ color: 'var(--text-primary)' }}>
+              {currentData.regime}
+            </span>
           </div>
         </div>
       </div>
 
-      {/* Chart + interpretation + actions */}
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
-        <div className="lg:col-span-3">
-          <RollingChart
-            data={currentData.rolling_data}
-            mean={currentData.historical_mean}
-            std={currentData.historical_std}
-          />
+      {/* Period Comparison */}
+      <div className="rounded-lg p-3 mb-4" style={{ background: 'var(--bg-base)' }}>
+        <h4 className="text-[10px] uppercase tracking-wider font-semibold mb-2.5" style={{ color: 'var(--text-muted)' }}>
+          Period Comparison
+        </h4>
+        <div className="space-y-2">
+          {[
+            { label: '30d', data: data30d },
+            { label: '90d', data: data90d },
+            { label: '1y', data: data1y },
+          ].map(({ label, data: d }) => d && (
+            <div key={label} className="flex items-center gap-2">
+              <span
+                className="text-[10px] font-mono w-6 shrink-0 tabular-nums"
+                style={{ color: activePeriod === d.period ? 'var(--accent-indigo)' : 'var(--text-muted)' }}
+              >
+                {label}
+              </span>
+              <div className="flex-1 h-3 rounded-sm overflow-hidden relative" style={{ background: 'var(--bg-elevated)' }}>
+                <div
+                  className="h-full rounded-sm transition-all duration-300 absolute top-0"
+                  style={{
+                    width: `${Math.abs(d.correlation) * 50}%`,
+                    left: d.correlation >= 0 ? '50%' : `${50 - Math.abs(d.correlation) * 50}%`,
+                    background: d.correlation >= 0 ? 'var(--data-positive)' : 'var(--data-negative)',
+                    opacity: activePeriod === d.period ? 1 : 0.5,
+                  }}
+                />
+                <div className="absolute top-0 left-1/2 w-px h-full" style={{ background: 'var(--border-default)' }} />
+              </div>
+              <span
+                className="text-[10px] font-mono tabular-nums w-10 text-right shrink-0"
+                style={{ color: activePeriod === d.period ? 'var(--text-primary)' : 'var(--text-muted)' }}
+              >
+                {d.correlation > 0 ? '+' : ''}{d.correlation.toFixed(2)}
+              </span>
+            </div>
+          ))}
         </div>
+      </div>
 
-        <div className="lg:col-span-2 space-y-3">
+      {/* Chart */}
+      <div className="mb-4">
+        <RollingChart
+          data={currentData.rolling_data}
+          mean={currentData.historical_mean}
+          std={currentData.historical_std}
+        />
+      </div>
+
+      {/* Interpretation + actions */}
+      <div className="space-y-3">
           {signal ? (
             <>
               <div>
@@ -343,7 +346,6 @@ export function PairDetailPanel({
             )}
           </div>
         </div>
-      </div>
     </div>
   )
 }
