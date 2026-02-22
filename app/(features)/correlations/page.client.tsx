@@ -38,15 +38,12 @@ export default function CorrelationsPageClient() {
   // Fetch 90d data for cross-period signal detection when viewing 30d
   const { data: data90d } = useCorrelationMatrix('90d')
 
-  // On mobile (no xl grid), scroll detail panel into view; on desktop it's in the right column
+  // Scroll detail panel into view when a pair is selected
   useEffect(() => {
     if (selectedPair && detailPanelRef.current) {
-      const isDesktop = window.matchMedia('(min-width: 1280px)').matches
-      if (!isDesktop) {
-        setTimeout(() => {
-          detailPanelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-        }, 100)
-      }
+      setTimeout(() => {
+        detailPanelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }, 150)
     }
   }, [selectedPair])
 
@@ -278,29 +275,29 @@ export default function CorrelationsPageClient() {
                     </div>
                   </div>
 
-                  <div className="xl:col-span-1 flex flex-col xl:max-h-[calc(100vh-220px)]">
-                    {selectedPair && (
-                      <div ref={detailPanelRef} className="flex-shrink-0 border-b" style={{ borderColor: 'var(--border-default)' }}>
-                        <PairDetailPanel
-                          assetA={selectedPair.assetA}
-                          assetB={selectedPair.assetB}
-                          assets={data.assets}
-                          beginnerMode={beginnerMode}
-                          onClose={() => setSelectedPair(null)}
-                        />
-                      </div>
-                    )}
-                    <div className="flex-1 min-h-0 overflow-y-auto">
-                      <SignalCards
-                        correlations={data.correlations}
-                        correlations90d={period === '30d' ? data90d?.correlations : undefined}
-                        assets={data.assets}
-                        beginnerMode={beginnerMode}
-                        onSelectPair={handleSelectPair}
-                      />
-                    </div>
+                  <div className="xl:col-span-1 xl:max-h-[calc(100vh-220px)] overflow-y-auto">
+                    <SignalCards
+                      correlations={data.correlations}
+                      correlations90d={period === '30d' ? data90d?.correlations : undefined}
+                      assets={data.assets}
+                      beginnerMode={beginnerMode}
+                      onSelectPair={handleSelectPair}
+                    />
                   </div>
                 </div>
+
+                {/* Detail panel — full width, below the grid */}
+                {selectedPair && (
+                  <div ref={detailPanelRef}>
+                    <PairDetailPanel
+                      assetA={selectedPair.assetA}
+                      assetB={selectedPair.assetB}
+                      assets={data.assets}
+                      beginnerMode={beginnerMode}
+                      onClose={() => setSelectedPair(null)}
+                    />
+                  </div>
+                )}
               </motion.div>
             ) : (
               <motion.div

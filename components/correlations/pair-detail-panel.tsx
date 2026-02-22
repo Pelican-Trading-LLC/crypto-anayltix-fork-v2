@@ -150,8 +150,8 @@ export function PairDetailPanel({
         </div>
       </div>
 
-      {/* Key Metrics — 2x2 grid */}
-      <div className="grid grid-cols-2 gap-3 mb-4">
+      {/* Key Metrics */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
         <div className="rounded-lg p-3" style={{ background: 'var(--bg-base)' }}>
           <p className="text-[10px] uppercase tracking-wider mb-1" style={{ color: 'var(--text-muted)' }}>Current</p>
           <p
@@ -234,17 +234,17 @@ export function PairDetailPanel({
         </div>
       </div>
 
-      {/* Chart */}
-      <div className="mb-4">
-        <RollingChart
-          data={currentData.rolling_data}
-          mean={currentData.historical_mean}
-          std={currentData.historical_std}
-        />
-      </div>
+      {/* Chart + interpretation + actions */}
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+        <div className="lg:col-span-3">
+          <RollingChart
+            data={currentData.rolling_data}
+            mean={currentData.historical_mean}
+            std={currentData.historical_std}
+          />
+        </div>
 
-      {/* Interpretation + actions */}
-      <div className="space-y-3">
+        <div className="lg:col-span-2 space-y-3">
           {signal ? (
             <>
               <div>
@@ -346,6 +346,7 @@ export function PairDetailPanel({
             )}
           </div>
         </div>
+      </div>
     </div>
   )
 }
