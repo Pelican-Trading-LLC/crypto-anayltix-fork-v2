@@ -333,6 +333,7 @@ export default function PositionsPage() {
             plan_rules_followed: null,
             plan_rules_violated: null,
             plan_checklist_completed: null,
+            playbook_id: closingTrade.playbook_id ?? null,
             is_paper: closingTrade.is_paper,
             user_id: '',
             created_at: '',

@@ -7,7 +7,8 @@ import { TradeFormData, useTrades } from "@/hooks/use-trades"
 import { useTradingPlan } from "@/hooks/use-trading-plan"
 import { checkTradeAgainstPlan, deriveComplianceData } from "@/lib/trading/plan-check"
 import { PelicanButton } from "@/components/ui/pelican"
-import { Warning, Shield, Check, Brain } from "@phosphor-icons/react"
+import { Warning, Shield, Check, Brain, CheckSquare } from "@phosphor-icons/react"
+import { usePlaybooks } from "@/hooks/use-playbooks"
 import { useRiskBudget } from "@/hooks/use-risk-budget"
 import { useAntiTradeCheck } from "@/hooks/use-anti-trade-check"
 import { cn } from "@/lib/utils"
@@ -31,6 +32,29 @@ export function LogTradeModal({ open, onOpenChange, onSubmit, initialTicker = ""
   const { plan } = useTradingPlan()
   const { trades: existingTrades } = useTrades()
   const { checkTrade, isReady: insightsReady } = useAntiTradeCheck()
+
+  // Playbook integration
+  const { playbooks } = usePlaybooks()
+  const [playbookId, setPlaybookId] = useState<string | null>(null)
+  const [playbookChecklistState, setPlaybookChecklistState] = useState<Record<number, boolean>>({})
+
+  const selectedPlaybook = useMemo(
+    () => playbooks.find(pb => pb.id === playbookId) ?? null,
+    [playbooks, playbookId]
+  )
+
+  // Reset playbook checklist when playbook changes
+  useEffect(() => {
+    setPlaybookChecklistState({})
+  }, [playbookId])
+
+  const togglePlaybookChecklistItem = (index: number) => {
+    setPlaybookChecklistState(prev => ({ ...prev, [index]: !prev[index] }))
+  }
+
+  const allPlaybookChecked = selectedPlaybook?.checklist?.length
+    ? selectedPlaybook.checklist.every((_, i) => playbookChecklistState[i])
+    : true
 
   // Sync ticker when initialTicker changes (e.g., opened from different action buttons)
   useEffect(() => {
@@ -167,6 +191,24 @@ export function LogTradeModal({ open, onOpenChange, onSubmit, initialTicker = ""
         }
       }
 
+      // Build playbook checklist compliance
+      let playbookChecklistCompleted: Record<string, boolean> | undefined
+      if (selectedPlaybook?.checklist && selectedPlaybook.checklist.length > 0) {
+        playbookChecklistCompleted = {}
+        for (let i = 0; i < selectedPlaybook.checklist.length; i++) {
+          const itemName = selectedPlaybook.checklist[i]
+          if (itemName) {
+            playbookChecklistCompleted[itemName] = playbookChecklistState[i] || false
+          }
+        }
+      }
+
+      // Merge plan checklist with playbook checklist
+      const mergedChecklist = {
+        ...(planComplianceData.plan_checklist_completed || {}),
+        ...(playbookChecklistCompleted || {}),
+      }
+
       await onSubmit({
         ticker: normalizedTicker,
         asset_type: assetType,
@@ -181,7 +223,9 @@ export function LogTradeModal({ open, onOpenChange, onSubmit, initialTicker = ""
         setup_tags: tags.length > 0 ? tags : undefined,
         conviction: parseInt(conviction),
         is_paper: isPaper,
+        playbook_id: playbookId,
         ...planComplianceData,
+        plan_checklist_completed: Object.keys(mergedChecklist).length > 0 ? mergedChecklist : undefined,
       })
 
       // Reset form
@@ -200,6 +244,8 @@ export function LogTradeModal({ open, onOpenChange, onSubmit, initialTicker = ""
       setSetupTags("")
       setConviction("5")
       setIsPaper(false)
+      setPlaybookId(null)
+      setPlaybookChecklistState({})
 
       onOpenChange(false)
     } catch (err) {
@@ -629,6 +675,56 @@ export function LogTradeModal({ open, onOpenChange, onSubmit, initialTicker = ""
               <span>High</span>
             </div>
           </div>
+
+          {/* Playbook Selector */}
+          {playbooks.length > 0 && (
+            <div>
+              <label className={labelClass}>Playbook</label>
+              <select
+                value={playbookId || ''}
+                onChange={(e) => setPlaybookId(e.target.value || null)}
+                className={inputClass}
+              >
+                <option value="">No playbook</option>
+                {playbooks.map(pb => (
+                  <option key={pb.id} value={pb.id}>{pb.name}</option>
+                ))}
+              </select>
+              <p className="text-[11px] text-[var(--text-muted)] mt-1">
+                Tag this trade with a playbook to track setup-specific performance.
+              </p>
+
+              {/* Pre-Trade Checklist from Playbook */}
+              {selectedPlaybook?.checklist && selectedPlaybook.checklist.length > 0 && (
+                <div className="p-3 rounded-lg bg-[var(--accent-muted)] border border-[var(--accent-primary)]/20 mt-3">
+                  <h4 className="text-xs font-medium text-[var(--accent-primary)] mb-2 flex items-center gap-1.5">
+                    <CheckSquare size={14} weight="bold" />
+                    Pre-Trade Checklist: {selectedPlaybook.name}
+                  </h4>
+                  <div className="space-y-1.5">
+                    {selectedPlaybook.checklist.map((item, i) => (
+                      <label key={i} className="flex items-center gap-2 text-sm text-[var(--text-secondary)] cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={playbookChecklistState[i] || false}
+                          onChange={() => togglePlaybookChecklistItem(i)}
+                          className="w-3.5 h-3.5 rounded border-[var(--border-default)] text-[var(--accent-primary)] focus:ring-[var(--accent-primary)] focus:ring-offset-0 bg-[var(--bg-surface)]"
+                        />
+                        <span className={`text-xs ${playbookChecklistState[i] ? 'text-[var(--text-muted)] line-through' : 'text-[var(--text-primary)]'}`}>
+                          {item}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                  {!allPlaybookChecked && (
+                    <p className="text-[10px] text-[var(--data-warning)] mt-2">
+                      Not all checklist items are checked.
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Paper Trading Toggle */}
           <div className="flex items-center gap-3 p-3 rounded-lg bg-[var(--bg-surface)] border border-[var(--border-subtle)]">

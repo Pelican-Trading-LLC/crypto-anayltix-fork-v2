@@ -29,6 +29,7 @@ export interface Trade {
   plan_rules_followed: string[] | null
   plan_rules_violated: string[] | null
   plan_checklist_completed: Record<string, boolean> | null
+  playbook_id: string | null
   is_paper: boolean
   created_at: string
   updated_at: string
@@ -48,6 +49,7 @@ export interface TradeFormData {
   setup_tags?: string[]
   conviction?: number | null
   is_paper?: boolean
+  playbook_id?: string | null
   plan_rules_followed?: string[]
   plan_rules_violated?: string[]
   plan_checklist_completed?: Record<string, boolean>
@@ -141,6 +143,7 @@ export function useTrades({
         setup_tags: tradeData.setup_tags || [],
         conviction: tradeData.conviction,
         is_paper: tradeData.is_paper ?? false,
+        playbook_id: tradeData.playbook_id || null,
         plan_rules_followed: tradeData.plan_rules_followed || [],
         plan_rules_violated: tradeData.plan_rules_violated || [],
         plan_checklist_completed: tradeData.plan_checklist_completed || {},
