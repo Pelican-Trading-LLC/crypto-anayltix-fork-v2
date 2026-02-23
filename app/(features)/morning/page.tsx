@@ -24,6 +24,7 @@ import {
   ArrowsClockwise,
   Lightning,
   Briefcase,
+  ChatCircleDots,
 } from "@phosphor-icons/react"
 import { IconTooltip } from "@/components/ui/icon-tooltip"
 import { getMarketStatus } from "@/hooks/use-market-data"
@@ -755,14 +756,26 @@ Keep it dense, actionable, and personalized to MY positions and watchlist. Use m
               )}
             </div>
             {briefContent && !briefLoading && (
-              <PelicanButton
-                variant="ghost"
-                size="sm"
-                onClick={handleGenerateBrief}
-              >
-                <ArrowsClockwise className="h-3 w-3" weight="regular" />
-                Regenerate
-              </PelicanButton>
+              <div className="flex items-center gap-2">
+                <PelicanButton
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    openWithPrompt(null, `Let's discuss today's morning brief. Based on my current positions and the market conditions outlined in the brief, what are the most important things I should focus on today? What actionable steps should I take?`, 'morning', 'brief_action')
+                  }}
+                >
+                  <ChatCircleDots className="h-3 w-3" weight="regular" />
+                  Discuss
+                </PelicanButton>
+                <PelicanButton
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleGenerateBrief}
+                >
+                  <ArrowsClockwise className="h-3 w-3" weight="regular" />
+                  Regenerate
+                </PelicanButton>
+              </div>
             )}
           </div>
 
