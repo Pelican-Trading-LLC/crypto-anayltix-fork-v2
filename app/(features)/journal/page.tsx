@@ -13,6 +13,7 @@ import { usePlanCompliance } from "@/hooks/use-plan-compliance"
 import { usePelicanPanelContext } from "@/providers/pelican-panel-provider"
 import { useLiveQuotes } from "@/hooks/use-live-quotes"
 import { LogTradeModal } from "@/components/journal/log-trade-modal"
+import { JournalEmptyState } from "@/components/journal/journal-empty-state"
 import { CloseTradeModal } from "@/components/journal/close-trade-modal"
 import { TradesTable } from "@/components/journal/trades-table"
 import { TradeDetailPanel } from "@/components/journal/trade-detail-panel"
@@ -432,15 +433,22 @@ export default function JournalPage() {
                 animate="visible"
                 exit="exit"
               >
-                <TradesTable
-                  trades={filteredTrades}
-                  onSelectTrade={handleSelectTrade}
-                  onScanTrade={handleScanTrade}
-                  selectedTradeId={selectedTrade?.id}
-                  onAskPelican={handleAskPelican}
-                  onReplayTrade={handleReplayTrade}
-                  onEditTrade={handleEditTrade}
-                />
+                {!tradesLoading && trades.length === 0 ? (
+                  <JournalEmptyState
+                    onLogTrade={() => setShowLogTradeModal(true)}
+                    onAskPelican={() => openWithPrompt(null, 'Suggest a trade idea for me. Give me: ticker, direction, entry, stop, target, R:R, thesis.', 'journal', 'journal_review')}
+                  />
+                ) : (
+                  <TradesTable
+                    trades={filteredTrades}
+                    onSelectTrade={handleSelectTrade}
+                    onScanTrade={handleScanTrade}
+                    selectedTradeId={selectedTrade?.id}
+                    onAskPelican={handleAskPelican}
+                    onReplayTrade={handleReplayTrade}
+                    onEditTrade={handleEditTrade}
+                  />
+                )}
               </motion.div>
             )}
 

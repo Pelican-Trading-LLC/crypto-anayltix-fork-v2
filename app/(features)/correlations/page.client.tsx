@@ -1,8 +1,9 @@
 "use client"
 
 import { useState, useRef, useEffect, useCallback } from 'react'
+import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowsClockwise, Warning, TrendUp, TrendDown, Minus, Shuffle, ChartLineUp, Briefcase } from '@phosphor-icons/react'
+import { ArrowsClockwise, Warning, TrendUp, TrendDown, Minus, Shuffle, ChartLineUp, Briefcase, Graph, ChatCircleDots, Plus } from '@phosphor-icons/react'
 import { useCorrelationMatrix } from '@/hooks/use-correlations'
 import { CorrelationMatrix } from '@/components/correlations/correlation-matrix'
 import { SignalCards } from '@/components/correlations/signal-cards'
@@ -84,24 +85,43 @@ export default function CorrelationsPageClient() {
   // Empty state
   if (!isLoading && data && data.correlations.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] px-4">
-        <Warning weight="light" className="w-12 h-12 mb-4" style={{ color: 'var(--text-muted)' }} />
-        <h2 className="text-xl font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
-          No Correlation Data Yet
+      <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 text-center">
+        <Graph
+          size={48}
+          weight="thin"
+          className="mb-5"
+          style={{ color: 'var(--text-muted)' }}
+        />
+        <h2 className="text-lg font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
+          Correlation data is building
         </h2>
-        <p className="text-sm mb-6 text-center max-w-md" style={{ color: 'var(--text-secondary)' }}>
-          Correlations are calculated daily after market close.
-          Admin users can trigger the first calculation manually.
+        <p className="text-sm mb-8 max-w-md" style={{ color: 'var(--text-secondary)' }}>
+          Pelican calculates correlations between assets automatically after market close.
+          Log some trades and add tickers to your watchlist &mdash; correlations will appear
+          here once there&apos;s enough data to analyze.
         </p>
-        <button
-          onClick={handleCalculate}
-          disabled={calculating}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-white transition-colors"
-          style={{ background: 'var(--accent-indigo)' }}
-        >
-          <ArrowsClockwise weight="bold" className={`w-4 h-4 ${calculating ? 'animate-spin' : ''}`} />
-          {calculating ? 'Calculating...' : 'Calculate Now'}
-        </button>
+        <div className="flex flex-col sm:flex-row items-center gap-3">
+          <Link
+            href="/journal"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium text-white transition-all duration-150 active:scale-[0.98]"
+            style={{ background: 'var(--accent-primary)' }}
+          >
+            <Plus size={16} weight="bold" />
+            Log a Trade
+          </Link>
+          <Link
+            href="/chat"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 active:scale-[0.98]"
+            style={{
+              color: 'var(--text-secondary)',
+              border: '1px solid var(--border-subtle)',
+              background: 'transparent',
+            }}
+          >
+            <ChatCircleDots size={16} weight="regular" />
+            Ask Pelican About Correlations
+          </Link>
+        </div>
       </div>
     )
   }
