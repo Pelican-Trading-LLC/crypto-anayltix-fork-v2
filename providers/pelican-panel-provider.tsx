@@ -85,15 +85,28 @@ export function PelicanPanelProvider({
 }
 
 // =============================================================================
+// NOOP FALLBACK (for components rendered outside PelicanPanelProvider)
+// =============================================================================
+
+const noopPanel: PelicanPanelContextValue = {
+  isOpen: false,
+  conversationId: null,
+  messages: [],
+  isStreaming: false,
+  ticker: null,
+  context: null,
+  openWithPrompt: async () => {},
+  sendMessage: async () => {},
+  close: () => {},
+  clearMessages: () => {},
+  regenerateLastMessage: async () => {},
+}
+
+// =============================================================================
 // HOOK
 // =============================================================================
 
 export function usePelicanPanelContext(): PelicanPanelContextValue {
   const context = useContext(PelicanPanelContext)
-
-  if (context === undefined) {
-    throw new Error('usePelicanPanelContext must be used within PelicanPanelProvider')
-  }
-
-  return context
+  return context ?? noopPanel
 }
