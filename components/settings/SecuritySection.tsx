@@ -179,6 +179,7 @@ export function SecuritySection({ user, supabase }: SecuritySectionProps) {
             <Input
               id="current_password"
               type="password"
+              autoComplete="current-password"
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
             />
@@ -188,6 +189,7 @@ export function SecuritySection({ user, supabase }: SecuritySectionProps) {
             <Input
               id="new_password"
               type="password"
+              autoComplete="new-password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
             />
@@ -197,6 +199,7 @@ export function SecuritySection({ user, supabase }: SecuritySectionProps) {
             <Input
               id="confirm_password"
               type="password"
+              autoComplete="new-password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />

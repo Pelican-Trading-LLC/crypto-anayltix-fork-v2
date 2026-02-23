@@ -122,6 +122,7 @@ export default function ResetPasswordPage() {
                 <input
                   id="password"
                   type="password"
+                  autoComplete="new-password"
                   className="w-full bg-background border border-border rounded-xl py-3 pl-11 pr-4 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition-all"
                   required
                   value={password}
@@ -139,6 +140,7 @@ export default function ResetPasswordPage() {
                 <input
                   id="confirmPassword"
                   type="password"
+                  autoComplete="new-password"
                   className="w-full bg-background border border-border rounded-xl py-3 pl-11 pr-4 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition-all"
                   required
                   value={confirmPassword}
