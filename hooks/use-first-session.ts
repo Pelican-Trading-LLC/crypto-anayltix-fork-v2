@@ -1,22 +1,26 @@
 "use client"
 
 import { useEffect, useRef } from "react"
+import { useIsFirstTimeUser } from "./use-is-first-time-user"
 import { useOnboardingProgress } from "./use-onboarding-progress"
 
 /**
  * Auto-sends a welcome message on the user's very first session.
- * Also initializes the onboarding_progress row.
+ * Uses useIsFirstTimeUser (conversations query) as the authoritative check
+ * so that returning users without an onboarding_progress row are NOT treated
+ * as first-time users.
  */
 export function useFirstSession(
   sendMessage: ((message: string) => void) | undefined,
   hasMessages: boolean,
 ) {
-  const { isFirstSession, completeMilestone, isLoading } = useOnboardingProgress()
+  const { isFirstTime, isLoading } = useIsFirstTimeUser()
+  const { completeMilestone } = useOnboardingProgress()
   const sentRef = useRef(false)
 
   useEffect(() => {
     // Wait for data to load, only fire once, only on welcome screen (no messages)
-    if (isLoading || sentRef.current || hasMessages || !isFirstSession) return
+    if (isLoading || sentRef.current || hasMessages || !isFirstTime) return
     if (!sendMessage) return
 
     sentRef.current = true
@@ -29,5 +33,5 @@ export function useFirstSession(
     }, 800)
 
     return () => clearTimeout(timer)
-  }, [isLoading, isFirstSession, hasMessages, sendMessage, completeMilestone])
+  }, [isLoading, isFirstTime, hasMessages, sendMessage, completeMilestone])
 }
