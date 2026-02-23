@@ -67,6 +67,7 @@ export function usePlaybooks() {
     {
       revalidateOnFocus: false,
       dedupingInterval: 30000,
+      shouldRetryOnError: false,
     }
   )
 

@@ -54,17 +54,13 @@ export interface UseTradeStatsReturn {
 }
 
 // Shared SWR config for RPC-backed hooks.
-// Prevents infinite retry loops when PostgREST returns 404 (stale schema cache)
-// or 403 (auth issue). Caps other errors at 3 retries with exponential backoff.
+// Prevents infinite retry loops when PostgREST returns 404 (function doesn't exist)
+// or 403 (auth issue). PostgrestError has `code` not `status`, so we check both.
+// Also never retry on 400 (bad request / schema mismatch).
 const rpcSwrConfig = {
   revalidateOnFocus: false,
-  dedupingInterval: 30000,
-  onErrorRetry: (error: any, _key: string, _config: any, revalidate: any, { retryCount }: { retryCount: number }) => {
-    if (error?.status === 404) return
-    if (error?.status === 403) return
-    if (retryCount >= 3) return
-    setTimeout(() => revalidate({ retryCount }), 5000 * Math.pow(2, retryCount))
-  },
+  dedupingInterval: 60000,
+  shouldRetryOnError: false,
 }
 
 /**
