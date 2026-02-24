@@ -9,12 +9,23 @@ import {
   List,
   Sparkle,
   Globe,
+  DotsThreeVertical,
+  Archive,
+  Trash,
+  X as XIcon,
 } from "@phosphor-icons/react"
 import { cn } from "@/lib/utils"
 import { PelicanButton, pageEnter, tabContent } from "@/components/ui/pelican"
 import { usePlaybookStats } from "@/hooks/use-playbooks"
 import { usePelicanPanelContext } from "@/providers/pelican-panel-provider"
 import { PublishModal } from "@/components/strategies/publish-modal"
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu"
 import type { Playbook } from "@/types/trading"
 import { PlaybookOverviewTab } from "./detail-tabs/overview-tab"
 import { PlaybookStatsTab } from "./detail-tabs/stats-tab"
@@ -26,6 +37,9 @@ type TabKey = "overview" | "stats" | "trades" | "grade"
 interface PlaybookDetailProps {
   playbook: Playbook
   onBack: () => void
+  onArchive?: (playbook: Playbook) => void
+  onDelete?: (playbook: Playbook) => void
+  onUnadopt?: (playbook: Playbook) => void
 }
 
 const tabs: { key: TabKey; label: string; icon: typeof Eye }[] = [
@@ -35,13 +49,15 @@ const tabs: { key: TabKey; label: string; icon: typeof Eye }[] = [
   { key: "grade", label: "Grade", icon: Sparkle },
 ]
 
-export function PlaybookDetail({ playbook, onBack }: PlaybookDetailProps) {
+export function PlaybookDetail({ playbook, onBack, onArchive, onDelete, onUnadopt }: PlaybookDetailProps) {
   const [activeTab, setActiveTab] = useState<TabKey>("overview")
   const [showPublishModal, setShowPublishModal] = useState(false)
   const { stats, isLoading: statsLoading } = usePlaybookStats(playbook.id)
   const { openWithPrompt } = usePelicanPanelContext()
 
   const canPublish = !playbook.is_published && !playbook.is_curated && playbook.entry_rules && playbook.exit_rules && playbook.risk_rules
+  const isAdopted = !!playbook.forked_from
+  const hasMenu = onArchive || onDelete || onUnadopt
 
   const handleGrade = () => {
     const { visibleMessage, fullPrompt } = buildGradePrompt(playbook, stats)
@@ -73,12 +89,55 @@ export function PlaybookDetail({ playbook, onBack }: PlaybookDetailProps) {
             </p>
           )}
         </div>
-        {canPublish && (
-          <PelicanButton variant="secondary" size="sm" onClick={() => setShowPublishModal(true)}>
-            <Globe size={14} weight="regular" />
-            Publish
-          </PelicanButton>
-        )}
+        <div className="flex items-center gap-2">
+          {canPublish && (
+            <PelicanButton variant="secondary" size="sm" onClick={() => setShowPublishModal(true)}>
+              <Globe size={14} weight="regular" />
+              Publish
+            </PelicanButton>
+          )}
+          {hasMenu && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="p-2 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-elevated)] transition-colors">
+                  <DotsThreeVertical size={18} weight="bold" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" sideOffset={4}>
+                {isAdopted && onUnadopt ? (
+                  <DropdownMenuItem
+                    variant="destructive"
+                    onClick={() => onUnadopt(playbook)}
+                  >
+                    <XIcon size={14} weight="regular" />
+                    Remove from Playbooks
+                  </DropdownMenuItem>
+                ) : (
+                  <>
+                    {onArchive && (
+                      <DropdownMenuItem onClick={() => onArchive(playbook)}>
+                        <Archive size={14} weight="regular" className="text-[var(--text-secondary)]" />
+                        Archive Playbook
+                      </DropdownMenuItem>
+                    )}
+                    {onDelete && (
+                      <>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          variant="destructive"
+                          onClick={() => onDelete(playbook)}
+                        >
+                          <Trash size={14} weight="regular" />
+                          Delete Playbook
+                        </DropdownMenuItem>
+                      </>
+                    )}
+                  </>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
+        </div>
       </div>
 
       <PublishModal

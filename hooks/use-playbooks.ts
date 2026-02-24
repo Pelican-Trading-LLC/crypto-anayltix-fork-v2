@@ -146,14 +146,76 @@ export function usePlaybooks(
     mutate()
   }, [supabase, mutate])
 
-  const deletePlaybook = useCallback(async (playbookId: string): Promise<void> => {
-    // Soft delete via is_active = false
+  const archivePlaybook = useCallback(async (playbookId: string): Promise<void> => {
     const { error } = await supabase
       .from('playbooks')
       .update({ is_active: false })
       .eq('id', playbookId)
 
+    if (error) throw new Error(error.message || 'Failed to archive playbook')
+    mutate()
+  }, [supabase, mutate])
+
+  const activatePlaybook = useCallback(async (playbookId: string): Promise<void> => {
+    const { error } = await supabase
+      .from('playbooks')
+      .update({ is_active: true })
+      .eq('id', playbookId)
+
+    if (error) throw new Error(error.message || 'Failed to activate playbook')
+    mutate()
+  }, [supabase, mutate])
+
+  const deletePlaybook = useCallback(async (playbookId: string): Promise<void> => {
+    // Nullify trade references before deleting
+    await supabase
+      .from('trades')
+      .update({ playbook_id: null })
+      .eq('playbook_id', playbookId)
+
+    const { error } = await supabase
+      .from('playbooks')
+      .delete()
+      .eq('id', playbookId)
+
     if (error) throw new Error(error.message || 'Failed to delete playbook')
+    mutate()
+  }, [supabase, mutate])
+
+  const unadoptPlaybook = useCallback(async (playbookId: string, sourcePlaybookId: string): Promise<void> => {
+    // Remove from template_adoptions
+    await supabase
+      .from('template_adoptions')
+      .delete()
+      .eq('adopted_playbook_id', playbookId)
+
+    // Decrement adoption_count on source (floor at 0)
+    const { data: sourceData } = await supabase
+      .from('playbooks')
+      .select('adoption_count')
+      .eq('id', sourcePlaybookId)
+      .single()
+
+    if (sourceData) {
+      await supabase
+        .from('playbooks')
+        .update({ adoption_count: Math.max((sourceData.adoption_count ?? 1) - 1, 0) })
+        .eq('id', sourcePlaybookId)
+    }
+
+    // Nullify trade references
+    await supabase
+      .from('trades')
+      .update({ playbook_id: null })
+      .eq('playbook_id', playbookId)
+
+    // Delete the adopted playbook
+    const { error } = await supabase
+      .from('playbooks')
+      .delete()
+      .eq('id', playbookId)
+
+    if (error) throw new Error(error.message || 'Failed to remove playbook')
     mutate()
   }, [supabase, mutate])
 
@@ -181,7 +243,10 @@ export function usePlaybooks(
     mutate,
     createPlaybook,
     updatePlaybook,
+    archivePlaybook,
+    activatePlaybook,
     deletePlaybook,
+    unadoptPlaybook,
     reorderPlaybooks,
   }
 }

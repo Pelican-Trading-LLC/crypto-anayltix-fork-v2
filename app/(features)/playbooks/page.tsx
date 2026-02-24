@@ -19,6 +19,8 @@ import {
 import { PlaybookCard } from "@/components/playbooks/playbook-card"
 import { PlaybookDetail } from "@/components/playbooks/playbook-detail"
 import { CreatePlaybookModal } from "@/components/playbooks/create-playbook-modal"
+import { ConfirmDialog } from "@/components/ui/confirm-dialog"
+import { toast } from "@/hooks/use-toast"
 import type { PlaybookFormData } from "@/hooks/use-playbooks"
 import type { Playbook } from "@/types/trading"
 import { trackEvent } from "@/lib/tracking"
@@ -39,17 +41,32 @@ const sortOptions = [
 type TabKey = typeof tabs[number]['key']
 type SortKey = typeof sortOptions[number]['key']
 
+type ConfirmAction =
+  | { type: 'archive'; playbook: Playbook }
+  | { type: 'delete'; playbook: Playbook }
+  | { type: 'unadopt'; playbook: Playbook }
+
 const TAGGING_HINT_KEY = 'pelican_playbook_tagging_hint_dismissed'
 
 export default function PlaybooksPage() {
   const [tab, setTab] = useState<TabKey>('active')
   const [sortBy, setSortBy] = useState<SortKey>('recent')
-  const { playbooks, isLoading, createPlaybook } = usePlaybooks(tab, sortBy)
+  const {
+    playbooks,
+    isLoading,
+    createPlaybook,
+    archivePlaybook,
+    activatePlaybook,
+    deletePlaybook,
+    unadoptPlaybook,
+    mutate,
+  } = usePlaybooks(tab, sortBy)
   const { suggestions: suggestedStrategies } = useSuggestedStrategies()
   const { openWithPrompt } = usePelicanPanelContext()
   const [selectedPlaybook, setSelectedPlaybook] = useState<Playbook | null>(null)
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [hintDismissed, setHintDismissed] = useState(true)
+  const [confirmAction, setConfirmAction] = useState<ConfirmAction | null>(null)
 
   // Check localStorage for tagging hint dismissal
   useEffect(() => {
@@ -113,11 +130,120 @@ export default function PlaybooksPage() {
     setSelectedPlaybook(playbook)
   }, [])
 
-  // Detail view
+  // ─── CRUD handlers ───
+
+  const handleArchive = useCallback((playbook: Playbook) => {
+    setConfirmAction({ type: 'archive', playbook })
+  }, [])
+
+  const handleDelete = useCallback((playbook: Playbook) => {
+    setConfirmAction({ type: 'delete', playbook })
+  }, [])
+
+  const handleUnadopt = useCallback((playbook: Playbook) => {
+    setConfirmAction({ type: 'unadopt', playbook })
+  }, [])
+
+  const handleActivate = useCallback(async (playbook: Playbook) => {
+    try {
+      await activatePlaybook(playbook.id)
+      toast({ title: "Playbook re-activated" })
+    } catch {
+      toast({ title: "Failed to activate playbook", variant: "destructive" })
+    }
+  }, [activatePlaybook])
+
+  const handleConfirm = useCallback(async () => {
+    if (!confirmAction) return
+
+    const { type, playbook } = confirmAction
+
+    try {
+      switch (type) {
+        case 'archive':
+          await archivePlaybook(playbook.id)
+          toast({ title: "Playbook archived" })
+          break
+        case 'delete':
+          await deletePlaybook(playbook.id)
+          toast({ title: "Playbook deleted" })
+          // If we're on the detail view, go back
+          if (selectedPlaybook?.id === playbook.id) {
+            setSelectedPlaybook(null)
+          }
+          break
+        case 'unadopt':
+          await unadoptPlaybook(playbook.id, playbook.forked_from!)
+          toast({ title: "Removed from your playbooks" })
+          if (selectedPlaybook?.id === playbook.id) {
+            setSelectedPlaybook(null)
+          }
+          break
+      }
+    } catch {
+      toast({ title: `Failed to ${type} playbook`, variant: "destructive" })
+      throw new Error('Action failed')
+    }
+  }, [confirmAction, archivePlaybook, deletePlaybook, unadoptPlaybook, selectedPlaybook])
+
+  // Build confirm dialog props from current action
+  const confirmDialogProps = useMemo(() => {
+    if (!confirmAction) return null
+    const { type, playbook } = confirmAction
+
+    switch (type) {
+      case 'archive':
+        return {
+          title: "Archive playbook?",
+          description: `This will archive "${playbook.name}". You can re-activate it from the Archived tab anytime.`,
+          confirmLabel: "Archive",
+        }
+      case 'delete': {
+        const tradeCount = playbook.total_trades ?? 0
+        return {
+          title: "Delete playbook?",
+          description: `This will permanently delete "${playbook.name}" and unlink it from any tagged trades. This cannot be undone.`,
+          warning: tradeCount > 0
+            ? `This playbook has ${tradeCount} tagged trade${tradeCount !== 1 ? 's' : ''}. The trades will remain in your journal but will no longer be linked to this playbook.`
+            : undefined,
+          confirmLabel: "Delete",
+        }
+      }
+      case 'unadopt':
+        return {
+          title: "Remove from playbooks?",
+          description: `This will remove "${playbook.name}" from your playbooks. You can re-add it from the Strategy Library anytime.`,
+          confirmLabel: "Remove",
+        }
+    }
+  }, [confirmAction])
+
+  // ─── Detail view ───
+
   if (selectedPlaybook) {
     return (
       <div className="h-full overflow-y-auto p-4 sm:p-6">
-        <PlaybookDetail playbook={selectedPlaybook} onBack={handleBack} />
+        <PlaybookDetail
+          playbook={selectedPlaybook}
+          onBack={handleBack}
+          onArchive={handleArchive}
+          onDelete={handleDelete}
+          onUnadopt={selectedPlaybook.forked_from ? handleUnadopt : undefined}
+        />
+
+        {/* Confirm dialog */}
+        {confirmDialogProps && (
+          <ConfirmDialog
+            open={!!confirmAction}
+            onOpenChange={(open) => { if (!open) setConfirmAction(null) }}
+            title={confirmDialogProps.title}
+            description={confirmDialogProps.description}
+            warning={confirmDialogProps.warning}
+            confirmLabel={confirmDialogProps.confirmLabel}
+            confirmVariant="destructive"
+            onConfirm={handleConfirm}
+          />
+        )}
       </div>
     )
   }
@@ -254,6 +380,10 @@ export default function PlaybooksPage() {
             onSelect={handleSelectPlaybook}
             onScan={handleScan}
             onEdit={handleEdit}
+            onArchive={tab !== 'archived' ? handleArchive : undefined}
+            onDelete={handleDelete}
+            onActivate={tab === 'archived' ? handleActivate : undefined}
+            isArchived={tab === 'archived'}
             emptyState={
               <div className="flex flex-col items-center justify-center py-12 text-center">
                 <p className="text-sm text-[var(--text-muted)] mb-4">
@@ -275,40 +405,43 @@ export default function PlaybooksPage() {
                 </div>
               </div>
             }
-            showNewCard
+            showNewCard={tab !== 'archived'}
             onNewPlaybook={() => setShowCreateModal(true)}
           />
 
           {/* FROM STRATEGY LIBRARY */}
-          <PlaybookSection
-            title="FROM STRATEGY LIBRARY"
-            count={adoptedPlaybooks.length}
-            playbooks={adoptedPlaybooks}
-            onSelect={handleSelectPlaybook}
-            onScan={handleScan}
-            onEdit={handleEdit}
-            trailingAction={
-              <Link
-                href="/strategies"
-                className="text-xs text-[var(--accent-primary)] hover:text-[var(--accent-hover)] transition-colors"
-              >
-                Browse more &rarr;
-              </Link>
-            }
-            emptyState={
-              <div className="py-6 text-center">
+          {tab !== 'archived' && (
+            <PlaybookSection
+              title="FROM STRATEGY LIBRARY"
+              count={adoptedPlaybooks.length}
+              playbooks={adoptedPlaybooks}
+              onSelect={handleSelectPlaybook}
+              onScan={handleScan}
+              onEdit={handleEdit}
+              onUnadopt={handleUnadopt}
+              trailingAction={
                 <Link
                   href="/strategies"
-                  className="text-sm text-[var(--text-muted)] hover:text-[var(--accent-primary)] transition-colors"
+                  className="text-xs text-[var(--accent-primary)] hover:text-[var(--accent-hover)] transition-colors"
                 >
-                  Browse the Strategy Library to find setups that match your style &rarr;
+                  Browse more &rarr;
                 </Link>
-              </div>
-            }
-          />
+              }
+              emptyState={
+                <div className="py-6 text-center">
+                  <Link
+                    href="/strategies"
+                    className="text-sm text-[var(--text-muted)] hover:text-[var(--accent-primary)] transition-colors"
+                  >
+                    Browse the Strategy Library to find setups that match your style &rarr;
+                  </Link>
+                </div>
+              }
+            />
+          )}
 
           {/* SUGGESTED FOR YOU */}
-          {suggestedStrategies.length > 0 && (
+          {tab !== 'archived' && suggestedStrategies.length > 0 && (
             <section>
               <div className="flex items-center gap-2 mb-4">
                 <span className="text-xs font-medium uppercase tracking-wider text-[var(--text-muted)]">
@@ -355,6 +488,20 @@ export default function PlaybooksPage() {
         onSubmit={handleCreate}
       />
 
+      {/* Confirm dialog */}
+      {confirmDialogProps && (
+        <ConfirmDialog
+          open={!!confirmAction}
+          onOpenChange={(open) => { if (!open) setConfirmAction(null) }}
+          title={confirmDialogProps.title}
+          description={confirmDialogProps.description}
+          warning={confirmDialogProps.warning}
+          confirmLabel={confirmDialogProps.confirmLabel}
+          confirmVariant="destructive"
+          onConfirm={handleConfirm}
+        />
+      )}
+
       {/* Mobile FAB */}
       {totalCount > 0 && (
         <IconTooltip label="New Playbook" side="left">
@@ -380,6 +527,11 @@ interface PlaybookSectionProps {
   onSelect: (playbook: Playbook) => void
   onScan: (playbook: Playbook) => void
   onEdit: (playbook: Playbook) => void
+  onArchive?: (playbook: Playbook) => void
+  onDelete?: (playbook: Playbook) => void
+  onActivate?: (playbook: Playbook) => void
+  onUnadopt?: (playbook: Playbook) => void
+  isArchived?: boolean
   emptyState: React.ReactNode
   trailingAction?: React.ReactNode
   showNewCard?: boolean
@@ -393,6 +545,11 @@ function PlaybookSection({
   onSelect,
   onScan,
   onEdit,
+  onArchive,
+  onDelete,
+  onActivate,
+  onUnadopt,
+  isArchived,
   emptyState,
   trailingAction,
   showNewCard,
@@ -428,8 +585,13 @@ function PlaybookSection({
               key={playbook.id}
               playbook={playbook}
               onClick={onSelect}
-              onScan={onScan}
-              onEdit={onEdit}
+              onScan={!isArchived ? onScan : undefined}
+              onEdit={!isArchived ? onEdit : undefined}
+              onArchive={onArchive}
+              onDelete={onDelete}
+              onActivate={onActivate}
+              onUnadopt={onUnadopt}
+              isArchived={isArchived}
             />
           ))}
 

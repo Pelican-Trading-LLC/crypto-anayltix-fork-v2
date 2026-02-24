@@ -1,9 +1,16 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { CheckSquare, Lightning } from "@phosphor-icons/react"
+import { CheckSquare, Lightning, DotsThreeVertical, Archive, Trash, X as XIcon } from "@phosphor-icons/react"
 import { cn } from "@/lib/utils"
 import { staggerItem } from "@/components/ui/pelican"
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu"
 import type { Playbook } from "@/types/trading"
 
 interface PlaybookCardProps {
@@ -11,6 +18,11 @@ interface PlaybookCardProps {
   onClick: (playbook: Playbook) => void
   onScan?: (playbook: Playbook) => void
   onEdit?: (playbook: Playbook) => void
+  onArchive?: (playbook: Playbook) => void
+  onDelete?: (playbook: Playbook) => void
+  onActivate?: (playbook: Playbook) => void
+  onUnadopt?: (playbook: Playbook) => void
+  isArchived?: boolean
 }
 
 const MARKET_COLORS: Record<string, string> = {
@@ -43,14 +55,26 @@ function getRelativeTime(dateStr: string): string {
   return `${diffMonths}mo ago`
 }
 
-export function PlaybookCard({ playbook, onClick, onScan, onEdit }: PlaybookCardProps) {
+export function PlaybookCard({
+  playbook,
+  onClick,
+  onScan,
+  onEdit,
+  onArchive,
+  onDelete,
+  onActivate,
+  onUnadopt,
+  isArchived,
+}: PlaybookCardProps) {
   const hasStats = playbook.total_trades > 0
   const winRate = playbook.win_rate ?? 0
   const checklistCount = playbook.checklist?.length ?? 0
+  const isAdopted = !!playbook.forked_from
 
-  // Determine market type from setup or default
   const marketType = "all"
   const marketColor = MARKET_COLORS[marketType] ?? MARKET_COLORS.all
+
+  const hasMenu = onArchive || onDelete || onActivate || onUnadopt
 
   return (
     <motion.div
@@ -64,12 +88,13 @@ export function PlaybookCard({ playbook, onClick, onScan, onEdit }: PlaybookCard
       whileTap={{ scale: 0.98, transition: { duration: 0.1 } }}
       onClick={() => onClick(playbook)}
       className={cn(
-        "bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl p-5",
+        "bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl p-5 relative",
         "cursor-pointer transition-colors duration-150",
-        "shadow-[0_1px_2px_rgba(0,0,0,0.3),0_4px_12px_rgba(0,0,0,0.1)]"
+        "shadow-[0_1px_2px_rgba(0,0,0,0.3),0_4px_12px_rgba(0,0,0,0.1)]",
+        isArchived && "opacity-60"
       )}
     >
-      {/* Top row: badge + timeframe */}
+      {/* Top row: badge + timeframe + menu */}
       <div className="flex items-center justify-between mb-3">
         <span
           className={cn(
@@ -80,11 +105,79 @@ export function PlaybookCard({ playbook, onClick, onScan, onEdit }: PlaybookCard
           {formatSetupType(playbook.setup_type)}
         </span>
 
-        {playbook.timeframe && (
-          <span className="text-xs font-mono tabular-nums text-[var(--text-muted)]">
-            {playbook.timeframe}
-          </span>
-        )}
+        <div className="flex items-center gap-1">
+          {playbook.timeframe && (
+            <span className="text-xs font-mono tabular-nums text-[var(--text-muted)]">
+              {playbook.timeframe}
+            </span>
+          )}
+
+          {hasMenu && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  onClick={(e) => e.stopPropagation()}
+                  className="p-1 rounded-md text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-elevated)] transition-colors"
+                >
+                  <DotsThreeVertical size={16} weight="bold" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" sideOffset={4}>
+                {/* Archived view: Activate + Delete */}
+                {isArchived && onActivate && (
+                  <DropdownMenuItem
+                    onClick={(e) => { e.stopPropagation(); onActivate(playbook) }}
+                  >
+                    <Archive size={14} weight="regular" className="text-[var(--text-secondary)]" />
+                    Activate
+                  </DropdownMenuItem>
+                )}
+                {isArchived && onDelete && (
+                  <DropdownMenuItem
+                    variant="destructive"
+                    onClick={(e) => { e.stopPropagation(); onDelete(playbook) }}
+                  >
+                    <Trash size={14} weight="regular" />
+                    Delete Permanently
+                  </DropdownMenuItem>
+                )}
+
+                {/* Active adopted view: Remove */}
+                {!isArchived && isAdopted && onUnadopt && (
+                  <DropdownMenuItem
+                    variant="destructive"
+                    onClick={(e) => { e.stopPropagation(); onUnadopt(playbook) }}
+                  >
+                    <XIcon size={14} weight="regular" />
+                    Remove from Playbooks
+                  </DropdownMenuItem>
+                )}
+
+                {/* Active custom view: Archive + Delete */}
+                {!isArchived && !isAdopted && onArchive && (
+                  <DropdownMenuItem
+                    onClick={(e) => { e.stopPropagation(); onArchive(playbook) }}
+                  >
+                    <Archive size={14} weight="regular" className="text-[var(--text-secondary)]" />
+                    Archive
+                  </DropdownMenuItem>
+                )}
+                {!isArchived && !isAdopted && onDelete && (
+                  <>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      variant="destructive"
+                      onClick={(e) => { e.stopPropagation(); onDelete(playbook) }}
+                    >
+                      <Trash size={14} weight="regular" />
+                      Delete
+                    </DropdownMenuItem>
+                  </>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
+        </div>
       </div>
 
       {/* Name */}
@@ -159,7 +252,7 @@ export function PlaybookCard({ playbook, onClick, onScan, onEdit }: PlaybookCard
       )}
 
       {/* Action buttons */}
-      {(onScan || onEdit) && (
+      {!isArchived && (onScan || onEdit) && (
         <div className="flex items-center gap-2 mt-3">
           {onScan && (
             <button
