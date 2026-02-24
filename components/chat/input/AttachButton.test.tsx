@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest"
-import { render, screen, fireEvent } from "@testing-library/react"
+import { render, screen, fireEvent } from "@/test/test-utils"
 import type { PropsWithChildren } from "react"
 import { AttachButton } from "./AttachButton"
 
@@ -28,12 +28,12 @@ vi.mock("@/lib/providers/translation-provider", () => ({
 describe("AttachButton", () => {
   it("renders without crashing", () => {
     render(<AttachButton disabled={false} onFileSelect={vi.fn()} />)
-    expect(screen.getByTitle("Attach file")).toBeInTheDocument()
+    expect(screen.getByRole("button")).toBeInTheDocument()
   })
 
   it("is disabled when disabled prop is true", () => {
     render(<AttachButton disabled={true} onFileSelect={vi.fn()} />)
-    expect(screen.getByTitle("Attach file")).toBeDisabled()
+    expect(screen.getByRole("button")).toBeDisabled()
   })
 
   it("opens file picker on click", () => {
