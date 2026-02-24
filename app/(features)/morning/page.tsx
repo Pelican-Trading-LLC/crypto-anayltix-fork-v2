@@ -268,9 +268,14 @@ export default function MorningPage() {
   const { playbooks: activePlaybooks } = usePlaybooks()
   const { toast } = useToast()
 
-  // Onboarding milestone
+  // Onboarding milestone — ref guard prevents re-firing when completeMilestone identity changes
   const { completeMilestone } = useOnboardingProgress()
-  useEffect(() => { completeMilestone("visited_brief") }, [completeMilestone])
+  const briefMilestoneRef = useRef(false)
+  useEffect(() => {
+    if (briefMilestoneRef.current) return
+    briefMilestoneRef.current = true
+    completeMilestone("visited_brief")
+  }, [completeMilestone])
   const { warnings: todaysWarnings, warningCount } = useTodaysWarnings()
   const { data: behavioralInsights } = useBehavioralInsights()
   const { patterns: activePatterns } = useTradePatterns()

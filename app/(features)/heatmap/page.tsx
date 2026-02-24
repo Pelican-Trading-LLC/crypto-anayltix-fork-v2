@@ -264,9 +264,14 @@ function HeatmapPageInner() {
     }
   }, [])
 
-  // Onboarding milestone
+  // Onboarding milestone — ref guard prevents re-firing when completeMilestone identity changes
   const { completeMilestone } = useOnboardingProgress()
-  useEffect(() => { completeMilestone("visited_heatmap") }, [completeMilestone])
+  const heatmapMilestoneRef = useRef(false)
+  useEffect(() => {
+    if (heatmapMilestoneRef.current) return
+    heatmapMilestoneRef.current = true
+    completeMilestone("visited_heatmap")
+  }, [completeMilestone])
 
   // Filter to a single sector if passed via query param (stocks only)
   useEffect(() => {
