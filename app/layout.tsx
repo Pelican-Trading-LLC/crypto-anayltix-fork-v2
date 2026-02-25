@@ -52,6 +52,11 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="theme-color" content="#2e2e2e" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem("pelican-theme-v2")||"dark";document.documentElement.classList.toggle("dark",t==="dark")}catch(e){}})()`,
+          }}
+        />
       </head>
       <body className={`${GeistSans.className} antialiased bg-background ${GeistSans.variable} ${GeistMono.variable}`}>
         <ReferralCapture />
