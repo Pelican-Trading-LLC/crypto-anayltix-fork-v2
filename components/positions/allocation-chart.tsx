@@ -52,7 +52,7 @@ export function AllocationChart({ openTrades, onSelectTrade }: AllocationChartPr
       </div>
 
       <div className="flex flex-col items-center">
-        <div className="relative w-full" style={{ maxWidth: 240, height: 240 }}>
+        <div className="relative mx-auto" style={{ width: 240, height: 240 }}>
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
