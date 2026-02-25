@@ -114,6 +114,8 @@ export function usePelicanPanel(options: UsePelicanPanelOptions = {}): UsePelica
   const messagesRef = useRef<Message[]>([])
   const conversationIdRef = useRef<string | null>(null)
   const lastUserMessageRef = useRef<string | null>(null)
+  const stateRef = useRef(state)
+  stateRef.current = state
 
   // ---------------------------------------------------------------------------
   // STREAMING HOOK
@@ -247,7 +249,7 @@ export function usePelicanPanel(options: UsePelicanPanelOptions = {}): UsePelica
     logger.info('[PELICAN-PANEL] Opening with prompt', { ticker, context, promptLength: fullPrompt.length })
 
     // If panel is already open for same context, append to existing conversation
-    const shouldAppend = state.isOpen && state.context === context && conversationIdRef.current
+    const shouldAppend = stateRef.current.isOpen && stateRef.current.context === context && conversationIdRef.current
 
     const resolvedSource = source || contextToSource(context)
 
@@ -352,7 +354,7 @@ export function usePelicanPanel(options: UsePelicanPanelOptions = {}): UsePelica
       updateMessagesWithSync(prev => prev.filter(msg => msg.id !== assistantMessageId))
       logger.error('[PELICAN-PANEL] Send message failed', err)
     }
-  }, [state.isOpen, state.context, sendStreamingMessage, onError, onTrialExhausted, onInsufficientCredits, updateMessagesWithSync, captureConversationHistory, createConversation, updateSourceTracking])
+  }, [sendStreamingMessage, onError, onTrialExhausted, onInsufficientCredits, updateMessagesWithSync, captureConversationHistory, createConversation, updateSourceTracking])
 
   // ---------------------------------------------------------------------------
   // PUBLIC: Send message (user-initiated)
