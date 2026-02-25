@@ -218,6 +218,39 @@ function ReviewCTAs({ trades, onAskPelican }: { trades: Trade[]; onAskPelican: (
 // Main Component
 // ============================================================================
 
+function PerformanceSkeleton() {
+  return (
+    <div className="space-y-6 animate-pulse">
+      {/* Period comparison skeleton */}
+      <div className="rounded-xl p-5" style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-subtle)' }}>
+        <div className="h-4 w-40 rounded mb-4" style={{ background: 'var(--bg-elevated)' }} />
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i}>
+              <div className="h-3 w-12 rounded mb-2" style={{ background: 'var(--bg-elevated)' }} />
+              <div className="h-6 w-20 rounded" style={{ background: 'var(--bg-elevated)' }} />
+            </div>
+          ))}
+        </div>
+      </div>
+      {/* Stats row skeleton */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="rounded-xl p-4" style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-subtle)' }}>
+            <div className="h-3 w-16 rounded mb-2" style={{ background: 'var(--bg-elevated)' }} />
+            <div className="h-7 w-24 rounded" style={{ background: 'var(--bg-elevated)' }} />
+          </div>
+        ))}
+      </div>
+      {/* Chart skeleton */}
+      <div className="rounded-xl p-5" style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-subtle)' }}>
+        <div className="h-4 w-32 rounded mb-4" style={{ background: 'var(--bg-elevated)' }} />
+        <div className="h-48 rounded" style={{ background: 'var(--bg-elevated)' }} />
+      </div>
+    </div>
+  )
+}
+
 export function PerformanceTab({
   trades,
   quotes,
@@ -229,6 +262,10 @@ export function PerformanceTab({
   onAskPelican,
 }: PerformanceTabProps) {
   const hasClosedTrades = trades.some(t => t.status === 'closed')
+
+  if (isLoading && trades.length === 0) {
+    return <PerformanceSkeleton />
+  }
 
   return (
     <motion.div
