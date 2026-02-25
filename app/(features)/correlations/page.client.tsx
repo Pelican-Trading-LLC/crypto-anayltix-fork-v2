@@ -82,6 +82,11 @@ export default function CorrelationsPageClient() {
   const regimeStyle = rs ?? NEUTRAL_REGIME
   const RegimeIcon = regimeStyle.Icon
 
+  // Count correlation anomalies (same criteria as SignalCards)
+  const activeSignalCount = data?.correlations.filter(
+    p => Math.abs(p.z_score) > 1.0 || p.regime === 'breakdown' || p.regime === 'inversion'
+  ).length ?? 0
+
   // Empty state
   if (!isLoading && data && data.correlations.length === 0) {
     return (
@@ -164,7 +169,7 @@ export default function CorrelationsPageClient() {
               </span>
               <span className="text-xs font-mono tabular-nums" style={{ color: 'var(--text-muted)' }}>
                 {regime.regime_score > 0 ? '+' : ''}{regime.regime_score.toFixed(1)}
-                {regime.signals.length > 0 && ` \u00B7 ${regime.signals.length} signal${regime.signals.length > 1 ? 's' : ''}`}
+                {activeSignalCount > 0 && ` \u00B7 ${activeSignalCount} signal${activeSignalCount > 1 ? 's' : ''}`}
               </span>
             </div>
           )}
