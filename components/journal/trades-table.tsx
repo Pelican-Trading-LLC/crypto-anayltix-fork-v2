@@ -11,6 +11,9 @@ import { PelicanCard, PelicanButton, staggerContainer, staggerItem } from "@/com
 import { IconTooltip } from "@/components/ui/icon-tooltip"
 import { GradeBadge } from "@/components/grading/trade-grade-card"
 
+const fmtPrice = (v: number) => v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+const fmtPnl = (v: number) => `${v >= 0 ? '+' : ''}${v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+
 interface TradesTableProps {
   trades: Trade[]
   onSelectTrade: (trade: Trade) => void
@@ -357,12 +360,12 @@ export function TradesTable({ trades, onSelectTrade, selectedTradeId, onScanTrad
                   {new Date(trade.entry_date).toLocaleDateString()}
                 </td>
                 <td className="py-3 px-4 text-right font-mono tabular-nums text-sm text-[var(--text-primary)]">
-                  ${trade.entry_price.toFixed(2)}
+                  ${fmtPrice(trade.entry_price)}
                 </td>
                 <td className="py-3 px-4 text-right font-mono tabular-nums text-sm">
                   {trade.status === 'open' && unrealized ? (
                     <span className={unrealized.currentPrice > trade.entry_price ? 'text-[var(--data-positive)]' : unrealized.currentPrice < trade.entry_price ? 'text-[var(--data-negative)]' : 'text-[var(--text-primary)]'}>
-                      ${unrealized.currentPrice.toFixed(2)}
+                      ${fmtPrice(unrealized.currentPrice)}
                     </span>
                   ) : trade.status === 'open' ? (
                     <span className="text-[var(--text-disabled)]" title="Price unavailable">—</span>
@@ -371,7 +374,7 @@ export function TradesTable({ trades, onSelectTrade, selectedTradeId, onScanTrad
                   )}
                 </td>
                 <td className="py-3 px-4 text-right font-mono tabular-nums text-sm text-[var(--text-primary)]">
-                  {trade.exit_price ? `$${trade.exit_price.toFixed(2)}` : <span className="text-[var(--text-disabled)]">—</span>}
+                  {trade.exit_price ? `$${fmtPrice(trade.exit_price)}` : <span className="text-[var(--text-disabled)]">—</span>}
                 </td>
                 {statusFilter === 'closed' && (
                   <td className="py-3 px-4 text-sm font-mono tabular-nums text-[var(--text-secondary)]">
@@ -381,7 +384,7 @@ export function TradesTable({ trades, onSelectTrade, selectedTradeId, onScanTrad
                 <td className="py-3 px-4 text-right font-mono tabular-nums text-sm font-medium">
                   {displayPnL.amount !== null ? (
                     <span className={isWinner ? 'text-[var(--data-positive)]' : isLoser ? 'text-[var(--data-negative)]' : 'text-[var(--text-muted)]'}>
-                      {displayPnL.amount >= 0 ? '+' : ''}${displayPnL.amount.toFixed(2)}
+                      ${fmtPnl(displayPnL.amount)}
                     </span>
                   ) : (
                     <span className="text-[var(--text-disabled)]">—</span>
@@ -571,13 +574,13 @@ export function TradesTable({ trades, onSelectTrade, selectedTradeId, onScanTrad
                 <div className="grid grid-cols-3 gap-3 text-xs mb-3">
                   <div>
                     <span className="text-[var(--text-muted)] block mb-0.5">Entry</span>
-                    <span className="font-mono tabular-nums text-[var(--text-primary)]">${trade.entry_price.toFixed(2)}</span>
+                    <span className="font-mono tabular-nums text-[var(--text-primary)]">${fmtPrice(trade.entry_price)}</span>
                   </div>
                   <div>
                     <span className="text-[var(--text-muted)] block mb-0.5">Current</span>
                     {trade.status === 'open' && unrealized ? (
                       <span className={`font-mono tabular-nums ${unrealized.currentPrice > trade.entry_price ? 'text-[var(--data-positive)]' : unrealized.currentPrice < trade.entry_price ? 'text-[var(--data-negative)]' : 'text-[var(--text-primary)]'}`}>
-                        ${unrealized.currentPrice.toFixed(2)}
+                        ${fmtPrice(unrealized.currentPrice)}
                       </span>
                     ) : (
                       <span className="text-[var(--text-disabled)]">—</span>
@@ -587,7 +590,7 @@ export function TradesTable({ trades, onSelectTrade, selectedTradeId, onScanTrad
                     <span className="text-[var(--text-muted)] block mb-0.5">P&L</span>
                     {displayPnL.amount !== null ? (
                       <span className={`font-mono tabular-nums ${isWinner ? 'text-[var(--data-positive)]' : isLoser ? 'text-[var(--data-negative)]' : 'text-[var(--text-muted)]'}`}>
-                        {displayPnL.amount >= 0 ? '+' : ''}${displayPnL.amount.toFixed(2)}
+                        ${fmtPnl(displayPnL.amount)}
                       </span>
                     ) : (
                       <span className="text-[var(--text-disabled)]">—</span>
