@@ -15,6 +15,26 @@ const DANGEROUS_PATTERNS = [
   /<meta\b[^>]*>/gi,
 ]
 
+const INJECTION_PATTERNS = [
+  /ignore\s+(previous|all)\s+instructions/i,
+  /you\s+are\s+now/i,
+  /act\s+as\s+if/i,
+  /pretend\s+you\s+are/i,
+  /system\s+prompt\s*:/i,
+  /^(ASSISTANT|HUMAN|SYSTEM)\s*:/im,
+  /###\s*(System|Instructions)/i,
+  /<\s*\/?\s*(system|instruction|tool_call)\s*>/i,
+]
+
+/**
+ * Detects potential prompt injection patterns in user input.
+ * Detection only — does NOT modify text. Backend sanitizer handles neutralization.
+ */
+export function detectPromptInjection(text: string): boolean {
+  if (!text || typeof text !== 'string') return false
+  return INJECTION_PATTERNS.some(pattern => pattern.test(text))
+}
+
 const HTML_ENTITIES: Record<string, string> = {
   "&": "&amp;",
   "<": "&lt;",
@@ -51,6 +71,11 @@ export function sanitizeMessage(message: string, maxLength: number = 10000): str
   // Remove dangerous patterns (scripts, iframes, etc.)
   for (const pattern of DANGEROUS_PATTERNS) {
     sanitized = sanitized.replace(pattern, "")
+  }
+
+  // Log prompt injection attempts (detection only — backend handles neutralization)
+  if (detectPromptInjection(sanitized)) {
+    console.warn('[Security] Prompt injection pattern detected in user input')
   }
 
   // DO NOT escape HTML here - store raw text
