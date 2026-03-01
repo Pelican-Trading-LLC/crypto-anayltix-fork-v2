@@ -4,6 +4,17 @@ const POLYGON_API_KEY = process.env.POLYGON_API_KEY
 const LOOKBACK_DAYS = 400
 const ROLLING_WINDOWS: Record<string, number> = { '30d': 30, '90d': 90, '1y': 252 }
 
+interface PolygonBar {
+  t: number    // timestamp
+  c: number    // close
+  o?: number   // open
+  h?: number   // high
+  l?: number   // low
+  v?: number   // volume
+  vw?: number  // volume weighted average
+  n?: number   // number of trades
+}
+
 interface DailyBar { date: string; close: number }
 interface DailyReturn { date: string; return: number }
 
@@ -30,10 +41,9 @@ async function fetchDailyBars(polygonTicker: string): Promise<DailyBar[]> {
   const data = await res.json()
   if (!data.results?.length) throw new Error(`No data for ${polygonTicker}`)
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return data.results.map((bar: any) => ({
-    date: new Date(bar.t as number).toISOString().split('T')[0],
-    close: bar.c as number,
+  return data.results.map((bar: PolygonBar) => ({
+    date: new Date(bar.t).toISOString().split('T')[0],
+    close: bar.c,
   }))
 }
 

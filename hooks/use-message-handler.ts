@@ -2,12 +2,13 @@
 
 import { useState, useCallback } from "react"
 import type { ChatInputRef } from "@/components/chat/chat-input"
+import type { Attachment } from '@/lib/chat-utils'
 import type { MessageSource } from '@/lib/chat/message-source'
 
 interface PendingMessage {
   content: string
   fileIds?: string[]
-  attachments?: any[]
+  attachments?: Attachment[]
   source?: MessageSource
 }
 

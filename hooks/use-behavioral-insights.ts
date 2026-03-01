@@ -120,7 +120,7 @@ export interface BehavioralInsights {
 const rpcSwrConfig = {
   revalidateOnFocus: false,
   dedupingInterval: 300000,
-  onErrorRetry: (error: any, _key: string, _config: any, revalidate: any, { retryCount }: { retryCount: number }) => {
+  onErrorRetry: (error: Error & { status?: number }, _key: string, _config: unknown, revalidate: (opts?: { retryCount: number }) => void, { retryCount }: { retryCount: number }) => {
     if (error?.status === 404) return
     if (error?.status === 403) return
     if (retryCount >= 3) return

@@ -2,13 +2,15 @@
 
 import { useEffect, useRef, startTransition } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
+import type { User } from '@supabase/supabase-js'
+import type { Message } from '@/lib/chat-utils'
 import { ROUTES } from "@/lib/constants"
 import { logger } from "@/lib/logger"
 
 interface UseConversationRouterOptions {
-  user: any
+  user: User | null
   chatLoading: boolean
-  messages: any[]
+  messages: Message[]
   stopGeneration: () => void
   clearMessages: () => void
   clearDraftForConversation?: (id: string) => void
