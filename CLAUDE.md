@@ -46,8 +46,7 @@ AI-powered trading platform. Users ask questions about markets in plain English,
 
 ### Team
 - **Nick** — Founder. Product vision, architecture decisions, built V2/V3 features in Claude Code.
-- **Jack** — Technical co-founder. Owns frontend development. Responsible for production readiness, polish, deployment.
-- **Ray** — Database admin. Supabase access, Python backend API on Fly.io.
+- **Ray Campbell** — Technical co-founder. 20+ years software architecture experience (NYSE ARCA, crypto exchange infrastructure). Owns backend, database, and Python API on Fly.io.
 
 ### Tech Stack
 | Layer | Technology |
@@ -63,7 +62,6 @@ AI-powered trading platform. Users ask questions about markets in plain English,
 | State | SWR + React Context |
 | Charts | recharts + TradingView widgets |
 | Backend API | Python on Fly.io (SSE streaming) |
-| LLM | GPT-5 (primary), GPT-4o-mini (education, classification) |
 | Market Data | Polygon.io |
 | Rate Limiting | Upstash Redis (`@upstash/ratelimit`) |
 | Hosting | Vercel |
