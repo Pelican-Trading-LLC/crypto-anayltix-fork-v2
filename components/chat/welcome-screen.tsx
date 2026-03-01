@@ -3,7 +3,6 @@
 import Link from "next/link"
 import { useAuth } from "@/lib/providers/auth-provider"
 import { SuggestedPrompts } from "./SuggestedPrompts"
-import { ProgressWidget } from "@/components/onboarding/progress-widget"
 
 interface WelcomeScreenProps {
   onQuickStart: (message: string) => void
@@ -28,8 +27,6 @@ export function WelcomeScreen({ onQuickStart, disabled }: WelcomeScreenProps) {
         <h1 className="text-2xl sm:text-4xl font-semibold text-balance text-foreground tracking-tight h-auto">
           {getGreeting()}
         </h1>
-
-        <ProgressWidget />
 
         <SuggestedPrompts onSelect={onQuickStart} disabled={disabled} />
 
