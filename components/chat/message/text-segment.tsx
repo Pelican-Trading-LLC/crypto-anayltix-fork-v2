@@ -81,10 +81,19 @@ export function TextSegment({ content, index, isStreaming, isLargeContent, ticke
   // Normalize literal \n escape sequences and Windows line-endings to actual newlines
   const normalized = content.replace(/\r\n/g, "\n").replace(/\\n/g, "\n")
 
-  let safeLines = normalized
-    .split("\n")
-    .map((line) => formatLine(line))
-    .join("<br />")
+  const formattedLines = normalized.split("\n").map((line) => formatLine(line))
+
+  // Collapse consecutive empty lines to prevent double-spacing between list items
+  const collapsed: string[] = []
+  let prevEmpty = false
+  for (const line of formattedLines) {
+    const isEmpty = line.trim() === ''
+    if (isEmpty && prevEmpty) continue
+    collapsed.push(line)
+    prevEmpty = isEmpty
+  }
+
+  let safeLines = collapsed.join("<br />")
 
   // Apply ticker + economic term highlighting for non-streaming assistant messages
   if (hasLinks && !isStreaming) {
