@@ -4,35 +4,7 @@ import { getGeistSans, getGeistMono } from "@/lib/share-cards/fonts"
 import { TradeRecapCard } from "@/lib/share-cards/trade-recap"
 import { PelicanInsightCard } from "@/lib/share-cards/pelican-insight"
 import { createClient } from "@/lib/supabase/server"
-
-let logoBase64Cache: string | null = null
-
-function getBaseUrl(): string {
-  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`
-  if (process.env.NEXT_PUBLIC_APP_URL) return process.env.NEXT_PUBLIC_APP_URL
-  return "http://localhost:3000"
-}
-
-async function getLogoBase64(): Promise<string | undefined> {
-  if (logoBase64Cache) return logoBase64Cache
-  try {
-    const baseUrl = getBaseUrl()
-    // Try PNG first, then webp
-    let res = await fetch(`${baseUrl}/demos/how-to-use/pelican-logo.png`)
-    let mime = "image/png"
-    if (!res.ok) {
-      res = await fetch(`${baseUrl}/pelican-logo-transparent.webp`)
-      mime = "image/webp"
-    }
-    if (!res.ok) return undefined
-    const buf = await res.arrayBuffer()
-    const b64 = Buffer.from(buf).toString("base64")
-    logoBase64Cache = `data:${mime};base64,${b64}`
-    return logoBase64Cache
-  } catch {
-    return undefined
-  }
-}
+import { PELICAN_LOGO_B64 } from "@/lib/share-cards/logo-base64"
 
 export async function GET(req: NextRequest) {
   try {
@@ -46,7 +18,7 @@ export async function GET(req: NextRequest) {
     const [geistSans, geistMono, logoBase64] = await Promise.all([
       getGeistSans(),
       getGeistMono(),
-      getLogoBase64(),
+      Promise.resolve(PELICAN_LOGO_B64),
     ])
 
     let cardContent: React.ReactElement
@@ -134,7 +106,7 @@ export async function POST(req: NextRequest) {
     const [geistSans, geistMono, logoBase64] = await Promise.all([
       getGeistSans(),
       getGeistMono(),
-      getLogoBase64(),
+      Promise.resolve(PELICAN_LOGO_B64),
     ])
 
     return new ImageResponse(

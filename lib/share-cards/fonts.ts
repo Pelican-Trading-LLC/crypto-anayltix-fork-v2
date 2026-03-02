@@ -1,24 +1,25 @@
-let geistSansData: ArrayBuffer | null = null
-let geistMonoData: ArrayBuffer | null = null
+import { GEIST_SANS_B64 } from "./font-geist-sans"
+import { GEIST_MONO_B64 } from "./font-geist-mono"
 
-function getBaseUrl(): string {
-  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`
-  if (process.env.NEXT_PUBLIC_APP_URL) return process.env.NEXT_PUBLIC_APP_URL
-  return "http://localhost:3000"
+function base64ToArrayBuffer(base64: string): ArrayBuffer {
+  const binary = atob(base64)
+  const len = binary.length
+  const bytes = new Uint8Array(len)
+  for (let i = 0; i < len; i++) {
+    bytes[i] = binary.charCodeAt(i)
+  }
+  return bytes.buffer as ArrayBuffer
 }
 
+let cachedSans: ArrayBuffer | null = null
+let cachedMono: ArrayBuffer | null = null
+
 export async function getGeistSans(): Promise<ArrayBuffer> {
-  if (geistSansData) return geistSansData
-  const res = await fetch(`${getBaseUrl()}/fonts/Geist-SemiBold.ttf`)
-  if (!res.ok) throw new Error(`Failed to load Geist Sans: ${res.status}`)
-  geistSansData = await res.arrayBuffer()
-  return geistSansData
+  if (!cachedSans) cachedSans = base64ToArrayBuffer(GEIST_SANS_B64)
+  return cachedSans
 }
 
 export async function getGeistMono(): Promise<ArrayBuffer> {
-  if (geistMonoData) return geistMonoData
-  const res = await fetch(`${getBaseUrl()}/fonts/GeistMono-Regular.ttf`)
-  if (!res.ok) throw new Error(`Failed to load Geist Mono: ${res.status}`)
-  geistMonoData = await res.arrayBuffer()
-  return geistMonoData
+  if (!cachedMono) cachedMono = base64ToArrayBuffer(GEIST_MONO_B64)
+  return cachedMono
 }
