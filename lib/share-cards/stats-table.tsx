@@ -34,6 +34,7 @@ export function StatsTableCard({ period, rows }: StatsTableProps) {
           width: "100%",
           height: "100%",
           alignItems: "center",
+          padding: "0 0 16px 0",
         }}
       >
         {/* Centered header: logo + brand + context */}
@@ -99,6 +100,7 @@ export function StatsTableCard({ period, rows }: StatsTableProps) {
             flexDirection: "column",
             width: "100%",
             flex: 1,
+            overflow: "hidden",
           }}
         >
           {/* Column headers */}
@@ -188,20 +190,21 @@ export function StatsTableCard({ period, rows }: StatsTableProps) {
           </div>
         </div>
 
-        {/* Subtle footer */}
+        {/* Footer — separate from table, flows naturally after */}
         <div
           style={{
             display: "flex",
             width: "100%",
             justifyContent: "center",
-            paddingTop: 12,
+            paddingTop: 8,
+            flexShrink: 0,
           }}
         >
           <span
             style={{
               display: "flex",
               fontSize: 11,
-              color: "rgba(255, 255, 255, 0.18)",
+              color: "rgba(255, 255, 255, 0.2)",
               letterSpacing: "0.08em",
             }}
           >
