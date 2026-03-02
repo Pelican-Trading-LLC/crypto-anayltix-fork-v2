@@ -27,54 +27,109 @@ export function CardLayout({ children }: CardLayoutProps) {
         flexDirection: "column",
         width: "100%",
         height: "100%",
-        backgroundColor: CARD_COLORS.bg,
-        padding: 48,
         fontFamily: "Geist Sans, sans-serif",
+        position: "relative",
+        overflow: "hidden",
       }}
     >
-      {/* Top bar: Logo + brand */}
-      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 32 }}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={PELICAN_LOGO_B64}
-          alt=""
-          width={32}
-          height={32}
-          style={{ width: 32, height: 32, borderRadius: 4 }}
-        />
-        <span
-          style={{
-            fontSize: 24,
-            fontWeight: 700,
-            color: CARD_COLORS.purple,
-            letterSpacing: "-0.02em",
-          }}
-        >
-          PELICAN AI
-        </span>
-      </div>
-
-      {/* Card content */}
-      <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>{children}</div>
-
-      {/* Bottom watermark */}
+      {/* Gradient background */}
       <div
         style={{
           display: "flex",
-          justifyContent: "flex-end",
-          marginTop: "auto",
-          paddingTop: 24,
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: "linear-gradient(135deg, #0a0a1a 0%, #0f0f1f 40%, #0a0a15 100%)",
+        }}
+      />
+
+      {/* Purple glow — top right */}
+      <div
+        style={{
+          display: "flex",
+          position: "absolute",
+          top: -100,
+          right: -100,
+          width: 400,
+          height: 400,
+          borderRadius: 9999,
+          background:
+            "radial-gradient(circle, rgba(139, 92, 246, 0.08) 0%, transparent 70%)",
+        }}
+      />
+
+      {/* Cyan glow — bottom left */}
+      <div
+        style={{
+          display: "flex",
+          position: "absolute",
+          bottom: -80,
+          left: -80,
+          width: 300,
+          height: 300,
+          borderRadius: 9999,
+          background:
+            "radial-gradient(circle, rgba(34, 211, 238, 0.05) 0%, transparent 70%)",
+        }}
+      />
+
+      {/* Content on top */}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          position: "relative",
+          width: "100%",
+          height: "100%",
+          padding: 48,
         }}
       >
-        <span
+        {/* Top bar: Logo + brand */}
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 32 }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={PELICAN_LOGO_B64}
+            alt=""
+            width={36}
+            height={36}
+            style={{ width: 36, height: 36, borderRadius: 6 }}
+          />
+          <span
+            style={{
+              fontSize: 24,
+              fontWeight: 700,
+              color: CARD_COLORS.purple,
+              letterSpacing: "-0.02em",
+            }}
+          >
+            PELICAN AI
+          </span>
+        </div>
+
+        {/* Card content */}
+        <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>{children}</div>
+
+        {/* Bottom watermark */}
+        <div
           style={{
-            fontSize: 15,
-            color: CARD_COLORS.textMuted,
-            letterSpacing: "0.05em",
+            display: "flex",
+            justifyContent: "flex-end",
+            marginTop: "auto",
+            paddingTop: 24,
           }}
         >
-          pelicantrading.ai
-        </span>
+          <span
+            style={{
+              fontSize: 15,
+              color: CARD_COLORS.textMuted,
+              letterSpacing: "0.05em",
+            }}
+          >
+            pelicantrading.ai
+          </span>
+        </div>
       </div>
     </div>
   )

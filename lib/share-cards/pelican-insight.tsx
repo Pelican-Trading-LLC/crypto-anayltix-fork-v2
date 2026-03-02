@@ -5,15 +5,36 @@ interface PelicanInsightProps {
   tickers: string[]
 }
 
-function getFontSize(len: number): number {
-  if (len < 100) return 36
-  if (len < 200) return 28
-  if (len < 400) return 22
-  return 18
+function parseTextToLines(text: string): string[] {
+  return text
+    .split("\n")
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0)
+}
+
+function isBulletLine(line: string): boolean {
+  return /^[•\-*]\s/.test(line) || /^\d+[.)]\s/.test(line)
+}
+
+function cleanBullet(line: string): string {
+  return line.replace(/^[•\-*]\s+/, "").replace(/^\d+[.)]\s+/, "")
+}
+
+function getDynamicFontSize(text: string): number {
+  const lines = parseTextToLines(text)
+  const charCount = text.length
+  const lineCount = lines.length
+
+  if (lineCount > 12 || charCount > 600) return 15
+  if (lineCount > 8 || charCount > 400) return 17
+  if (lineCount > 5 || charCount > 200) return 20
+  if (charCount > 100) return 24
+  return 30
 }
 
 export function PelicanInsightCard({ headline, tickers }: PelicanInsightProps) {
-  const fontSize = getFontSize(headline.length)
+  const fontSize = getDynamicFontSize(headline)
+  const lines = parseTextToLines(headline)
 
   return (
     <CardLayout>
@@ -21,25 +42,53 @@ export function PelicanInsightCard({ headline, tickers }: PelicanInsightProps) {
         style={{
           display: "flex",
           flexDirection: "column",
+          gap: 6,
           flex: 1,
           justifyContent: "center",
-          gap: 24,
         }}
       >
-        <span
-          style={{
-            fontSize,
-            fontWeight: 700,
-            color: CARD_COLORS.textPrimary,
-            lineHeight: 1.4,
-            letterSpacing: "-0.01em",
-          }}
-        >
-          {headline}
-        </span>
+        {lines.map((line, i) => {
+          const bullet = isBulletLine(line)
+          const cleaned = bullet ? cleanBullet(line) : line
+          const isLabel = /^[A-Z][\w\s&]+:/.test(line) && line.length < 60
+
+          return (
+            <div
+              key={i}
+              style={{
+                display: "flex",
+                alignItems: "flex-start",
+                paddingLeft: bullet ? 16 : 0,
+              }}
+            >
+              {bullet ? (
+                <span
+                  style={{
+                    color: CARD_COLORS.purple,
+                    marginRight: 8,
+                    fontSize,
+                    flexShrink: 0,
+                  }}
+                >
+                  •
+                </span>
+              ) : null}
+              <span
+                style={{
+                  fontSize,
+                  fontWeight: isLabel ? 700 : 400,
+                  color: isLabel ? "#ffffff" : CARD_COLORS.textPrimary,
+                  lineHeight: 1.5,
+                }}
+              >
+                {cleaned}
+              </span>
+            </div>
+          )
+        })}
 
         {tickers.length > 0 ? (
-          <div style={{ display: "flex", gap: 12, marginTop: 4 }}>
+          <div style={{ display: "flex", gap: 12, marginTop: 12 }}>
             {tickers.map((ticker, i) => (
               <span
                 key={i}
