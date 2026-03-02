@@ -2,6 +2,7 @@
 
 import { Trade } from "@/hooks/use-trades"
 import { X, PlayCircle, PencilSimple } from "@phosphor-icons/react"
+import { ShareButton } from "@/components/share/share-button"
 import { IconTooltip } from "@/components/ui/icon-tooltip"
 import { PelicanCard, PelicanButton, DataCell } from "@/components/ui/pelican"
 import { TradeGradeCard } from "@/components/grading/trade-grade-card"
@@ -74,15 +75,26 @@ export function TradeDetailPanel({ trade, onClose, onEdit, onCloseTrade, onRepla
           </span>
         </div>
 
-        {/* Replay Trade (closed only) */}
-        {trade.status === 'closed' && onReplay && (
-          <button
-            onClick={() => onReplay(trade)}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-purple-600 hover:bg-purple-500 text-white text-sm font-medium rounded-lg transition-colors active:scale-[0.98]"
-          >
-            <PlayCircle size={16} weight="fill" />
-            Replay Trade
-          </button>
+        {/* Replay Trade + Share Card (closed only) */}
+        {trade.status === 'closed' && (
+          <div className="flex items-center gap-2">
+            {onReplay && (
+              <button
+                onClick={() => onReplay(trade)}
+                className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-purple-600 hover:bg-purple-500 text-white text-sm font-medium rounded-lg transition-colors active:scale-[0.98]"
+              >
+                <PlayCircle size={16} weight="fill" />
+                Replay Trade
+              </button>
+            )}
+            {trade.pnl_amount !== null && (
+              <ShareButton
+                imageUrl={`/api/share-card?type=trade-recap&tradeId=${trade.id}`}
+                filename={`pelican-${trade.ticker}-trade.png`}
+                compact
+              />
+            )}
+          </div>
         )}
 
         {/* P&L (if closed) */}

@@ -48,6 +48,7 @@ const TrialExhaustedModal = dynamic(() => import("@/components/trial-exhausted-m
 const InsufficientCreditsModal = dynamic(() => import("@/components/insufficient-credits-modal").then(m => ({ default: m.InsufficientCreditsModal })))
 const TradingViewChart = dynamic(() => import("@/components/chat/TradingViewChart").then(m => ({ default: m.TradingViewChart })), { ssr: false })
 const EconomicCalendar = dynamic(() => import("@/components/chat/EconomicCalendar").then(m => ({ default: m.EconomicCalendar })), { ssr: false })
+const TextSelectionToolbar = dynamic(() => import("@/components/share/text-selection-toolbar").then(m => ({ default: m.TextSelectionToolbar })), { ssr: false })
 const TradingContextPanel = dynamic(() => import("@/components/chat/trading-context-panel").then(m => ({ default: m.TradingContextPanel })), { ssr: false })
 
 // Loading screen component for chat page
@@ -610,6 +611,7 @@ export default function ChatPage() {
                   <TiltAlertBanner alerts={tiltAlerts} />
                 </div>
               )}
+              <TextSelectionToolbar />
               <ChatContainer
                 messages={messages}
                 isLoading={chatLoading}
