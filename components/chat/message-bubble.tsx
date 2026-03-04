@@ -323,7 +323,7 @@ export const MessageBubble = memo(function MessageBubble({
             />
           </div>
 
-          <div className="flex-1 min-w-0 max-w-[90%] sm:max-w-[80%] md:max-w-[75%] lg:max-w-[700px] overflow-hidden">
+          <div className="flex-1 min-w-0 max-w-[90%] sm:max-w-[80%] md:max-w-[75%] lg:max-w-[700px] overflow-x-hidden">
             <AttachmentDisplay attachments={message.attachments} />
             <div className="text-[16px] sm:text-base leading-relaxed text-foreground">
               <MessageContent

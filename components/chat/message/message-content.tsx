@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo, memo } from "react"
+import { useState, useMemo, memo, useCallback } from "react"
 import { motion } from "framer-motion"
 import { EnhancedTypingDots } from "../enhanced-typing-dots"
 import { detectDataTable, detectLabelValueList, type LabelValueTableResult } from "@/lib/data-parsers"
@@ -79,17 +79,21 @@ export const MessageContent = memo(function MessageContent({
 
   // Detect label:value lists (numbered/bulleted data like price lists, stats)
   const labelValueData = useMemo(
-    () => {
-      if (isStreaming || parsedData || gradeData) {
-        console.log('[LV-DEBUG] Skipped:', { isStreaming, hasParsedData: !!parsedData, hasGradeData: !!gradeData })
-        return null
-      }
-      const result = detectLabelValueList(safeContent)
-      console.log('[LV-DEBUG] Detection result:', result ? `${result.table.data.length} rows` : 'null', 'Content starts with:', safeContent.substring(0, 100))
-      return result
-    },
+    () => (!isStreaming && !parsedData && !gradeData ? detectLabelValueList(safeContent) : null),
     [safeContent, isStreaming, parsedData, gradeData]
   )
+
+  // Share handler: copy table data as formatted text
+  const handleShareTable = useCallback(() => {
+    if (!labelValueData) return
+    const { table } = labelValueData
+    const text = [
+      table.title,
+      "",
+      ...table.data.map((row) => `${row.label}: ${row.value}`),
+    ].join("\n")
+    navigator.clipboard.writeText(text)
+  }, [labelValueData])
 
   // Performance: skip expensive parsing during streaming for large content
   const segments = useMemo(() => {
@@ -194,29 +198,38 @@ export const MessageContent = memo(function MessageContent({
           title={labelValueData.table.title}
           columns={labelValueData.table.columns}
           onToggle={() => setShowRawText(true)}
+          onShare={handleShareTable}
+          compact
         />
 
         {hasPostText && (
-          <div className="space-y-1.5 mt-2">
-            {postSegments.map((segment, index) =>
-              segment.type === "code" ? (
-                <CodeBlock
-                  key={`post-code-${index}`}
-                  content={segment.content}
-                  language={segment.language}
-                  index={index + 1000}
-                />
-              ) : (
-                <TextSegment
-                  key={`post-text-${index}`}
-                  content={segment.content}
-                  index={index + 1000}
-                  isStreaming={false}
-                  isLargeContent={false}
-                  tickers={tickers}
-                  economicTerms={economicTerms}
-                />
+          <div className="space-y-1.5 mt-4 pt-4 border-t border-border/30">
+            {postSegments.length > 0 ? (
+              postSegments.map((segment, index) =>
+                segment.type === "code" ? (
+                  <CodeBlock
+                    key={`post-code-${index}`}
+                    content={segment.content}
+                    language={segment.language}
+                    index={index + 1000}
+                  />
+                ) : (
+                  <TextSegment
+                    key={`post-text-${index}`}
+                    content={segment.content}
+                    index={index + 1000}
+                    isStreaming={false}
+                    isLargeContent={false}
+                    tickers={tickers}
+                    economicTerms={economicTerms}
+                  />
+                )
               )
+            ) : (
+              <div
+                className="text-[15px] leading-relaxed text-foreground"
+                dangerouslySetInnerHTML={{ __html: labelValueData.postText.replace(/\n/g, '<br/>') }}
+              />
             )}
           </div>
         )}

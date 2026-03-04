@@ -12,6 +12,8 @@ interface DataTableProps {
   query?: string
   summary?: Record<string, unknown>
   onToggle?: () => void
+  onShare?: () => void
+  compact?: boolean
 }
 
 // Default columns for legacy arrow format
@@ -83,7 +85,7 @@ function isArrowFormat(data: (DataPoint | Record<string, unknown>)[]): data is D
   return data.length > 0 && data[0] !== undefined && 'forwardReturn' in data[0]
 }
 
-export function DataTable({ data, columns, title = "Market Data", query, summary, onToggle }: DataTableProps) {
+export function DataTable({ data, columns, title = "Market Data", query, summary, onToggle, onShare, compact }: DataTableProps) {
   // Determine which columns to use
   const displayColumns = useMemo(() => {
     if (columns) {
@@ -120,28 +122,35 @@ export function DataTable({ data, columns, title = "Market Data", query, summary
   }, [data])
 
   return (
-    <div className="my-6 rounded-xl border border-border bg-card p-4 sm:p-8 shadow-xl relative overflow-hidden">
+    <div className={cn(
+      "rounded-xl border border-border bg-card relative overflow-hidden",
+      compact ? "my-3 p-3 sm:p-4 shadow-sm" : "my-6 p-4 sm:p-8 shadow-xl"
+    )}>
 
-      {/* LARGE PROMINENT WATERMARK - 30% opacity, no blur */}
-      <div className="absolute inset-0 flex items-center justify-center opacity-30 pointer-events-none overflow-hidden">
-        <Image
-          src="/pelican-logo-transparent.webp"
-          alt=""
-          width={320}
-          height={320}
-          className="w-[min(60vw,20rem)] h-auto object-contain"
-          aria-hidden="true"
-        />
-      </div>
+      {/* LARGE PROMINENT WATERMARK - only in full mode */}
+      {!compact && (
+        <div className="absolute inset-0 flex items-center justify-center opacity-30 pointer-events-none overflow-hidden">
+          <Image
+            src="/pelican-logo-transparent.webp"
+            alt=""
+            width={320}
+            height={320}
+            className="w-[min(60vw,20rem)] h-auto object-contain"
+            aria-hidden="true"
+          />
+        </div>
+      )}
 
       {/* Content layer above watermark */}
       <div className="relative z-10">
 
-        {/* Header with logo and branding */}
-        <div className="mb-6 flex items-center gap-3">
-          <Image src="/pelican-logo-transparent.webp" alt="Pelican" width={48} height={48} className="h-10 w-10 sm:h-12 sm:w-12" />
-          <span className="text-xl sm:text-2xl font-bold text-foreground">Pelican</span>
-        </div>
+        {/* Header with logo and branding - only in full mode */}
+        {!compact && (
+          <div className="mb-6 flex items-center gap-3">
+            <Image src="/pelican-logo-transparent.webp" alt="Pelican" width={48} height={48} className="h-10 w-10 sm:h-12 sm:w-12" />
+            <span className="text-xl sm:text-2xl font-bold text-foreground">Pelican</span>
+          </div>
+        )}
 
         {/* User's query (if provided by AI) */}
         {query && (
@@ -152,12 +161,18 @@ export function DataTable({ data, columns, title = "Market Data", query, summary
 
         {/* Title (if different from query) */}
         {title && title !== query && (
-          <h3 className="mb-4 text-base sm:text-lg font-semibold text-foreground">{title}</h3>
+          <h3 className={cn(
+            "font-semibold text-foreground",
+            compact ? "mb-2 text-sm" : "mb-4 text-base sm:text-lg"
+          )}>{title}</h3>
         )}
 
         {/* Table */}
         <div className="overflow-x-auto rounded-lg">
-          <table className="min-w-[640px] w-full border-collapse" aria-label="Market data visualization">
+          <table className={cn(
+            "w-full border-collapse",
+            !compact && "min-w-[640px]"
+          )} aria-label="Data visualization">
             <thead>
               <tr className="border-b-2 border-border">
                 {displayColumns.map((col, i) => (
@@ -247,14 +262,26 @@ export function DataTable({ data, columns, title = "Market Data", query, summary
           </table>
         </div>
 
-        {/* Toggle button */}
-        {onToggle && (
-          <button
-            onClick={onToggle}
-            className="mt-4 text-xs text-muted-foreground hover:text-foreground underline"
-          >
-            View Raw Text
-          </button>
+        {/* Footer buttons */}
+        {(onToggle || onShare) && (
+          <div className="mt-3 flex items-center gap-3">
+            {onToggle && (
+              <button
+                onClick={onToggle}
+                className="text-xs text-muted-foreground hover:text-foreground underline"
+              >
+                View Raw Text
+              </button>
+            )}
+            {onShare && (
+              <button
+                onClick={onShare}
+                className="text-xs text-muted-foreground hover:text-foreground underline"
+              >
+                Share Table
+              </button>
+            )}
+          </div>
         )}
       </div>
     </div>

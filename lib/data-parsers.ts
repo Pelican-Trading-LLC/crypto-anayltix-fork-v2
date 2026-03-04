@@ -142,9 +142,14 @@ export function detectLabelValueList(text: string): LabelValueTableResult | null
   const lastIdx = bestRun[bestRun.length - 1]!.lineIndex
 
   // --- Build title ---
+  // Walk backwards past blank lines to find the real title line
   let title = "Data"
-  if (firstIdx > 0) {
-    const candidate = trimmedLines[firstIdx - 1]
+  let titleSearchIdx = firstIdx - 1
+  while (titleSearchIdx >= 0 && !trimmedLines[titleSearchIdx]) {
+    titleSearchIdx--
+  }
+  if (titleSearchIdx >= 0) {
+    const candidate = trimmedLines[titleSearchIdx]
     if (
       candidate &&
       candidate.length > 0 &&
@@ -162,7 +167,10 @@ export function detectLabelValueList(text: string): LabelValueTableResult | null
   // --- Detect column types ---
   const allValuesAreCurrency = bestRun.every((r) => /^\$[\d,.]+/.test(r.value))
   const allValuesArePercent = bestRun.every((r) => /[\d.]+%/.test(r.value))
-  const allLabelsAreDates = bestRun.every((r) => /^\d{4}-\d{2}-\d{2}/.test(r.label))
+
+  // Match both ISO dates (2025-01-02) and written dates (January 2, Jun 25, 01/02)
+  const datePattern = /^(?:\d{4}-\d{2}-\d{2}|(?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{1,2}(?:,?\s*\d{4})?|\d{1,2}\/\d{1,2}(?:\/\d{2,4})?)/i
+  const allLabelsAreDates = bestRun.every((r) => datePattern.test(r.label))
 
   const labelCol: Column = {
     key: "label",
@@ -181,7 +189,9 @@ export function detectLabelValueList(text: string): LabelValueTableResult | null
   }
 
   // --- Split surrounding text ---
-  const preText = lines.slice(0, firstIdx).join("\n").trim()
+  // If we used a title line, exclude it from preText to avoid duplication
+  const preTextEndIdx = title !== "Data" && titleSearchIdx >= 0 ? titleSearchIdx : firstIdx
+  const preText = lines.slice(0, preTextEndIdx).join("\n").trim()
   const postText = lines.slice(lastIdx + 1).join("\n").trim()
 
   return {
