@@ -32,7 +32,7 @@ export function LogoImg({ symbol, size = 16 }: { symbol: string; size?: number }
   return (
     <img
       src={`https://api.elbstream.com/logos/symbol/${logoSymbol}?format=png&size=50`}
-      alt=""
+      alt={`${symbol} logo`}
       className="rounded-sm object-contain flex-shrink-0"
       style={{ width: size, height: size }}
       loading="lazy"
