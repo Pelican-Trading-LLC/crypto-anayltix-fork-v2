@@ -34,7 +34,7 @@ export function StatsTableCard({ period, rows }: StatsTableProps) {
           width: "100%",
           height: "100%",
           alignItems: "center",
-          padding: "0 0 40px 0",
+          padding: "0 0 20px 0",
         }}
       >
         {/* Centered header: logo + brand + context */}
@@ -100,7 +100,6 @@ export function StatsTableCard({ period, rows }: StatsTableProps) {
             flexDirection: "column",
             width: "100%",
             flex: 1,
-            overflow: "hidden",
           }}
         >
           {/* Column headers */}
