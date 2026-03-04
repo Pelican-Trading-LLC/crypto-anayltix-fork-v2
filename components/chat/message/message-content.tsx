@@ -10,7 +10,6 @@ import type { TradeGrade } from "@/lib/grading/trade-grader"
 import { parseContentSegments } from "./format-utils"
 import { CodeBlock } from "./code-block"
 import { TextSegment } from "./text-segment"
-import { useToast } from "@/hooks/use-toast"
 
 /**
  * Detect raw JSON trade grade in message content.
@@ -62,7 +61,7 @@ export const MessageContent = memo(function MessageContent({
   economicTerms,
 }: MessageContentProps) {
   const [showRawText, setShowRawText] = useState(false)
-  const { toast } = useToast()
+  const [shareCopied, setShareCopied] = useState(false)
 
   // Defensive check - ensure content is always a string
   const safeContent = typeof content === 'string' ? content : String(content || '')
@@ -85,7 +84,7 @@ export const MessageContent = memo(function MessageContent({
     [safeContent, isStreaming, parsedData, gradeData]
   )
 
-  // Share handler: copy table data as tab-separated text
+  // Share handler: copy table data as tab-separated text with inline feedback
   const handleShareTable = useCallback(async () => {
     if (!labelValueData) return
     const { table } = labelValueData
@@ -96,14 +95,12 @@ export const MessageContent = memo(function MessageContent({
     const text = [table.title, '', header, ...rows].join('\n')
     try {
       await navigator.clipboard.writeText(text)
-      toast({
-        title: "Copied to clipboard",
-        description: "Table data copied to clipboard.",
-      })
+      setShareCopied(true)
+      setTimeout(() => setShareCopied(false), 2000)
     } catch {
       // Silent fail
     }
-  }, [labelValueData, toast])
+  }, [labelValueData])
 
   // Performance: skip expensive parsing during streaming for large content
   const segments = useMemo(() => {
@@ -172,12 +169,7 @@ export const MessageContent = memo(function MessageContent({
     const postSegments = hasPostText ? parseContentSegments(labelValueData.postText) : []
 
     return (
-      <motion.div
-        className="leading-normal tracking-normal font-normal break-words overflow-wrap-anywhere max-w-full"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.3 }}
-      >
+      <div className="leading-normal tracking-normal font-normal break-words overflow-wrap-anywhere max-w-full">
         {hasPreText && (
           <div className="space-y-1.5 mb-2">
             {preSegments.map((segment, index) =>
@@ -209,6 +201,7 @@ export const MessageContent = memo(function MessageContent({
           columns={labelValueData.table.columns}
           onToggle={() => setShowRawText(true)}
           onShare={handleShareTable}
+          shareCopied={shareCopied}
           compact
         />
 
@@ -243,7 +236,7 @@ export const MessageContent = memo(function MessageContent({
             )}
           </div>
         )}
-      </motion.div>
+      </div>
     )
   }
 

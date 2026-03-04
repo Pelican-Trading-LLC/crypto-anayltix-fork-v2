@@ -13,6 +13,7 @@ interface DataTableProps {
   summary?: Record<string, unknown>
   onToggle?: () => void
   onShare?: () => void
+  shareCopied?: boolean
   compact?: boolean
 }
 
@@ -85,7 +86,7 @@ function isArrowFormat(data: (DataPoint | Record<string, unknown>)[]): data is D
   return data.length > 0 && data[0] !== undefined && 'forwardReturn' in data[0]
 }
 
-export function DataTable({ data, columns, title = "Market Data", query, summary, onToggle, onShare, compact }: DataTableProps) {
+export function DataTable({ data, columns, title = "Market Data", query, summary, onToggle, onShare, shareCopied, compact }: DataTableProps) {
   // Determine which columns to use
   const displayColumns = useMemo(() => {
     if (columns) {
@@ -130,7 +131,7 @@ export function DataTable({ data, columns, title = "Market Data", query, summary
       {/* Pelican watermark — always present, subtler in compact mode */}
       <div className={cn(
         "absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden",
-        compact ? "opacity-[0.22]" : "opacity-40"
+        compact ? "opacity-[0.08]" : "opacity-30"
       )}>
         <Image
           src="/pelican-logo-transparent.webp"
@@ -139,7 +140,7 @@ export function DataTable({ data, columns, title = "Market Data", query, summary
           height={320}
           className={cn(
             "h-auto object-contain",
-            compact ? "w-[min(60vw,16rem)]" : "w-[min(70vw,24rem)]"
+            compact ? "w-[min(40vw,10rem)]" : "w-[min(60vw,20rem)]"
           )}
           aria-hidden="true"
         />
@@ -282,7 +283,7 @@ export function DataTable({ data, columns, title = "Market Data", query, summary
                 onClick={onShare}
                 className="text-xs text-muted-foreground hover:text-foreground underline"
               >
-                Share Table
+                {shareCopied ? "Copied!" : "Share Table"}
               </button>
             )}
           </div>
