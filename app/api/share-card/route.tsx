@@ -77,8 +77,7 @@ export async function GET(req: NextRequest) {
     })
     response.headers.set("Cache-Control", "no-store, max-age=0")
     return response
-  } catch (error) {
-    console.error("Share card generation error:", error)
+  } catch {
     return new Response("Failed to generate card", { status: 500 })
   }
 }
@@ -123,10 +122,9 @@ export async function POST(req: NextRequest) {
     response.headers.set("Cache-Control", "no-store, max-age=0")
     return response
   } catch (error) {
-    console.error("Share card POST error:", error)
-    return new Response(
-      `POST error: ${error instanceof Error ? error.message : String(error)}`,
-      { status: 500 }
-    )
+    const message = process.env.NODE_ENV === 'production'
+      ? 'Failed to generate card'
+      : `POST error: ${error instanceof Error ? error.message : String(error)}`
+    return new Response(message, { status: 500 })
   }
 }

@@ -37,8 +37,11 @@ export async function GET(request: Request) {
   ])
 
   if (correlations.error || assets.error) {
+    const message = process.env.NODE_ENV === 'production'
+      ? 'Internal server error'
+      : (correlations.error?.message || assets.error?.message)
     return NextResponse.json(
-      { error: correlations.error?.message || assets.error?.message },
+      { error: message },
       { status: 500 },
     )
   }

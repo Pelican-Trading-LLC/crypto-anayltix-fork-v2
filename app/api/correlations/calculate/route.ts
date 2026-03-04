@@ -12,7 +12,9 @@ export async function POST() {
     const result = await calculateCorrelations(serviceClient)
     return NextResponse.json(result)
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : String(error)
+    const message = process.env.NODE_ENV === 'production'
+      ? 'Internal server error'
+      : (error instanceof Error ? error.message : String(error))
     return NextResponse.json({ error: message }, { status: 500 })
   }
 }

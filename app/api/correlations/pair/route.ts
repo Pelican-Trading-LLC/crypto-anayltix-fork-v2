@@ -36,7 +36,10 @@ export async function GET(request: Request) {
   ])
 
   if (pairData.error) {
-    return NextResponse.json({ error: pairData.error.message }, { status: 500 })
+    const message = process.env.NODE_ENV === 'production'
+      ? 'Internal server error'
+      : pairData.error.message
+    return NextResponse.json({ error: message }, { status: 500 })
   }
 
   return NextResponse.json({
