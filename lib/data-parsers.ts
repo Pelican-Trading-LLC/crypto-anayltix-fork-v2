@@ -13,7 +13,7 @@ export interface ParsedDataTable {
 export interface Column {
   key: string
   label: string
-  type?: 'date' | 'percentage' | 'number' | 'text'
+  type?: 'date' | 'percentage' | 'number' | 'currency' | 'text'
   align?: 'left' | 'center' | 'right'
 }
 
@@ -24,6 +24,175 @@ export interface StructuredDataTable {
   columns: Column[]
   data: Record<string, unknown>[]
   summary?: Record<string, unknown>
+}
+
+/** Result from label-value list detection, includes surrounding text for mixed-content rendering */
+export interface LabelValueTableResult {
+  table: StructuredDataTable
+  /** Text content BEFORE the detected data rows */
+  preText: string
+  /** Text content AFTER the detected data rows */
+  postText: string
+}
+
+/**
+ * Parse a single line into label + value, or return null if it doesn't match.
+ * Exported for testing.
+ */
+export function parseLabelValueLine(
+  line: string
+): { label: string; value: string } | null {
+  if (!line || line.length > 200) return null
+
+  // Strip numbering: "1." "1)" "12." etc
+  // Strip bullets: "•" "-" "*"
+  // Strip markdown bold
+  const cleaned = line
+    .replace(/^\d+[.)]\s*/, "")
+    .replace(/^[•\-*]\s+/, "")
+    .replace(/\*\*/g, "")
+    .trim()
+
+  if (!cleaned) return null
+
+  // Try "Label: Value" (colon separator)
+  // Try "Label — Value" or "Label – Value" (dash separators)
+  const match =
+    cleaned.match(/^(.{2,50}?)\s*:\s+(.+)$/) ||
+    cleaned.match(/^(.{2,50}?)\s+[\u2014\u2013]\s+(.+)$/)
+
+  if (!match || !match[1] || !match[2]) return null
+
+  const label = match[1].trim()
+  const value = match[2].trim()
+
+  // --- FALSE POSITIVE GUARDS ---
+
+  // Guard 1: Label looks like a sentence (contains common English stopwords)
+  const sentenceWords = /\b(is|are|was|were|the|and|but|however|let|you|your|this|that|which|there|here|it|we|our|can|will|would|should|could|have|has|had|been|being|also|very|much|then|than|into|with|from|about|between|because|while|though|although|if)\b/i
+  if (sentenceWords.test(label)) return null
+
+  // Guard 2: Value looks like a sentence continuation (not a data value)
+  if (value.length > 80) return null
+  const valueWordCount = value.split(/\s+/).length
+  if (valueWordCount > 8) return null
+
+  // Guard 3: Label shouldn't end with punctuation
+  if (/[.!?]$/.test(label)) return null
+
+  return { label, value }
+}
+
+/**
+ * Detects numbered or bulleted lists with consistent "label: value" patterns.
+ * Returns table data plus surrounding text so mixed-content messages render correctly.
+ *
+ * Minimum 5 consecutive matching lines required to trigger.
+ *
+ * Patterns matched:
+ *   1. 2025-01-02: $257.21          (numbered + date: price)
+ *   • Win Rate: 72.4%               (bulleted + metric: value)
+ *   - Total P&L: +$1,245.00         (dashed + metric: value)
+ *   AAPL: $187.50                   (plain label: value)
+ *   52-Week High — $198.23          (em-dash separator)
+ */
+export function detectLabelValueList(text: string): LabelValueTableResult | null {
+  if (typeof text !== "string" || !text.trim()) return null
+
+  const lines = text.split("\n")
+  const trimmedLines = lines.map((l) => l.trim())
+
+  // Track the best consecutive run of matching lines
+  let currentRun: { label: string; value: string; lineIndex: number }[] = []
+  let bestRun: typeof currentRun = []
+  let gapCount = 0
+
+  for (let i = 0; i < trimmedLines.length; i++) {
+    const line = trimmedLines[i]
+
+    // Allow empty lines as gaps (max 1 consecutive gap)
+    if (!line) {
+      if (currentRun.length > 0) {
+        gapCount++
+        if (gapCount > 1) {
+          if (currentRun.length > bestRun.length) bestRun = [...currentRun]
+          currentRun = []
+          gapCount = 0
+        }
+      }
+      continue
+    }
+
+    const parsed = parseLabelValueLine(line)
+    if (parsed) {
+      currentRun.push({ ...parsed, lineIndex: i })
+      gapCount = 0
+    } else {
+      if (currentRun.length > bestRun.length) bestRun = [...currentRun]
+      currentRun = []
+      gapCount = 0
+    }
+  }
+  if (currentRun.length > bestRun.length) bestRun = [...currentRun]
+
+  // Minimum 5 rows to trigger
+  if (bestRun.length < 5) return null
+
+  const firstIdx = bestRun[0]!.lineIndex
+  const lastIdx = bestRun[bestRun.length - 1]!.lineIndex
+
+  // --- Build title ---
+  let title = "Data"
+  if (firstIdx > 0) {
+    const candidate = trimmedLines[firstIdx - 1]
+    if (
+      candidate &&
+      candidate.length > 0 &&
+      candidate.length < 120 &&
+      !parseLabelValueLine(candidate)
+    ) {
+      title = candidate
+        .replace(/\*\*/g, "")
+        .replace(/^#+\s*/, "")
+        .replace(/:$/, "")
+        .trim()
+    }
+  }
+
+  // --- Detect column types ---
+  const allValuesAreCurrency = bestRun.every((r) => /^\$[\d,.]+/.test(r.value))
+  const allValuesArePercent = bestRun.every((r) => /[\d.]+%/.test(r.value))
+  const allLabelsAreDates = bestRun.every((r) => /^\d{4}-\d{2}-\d{2}/.test(r.label))
+
+  const labelCol: Column = {
+    key: "label",
+    label: allLabelsAreDates ? "Date" : "Metric",
+    type: allLabelsAreDates ? "date" : "text",
+    align: "left",
+  }
+
+  const valueCol: Column = {
+    key: "value",
+    label: allValuesAreCurrency ? "Price" : allValuesArePercent ? "%" : "Value",
+    type: allValuesAreCurrency ? "currency"
+      : allValuesArePercent ? "percentage"
+      : "text",
+    align: "right",
+  }
+
+  // --- Split surrounding text ---
+  const preText = lines.slice(0, firstIdx).join("\n").trim()
+  const postText = lines.slice(lastIdx + 1).join("\n").trim()
+
+  return {
+    table: {
+      title,
+      columns: [labelCol, valueCol],
+      data: bestRun.map((r) => ({ label: r.label, value: r.value })),
+    },
+    preText,
+    postText,
+  }
 }
 
 /**

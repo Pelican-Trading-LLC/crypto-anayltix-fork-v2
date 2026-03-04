@@ -33,15 +33,41 @@ function getCellClass(value: unknown, type?: string, isFirstColumn?: boolean): s
   const base = "px-3 sm:px-4 py-2 sm:py-3 text-sm"
   const sticky = isFirstColumn ? "sticky left-0 bg-inherit" : ""
 
-  if (type === 'percentage' && value !== null && value !== undefined && value !== '—') {
-    const strValue = String(value).replace(/[–-]/g, '-').replace(/%/g, '').replace(/\+/g, '').trim()
-    const num = parseFloat(strValue)
+  const strValue = value !== null && value !== undefined ? String(value) : ""
 
+  // Percentage values: color by sign
+  if (type === 'percentage' && strValue && strValue !== '—') {
+    const cleaned = strValue.replace(/[–\u2013-]/g, '-').replace(/%/g, '').replace(/\+/g, '').trim()
+    const num = parseFloat(cleaned)
     if (!isNaN(num)) {
       const color = num >= 0
         ? "text-green-600 dark:text-green-400 font-semibold"
         : "text-red-600 dark:text-red-400 font-semibold"
       return `${base} ${color} ${sticky}`.trim()
+    }
+  }
+
+  // Currency values: detect sign from the string
+  if ((type === 'currency' || type === 'number') && strValue) {
+    const isCurrency = /\$/.test(strValue)
+    const isNegative = /^-/.test(strValue) || /^\(.*\)$/.test(strValue)
+
+    if (isCurrency) {
+      if (isNegative) {
+        return `${base} text-red-600 dark:text-red-400 font-semibold font-mono ${sticky}`.trim()
+      }
+      return `${base} text-cyan-600 dark:text-cyan-400 font-semibold font-mono ${sticky}`.trim()
+    }
+
+    // Non-currency numbers with sign
+    const num = parseFloat(strValue.replace(/[,$%+]/g, ''))
+    if (!isNaN(num)) {
+      if (strValue.startsWith('-') || strValue.startsWith('(')) {
+        return `${base} text-red-600 dark:text-red-400 font-semibold ${sticky}`.trim()
+      }
+      if (strValue.startsWith('+')) {
+        return `${base} text-green-600 dark:text-green-400 font-semibold ${sticky}`.trim()
+      }
     }
   }
 

@@ -3,7 +3,7 @@
 import { useState, useMemo, memo } from "react"
 import { motion } from "framer-motion"
 import { EnhancedTypingDots } from "../enhanced-typing-dots"
-import { detectDataTable } from "@/lib/data-parsers"
+import { detectDataTable, detectLabelValueList, type LabelValueTableResult } from "@/lib/data-parsers"
 import { DataTable } from "@/components/chat/data-visualizations/data-table"
 import { TradeGradeCard } from "@/components/grading/trade-grade-card"
 import type { TradeGrade } from "@/lib/grading/trade-grader"
@@ -77,6 +77,12 @@ export const MessageContent = memo(function MessageContent({
     [safeContent, isStreaming]
   )
 
+  // Detect label:value lists (numbered/bulleted data like price lists, stats)
+  const labelValueData = useMemo(
+    () => (!isStreaming && !parsedData && !gradeData ? detectLabelValueList(safeContent) : null),
+    [safeContent, isStreaming, parsedData, gradeData]
+  )
+
   // Performance: skip expensive parsing during streaming for large content
   const segments = useMemo(() => {
     if (isStreaming && safeContent.length > 1000) {
@@ -132,6 +138,81 @@ export const MessageContent = memo(function MessageContent({
           <p className="text-sm text-foreground leading-relaxed">{gradeData.postText}</p>
         )}
       </div>
+    )
+  }
+
+  // Render label:value list as table with surrounding text preserved
+  if (labelValueData && !showRawText) {
+    const hasPreText = labelValueData.preText.length > 0
+    const hasPostText = labelValueData.postText.length > 0
+
+    const preSegments = hasPreText ? parseContentSegments(labelValueData.preText) : []
+    const postSegments = hasPostText ? parseContentSegments(labelValueData.postText) : []
+
+    return (
+      <motion.div
+        className="leading-normal tracking-normal font-normal break-words overflow-wrap-anywhere max-w-full"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
+      >
+        {hasPreText && (
+          <div className="space-y-1.5 mb-2">
+            {preSegments.map((segment, index) =>
+              segment.type === "code" ? (
+                <CodeBlock
+                  key={`pre-code-${index}`}
+                  content={segment.content}
+                  language={segment.language}
+                  index={index}
+                />
+              ) : (
+                <TextSegment
+                  key={`pre-text-${index}`}
+                  content={segment.content}
+                  index={index}
+                  isStreaming={false}
+                  isLargeContent={false}
+                  tickers={tickers}
+                  economicTerms={economicTerms}
+                />
+              )
+            )}
+          </div>
+        )}
+
+        <DataTable
+          data={labelValueData.table.data}
+          title={labelValueData.table.title}
+          columns={labelValueData.table.columns}
+          onToggle={() => setShowRawText(true)}
+        />
+
+        {hasPostText && (
+          <div className="space-y-1.5 mt-2">
+            {postSegments.map((segment, index) =>
+              segment.type === "code" ? (
+                <CodeBlock
+                  key={`post-code-${index}`}
+                  content={segment.content}
+                  language={segment.language}
+                  index={index + 1000}
+                />
+              ) : (
+                <TextSegment
+                  key={`post-text-${index}`}
+                  content={segment.content}
+                  index={index + 1000}
+                  isStreaming={false}
+                  isLargeContent={false}
+                  tickers={tickers}
+                  economicTerms={economicTerms}
+                />
+              )
+            )}
+          </div>
+        )}
+      </motion.div>
     )
   }
 
