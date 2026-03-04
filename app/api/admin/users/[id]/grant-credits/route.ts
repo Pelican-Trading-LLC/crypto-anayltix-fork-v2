@@ -22,6 +22,11 @@ export async function POST(
 
   const admin = getServiceClient()
 
+  // TODO: This read-then-write has a race condition. Replace with an atomic RPC:
+  // CREATE OR REPLACE FUNCTION grant_credits(p_user_id uuid, p_amount integer)
+  // RETURNS integer AS $$ UPDATE user_credits SET credits_balance = credits_balance + p_amount
+  // WHERE user_id = p_user_id RETURNING credits_balance; $$ LANGUAGE sql SECURITY DEFINER;
+
   // Get current balance
   const { data: current, error: fetchErr } = await admin
     .from('user_credits')
