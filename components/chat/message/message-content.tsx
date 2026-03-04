@@ -79,7 +79,15 @@ export const MessageContent = memo(function MessageContent({
 
   // Detect label:value lists (numbered/bulleted data like price lists, stats)
   const labelValueData = useMemo(
-    () => (!isStreaming && !parsedData && !gradeData ? detectLabelValueList(safeContent) : null),
+    () => {
+      if (isStreaming || parsedData || gradeData) {
+        console.log('[LV-DEBUG] Skipped:', { isStreaming, hasParsedData: !!parsedData, hasGradeData: !!gradeData })
+        return null
+      }
+      const result = detectLabelValueList(safeContent)
+      console.log('[LV-DEBUG] Detection result:', result ? `${result.table.data.length} rows` : 'null', 'Content starts with:', safeContent.substring(0, 100))
+      return result
+    },
     [safeContent, isStreaming, parsedData, gradeData]
   )
 
