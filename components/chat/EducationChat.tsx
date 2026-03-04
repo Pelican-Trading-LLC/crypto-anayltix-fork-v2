@@ -173,17 +173,26 @@ export function EducationChat({ selectedTerm, onClear }: EducationChatProps) {
                 msg.type === 'user' ? 'justify-end' : 'justify-start'
               )}
             >
-              <div
-                className={cn(
-                  'max-w-[90%] px-3 py-2 text-xs leading-relaxed rounded-lg',
-                  msg.type === 'user'
-                    ? 'bg-blue-600 text-white rounded-br-sm'
-                    : 'bg-[var(--bg-elevated)] border border-[var(--border-subtle)] text-foreground rounded-bl-sm'
-                )}
-                dangerouslySetInnerHTML={{
-                  __html: msg.type === 'bot' ? formatMarkdown(msg.content) : msg.content,
-                }}
-              />
+              {msg.type === 'bot' ? (
+                <div
+                  className={cn(
+                    'max-w-[90%] px-3 py-2 text-xs leading-relaxed rounded-lg',
+                    'bg-[var(--bg-elevated)] border border-[var(--border-subtle)] text-foreground rounded-bl-sm'
+                  )}
+                  dangerouslySetInnerHTML={{
+                    __html: formatMarkdown(msg.content),
+                  }}
+                />
+              ) : (
+                <div
+                  className={cn(
+                    'max-w-[90%] px-3 py-2 text-xs leading-relaxed rounded-lg',
+                    'bg-blue-600 text-white rounded-br-sm'
+                  )}
+                >
+                  {msg.content}
+                </div>
+              )}
             </motion.div>
           ))}
         </AnimatePresence>
