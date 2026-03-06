@@ -199,10 +199,7 @@ export function DataTable({ data, columns, title = "Market Data", query, summary
               {data.map((row, i) => (
                 <tr
                   key={i}
-                  className={cn(
-                    "border-b border-border/30 transition",
-                    i % 2 === 0 ? "bg-transparent" : "bg-white/[0.02]"
-                  )}
+                  className="border-b border-border/10"
                 >
                   {displayColumns.map((col, colIndex) => {
                     const value = row[col.key as keyof typeof row]
