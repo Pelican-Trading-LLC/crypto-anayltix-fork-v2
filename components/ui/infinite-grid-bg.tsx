@@ -102,16 +102,24 @@ function GridPattern({
   offsetY: ReturnType<typeof useMotionValue<number>>
   colorClass: string
 }) {
+  const patternRef = useRef<SVGPatternElement>(null)
+
+  useAnimationFrame(() => {
+    if (patternRef.current) {
+      patternRef.current.setAttribute('x', String(offsetX.get()))
+      patternRef.current.setAttribute('y', String(offsetY.get()))
+    }
+  })
+
   return (
     <svg className="w-full h-full">
       <defs>
-        <motion.pattern
+        <pattern
+          ref={patternRef}
           id={id}
           width="40"
           height="40"
           patternUnits="userSpaceOnUse"
-          x={offsetX}
-          y={offsetY}
         >
           <path
             d="M 40 0 L 0 0 0 40"
@@ -120,7 +128,7 @@ function GridPattern({
             strokeWidth="1"
             className={colorClass}
           />
-        </motion.pattern>
+        </pattern>
       </defs>
       <rect width="100%" height="100%" fill={`url(#${id})`} />
     </svg>
