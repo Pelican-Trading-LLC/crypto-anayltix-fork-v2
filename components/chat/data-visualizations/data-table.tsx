@@ -179,7 +179,7 @@ export function DataTable({ data, columns, title = "Market Data", query, summary
             !compact && "min-w-[640px]"
           )} aria-label="Data visualization">
             <thead>
-              <tr className="border-b-2 border-border">
+              <tr className="border-b-2 border-border/40">
                 {displayColumns.map((col, i) => (
                   <th
                     key={col.key}
@@ -200,8 +200,8 @@ export function DataTable({ data, columns, title = "Market Data", query, summary
                 <tr
                   key={i}
                   className={cn(
-                    "border-b border-border transition",
-                    i % 2 === 0 ? "bg-card" : "bg-muted/20"
+                    "border-b border-border/30 transition",
+                    i % 2 === 0 ? "bg-transparent" : "bg-white/[0.02]"
                   )}
                 >
                   {displayColumns.map((col, colIndex) => {
@@ -237,7 +237,7 @@ export function DataTable({ data, columns, title = "Market Data", query, summary
 
             {/* Summary row - either from props or calculated for legacy format */}
             {(summary || stats) && (
-              <tfoot className="bg-primary/10 border-t-2 border-primary/30">
+              <tfoot className="bg-primary/[0.04] border-t-2 border-primary/20">
                 <tr>
                   {summary ? (
                     // Structured format summary
