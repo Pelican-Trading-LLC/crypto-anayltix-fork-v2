@@ -14,7 +14,7 @@ export function ChatMock() {
         <span className="text-xs font-medium text-slate-500">Pelican AI</span>
         <div className="ml-auto flex items-center gap-1.5">
           <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-          <span className="text-[10px] text-slate-400">GPT-5</span>
+
         </div>
       </div>
 

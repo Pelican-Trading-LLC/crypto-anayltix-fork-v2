@@ -19,7 +19,7 @@ const features = [
   {
     icon: ChatCircle,
     title: 'AI Chat',
-    description: 'Ask any market question in plain English. GPT-5 with live data and your trade history.',
+    description: 'Ask any market question in plain English. Live data and your trade history, one conversation.',
   },
   {
     icon: Sun,

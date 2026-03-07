@@ -29,9 +29,9 @@ const features = [
     icon: ChatCircle,
     title: 'Ask anything about any market',
     description:
-      'GPT-5 with live market data, your positions, and institutional-grade analysis. Like having a senior analyst on call 24/7.',
+      'Live market data, your positions, and institutional-grade analysis. Like having a senior analyst on call 24/7.',
     highlights: [
-      'GPT-5 powered with real-time Polygon data',
+      'Powered by real-time Polygon data',
       'Knows your open positions and trade history',
       'Pre-trade checklists built into every analysis',
     ],
