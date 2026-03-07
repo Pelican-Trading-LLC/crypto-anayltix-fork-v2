@@ -1,27 +1,27 @@
 'use client'
 
-import { TrendUp, Brain, Rocket } from '@phosphor-icons/react'
+import { ChartLineUp, Lightbulb, Trophy } from '@phosphor-icons/react'
 import { ScrollReveal } from '@/components/landing/scroll-reveal'
 import { Section } from '@/components/landing/section'
 
 const steps = [
   {
     number: '01',
-    icon: TrendUp,
+    icon: ChartLineUp,
     title: 'You trade',
     description:
       'Log trades, journal your process, tag your playbooks. Every interaction adds to your data.',
   },
   {
     number: '02',
-    icon: Brain,
+    icon: Lightbulb,
     title: 'Pelican learns',
     description:
       'Which setups work for you. When you overtrade. Your best sessions. Your costly habits.',
   },
   {
     number: '03',
-    icon: Rocket,
+    icon: Trophy,
     title: 'You improve',
     description:
       'Personalized coaching, preemptive warnings, surfaced opportunities. The edge compounds.',
