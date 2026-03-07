@@ -205,10 +205,8 @@ export function PlatformShowcase() {
             </div>
 
             {/* Right: mock component */}
-            <div className="w-full rounded-2xl overflow-hidden" style={{ background: 'linear-gradient(to bottom, #1e293b, #0a0a0f)', padding: '1px' }}>
-              <div className="rounded-[15px] overflow-hidden bg-[#0a0a0f] shadow-lg">
-                <MockComponent />
-              </div>
+            <div className="w-full rounded-2xl overflow-hidden border border-slate-200 shadow-lg shadow-slate-200/50 bg-white">
+              <MockComponent />
             </div>
           </div>
         </motion.div>

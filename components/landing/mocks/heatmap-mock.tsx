@@ -12,28 +12,28 @@ function getTileColor(pct: number) {
 }
 
 function getTextColor(pct: number) {
-  if (pct > 0) return 'text-emerald-400'
-  if (pct < 0) return 'text-red-400'
-  return 'text-white/50'
+  if (pct > 0) return 'text-emerald-600'
+  if (pct < 0) return 'text-red-600'
+  return 'text-slate-400'
 }
 
 const tabs = ['Stocks', 'Forex', 'Crypto'] as const
 
 export function HeatmapMock() {
   return (
-    <div className="bg-[#0a0a0f] rounded-xl border border-white/[0.08] overflow-hidden h-[360px] flex flex-col">
+    <div className="bg-white rounded-xl border border-slate-200 overflow-hidden h-[360px] flex flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06]">
-        <span className="text-sm font-medium text-white/90">Market Heatmap</span>
-        <div className="flex items-center gap-1 bg-[#111118] rounded-lg p-0.5">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200">
+        <span className="text-sm font-medium text-slate-900">Market Heatmap</span>
+        <div className="flex items-center gap-1 bg-slate-50 rounded-lg p-0.5">
           {tabs.map((tab) => (
             <button
               key={tab}
               className={cn(
                 'text-[10px] font-medium px-2.5 py-1 rounded-md transition-colors',
                 tab === 'Stocks'
-                  ? 'bg-purple-500/20 text-purple-400'
-                  : 'text-white/40 hover:text-white/60'
+                  ? 'bg-blue-500/10 text-blue-600'
+                  : 'text-slate-400 hover:text-slate-600'
               )}
             >
               {tab}
@@ -52,7 +52,7 @@ export function HeatmapMock() {
               getTileColor(2.1)
             )}
           >
-            <span className="text-sm font-semibold text-white/90">NVDA</span>
+            <span className="text-sm font-semibold text-slate-900">NVDA</span>
             <span className={cn('text-xs font-mono tabular-nums', getTextColor(2.1))}>+2.1%</span>
           </div>
           <div
@@ -61,7 +61,7 @@ export function HeatmapMock() {
               getTileColor(0.8)
             )}
           >
-            <span className="text-xs font-semibold text-white/90">AAPL</span>
+            <span className="text-xs font-semibold text-slate-900">AAPL</span>
             <span className={cn('text-[10px] font-mono tabular-nums', getTextColor(0.8))}>+0.8%</span>
           </div>
 
@@ -72,7 +72,7 @@ export function HeatmapMock() {
               getTileColor(1.2)
             )}
           >
-            <span className="text-[10px] font-semibold text-white/90">MSFT</span>
+            <span className="text-[10px] font-semibold text-slate-900">MSFT</span>
             <span className={cn('text-[10px] font-mono tabular-nums', getTextColor(1.2))}>+1.2%</span>
           </div>
           <div
@@ -81,7 +81,7 @@ export function HeatmapMock() {
               getTileColor(0.5)
             )}
           >
-            <span className="text-[10px] font-semibold text-white/90">AMZN</span>
+            <span className="text-[10px] font-semibold text-slate-900">AMZN</span>
             <span className={cn('text-[10px] font-mono tabular-nums', getTextColor(0.5))}>+0.5%</span>
           </div>
 
@@ -92,7 +92,7 @@ export function HeatmapMock() {
               getTileColor(-1.4)
             )}
           >
-            <span className="text-[10px] font-semibold text-white/90">TSLA</span>
+            <span className="text-[10px] font-semibold text-slate-900">TSLA</span>
             <span className={cn('text-[10px] font-mono tabular-nums', getTextColor(-1.4))}>-1.4%</span>
           </div>
           <div
@@ -101,7 +101,7 @@ export function HeatmapMock() {
               getTileColor(-0.3)
             )}
           >
-            <span className="text-[10px] font-semibold text-white/90">GOOGL</span>
+            <span className="text-[10px] font-semibold text-slate-900">GOOGL</span>
             <span className={cn('text-[10px] font-mono tabular-nums', getTextColor(-0.3))}>-0.3%</span>
           </div>
           <div
@@ -110,7 +110,7 @@ export function HeatmapMock() {
               getTileColor(-0.6)
             )}
           >
-            <span className="text-[10px] font-semibold text-white/90">META</span>
+            <span className="text-[10px] font-semibold text-slate-900">META</span>
             <span className={cn('text-[10px] font-mono tabular-nums', getTextColor(-0.6))}>-0.6%</span>
           </div>
           <div
@@ -119,7 +119,7 @@ export function HeatmapMock() {
               getTileColor(0.1)
             )}
           >
-            <span className="text-[10px] font-semibold text-white/90">JPM</span>
+            <span className="text-[10px] font-semibold text-slate-900">JPM</span>
             <span className={cn('text-[10px] font-mono tabular-nums', getTextColor(0.1))}>+0.1%</span>
           </div>
         </div>
