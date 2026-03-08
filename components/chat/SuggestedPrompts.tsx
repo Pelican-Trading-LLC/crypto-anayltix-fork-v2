@@ -50,7 +50,11 @@ const MARKET_DEFAULT_PROMPTS: Record<string, string[]> = {
 }
 
 // Keep a flat export for backward compatibility
-const DEFAULT_PROMPTS = MARKET_DEFAULT_PROMPTS.stocks!
+const DEFAULT_PROMPTS = [
+  "Crypto market pulse — BTC dominance and major moves",
+  "Explain funding rates like I trade ES futures",
+  "What's the current derivatives setup on BTC?",
+]
 
 interface SuggestedChip {
   icon: React.ElementType
@@ -255,7 +259,7 @@ export function SuggestedPrompts({ onSelect, disabled }: SuggestedPromptsProps) 
           )
         })
       ) : (
-        (MARKET_DEFAULT_PROMPTS[primaryMarket] || MARKET_DEFAULT_PROMPTS.stocks!).map((prompt, index) => (
+        (MARKET_DEFAULT_PROMPTS[primaryMarket] || MARKET_DEFAULT_PROMPTS.crypto!).map((prompt, index) => (
           <motion.button
             key={index}
             initial={{ opacity: 0, y: 6 }}

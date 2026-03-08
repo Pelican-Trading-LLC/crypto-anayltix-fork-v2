@@ -49,33 +49,33 @@ const ACTIONS: ActionDef[] = [
   {
     key: "analyze",
     icon: ChartLineUp,
-    label: "Analyze",
-    description: "Technical analysis on any ticker",
+    label: "Analyze Position",
+    description: "Analyze my crypto portfolio positions and risk",
   },
   {
     key: "scan",
     icon: Briefcase,
-    label: "Scan Position",
-    description: "Review an open position",
-    requiresTrades: true,
+    label: "Check Funding Rates",
+    description: "What are current funding rates across BTC, ETH, SOL?",
+    requiresTrades: false,
   },
   {
     key: "pretrade",
     icon: ShieldCheck,
-    label: "Pre-Trade Check",
-    description: "Validate before you enter",
+    label: "Whale Activity",
+    description: "Show me recent significant whale movements",
   },
   {
     key: "compare",
     icon: Scales,
-    label: "Compare",
-    description: "Head-to-head ticker comparison",
+    label: "Market Overview",
+    description: "Give me a crypto market overview",
   },
   {
     key: "learn",
     icon: GraduationCap,
     label: "Learn",
-    description: "Explain any trading concept",
+    description: "Explain any crypto trading concept",
   },
   {
     key: "review",
@@ -149,7 +149,19 @@ function ActionCard({
     if (disabled) return
 
     if (action.key === "review") {
-      onSend('Analyze my recent trading behavior. Look at my win rate, risk management, streaks, and any patterns you notice. Give me specific, actionable feedback.')
+      onSend('Analyze my recent crypto trading behavior. Look at my win rate, risk management, streaks, and any patterns you notice. Give me specific, actionable feedback.')
+      return
+    }
+    if (action.key === "scan") {
+      onSend('What are current funding rates across BTC, ETH, SOL?')
+      return
+    }
+    if (action.key === "pretrade") {
+      onSend('Show me recent significant whale movements')
+      return
+    }
+    if (action.key === "compare") {
+      onSend('Give me a crypto market overview')
       return
     }
     onToggle()
@@ -192,7 +204,7 @@ function ActionCard({
             {action.description}
           </p>
         </div>
-        {action.key !== "review" && (
+        {action.key !== "review" && action.key !== "scan" && action.key !== "pretrade" && action.key !== "compare" && (
           <div className="shrink-0 text-[var(--text-muted)]">
             {isExpanded ? (
               <CaretDown size={14} weight="regular" />
@@ -204,7 +216,7 @@ function ActionCard({
       </button>
 
       <AnimatePresence mode="wait">
-        {isExpanded && action.key !== "review" && (
+        {isExpanded && action.key !== "review" && action.key !== "scan" && action.key !== "pretrade" && action.key !== "compare" && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
@@ -289,7 +301,7 @@ function AnalyzeForm({ onSend }: { onSend: (msg: string) => void }) {
         value={ticker}
         onChange={(e) => setTicker(e.target.value.toUpperCase())}
         onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
-        placeholder="Ticker (e.g. AAPL)"
+        placeholder="Token (e.g. BTC)"
         maxLength={10}
         className={inputClass}
       />
@@ -538,7 +550,7 @@ function LearnForm({ onSend }: { onSend: (msg: string) => void }) {
         value={topic}
         onChange={(e) => setTopic(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
-        placeholder="What do you want to learn? (e.g. RSI, options Greeks)"
+        placeholder="What do you want to learn? (e.g. funding rates, DeFi)"
         className={inputClass}
       />
       <PelicanButton className="w-full" size="sm" onClick={handleSubmit} disabled={!topic.trim()}>

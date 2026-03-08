@@ -17,6 +17,7 @@ import { useLiveQuotes } from "@/hooks/use-live-quotes"
 import { KNOWN_FOREX_PAIRS } from "@/lib/ticker-blocklist"
 import { useTrades } from "@/hooks/use-trades"
 import { formatPercent } from "@/lib/formatters"
+import { MOCK_POSITIONS, MOCK_MARKET, MOCK_BRIEF, ASSET_COLORS, formatUSD, formatPct } from '@/lib/crypto-mock-data'
 import { useOnboardingProgress } from "@/hooks/use-onboarding-progress"
 import { useTraderProfile } from "@/hooks/use-trader-profile"
 import { usePelicanPanelContext } from "@/providers/pelican-panel-provider"
@@ -537,311 +538,26 @@ export function TradingContextPanel({
             className="overflow-hidden"
           >
             <div className="p-4 space-y-4">
-              {/* Watchlist */}
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <h4 className="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider flex items-center gap-1.5">
-                    <Star size={12} weight="regular" />
-                    Watchlist
-                  </h4>
-                  <button
-                    onClick={() => setEditingWatchlist(!editingWatchlist)}
-                    className="text-[10px] text-[var(--accent-primary)] hover:text-[var(--accent-hover)] transition-colors duration-150 font-medium"
-                  >
-                    {editingWatchlist ? "Done" : "Edit"}
-                  </button>
+              {/* Portfolio */}
+              <div className="px-4 py-3">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground">PORTFOLIO</span>
+                  <span className="font-mono text-[11px] text-muted-foreground">$65,942</span>
                 </div>
-
-                {/* Loading state */}
-                {watchlistLoading && watchlistTickers.length === 0 && (
-                  <div className="space-y-1.5">
-                    {[1, 2, 3].map((i) => (
-                      <div key={i} className="h-10 rounded-lg bg-[var(--bg-surface)] animate-pulse" />
-                    ))}
-                  </div>
-                )}
-
-                {/* Empty state */}
-                {!watchlistLoading && watchlistTickers.length === 0 && !editingWatchlist && (
-                  <div className="p-3 rounded-lg bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-center">
-                    <Star size={20} weight="thin" className="text-[var(--text-muted)] mx-auto mb-1.5" />
-                    <p className="text-[10px] text-[var(--text-muted)] leading-relaxed">
-                      No tickers on your watchlist.<br />Use chat to add stocks or click Edit.
-                    </p>
-                  </div>
-                )}
-
-                {/* Ticker list */}
-                <div className="space-y-1.5">
-                  {watchlistTickers.map((ticker) => (
-                    <div key={ticker.symbol} className="flex items-center gap-1">
-                      {editingWatchlist ? (
-                        <>
-                          <div className="flex-1 flex items-center justify-between p-2 rounded-lg bg-[var(--bg-surface)] border border-[var(--border-subtle)]">
-                            <span className="text-xs font-semibold text-[var(--text-primary)]">{ticker.symbol}</span>
-                            <div className="flex flex-col items-end">
-                              <span className="text-xs font-medium font-mono tabular-nums text-[var(--text-primary)]">{formatPrice(ticker.price, ticker.symbol)}</span>
-                            </div>
-                          </div>
-                          <button
-                            onClick={() => removeFromWatchlist(ticker.symbol)}
-                            className="p-1.5 rounded-md text-[var(--data-negative)] hover:bg-[var(--data-negative)]/10 transition-colors duration-150"
-                          >
-                            <X size={14} weight="bold" />
-                          </button>
-                        </>
-                      ) : (
-                        <div className="w-full">
-                          <div className="flex items-center gap-1">
-                            {/* Clickable ticker row — opens chat */}
-                            <button
-                              className="flex-1 flex items-center justify-between p-2 rounded-lg bg-[var(--bg-surface)] border border-[var(--border-subtle)] hover:border-[var(--border-hover)] hover:bg-white/5 cursor-pointer transition-all duration-150 text-left"
-                              onClick={() => {
-                                const prompt = `Analyze ${ticker.symbol} — it's on my watchlist. ${ticker.notes ? `Notes: ${ticker.notes}` : ''} ${ticker.customPrompt || 'Give me a technical and fundamental update.'}`
-                                openWithPrompt(
-                                  ticker.symbol,
-                                  prompt,
-                                  null
-                                )
-                              }}
-                            >
-                              <div className="flex items-center gap-1.5">
-                                <span className="text-xs font-semibold text-[var(--text-primary)]">{ticker.symbol}</span>
-                                {ticker.customPrompt && (
-                                  <BellRinging size={10} weight="fill" className="text-[var(--accent-primary)]" />
-                                )}
-                                {(ticker.alertPriceAbove != null || ticker.alertPriceBelow != null) && (
-                                  <BellSimple size={10} weight="fill" className="text-[var(--data-warning)]" />
-                                )}
-                              </div>
-                              <div className="flex flex-col items-end">
-                                <span className="text-xs font-medium font-mono tabular-nums text-[var(--text-primary)]">{formatPrice(ticker.price, ticker.symbol)}</span>
-                                <div
-                                  className={cn(
-                                    "text-[10px] font-medium font-mono tabular-nums px-1.5 py-0.5 rounded",
-                                    getChangeBg(ticker.changePercent),
-                                    getChangeColor(ticker.changePercent),
-                                  )}
-                                >
-                                  {formatPercent(ticker.changePercent)}
-                                </div>
-                              </div>
-                            </button>
-                            {/* Action menu button — stops propagation */}
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <button
-                                  className="p-1.5 rounded-md text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-elevated)] transition-colors duration-150"
-                                  onClick={(e) => e.stopPropagation()}
-                                >
-                                  <CaretDown size={12} weight="regular" />
-                                </button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end" className="w-48">
-                                <DropdownMenuItem onClick={() => showChart(ticker.symbol)}>
-                                  <ChartLineUp size={14} weight="regular" className="mr-2" />
-                                  Open Chart
-                                </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => onPrefillChat?.(`Analyze ${ticker.symbol}`)}>
-                                  <ChatCircle size={14} weight="regular" className="mr-2" />
-                                  Ask Pelican
-                                </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => onPrefillChat?.(`Deep dive on ${ticker.symbol} — technicals, fundamentals, and sentiment`)}>
-                                  <MagnifyingGlass size={14} weight="regular" className="mr-2" />
-                                  Deep Dive
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                  onClick={() => {
-                                    setPriceAlertEditId(ticker.id)
-                                    setPriceAboveInput(ticker.alertPriceAbove != null ? String(ticker.alertPriceAbove) : "")
-                                    setPriceBelowInput(ticker.alertPriceBelow != null ? String(ticker.alertPriceBelow) : "")
-                                  }}
-                                >
-                                  <BellSimple size={14} weight="regular" className="mr-2" />
-                                  {(ticker.alertPriceAbove != null || ticker.alertPriceBelow != null) ? 'Edit Price Alerts...' : 'Set Price Alerts...'}
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                  onClick={() => {
-                                    setAlertEditTicker(ticker.symbol)
-                                    setAlertInput(ticker.customPrompt || "")
-                                    setTimeout(() => alertInputRef.current?.focus(), 50)
-                                  }}
-                                >
-                                  <Bell size={14} weight="regular" className="mr-2" />
-                                  {ticker.customPrompt ? 'Edit Custom Alert...' : 'Set Custom Alert...'}
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                  onClick={() => removeFromWatchlist(ticker.symbol)}
-                                  className="text-[var(--data-negative)] focus:text-[var(--data-negative)]"
-                                >
-                                  <Trash size={14} weight="regular" className="mr-2" />
-                                  Remove
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </div>
-
-                          {/* Price Alerts Inline Editor */}
-                          {priceAlertEditId === ticker.id && (
-                            <div className="mt-1.5 p-2 rounded-lg bg-[var(--bg-elevated)] border border-[var(--accent-primary)]/30">
-                              <div className="flex items-center gap-1.5 mb-1.5">
-                                <BellSimple size={12} weight="bold" className="text-[var(--accent-primary)]" />
-                                <span className="text-[10px] font-medium text-[var(--accent-primary)]">Price Alerts</span>
-                              </div>
-                              <div className="space-y-1.5">
-                                <div className="flex items-center gap-2">
-                                  <label className="text-[10px] text-[var(--text-muted)] w-14 shrink-0">Above</label>
-                                  <input
-                                    type="number"
-                                    step="0.01"
-                                    value={priceAboveInput}
-                                    onChange={(e) => setPriceAboveInput(e.target.value)}
-                                    onKeyDown={(e) => {
-                                      if (e.key === "Escape") setPriceAlertEditId(null)
-                                    }}
-                                    placeholder="Price..."
-                                    className="flex-1 bg-[var(--bg-surface)] text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-2 py-1.5 rounded border border-[var(--border-subtle)] outline-none focus:border-[var(--accent-primary)] transition-colors font-mono tabular-nums"
-                                  />
-                                </div>
-                                <div className="flex items-center gap-2">
-                                  <label className="text-[10px] text-[var(--text-muted)] w-14 shrink-0">Below</label>
-                                  <input
-                                    type="number"
-                                    step="0.01"
-                                    value={priceBelowInput}
-                                    onChange={(e) => setPriceBelowInput(e.target.value)}
-                                    onKeyDown={(e) => {
-                                      if (e.key === "Escape") setPriceAlertEditId(null)
-                                    }}
-                                    placeholder="Price..."
-                                    className="flex-1 bg-[var(--bg-surface)] text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-2 py-1.5 rounded border border-[var(--border-subtle)] outline-none focus:border-[var(--accent-primary)] transition-colors font-mono tabular-nums"
-                                  />
-                                </div>
-                              </div>
-                              <div className="flex items-center gap-1.5 mt-1.5">
-                                <button
-                                  onClick={() => {
-                                    const above = priceAboveInput.trim() ? parseFloat(priceAboveInput) : null
-                                    const below = priceBelowInput.trim() ? parseFloat(priceBelowInput) : null
-                                    updateWatchlistItem(ticker.id, {
-                                      alert_price_above: above != null && !isNaN(above) ? above : null,
-                                      alert_price_below: below != null && !isNaN(below) ? below : null,
-                                    })
-                                    setPriceAlertEditId(null)
-                                  }}
-                                  className="px-2 py-1 rounded text-[10px] font-medium bg-[var(--accent-primary)] text-white hover:bg-[var(--accent-hover)] transition-colors"
-                                >
-                                  Save
-                                </button>
-                                <button
-                                  onClick={() => setPriceAlertEditId(null)}
-                                  className="px-2 py-1 rounded text-[10px] font-medium text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface)] transition-colors"
-                                >
-                                  Cancel
-                                </button>
-                                {(ticker.alertPriceAbove != null || ticker.alertPriceBelow != null) && (
-                                  <button
-                                    onClick={() => {
-                                      updateWatchlistItem(ticker.id, { alert_price_above: null, alert_price_below: null })
-                                      setPriceAlertEditId(null)
-                                    }}
-                                    className="px-2 py-1 rounded text-[10px] font-medium text-[var(--data-negative)] hover:bg-[var(--data-negative)]/10 transition-colors ml-auto"
-                                  >
-                                    Clear
-                                  </button>
-                                )}
-                              </div>
-                            </div>
-                          )}
-
-                          {/* Custom Alert Inline Editor */}
-                          {alertEditTicker === ticker.symbol && (
-                            <div className="mt-1.5 p-2 rounded-lg bg-[var(--bg-elevated)] border border-[var(--accent-primary)]/30">
-                              <div className="flex items-center gap-1.5 mb-1.5">
-                                <BellRinging size={12} weight="bold" className="text-[var(--accent-primary)]" />
-                                <span className="text-[10px] font-medium text-[var(--accent-primary)]">Custom Alert</span>
-                              </div>
-                              <input
-                                ref={alertInputRef}
-                                type="text"
-                                value={alertInput}
-                                onChange={(e) => setAlertInput(e.target.value)}
-                                onKeyDown={(e) => {
-                                  if (e.key === "Enter") {
-                                    updateCustomPrompt(ticker.symbol, alertInput.trim() || null)
-                                    setAlertEditTicker(null)
-                                  }
-                                  if (e.key === "Escape") {
-                                    setAlertEditTicker(null)
-                                  }
-                                }}
-                                placeholder="e.g., Alert when NVDA breaks above 950"
-                                className="w-full bg-[var(--bg-surface)] text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)] px-2 py-1.5 rounded border border-[var(--border-subtle)] outline-none focus:border-[var(--accent-primary)] transition-colors"
-                                maxLength={200}
-                              />
-                              <div className="flex items-center gap-1.5 mt-1.5">
-                                <button
-                                  onClick={() => {
-                                    updateCustomPrompt(ticker.symbol, alertInput.trim() || null)
-                                    setAlertEditTicker(null)
-                                  }}
-                                  className="px-2 py-1 rounded text-[10px] font-medium bg-[var(--accent-primary)] text-white hover:bg-[var(--accent-hover)] transition-colors"
-                                >
-                                  Save
-                                </button>
-                                <button
-                                  onClick={() => setAlertEditTicker(null)}
-                                  className="px-2 py-1 rounded text-[10px] font-medium text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface)] transition-colors"
-                                >
-                                  Cancel
-                                </button>
-                                {ticker.customPrompt && (
-                                  <button
-                                    onClick={() => {
-                                      updateCustomPrompt(ticker.symbol, null)
-                                      setAlertEditTicker(null)
-                                    }}
-                                    className="px-2 py-1 rounded text-[10px] font-medium text-[var(--data-negative)] hover:bg-[var(--data-negative)]/10 transition-colors ml-auto"
-                                  >
-                                    Remove
-                                  </button>
-                                )}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      )}
+                {MOCK_POSITIONS.map(p => (
+                  <div key={p.asset} className="flex items-center justify-between py-2 border-b border-[var(--border)] last:border-0">
+                    <div className="flex items-center gap-2">
+                      <div className="w-5 h-5 rounded-full flex items-center justify-center text-[8px] font-bold text-white" style={{ backgroundColor: ASSET_COLORS[p.asset] }}>{p.asset[0]}</div>
+                      <span className="text-[13px] font-medium">{p.asset}</span>
                     </div>
-                  ))}
-                </div>
-
-                {/* Add ticker input (edit mode) */}
-                {editingWatchlist && (
-                  <div className="flex items-center gap-1.5">
-                    <div className="flex-1 flex items-center gap-1.5 px-2 py-1.5 rounded-lg bg-[var(--bg-surface)] border border-[var(--border-subtle)] focus-within:border-[var(--accent-primary)] transition-colors duration-150">
-                      <Plus size={12} weight="regular" className="text-[var(--text-muted)] shrink-0" />
-                      <input
-                        ref={addInputRef}
-                        type="text"
-                        value={addTickerInput}
-                        onChange={(e) => setAddTickerInput(e.target.value.toUpperCase())}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") handleAddTicker()
-                        }}
-                        placeholder="Add symbol..."
-                        className="flex-1 bg-transparent text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)] outline-none"
-                        maxLength={10}
-                      />
+                    <div className="text-right">
+                      <div className="font-mono text-[12px] tabular-nums">{formatUSD(p.current_price)}</div>
+                      <div className={`font-mono text-[10px] tabular-nums ${p.price_change_24h >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                        {formatPct(p.price_change_24h)}
+                      </div>
                     </div>
-                    <button
-                      onClick={handleAddTicker}
-                      disabled={!addTickerInput.trim()}
-                      className="px-2.5 py-1.5 rounded-lg text-[10px] font-medium bg-[var(--accent-primary)] text-white hover:bg-[var(--accent-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors duration-150"
-                    >
-                      Add
-                    </button>
                   </div>
-                )}
+                ))}
               </div>
 
               {/* Active Positions */}
@@ -881,50 +597,17 @@ export function TradingContextPanel({
                 </div>
               )}
 
-              {/* Category / Sector Performance */}
-              <div className="space-y-2">
-                <h4 className="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider">
-                  {marketConfig.categoryLabel}
-                </h4>
-                <div className="space-y-1.5">
-                  {defaultSectors.map((sector) => (
-                    <button
-                      key={sector.name}
-                      onClick={() => {
-                        const heatmapName = sectorToSP500[sector.name]
-                        if (heatmapName) {
-                          router.push(`/heatmap?sector=${encodeURIComponent(heatmapName)}`)
-                        } else {
-                          // Non-stock categories: ask Pelican about the category
-                          onPrefillChat?.(`What's happening in ${sector.name} today?`)
-                        }
-                      }}
-                      className="w-full flex items-center justify-between p-2 rounded-lg hover:bg-[var(--bg-elevated)] transition-colors duration-150 cursor-pointer group"
-                    >
-                      <span className="text-xs text-[var(--text-primary)] group-hover:text-[var(--accent-primary)] transition-colors duration-150">{sector.name}</span>
-                      <div className="flex items-center gap-1.5">
-                        <span className={cn("text-xs font-medium font-mono tabular-nums", getChangeColor(sector.changePercent))}>
-                          {formatPercent(sector.changePercent)}
-                        </span>
-                        {sector.changePercent !== null && (
-                          <div
-                            className={cn(
-                              "p-0.5 rounded",
-                              sector.changePercent >= 0 ? "bg-[var(--data-positive)]/10" : "bg-[var(--data-negative)]/10",
-                            )}
-                          >
-                            {sector.changePercent >= 0 ? (
-                              <TrendUp size={12} weight="regular" className="text-[var(--data-positive)]" />
-                            ) : (
-                              <TrendDown size={12} weight="regular" className="text-[var(--data-negative)]" />
-                            )}
-                          </div>
-                        )}
-                        <CaretRight size={12} weight="regular" className="text-[var(--text-muted)] opacity-0 group-hover:opacity-100 transition-opacity duration-150" />
-                      </div>
-                    </button>
-                  ))}
-                </div>
+              {/* Crypto Sectors */}
+              <div className="px-4 py-3">
+                <span className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground">CRYPTO SECTORS</span>
+                {MOCK_MARKET.sectors.map(s => (
+                  <div key={s.name} className="flex items-center justify-between py-2">
+                    <span className="text-[13px]">{s.name}</span>
+                    <span className={`font-mono text-[12px] tabular-nums ${s.change >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                      {s.change >= 0 ? '+' : ''}{s.change}%
+                    </span>
+                  </div>
+                ))}
               </div>
 
               {/* Volatility — only shown for markets that reference VIX */}
@@ -949,38 +632,20 @@ export function TradingContextPanel({
               </div>
               )}
 
-              {/* Indices */}
-              <div className="space-y-2">
-                <h4 className="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider">Indices</h4>
-                <div className="space-y-2">
-                  {defaultIndices.map((index) => (
-                    <div
-                      key={index.symbol}
-                      className={cn(
-                        "flex items-center justify-between p-2 rounded-lg bg-[var(--bg-surface)] border border-[var(--border-subtle)] hover:border-[var(--border-hover)] hover:bg-[var(--bg-elevated)] cursor-pointer transition-all duration-150",
-                        "border-l-2",
-                        index.changePercent !== null && index.changePercent >= 0
-                          ? "border-l-[var(--data-positive)]/40"
-                          : index.changePercent !== null
-                          ? "border-l-[var(--data-negative)]/40"
-                          : "border-l-[var(--text-muted)]/20"
-                      )}
-                    >
-                      <div className="flex flex-col">
-                        <span className="text-xs font-medium text-[var(--text-primary)]">{index.symbol}</span>
-                        <span className="text-[10px] text-[var(--text-muted)]">{index.name}</span>
-                      </div>
-                      <div className="flex flex-col items-end">
-                        <span className="text-xs font-semibold font-mono tabular-nums text-[var(--text-primary)]">
-                          {formatPrice(index.price)}
-                        </span>
-                        <span className={cn("text-[10px] font-medium font-mono tabular-nums", getChangeColor(index.changePercent))}>
-                          {formatPercent(index.changePercent)}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+              {/* Market Overview */}
+              <div className="px-4 py-3">
+                <span className="text-[11px] uppercase tracking-wider font-semibold text-muted-foreground">MARKET OVERVIEW</span>
+                {[
+                  { label: 'BTC Dominance', value: `${MOCK_BRIEF.market_snapshot.btc_dominance}%` },
+                  { label: 'Total MCap', value: MOCK_BRIEF.market_snapshot.total_market_cap },
+                  { label: 'Fear & Greed', value: `${MOCK_MARKET.fear_greed} (${MOCK_MARKET.fear_greed_label})` },
+                  { label: 'ETH/BTC', value: MOCK_MARKET.eth_btc.toFixed(4) },
+                ].map(item => (
+                  <div key={item.label} className="flex items-center justify-between py-2">
+                    <span className="text-[13px]">{item.label}</span>
+                    <span className="font-mono text-[12px] tabular-nums">{item.value}</span>
+                  </div>
+                ))}
               </div>
 
               {/* Refresh indicator */}
@@ -993,7 +658,7 @@ export function TradingContextPanel({
               {/* Last updated */}
               <div className="text-center pt-2 border-t border-[var(--border-subtle)]">
                 <span className="text-[10px] text-[var(--text-muted)]">
-                  {isLoading ? "Updating..." : "Market data delayed"}
+                  {isLoading ? "Updating..." : "Prices via CoinGecko"}
                 </span>
               </div>
             </div>

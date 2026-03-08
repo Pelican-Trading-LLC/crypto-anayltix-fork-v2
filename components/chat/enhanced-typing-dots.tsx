@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils"
 import { messageVariants } from "@/lib/animation-config"
 
 // ─── Category definitions ─────────────────────────────────────
-type Category = "backtest" | "technical" | "tick" | "scan" | "macro" | "default"
+type Category = "backtest" | "technical" | "tick" | "scan" | "macro" | "defi" | "onchain" | "default"
 
 interface TimedMessage {
   /** Seconds threshold — message shows when elapsed >= this value */
@@ -45,6 +45,18 @@ const THINKING_MESSAGES: Record<Category, TimedMessage[]> = {
     { after: 5, text: "Analyzing economic data" },
     { after: 8, text: "Synthesizing macro view" },
   ],
+  defi: [
+    { after: 0, text: "Checking protocol data" },
+    { after: 2, text: "Analyzing yield curves" },
+    { after: 5, text: "Comparing to TradFi rates" },
+    { after: 8, text: "Synthesizing DeFi outlook" },
+  ],
+  onchain: [
+    { after: 0, text: "Scanning on-chain data" },
+    { after: 2, text: "Analyzing wallet flows" },
+    { after: 5, text: "Identifying smart money patterns" },
+    { after: 8, text: "Correlating with price action" },
+  ],
   default: [
     { after: 0, text: "Pelican is thinking" },
     { after: 10, text: "Almost there" },
@@ -70,6 +82,14 @@ const CATEGORY_KEYWORDS: { category: Category; patterns: RegExp }[] = [
   {
     category: "scan",
     patterns: /top\s*gain|top\s*los|most\s*volatile|scan|screen|filter|best\s*stock|worst\s*stock|biggest\s*mov|trending\s*stock/i,
+  },
+  {
+    category: "defi",
+    patterns: /defi|yield|liquidity|tvl|protocol|aave|uniswap|compound/i,
+  },
+  {
+    category: "onchain",
+    patterns: /whale|wallet|on-chain|funding|chain|flow|accumul/i,
   },
   {
     category: "macro",

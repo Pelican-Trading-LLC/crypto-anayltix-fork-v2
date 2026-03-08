@@ -8,6 +8,9 @@ import {
   Scales,
   CalendarCheck,
   ChartBar,
+  Briefcase,
+  CurrencyDollar,
+  Eye,
 } from "@phosphor-icons/react"
 
 export interface SlashCommand {
@@ -20,20 +23,52 @@ export interface SlashCommand {
 
 export const SLASH_COMMANDS: SlashCommand[] = [
   {
+    command: "/market",
+    args: "",
+    description: "Crypto market overview",
+    icon: ChartLineUp,
+    prompt: () =>
+      `Give me a crypto market overview covering BTC dominance, derivatives positioning, and macro catalysts`,
+  },
+  {
+    command: "/portfolio",
+    args: "",
+    description: "Portfolio analysis",
+    icon: Briefcase,
+    prompt: () =>
+      `Analyze my portfolio positions, risk exposure, and correlation`,
+  },
+  {
+    command: "/funding",
+    args: "",
+    description: "Funding rate check",
+    icon: CurrencyDollar,
+    prompt: () =>
+      `What are current funding rates across BTC, ETH, SOL? Explain in TradFi terms`,
+  },
+  {
+    command: "/whale",
+    args: "",
+    description: "Whale activity",
+    icon: Eye,
+    prompt: () =>
+      `Show me recent significant whale movements and what they signal`,
+  },
+  {
+    command: "/calendar",
+    args: "",
+    description: "Upcoming events",
+    icon: CalendarCheck,
+    prompt: () =>
+      `What crypto events are coming up this week that could affect my portfolio?`,
+  },
+  {
     command: "/scan",
     args: "[ticker]",
     description: "Deep scan a position",
     icon: MagnifyingGlass,
     prompt: (arg: string) =>
       `Scan my ${arg} position in detail — entry quality, current levels, risk, and what to watch`,
-  },
-  {
-    command: "/grade",
-    args: "[ticker]",
-    description: "Grade a recent trade",
-    icon: ChartLineUp,
-    prompt: (arg: string) =>
-      `Grade my most recent ${arg} trade. What did I do well? What could I improve?`,
   },
   {
     command: "/compare",

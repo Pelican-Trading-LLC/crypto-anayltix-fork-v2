@@ -36,7 +36,7 @@ export function WelcomeScreen({ onQuickStart, disabled }: WelcomeScreenProps) {
         <SuggestedPrompts onSelect={onQuickStart} disabled={disabled} />
 
         <Link
-          href="/guide"
+          href="/learn"
           className="text-sm text-muted-foreground hover:text-foreground transition-colors mt-2 inline-block"
         >
           See how to get the most from Pelican →

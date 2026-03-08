@@ -234,6 +234,7 @@ export default function ChatPage() {
   // Get conversation ID from URL
   const conversationIdFromUrl = searchParams.get("conversation")
   const prefillFromUrl = searchParams.get("prefill")
+  const autoPrompt = searchParams.get("prompt")
 
   // Prefill chat input from URL param (e.g. from strategy "Ask Pelican" button)
   // ChatInput mounts later in the tree, so retry until the ref is available
@@ -354,6 +355,16 @@ export default function ChatPage() {
       router.replace('/chat')
     }
   }, [conversationIdFromUrl, router])
+
+  // Auto-send a prompt from ?prompt= query param (e.g. from calendar/learn links)
+  const autoPromptSentRef = useRef(false)
+  useEffect(() => {
+    if (autoPrompt && !chatLoading && messages.length === 0 && !autoPromptSentRef.current) {
+      autoPromptSentRef.current = true
+      sendMessage(autoPrompt)
+      window.history.replaceState({}, '', '/chat')
+    }
+  }, [autoPrompt, chatLoading, messages.length, sendMessage])
 
   // ✅ FIX: Removed redirect - with API fix, conversationNotFound won't be set for new convos
   // If you see this log, something unexpected happened
