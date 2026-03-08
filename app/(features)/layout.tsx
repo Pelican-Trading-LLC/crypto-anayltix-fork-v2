@@ -31,8 +31,6 @@ import { usePageTracking } from '@/hooks/use-page-tracking'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { Sheet, SheetContent } from '@/components/ui/sheet'
 import { ChatCircle } from '@phosphor-icons/react'
-import { TrialExhaustedModal } from '@/components/trial-exhausted-modal'
-import { InsufficientCreditsModal } from '@/components/insufficient-credits-modal'
 import { toast } from '@/hooks/use-toast'
 
 const PelicanChatPanel = dynamicImport(
@@ -147,52 +145,20 @@ function FeaturesLayoutInner({ children }: { children: React.ReactNode }) {
 // =============================================================================
 
 export default function FeaturesLayout({ children }: { children: React.ReactNode }) {
-  const [trialModal, setTrialModal] = useState<{ open: boolean; message?: string }>({ open: false })
-  const [creditsModal, setCreditsModal] = useState<{ open: boolean; required?: number; balance?: number; message?: string }>({ open: false })
-
-  const handleTrialExhausted = useCallback((info: unknown) => {
-    const data = info as { message?: string } | undefined
-    setTrialModal({ open: true, message: data?.message ?? undefined })
-  }, [])
-
-  const handleInsufficientCredits = useCallback((info: unknown) => {
-    const data = info as { required?: number; balance?: number; message?: string } | undefined
-    setCreditsModal({
-      open: true,
-      required: data?.required ?? undefined,
-      balance: data?.balance ?? undefined,
-      message: data?.message ?? undefined,
-    })
-  }, [])
-
   const handleError = useCallback((error: Error) => {
     console.error('[FEATURES-LAYOUT] Panel error', error)
     toast({
       title: 'Something went wrong',
-      description: 'Could not check your credits. Please try again.',
+      description: 'Please try again.',
       variant: 'destructive',
     })
   }, [])
 
   return (
     <PelicanPanelProvider
-      onTrialExhausted={handleTrialExhausted}
-      onInsufficientCredits={handleInsufficientCredits}
       onError={handleError}
     >
       <FeaturesLayoutInner>{children}</FeaturesLayoutInner>
-      <TrialExhaustedModal
-        isOpen={trialModal.open}
-        onClose={() => setTrialModal({ open: false })}
-        message={trialModal.message}
-      />
-      <InsufficientCreditsModal
-        isOpen={creditsModal.open}
-        onClose={() => setCreditsModal({ open: false })}
-        required={creditsModal.required}
-        balance={creditsModal.balance}
-        message={creditsModal.message}
-      />
     </PelicanPanelProvider>
   )
 }

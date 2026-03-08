@@ -5,8 +5,6 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 import { cn } from '@/lib/utils'
-import { useCreditsContext } from '@/providers/credits-provider'
-import { IconTooltip } from '@/components/ui/icon-tooltip'
 
 // =============================================================================
 // TYPES
@@ -56,7 +54,6 @@ function getPageTitle(pathname: string): string {
 
 export function TopNav({ className }: TopNavProps) {
   const pathname = usePathname()
-  const { credits } = useCreditsContext()
 
   const pageTitle = getPageTitle(pathname)
 
@@ -89,18 +86,8 @@ export function TopNav({ className }: TopNavProps) {
           </div>
         )}
 
-        {/* Right: Credits */}
-        <div className="flex items-center gap-2 sm:gap-3 ml-auto flex-shrink-0">
-          <IconTooltip label="Credit balance" side="bottom">
-            <Link
-              href="/pricing"
-              className="px-2 sm:px-3 py-1 rounded-full border border-[var(--border-default)] bg-[var(--bg-surface)] text-xs sm:text-sm font-mono text-[var(--text-primary)] hover:border-[var(--border-hover)] hover:bg-[var(--bg-elevated)] active:scale-95 transition-all tabular-nums"
-            >
-              <span className="hidden sm:inline">{(credits?.balance ?? 0).toLocaleString()} credits</span>
-              <span className="sm:hidden">{(credits?.balance ?? 0).toLocaleString()}</span>
-            </Link>
-          </IconTooltip>
-        </div>
+        {/* Right: placeholder for future items */}
+        <div className="flex items-center gap-2 sm:gap-3 ml-auto flex-shrink-0" />
       </div>
     </nav>
   )

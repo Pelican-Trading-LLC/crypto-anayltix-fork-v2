@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { useCreditsContext } from '@/providers/credits-provider'
 import { Settings, Loader2, ExternalLink } from 'lucide-react'
 
 interface ManageSubscriptionButtonProps {
@@ -9,16 +8,11 @@ interface ManageSubscriptionButtonProps {
   variant?: 'default' | 'link'
 }
 
-export function ManageSubscriptionButton({ 
-  className = '', 
-  variant = 'default' 
+export function ManageSubscriptionButton({
+  className = '',
+  variant = 'default'
 }: ManageSubscriptionButtonProps) {
   const [loading, setLoading] = useState(false)
-  const { isSubscribed } = useCreditsContext()
-
-  if (!isSubscribed) {
-    return null
-  }
 
   const handleManageSubscription = async () => {
     setLoading(true)
@@ -33,7 +27,7 @@ export function ManageSubscriptionButton({
       }
 
       const { url } = await response.json()
-      
+
       if (url) {
         window.location.href = url
       }
@@ -75,4 +69,3 @@ export function ManageSubscriptionButton({
     </button>
   )
 }
-

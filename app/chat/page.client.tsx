@@ -20,16 +20,12 @@ import { Menu } from "lucide-react"
 import { CaretRight, Plus as PlusIcon } from "@phosphor-icons/react"
 import { IconTooltip } from "@/components/ui/icon-tooltip"
 import { ThemeToggle } from "@/components/theme-toggle"
-import Link from "next/link"
 import Image from "next/image"
 import dynamic from "next/dynamic"
 import { cn } from "@/lib/utils"
-import { PaywallGate } from "@/components/paywall-gate"
-import { useCreditsContext } from "@/providers/credits-provider"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { ChartProvider, useChart } from "@/providers/chart-provider"
 import { LearningModeProvider, useLearningMode } from "@/providers/learning-mode-provider"
-import { ChatCreditCounter } from "@/components/chat/credit-counter"
 import { useTrades } from "@/hooks/use-trades"
 import { useWatchlist } from "@/hooks/use-watchlist"
 import { useSavedInsights } from "@/hooks/use-saved-insights"
@@ -44,8 +40,6 @@ import { useOnboardingProgress } from "@/hooks/use-onboarding-progress"
 const SettingsModal = dynamic(() => import("@/components/settings-modal").then(m => ({ default: m.SettingsModal })))
 const LogTradeModal = dynamic(() => import("@/components/journal/log-trade-modal").then(m => ({ default: m.LogTradeModal })))
 const CloseTradeModal = dynamic(() => import("@/components/journal/close-trade-modal").then(m => ({ default: m.CloseTradeModal })))
-const TrialExhaustedModal = dynamic(() => import("@/components/trial-exhausted-modal").then(m => ({ default: m.TrialExhaustedModal })))
-const InsufficientCreditsModal = dynamic(() => import("@/components/insufficient-credits-modal").then(m => ({ default: m.InsufficientCreditsModal })))
 const TradingViewChart = dynamic(() => import("@/components/chat/TradingViewChart").then(m => ({ default: m.TradingViewChart })), { ssr: false })
 const EconomicCalendar = dynamic(() => import("@/components/chat/EconomicCalendar").then(m => ({ default: m.EconomicCalendar })), { ssr: false })
 const TextSelectionToolbar = dynamic(() => import("@/components/share/text-selection-toolbar").then(m => ({ default: m.TextSelectionToolbar })), { ssr: false })
@@ -128,8 +122,6 @@ function LearningAwareTradingPanel(props: React.ComponentProps<typeof TradingCon
 
 export default function ChatPage() {
   const { user, loading: authLoading } = useAuth()
-  const { refetch, hasAccess, loading: creditsLoading } = useCreditsContext()
-  const outOfCredits = !creditsLoading && !hasAccess
   const router = useRouter()
   const searchParams = useSearchParams()
   const {
@@ -237,12 +229,6 @@ export default function ChatPage() {
   }, [user, termsChecked, surveyChecked, router])
 
   const [settingsOpen, setSettingsOpen] = useState(false)
-  const [trialExhaustedOpen, setTrialExhaustedOpen] = useState(false)
-  const [trialExhaustedMessage, setTrialExhaustedMessage] = useState<string | null>(null)
-  const [insufficientCreditsOpen, setInsufficientCreditsOpen] = useState(false)
-  const [insufficientCreditsMessage, setInsufficientCreditsMessage] = useState<string | null>(null)
-  const [insufficientCreditsRequired, setInsufficientCreditsRequired] = useState<number | null>(null)
-  const [insufficientCreditsBalance, setInsufficientCreditsBalance] = useState<number | null>(null)
   const chatInputRef = useRef<ChatInputRef>(null)
 
   // Get conversation ID from URL
@@ -338,22 +324,6 @@ export default function ChatPage() {
       // Signal sidebar to refresh immediately (don't rely solely on Realtime latency)
       window.dispatchEvent(new CustomEvent('pelican:conversation-created'))
     },
-    onTrialExhausted: (info) => {
-      setTrialExhaustedMessage(
-        info.message || 'Your free trial has ended. Subscribe to continue using Pelican.'
-      )
-      setTrialExhaustedOpen(true)
-      refetch()
-    },
-    onInsufficientCredits: (info) => {
-      setInsufficientCreditsMessage(
-        info.message || 'Not enough credits to run this query.'
-      )
-      setInsufficientCreditsRequired(info.required ?? null)
-      setInsufficientCreditsBalance(info.balance ?? null)
-      setInsufficientCreditsOpen(true)
-      refetch()
-    },
   })
 
   const messageHandler = useMessageHandler({
@@ -412,7 +382,7 @@ export default function ChatPage() {
 
   // First-session auto welcome message
   useFirstSession(
-    outOfCredits ? undefined : messageHandler.handleSendMessage,
+    messageHandler.handleSendMessage,
     messages.length > 0,
   )
 
@@ -490,7 +460,6 @@ export default function ChatPage() {
   }
 
   return (
-    <PaywallGate>
       <ChatErrorBoundary onReset={() => clearMessages()}>
         <ChartProvider>
         <LearningModeProvider>
@@ -597,7 +566,6 @@ export default function ChatPage() {
           </div>
           <div className="flex items-center gap-1 sm:gap-2">
             <TiltIndicator isOnTilt={isOnTilt} alertCount={tiltAlerts.length} />
-            <ChatCreditCounter />
             <ThemeToggle />
           </div>
         </div>
@@ -620,10 +588,9 @@ export default function ChatPage() {
                 onStopGeneration={handleStopGeneration}
                 onRegenerateMessage={regenerateLastMessage}
                 onEditMessage={editMessage}
-                onQuickStart={outOfCredits ? undefined : handleQuickStart}
+                onQuickStart={handleQuickStart}
                 onFileUpload={handleFileUploadWithCapture}
                 onSettingsClick={handleSettingsClick}
-                outOfCredits={outOfCredits}
                 conversationId={conversationIdFromUrl || undefined}
                 allTrades={allTrades}
                 watchlistItems={watchlistItems}
@@ -656,25 +623,15 @@ export default function ChatPage() {
             <div className="absolute inset-x-0 bottom-full h-20 bg-gradient-to-t from-background to-transparent pointer-events-none" />
             <div className="px-4 sm:px-6 pb-4 pt-2">
             <div className="max-w-3xl mx-auto w-full relative">
-              {outOfCredits && (
-                <div className="absolute inset-0 z-10 flex items-center justify-center px-4 sm:px-6 py-3">
-                  <div className="w-full flex items-center justify-center gap-2 px-4 py-4 rounded-2xl border border-border bg-card text-sm text-muted-foreground min-h-[56px]">
-                    <span>You&apos;ve used all your free questions.</span>
-                    <Link href="/pricing" className="text-blue-400 hover:text-blue-300 font-medium underline underline-offset-2 whitespace-nowrap">
-                      Upgrade to keep trading &rarr;
-                    </Link>
-                  </div>
-                </div>
-              )}
               <ChatInput
                 ref={chatInputRef}
                 onSendMessage={handleSendMessageWithFiles}
                 onStopResponse={handleStopGeneration}
                 onFileUpload={handleFileUploadWithCapture}
-                disabled={isLoadingMessages || outOfCredits}
-                disabledSend={outOfCredits || ((chatLoading || isLoadingMessages) && !messageHandler.isQueueingMessage)}
-                canSend={!outOfCredits && ((!chatLoading && !isLoadingMessages) || messageHandler.isQueueingMessage)}
-                placeholder={outOfCredits ? "Upgrade to continue..." : "Ask Pelican anything..."}
+                disabled={isLoadingMessages}
+                disabledSend={(chatLoading || isLoadingMessages) && !messageHandler.isQueueingMessage}
+                canSend={(!chatLoading && !isLoadingMessages) || messageHandler.isQueueingMessage}
+                placeholder="Ask Pelican anything..."
                 onTypingDuringResponse={messageHandler.handleTypingDuringResponse}
                 isAIResponding={chatLoading}
                 onQueueMessage={messageHandler.handleForceQueue}
@@ -756,18 +713,6 @@ export default function ChatPage() {
       )}
 
       <SettingsModal open={settingsOpen} onOpenChange={setSettingsOpen} />
-      <TrialExhaustedModal
-        isOpen={trialExhaustedOpen}
-        message={trialExhaustedMessage}
-        onClose={() => setTrialExhaustedOpen(false)}
-      />
-      <InsufficientCreditsModal
-        isOpen={insufficientCreditsOpen}
-        message={insufficientCreditsMessage}
-        required={insufficientCreditsRequired}
-        balance={insufficientCreditsBalance}
-        onClose={() => setInsufficientCreditsOpen(false)}
-      />
       <MobileChartSheet />
       <LogTradeModal
         open={logTradeOpen}
@@ -796,6 +741,5 @@ export default function ChatPage() {
         </LearningModeProvider>
         </ChartProvider>
       </ChatErrorBoundary>
-    </PaywallGate>
   )
 }

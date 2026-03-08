@@ -6,7 +6,6 @@ import { User } from '@supabase/supabase-js'
 import { Zap, Loader2, ShieldCheck } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useCreditsContext } from '@/providers/credits-provider'
 import { useT } from '@/lib/providers/translation-provider'
 import MarketingNav from '@/components/marketing/MarketingNav'
 import MarketingFooter from '@/components/marketing/MarketingFooter'
@@ -91,10 +90,10 @@ export default function PricingPageContent() {
   const searchParams = useSearchParams()
   const t = useT()
   const preselectedPlan = searchParams.get('plan')
-  const { isSubscribed, isFounder, loading: creditsLoading, credits } = useCreditsContext()
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [user, setUser] = useState<User | null>(null)
+  const [pageReady, setPageReady] = useState(false)
 
   const navLinks = [
     { href: '/#features', label: t.marketing.nav.features },
@@ -109,20 +108,14 @@ export default function PricingPageContent() {
       const supabase = createClient()
       const { data: { user } } = await supabase.auth.getUser()
       setUser(user)
+      setPageReady(true)
     }
     getUser()
   }, [])
 
-  // Redirect users who already have an active subscription to chat
-  useEffect(() => {
-    if (!creditsLoading && (isSubscribed || isFounder)) {
-      router.push('/chat')
-    }
-  }, [isSubscribed, isFounder, creditsLoading, router])
-
   // Auto-select plan if arriving with ?plan= parameter
   useEffect(() => {
-    if (preselectedPlan && user && !loadingPlan && !isSubscribed && !isFounder) {
+    if (preselectedPlan && user && !loadingPlan) {
       const plan = PLANS.find(p => p.id === preselectedPlan)
       if (plan) {
         setTimeout(() => {
@@ -131,7 +124,7 @@ export default function PricingPageContent() {
       }
       sessionStorage.removeItem('intended_plan')
     }
-  }, [preselectedPlan, user, loadingPlan, isSubscribed, isFounder])
+  }, [preselectedPlan, user, loadingPlan])
 
   const handleSelectPlan = async (plan: typeof PLANS[0]) => {
     setLoadingPlan(plan.id)
@@ -178,7 +171,7 @@ export default function PricingPageContent() {
     }
   }
 
-  if (creditsLoading) {
+  if (!pageReady) {
     return (
       <div className="pricing-loading">
         <Loader2 className="pricing-loading-spinner" />
@@ -226,20 +219,6 @@ export default function PricingPageContent() {
       {error && (
         <div className="pricing-error">
           {error}
-        </div>
-      )}
-
-      {user && credits?.plan === 'none' && (credits.freeQuestionsRemaining ?? 0) > 0 && (
-        <div className="pricing-trial-banner">
-          <p className="pricing-trial-title">
-            You have {credits.freeQuestionsRemaining} free question{credits.freeQuestionsRemaining === 1 ? '' : 's'}
-          </p>
-          <p className="pricing-trial-subtitle">
-            Try Pelican&apos;s AI trading assistant &mdash; no card needed.
-          </p>
-          <Link href="/chat" className="btn-primary" style={{ marginTop: '1rem' }}>
-            Start Free Trial
-          </Link>
         </div>
       )}
 
