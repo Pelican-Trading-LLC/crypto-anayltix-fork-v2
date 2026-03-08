@@ -65,7 +65,7 @@ interface RevenueData {
 const PLAN_COLORS: Record<string, string> = {
   starter: '#3b82f6',
   base: '#3b82f6',
-  pro: '#8b5cf6',
+  pro: '#1DA1C4',
   power: '#f59e0b',
   founder: '#22c55e',
   trial: '#6b7280',

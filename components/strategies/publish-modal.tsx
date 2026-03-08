@@ -116,7 +116,7 @@ export function PublishModal({ playbook, open, onOpenChange, onPublished }: Publ
                   <div>
                     <label className="text-xs font-medium text-[var(--text-secondary)] mb-1 block">URL Slug</label>
                     <div className="flex items-center gap-1 text-xs text-[var(--text-muted)] mb-1">
-                      <span>pelicantrading.ai/strategies/</span>
+                      <span>cryptoanalytix.com/strategies/</span>
                       <span className="text-[var(--accent-primary)]">{slug}</span>
                     </div>
                     <input

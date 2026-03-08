@@ -417,8 +417,8 @@ export default function AdminDashboardPage() {
                   <AreaChart data={signupChartData}>
                     <defs>
                       <linearGradient id="signupGradient" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#8b5cf6" stopOpacity={0.3} />
-                        <stop offset="100%" stopColor="#8b5cf6" stopOpacity={0} />
+                        <stop offset="0%" stopColor="#1DA1C4" stopOpacity={0.3} />
+                        <stop offset="100%" stopColor="#1DA1C4" stopOpacity={0} />
                       </linearGradient>
                       <linearGradient id="activeGradient" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.3} />
@@ -443,7 +443,7 @@ export default function AdminDashboardPage() {
                     <Area
                       type="monotone"
                       dataKey="signups"
-                      stroke="#8b5cf6"
+                      stroke="#1DA1C4"
                       fill="url(#signupGradient)"
                       strokeWidth={2}
                       dot={false}
@@ -461,7 +461,7 @@ export default function AdminDashboardPage() {
               </div>
               <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
                 <span className="flex items-center gap-1.5">
-                  <span className="size-2 rounded-full bg-[#8b5cf6]" />
+                  <span className="size-2 rounded-full bg-[#1DA1C4]" />
                   Signups
                 </span>
                 <span className="flex items-center gap-1.5">
@@ -506,7 +506,7 @@ export default function AdminDashboardPage() {
                     />
                     <Bar
                       dataKey="messages"
-                      fill="#8b5cf6"
+                      fill="#1DA1C4"
                       radius={[3, 3, 0, 0]}
                       maxBarSize={24}
                     />
@@ -515,7 +515,7 @@ export default function AdminDashboardPage() {
               </div>
               <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
                 <span className="flex items-center gap-1.5">
-                  <span className="size-2 rounded-full bg-[#8b5cf6]" />
+                  <span className="size-2 rounded-full bg-[#1DA1C4]" />
                   Messages
                 </span>
                 <span className="flex items-center gap-1.5">

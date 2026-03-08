@@ -147,15 +147,11 @@ export default function SignUpPage() {
 
             {/* Logo */}
             <div className="relative z-10 mb-6 md:mb-12">
-              <div className="w-40 h-40 md:w-72 md:h-72 relative">
-                 <Image
-                   src="/pelican-logo-transparent.webp"
-                   alt="Pelican Logo"
-                   width={288}
-                   height={288}
-                   className="object-contain"
-                 />
+              <div className="w-[80px] h-[80px] md:w-[120px] md:h-[120px] rounded-[24px] flex items-center justify-center text-white text-3xl md:text-5xl font-bold"
+                style={{ background: 'linear-gradient(135deg, #1DA1C4, #178BA8)' }}>
+                CA
               </div>
+              <p className="text-gray-400 text-sm mt-3">AI-powered crypto intelligence for traditional traders</p>
             </div>
 
             {/* Hero Text — white text is intentional on this dark panel */}

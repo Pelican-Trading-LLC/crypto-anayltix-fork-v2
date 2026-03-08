@@ -41,7 +41,7 @@ const ASSET_COLORS: Record<string, string> = {
   forex: 'var(--data-positive)',
   option: '#3b82f6',
   etf: '#14b8a6',
-  future: '#8b5cf6',
+  future: '#1DA1C4',
   other: '#6b7280',
 }
 

@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { useT } from '@/lib/providers/translation-provider';
 
 export default function MarketingFooter() {
@@ -11,8 +10,8 @@ export default function MarketingFooter() {
     <footer>
       <div className="footer-inner">
         <div className="footer-logo">
-          <Image src="/pelican-logo-transparent.webp" alt="Pelican" width={32} height={32} />
-          <span>Pelican Trading</span>
+          <div className="w-8 h-8 rounded-[8px] flex items-center justify-center text-white text-[10px] font-bold" style={{ background: 'linear-gradient(135deg, #1DA1C4, #178BA8)' }}>CA</div>
+          <span>Crypto Analytix</span>
         </div>
         <div className="footer-links">
           <Link href="/terms">Terms of Use</Link>

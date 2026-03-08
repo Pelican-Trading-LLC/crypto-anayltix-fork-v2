@@ -315,7 +315,7 @@ export const MessageBubble = memo(function MessageBubble({
           </span>
           <div className="flex-shrink-0">
             <Image
-              src="/pelican-logo-transparent.webp"
+              src="/ca-logo.svg"
               alt="Pelican AI"
               width={32}
               height={32}

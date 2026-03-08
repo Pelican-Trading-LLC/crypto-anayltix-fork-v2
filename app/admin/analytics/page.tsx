@@ -72,7 +72,7 @@ const TOOLTIP_STYLE = {
 const PLAN_COLORS: Record<string, string> = {
   starter: '#3b82f6',
   base: '#3b82f6',
-  pro: '#8b5cf6',
+  pro: '#1DA1C4',
   power: '#f59e0b',
   founder: '#22c55e',
   trial: '#6b7280',
@@ -381,7 +381,7 @@ export default function AdminAnalyticsPage() {
                 <Tooltip {...TOOLTIP_STYLE} />
                 <Legend wrapperStyle={{ fontSize: 12, color: '#9898a6' }} />
                 <Line type="monotone" dataKey="count" name="Signups" stroke="#3b82f6" strokeWidth={1.5} dot={false} />
-                <Line type="monotone" dataKey="avg" name="7-day Avg" stroke="#8b5cf6" strokeWidth={2} dot={false} strokeDasharray="4 4" />
+                <Line type="monotone" dataKey="avg" name="7-day Avg" stroke="#1DA1C4" strokeWidth={2} dot={false} strokeDasharray="4 4" />
               </LineChart>
             </ResponsiveContainer>
           </CardContent>
@@ -402,7 +402,7 @@ export default function AdminAnalyticsPage() {
                   <XAxis type="number" tick={AXIS_TICK} />
                   <YAxis dataKey="ticker" type="category" tick={AXIS_TICK} width={60} />
                   <Tooltip {...TOOLTIP_STYLE} />
-                  <Bar dataKey="count" name="Mentions" fill="#8b5cf6" radius={[0, 4, 4, 0]} />
+                  <Bar dataKey="count" name="Mentions" fill="#1DA1C4" radius={[0, 4, 4, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             )}
@@ -440,7 +440,7 @@ export default function AdminAnalyticsPage() {
                 <XAxis dataKey="day" tick={AXIS_TICK} />
                 <YAxis tick={AXIS_TICK} />
                 <Tooltip {...TOOLTIP_STYLE} />
-                <Bar dataKey="count" name="Messages" fill="#8b5cf6" radius={[2, 2, 0, 0]} />
+                <Bar dataKey="count" name="Messages" fill="#1DA1C4" radius={[2, 2, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>

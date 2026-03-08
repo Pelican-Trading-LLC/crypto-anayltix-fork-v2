@@ -31,9 +31,9 @@ export function BacktestChart({ backtests }: BacktestChartProps) {
             <Tooltip
               contentStyle={{ background: '#16161f', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', fontSize: '12px' }}
               labelStyle={{ color: '#9898a6' }}
-              itemStyle={{ color: '#8b5cf6' }}
+              itemStyle={{ color: '#1DA1C4' }}
             />
-            <Line type="monotone" dataKey="value" stroke="#8b5cf6" strokeWidth={2} dot={false} />
+            <Line type="monotone" dataKey="value" stroke="#1DA1C4" strokeWidth={2} dot={false} />
           </LineChart>
         </ResponsiveContainer>
       </div>

@@ -457,7 +457,7 @@ export default function MorningPage() {
     } else {
       // Twitter: ultra-short, first 240 chars of content
       const clean = briefContent.replace(/[#*_]/g, '').slice(0, 240).trim()
-      text = `${clean}…\n\n📊 via Pelican Trading AI`
+      text = `${clean}…\n\n📊 via Crypto Analytix`
     }
 
     navigator.clipboard.writeText(text).then(() => {

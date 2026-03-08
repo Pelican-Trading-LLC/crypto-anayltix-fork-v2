@@ -70,7 +70,7 @@ export function TimeOfDayChart({ data, onAskPelican }: TimeOfDayChartProps) {
               }}
               labelStyle={{ color: "var(--text-primary)" }}
               itemStyle={{ color: "var(--text-secondary)" }}
-              cursor={{ fill: "rgba(139, 92, 246, 0.08)" }}
+              cursor={{ fill: "rgba(29, 161, 196, 0.08)" }}
               formatter={tooltipFormatter as never}
             />
             <Bar dataKey="winRate" radius={[4, 4, 0, 0]} maxBarSize={40}>

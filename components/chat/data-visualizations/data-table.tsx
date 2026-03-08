@@ -134,7 +134,7 @@ export function DataTable({ data, columns, title = "Market Data", query, summary
         compact ? "opacity-[0.25]" : "opacity-30"
       )}>
         <Image
-          src="/pelican-logo-transparent.webp"
+          src="/ca-logo.svg"
           alt=""
           width={320}
           height={320}
@@ -152,7 +152,7 @@ export function DataTable({ data, columns, title = "Market Data", query, summary
         {/* Header with logo and branding - only in full mode */}
         {!compact && (
           <div className="mb-6 flex items-center gap-3">
-            <Image src="/pelican-logo-transparent.webp" alt="Pelican" width={48} height={48} className="h-10 w-10 sm:h-12 sm:w-12" />
+            <Image src="/ca-logo.svg" alt="Pelican" width={48} height={48} className="h-10 w-10 sm:h-12 sm:w-12" />
             <span className="text-xl sm:text-2xl font-bold text-foreground">Pelican</span>
           </div>
         )}

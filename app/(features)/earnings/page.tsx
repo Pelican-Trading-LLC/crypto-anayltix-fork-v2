@@ -403,7 +403,7 @@ What are the key things to watch? Any whisper numbers or sentiment shifts? How h
 
               {/* Watermark */}
               <Image
-                src="/pelican-logo-transparent.webp"
+                src="/ca-logo.svg"
                 alt=""
                 width={500}
                 height={500}

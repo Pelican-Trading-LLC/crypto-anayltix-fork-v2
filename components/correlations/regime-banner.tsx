@@ -16,7 +16,7 @@ const bannerConfig: Record<string, { border: string; bg: string; icon: typeof Tr
   risk_on: { border: 'var(--data-positive)', bg: 'rgba(34, 197, 94, 0.04)', icon: TrendUp },
   risk_off: { border: 'var(--data-negative)', bg: 'rgba(239, 68, 68, 0.04)', icon: TrendDown },
   correlation_breakdown: { border: 'var(--data-warning)', bg: 'rgba(245, 158, 11, 0.04)', icon: Warning },
-  rotation: { border: 'var(--accent-indigo)', bg: 'rgba(139, 92, 246, 0.04)', icon: Shuffle },
+  rotation: { border: 'var(--accent-indigo)', bg: 'rgba(29, 161, 196, 0.04)', icon: Shuffle },
   neutral: { border: 'var(--border-default)', bg: 'transparent', icon: Minus },
 }
 

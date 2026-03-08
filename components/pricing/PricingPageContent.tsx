@@ -304,7 +304,7 @@ export default function PricingPageContent() {
         </p>
         <p>
           Questions?{' '}
-          <a href="mailto:support@pelicantrading.ai">Contact us</a>
+          <a href="mailto:support@cryptoanalytix.com">Contact us</a>
         </p>
       </div>
 

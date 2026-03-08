@@ -592,7 +592,7 @@ export default function ChatPage() {
             </SheetTrigger>
           </Sheet>
           <div className="flex items-center gap-2">
-            <Image src="/pelican-logo-transparent.webp" alt="PelicanAI" width={24} height={24} className="w-6 h-6 object-contain" />
+            <Image src="/ca-logo.svg" alt="PelicanAI" width={24} height={24} className="w-6 h-6 object-contain" />
             <span className="font-semibold text-foreground">Pelican AI</span>
           </div>
           <div className="flex items-center gap-1 sm:gap-2">

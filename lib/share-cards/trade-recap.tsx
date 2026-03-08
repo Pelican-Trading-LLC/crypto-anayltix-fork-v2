@@ -155,7 +155,7 @@ export function TradeRecapCard({ trade }: TradeRecapProps) {
                 display: "flex",
                 fontSize: 13,
                 color: CARD_COLORS.purpleLight,
-                backgroundColor: "rgba(139, 92, 246, 0.12)",
+                backgroundColor: "rgba(29, 161, 196, 0.12)",
                 padding: "4px 10px",
                 borderRadius: 4,
               }}

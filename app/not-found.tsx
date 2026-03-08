@@ -1,7 +1,6 @@
 "use client"
 
 import Link from "next/link"
-import Image from "next/image"
 
 export default function NotFound() {
   return (
@@ -18,14 +17,23 @@ export default function NotFound() {
           "'Geist Sans', ui-sans-serif, system-ui, -apple-system, sans-serif",
       }}
     >
-      <Image
-        src="/pelican-logo-transparent.webp"
-        alt="Pelican Trading"
-        width={80}
-        height={80}
-        priority
-        style={{ marginBottom: "2rem" }}
-      />
+      <div
+        style={{
+          width: 60,
+          height: 60,
+          borderRadius: 16,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          color: "#ffffff",
+          fontSize: 22,
+          fontWeight: 700,
+          background: "linear-gradient(135deg, #1DA1C4, #178BA8)",
+          marginBottom: "2rem",
+        }}
+      >
+        CA
+      </div>
 
       <h1
         style={{
@@ -55,7 +63,7 @@ export default function NotFound() {
       <Link
         href="/chat"
         style={{
-          backgroundColor: "#8b5cf6",
+          backgroundColor: "#1DA1C4",
           color: "#ffffff",
           padding: "0.625rem 1.5rem",
           borderRadius: "0.5rem",
@@ -65,10 +73,10 @@ export default function NotFound() {
           transition: "background-color 0.15s ease",
         }}
         onMouseEnter={(e) =>
-          ((e.target as HTMLElement).style.backgroundColor = "#9d74f7")
+          ((e.target as HTMLElement).style.backgroundColor = "#25BFDF")
         }
         onMouseLeave={(e) =>
-          ((e.target as HTMLElement).style.backgroundColor = "#8b5cf6")
+          ((e.target as HTMLElement).style.backgroundColor = "#1DA1C4")
         }
       >
         Back to Pelican

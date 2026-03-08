@@ -1,6 +1,5 @@
 'use client'
 
-import Image from 'next/image'
 import Link from 'next/link'
 import { XLogo } from '@phosphor-icons/react'
 
@@ -16,7 +15,7 @@ const legalLinks = [
 ]
 
 const connectLinks = [
-  { label: 'Support', href: 'mailto:support@pelicantrading.ai' },
+  { label: 'Support', href: 'mailto:support@cryptoanalytix.com' },
 ]
 
 export function LandingFooter() {
@@ -27,14 +26,9 @@ export function LandingFooter() {
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2 mb-3">
-              <Image
-                src="/pelican-logo-transparent.webp"
-                alt="Pelican AI"
-                width={24}
-                height={24}
-              />
+              <div className="w-6 h-6 rounded-[6px] flex items-center justify-center text-white text-[8px] font-bold flex-shrink-0" style={{ background: 'linear-gradient(135deg, #1DA1C4, #178BA8)' }}>CA</div>
               <span className="text-sm font-semibold text-slate-900">
-                Pelican AI
+                Crypto Analytix
               </span>
             </div>
             <p className="text-xs text-slate-400 leading-relaxed">

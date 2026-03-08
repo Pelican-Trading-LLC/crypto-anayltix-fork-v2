@@ -4,7 +4,7 @@ import { useTheme } from "next-themes"
 import { useEffect } from "react"
 
 /** Key used to back up the user's real theme preference while public pages force light. */
-export const THEME_BACKUP_KEY = "pelican-theme-v2-user-pref"
+export const THEME_BACKUP_KEY = "crypto-analytix-theme-user-pref"
 
 /**
  * Forces light theme on public pages (landing, auth, pricing).
@@ -16,7 +16,7 @@ export function ForceLightTheme() {
 
   useEffect(() => {
     // Back up the user's real preference before overwriting
-    const current = localStorage.getItem("pelican-theme-v2")
+    const current = localStorage.getItem("crypto-analytix-theme")
     if (current && current !== "light") {
       localStorage.setItem(THEME_BACKUP_KEY, current)
     }

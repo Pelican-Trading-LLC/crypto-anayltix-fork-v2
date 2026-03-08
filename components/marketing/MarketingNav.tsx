@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useT } from '@/lib/providers/translation-provider';
 import { LanguageSelector } from '@/components/language-selector';
@@ -109,8 +108,8 @@ export default function MarketingNav({
     <nav>
       <div className="nav-inner">
         <Link href="/" className="nav-logo">
-          <Image src="/pelican-logo-transparent.webp" alt="Pelican" width={32} height={32} />
-          <span>Pelican</span>
+          <div className="w-8 h-8 rounded-[8px] flex items-center justify-center text-white text-[10px] font-bold" style={{ background: 'linear-gradient(135deg, #1DA1C4, #178BA8)' }}>CA</div>
+          <span>Crypto Analytix</span>
         </Link>
         <div className="nav-links">
           {links.map((link) =>

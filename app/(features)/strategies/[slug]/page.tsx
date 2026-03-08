@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   return {
     title: data.name,
-    description: data.description || `${data.name} trading strategy on Pelican Trading AI`,
+    description: data.description || `${data.name} trading strategy on Crypto Analytix`,
     openGraph: {
       title: `${data.name} — Pelican Strategy`,
       description: data.description || `${data.name} trading strategy`,

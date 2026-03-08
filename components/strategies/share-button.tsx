@@ -11,7 +11,7 @@ interface ShareButtonProps {
 export function ShareButton({ slug, name }: ShareButtonProps) {
   const [copied, setCopied] = useState(false)
   const [open, setOpen] = useState(false)
-  const url = `https://pelicantrading.ai/strategies/${slug}`
+  const url = `https://cryptoanalytix.com/strategies/${slug}`
 
   const copyLink = async () => {
     await navigator.clipboard.writeText(url)

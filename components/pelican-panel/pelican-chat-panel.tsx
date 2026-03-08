@@ -82,7 +82,7 @@ function PanelMessage({ message, isStreaming = false, isAutoPrompt = false }: Pa
       <div className="flex gap-3 items-start">
         <div className="flex-shrink-0 mt-1">
           <Image
-            src="/pelican-logo-transparent.webp"
+            src="/ca-logo.svg"
             alt="Pelican AI"
             width={24}
             height={24}
@@ -197,7 +197,7 @@ function PelicanChatPanelInternal({
         <div className="shrink-0 border-b border-[var(--border-subtle)] px-4 py-3 flex items-center justify-between bg-[var(--bg-elevated)]">
           <div className="flex items-center gap-2">
             <Image
-              src="/pelican-logo-transparent.webp"
+              src="/ca-logo.svg"
               alt="Pelican AI"
               width={24}
               height={24}
@@ -303,7 +303,7 @@ function PelicanChatPanelInternal({
         <div className="shrink-0 border-b border-[var(--border-subtle)] px-4 py-3 flex items-center justify-between bg-[var(--bg-elevated)]">
           <div className="flex items-center gap-2">
             <Image
-              src="/pelican-logo-transparent.webp"
+              src="/ca-logo.svg"
               alt="Pelican AI"
               width={24}
               height={24}
@@ -374,7 +374,7 @@ function PelicanChatPanelInternal({
           {messages.length === 0 && (
             <div className="flex flex-col items-center justify-center h-full text-center px-6">
               <Image
-                src="/pelican-logo-transparent.webp"
+                src="/ca-logo.svg"
                 alt="Pelican AI"
                 width={48}
                 height={48}

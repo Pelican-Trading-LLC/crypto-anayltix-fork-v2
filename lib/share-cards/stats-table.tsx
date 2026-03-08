@@ -200,7 +200,7 @@ export function StatsTableCard({ period, rows }: StatsTableProps) {
               letterSpacing: "0.08em",
             }}
           >
-            pelicantrading.ai
+            cryptoanalytix.com
           </span>
         </div>
       </div>

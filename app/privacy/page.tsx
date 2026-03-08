@@ -3,8 +3,8 @@ import Link from 'next/link';
 import '../legal-styles.css';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy | Pelican Trading',
-  description: 'Privacy Policy for Pelican Trading, LLC — how we collect, use, disclose, and safeguard your information.',
+  title: 'Privacy Policy | Crypto Analytix',
+  description: 'Privacy Policy for Crypto Analytix, LLC — how we collect, use, disclose, and safeguard your information.',
   alternates: {
     canonical: '/privacy',
   },
@@ -19,7 +19,7 @@ export default function PrivacyPage() {
       <main id="main-content" className="legal-content">
         <h1>Privacy Policy</h1>
         <p className="legal-meta">
-          <strong>PELICAN TRADING, LLC</strong><br />
+          <strong>CRYPTO ANALYTIX, LLC</strong><br />
           Effective Date: January 12, 2026<br />
           Last Updated: January 12, 2026
         </p>
@@ -27,7 +27,7 @@ export default function PrivacyPage() {
         <section>
           <h2>1. INTRODUCTION</h2>
           <p>
-            Pelican Trading, LLC (&quot;Pelican,&quot; &quot;Company,&quot; &quot;we,&quot; &quot;us,&quot; or &quot;our&quot;) respects your privacy and is committed to protecting your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our platform, services, websites, and applications (collectively, the &quot;Services&quot;).
+            Crypto Analytix, LLC (&quot;Pelican,&quot; &quot;Company,&quot; &quot;we,&quot; &quot;us,&quot; or &quot;our&quot;) respects your privacy and is committed to protecting your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our platform, services, websites, and applications (collectively, the &quot;Services&quot;).
           </p>
           <p>
             By accessing or using the Services, you agree to this Privacy Policy. If you do not agree, please do not use the Services.
@@ -200,7 +200,7 @@ export default function PrivacyPage() {
           </ul>
           <p><strong>To exercise these rights:</strong></p>
           <ul>
-            <li>Email: <a href="mailto:support@pelicantrading.ai">support@pelicantrading.ai</a></li>
+            <li>Email: <a href="mailto:support@cryptoanalytix.com">support@cryptoanalytix.com</a></li>
             <li>Or use account settings where available</li>
           </ul>
           <p>We will respond to requests within 30 days (or as required by applicable law).</p>
@@ -215,7 +215,7 @@ export default function PrivacyPage() {
             <li><strong>Right to Opt-Out:</strong> We do not sell personal information</li>
             <li><strong>Non-Discrimination:</strong> We will not discriminate against you for exercising your rights</li>
           </ul>
-          <p>To submit a request, email <a href="mailto:support@pelicantrading.ai">support@pelicantrading.ai</a> with &quot;CCPA Request&quot; in the subject line.</p>
+          <p>To submit a request, email <a href="mailto:support@cryptoanalytix.com">support@cryptoanalytix.com</a> with &quot;CCPA Request&quot; in the subject line.</p>
         </section>
 
         <section>
@@ -252,14 +252,14 @@ export default function PrivacyPage() {
           <h2>14. CONTACT US</h2>
           <p>For questions, concerns, or requests regarding this Privacy Policy:</p>
           <p>
-            <strong>Pelican Trading, LLC</strong><br />
+            <strong>Crypto Analytix, LLC</strong><br />
             2045 W Grand Ave<br />
             STE B 773866<br />
             Chicago, IL 60612 US
           </p>
           <p>
             <strong>Email:</strong> <a href="mailto:privacy@pelican.ai">privacy@pelican.ai</a><br />
-            <strong>Support:</strong> <a href="mailto:support@pelicantrading.ai">support@pelicantrading.ai</a>
+            <strong>Support:</strong> <a href="mailto:support@cryptoanalytix.com">support@cryptoanalytix.com</a>
           </p>
         </section>
 

@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import { FAQFullPage } from '@/components/landing/faq-full-page';
 
 export const metadata: Metadata = {
-  title: 'FAQ | Pelican Trading',
-  description: 'Frequently asked questions about Pelican Trading — how it works, pricing, supported markets, data sources, and more.',
+  title: 'FAQ | Crypto Analytix',
+  description: 'Frequently asked questions about Crypto Analytix — how it works, pricing, supported markets, data sources, and more.',
   alternates: {
     canonical: '/faq',
   },
@@ -15,7 +15,7 @@ const faqJsonLd = {
   mainEntity: [
     {
       '@type': 'Question',
-      name: 'What is Pelican Trading?',
+      name: 'What is Crypto Analytix?',
       acceptedAnswer: {
         '@type': 'Answer',
         text: 'Pelican is an AI-powered trading intelligence platform that lets traders analyze markets, track trades, and get insights using plain English.',

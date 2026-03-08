@@ -8,7 +8,7 @@ const LandingPageClient = dynamic(
 
 export const metadata: Metadata = {
   title: {
-    absolute: 'Pelican Trading AI — Your AI-Powered Trading Edge',
+    absolute: 'Crypto Analytix — Your AI-Powered Trading Edge',
   },
   description:
     'Institutional-grade market analysis, personalized trade coaching, and a platform that learns how you trade. Built for stocks, forex, crypto, and futures.',
@@ -20,15 +20,15 @@ export const metadata: Metadata = {
 const organizationJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
-  name: 'Pelican Trading',
-  url: 'https://pelicantrading.ai',
-  logo: 'https://pelicantrading.ai/pelican-logo-transparent.webp',
+  name: 'Crypto Analytix',
+  url: 'https://cryptoanalytix.com',
+  logo: 'https://cryptoanalytix.com/ca-logo.svg',
   description:
     'AI-powered trading intelligence platform for traders of all levels.',
   foundingDate: '2025',
   contactPoint: {
     '@type': 'ContactPoint',
-    email: 'support@pelicantrading.ai',
+    email: 'support@cryptoanalytix.com',
     contactType: 'customer support',
   },
 };
@@ -36,7 +36,7 @@ const organizationJsonLd = {
 const productJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
-  name: 'Pelican Trading',
+  name: 'Crypto Analytix',
   applicationCategory: 'FinanceApplication',
   operatingSystem: 'Web',
   description:

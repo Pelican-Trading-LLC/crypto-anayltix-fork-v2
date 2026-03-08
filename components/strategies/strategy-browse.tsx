@@ -24,7 +24,7 @@ export function StrategyBrowse() {
         <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/chat" className="flex items-center gap-2 group transition-opacity hover:opacity-80">
-              <Image src="/pelican-logo-transparent.webp" alt="Pelican AI" width={32} height={32} className="w-8 h-8 object-contain" />
+              <Image src="/ca-logo.svg" alt="Pelican AI" width={32} height={32} className="w-8 h-8 object-contain" />
               <span className="text-sm font-semibold text-[var(--text-primary)]">Pelican AI</span>
             </Link>
             <span className="text-[var(--text-muted)]">/</span>

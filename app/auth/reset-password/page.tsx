@@ -99,8 +99,8 @@ export default function ResetPasswordPage() {
           <div className="flex flex-col items-center text-center mb-8">
             <div className="w-12 h-12 mb-4 relative">
               <Image
-                src="/pelican-logo-transparent.webp"
-                alt="Pelican Logo"
+                src="/ca-logo.svg"
+                alt="Crypto Analytix"
                 width={48}
                 height={48}
                 className="object-contain"

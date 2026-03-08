@@ -3,7 +3,7 @@
 import React, { useMemo } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import Image from 'next/image'
+
 import { cn } from '@/lib/utils'
 import { useCreditsContext } from '@/providers/credits-provider'
 import { useTraderProfile } from '@/hooks/use-trader-profile'
@@ -103,15 +103,12 @@ export function TopNav({ className }: TopNavProps) {
             href="/chat"
             className="flex items-center gap-2 sm:gap-3 group transition-opacity hover:opacity-80 flex-shrink-0"
           >
-            <Image
-              src="/pelican-logo-transparent.webp"
-              alt="Pelican AI"
-              width={40}
-              height={40}
-              className="w-8 h-8 sm:w-10 sm:h-10 object-contain"
-            />
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-[10px] flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
+              style={{ background: 'linear-gradient(135deg, #1DA1C4, #178BA8)' }}>
+              CA
+            </div>
             <span className="hidden sm:inline text-base font-bold text-[var(--text-primary)] tracking-tight">
-              Pelican AI
+              Crypto Analytix
             </span>
           </Link>
 

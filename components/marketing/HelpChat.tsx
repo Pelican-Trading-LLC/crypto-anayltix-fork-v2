@@ -14,7 +14,7 @@ interface HelpChatProps {
   logoUrl?: string;
 }
 
-export default function HelpChat({ logoUrl = '/pelican-logo-transparent.webp' }: HelpChatProps) {
+export default function HelpChat({ logoUrl = '/ca-logo.svg' }: HelpChatProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
@@ -61,7 +61,7 @@ export default function HelpChat({ logoUrl = '/pelican-logo-transparent.webp' }:
       if (data.error) {
         setMessages(prev => [...prev, { 
           type: 'bot', 
-          content: 'Sorry, something went wrong. Please try again or email support@pelicantrading.ai for help.' 
+          content: 'Sorry, something went wrong. Please try again or email support@cryptoanalytix.com for help.' 
         }]);
       } else {
         setMessages(prev => [...prev, { type: 'bot', content: data.reply }]);
@@ -69,7 +69,7 @@ export default function HelpChat({ logoUrl = '/pelican-logo-transparent.webp' }:
     } catch {
       setMessages(prev => [...prev, { 
         type: 'bot', 
-        content: 'Sorry, I couldn\'t connect. Please try again or email support@pelicantrading.ai for help.' 
+        content: 'Sorry, I couldn\'t connect. Please try again or email support@cryptoanalytix.com for help.' 
       }]);
     } finally {
       setIsLoading(false);
@@ -77,7 +77,7 @@ export default function HelpChat({ logoUrl = '/pelican-logo-transparent.webp' }:
   };
 
   const handleContactSupport = () => {
-    window.location.href = 'mailto:support@pelicantrading.ai';
+    window.location.href = 'mailto:support@cryptoanalytix.com';
   };
 
   const formatMessage = (content: string) => {
@@ -88,8 +88,8 @@ export default function HelpChat({ logoUrl = '/pelican-logo-transparent.webp' }:
       .join('<br />');
     // Convert email addresses to clickable links
     html = html.replace(
-      /support@pelicantrading\.ai/g,
-      '<a href="mailto:support@pelicantrading.ai" style="color: var(--primary); text-decoration: underline;">support@pelicantrading.ai</a>'
+      /support@cryptoanalytix\.ai/g,
+      '<a href="mailto:support@cryptoanalytix.com" style="color: var(--primary); text-decoration: underline;">support@cryptoanalytix.com</a>'
     );
     return html;
   };
@@ -227,7 +227,7 @@ export default function HelpChat({ logoUrl = '/pelican-logo-transparent.webp' }:
                   color: 'var(--muted-foreground)',
                   lineHeight: '1.5'
                 }}>
-                  Ask me anything about Pelican Trading—features, pricing, data coverage, or how it works.
+                  Ask me anything about Crypto Analytix—features, pricing, data coverage, or how it works.
                 </div>
               </div>
             )}

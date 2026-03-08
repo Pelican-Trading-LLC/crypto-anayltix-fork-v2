@@ -3,7 +3,6 @@
 import Link from "next/link"
 import { useAuth } from "@/lib/providers/auth-provider"
 import { SuggestedPrompts } from "./SuggestedPrompts"
-import Image from "next/image"
 
 interface WelcomeScreenProps {
   onQuickStart: (message: string) => void
@@ -25,14 +24,10 @@ export function WelcomeScreen({ onQuickStart, disabled }: WelcomeScreenProps) {
   return (
     <div className="flex-1 flex items-center justify-center p-4 pb-8 sm:p-8 bg-transparent">
       <div className="max-w-2xl mx-auto text-center space-y-6 px-2">
-        <Image
-          src="/pelican-logo-transparent.webp"
-          alt="Pelican AI"
-          width={80}
-          height={80}
-          className="mx-auto w-16 h-16 sm:w-20 sm:h-20 object-contain opacity-90"
-          priority
-        />
+        <div className="mx-auto w-16 h-16 sm:w-20 sm:h-20 rounded-[18px] flex items-center justify-center text-white text-2xl sm:text-3xl font-bold opacity-90"
+          style={{ background: 'linear-gradient(135deg, #1DA1C4, #178BA8)' }}>
+          CA
+        </div>
 
         <h1 className="text-2xl sm:text-4xl font-semibold text-balance text-foreground tracking-tight h-auto">
           {getGreeting()}

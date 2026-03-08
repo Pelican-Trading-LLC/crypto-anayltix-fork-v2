@@ -6,8 +6,8 @@ export const CARD_COLORS = {
   bg: "#0a0a0f",
   cardBg: "#13131a",
   border: "#1e1e2e",
-  purple: "#8b5cf6",
-  purpleLight: "#a78bfa",
+  purple: "#1DA1C4",
+  purpleLight: "#25BFDF",
   cyan: "#22d3ee",
   green: "#22c55e",
   red: "#ef4444",
@@ -126,7 +126,7 @@ export function CardLayout({
                 letterSpacing: "0.05em",
               }}
             >
-              pelicantrading.ai
+              cryptoanalytix.com
             </span>
           </div>
         )}

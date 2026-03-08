@@ -22,7 +22,7 @@ const faqData: FAQCategory[] = [
     title: 'About Pelican',
     items: [
       {
-        question: 'What is Pelican Trading?',
+        question: 'What is Crypto Analytix?',
         answer: 'Pelican is an AI-powered trading intelligence platform that lets traders analyze markets, track trades, and get insights using plain English instead of code. Think of it as having an expert analyst available 24/7 who speaks your language.',
       },
       {
@@ -35,7 +35,7 @@ const faqData: FAQCategory[] = [
       },
       {
         question: 'What is the current status of Pelican?',
-        answer: 'Pelican is currently in Beta. You can sign up at pelicantrading.ai to get early access and help shape the future of the platform.',
+        answer: 'Pelican is currently in Beta. You can sign up at cryptoanalytix.com to get early access and help shape the future of the platform.',
       },
     ],
   },
@@ -137,15 +137,15 @@ const faqData: FAQCategory[] = [
     items: [
       {
         question: 'How do I get help?',
-        answer: 'You can use the chat widget on this site for quick questions about Pelican. For account issues, billing questions, bug reports, or anything else, email us at support@pelicantrading.ai.',
+        answer: 'You can use the chat widget on this site for quick questions about Pelican. For account issues, billing questions, bug reports, or anything else, email us at support@cryptoanalytix.com.',
       },
       {
         question: 'What if I have a billing or account issue?',
-        answer: 'For billing questions, payment issues, account access problems, or refund requests, please email support@pelicantrading.ai and our team will help you directly.',
+        answer: 'For billing questions, payment issues, account access problems, or refund requests, please email support@cryptoanalytix.com and our team will help you directly.',
       },
       {
         question: 'How do I report a bug?',
-        answer: 'If you encounter a bug or technical issue with the platform, email support@pelicantrading.ai with details about what happened. Screenshots and steps to reproduce are always helpful!',
+        answer: 'If you encounter a bug or technical issue with the platform, email support@cryptoanalytix.com with details about what happened. Screenshots and steps to reproduce are always helpful!',
       },
     ],
   },
@@ -175,7 +175,7 @@ export function FAQFullPage() {
               Frequently Asked Questions
             </h1>
             <p className="text-lg text-slate-500 max-w-2xl mx-auto">
-              Everything you need to know about Pelican Trading.
+              Everything you need to know about Crypto Analytix.
             </p>
           </div>
         </ScrollReveal>
@@ -253,7 +253,7 @@ export function FAQFullPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <a
-                href="mailto:support@pelicantrading.ai"
+                href="mailto:support@cryptoanalytix.com"
                 className="rounded-xl border border-slate-200 px-6 py-3 text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors"
               >
                 Email Support

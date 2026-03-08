@@ -84,8 +84,8 @@ export default function AcceptTermsPage() {
           <div className="flex flex-col items-center text-center mb-8">
             <div className="w-20 h-20 mb-4 relative">
               <Image
-                src="/pelican-logo-transparent.webp"
-                alt="Pelican Logo"
+                src="/ca-logo.svg"
+                alt="Crypto Analytix"
                 width={80}
                 height={80}
                 className="object-contain"
