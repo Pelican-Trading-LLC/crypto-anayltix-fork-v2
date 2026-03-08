@@ -86,7 +86,7 @@ export async function requireAdminPage() {
     .single()
 
   if (!credits?.is_admin) {
-    redirect('/chat')
+    redirect('/dashboard')
   }
 
   return { user, displayName: user.email ?? null }

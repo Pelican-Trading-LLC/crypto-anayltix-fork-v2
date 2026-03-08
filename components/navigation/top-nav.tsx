@@ -1,12 +1,11 @@
 "use client"
 
-import React, { useMemo } from 'react'
+import React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 import { cn } from '@/lib/utils'
 import { useCreditsContext } from '@/providers/credits-provider'
-import { useTraderProfile } from '@/hooks/use-trader-profile'
 import { IconTooltip } from '@/components/ui/icon-tooltip'
 
 // =============================================================================
@@ -17,31 +16,39 @@ interface TopNavProps {
   className?: string
 }
 
-interface NavTab {
-  key: string
-  label: string
-  href: string
-  /** Which markets this tab is relevant to. Omit or leave undefined for always-show. */
-  markets?: string[]
-  /** If true, tab is always visible regardless of trader profile. */
-  alwaysShow?: boolean
+// =============================================================================
+// ROUTE TITLES
+// =============================================================================
+
+const routeTitles: Record<string, string> = {
+  '/dashboard': 'DASHBOARD',
+  '/signals': 'SIGNALS',
+  '/calendar': 'CALENDAR',
+  '/learn': 'LEARN',
+  '/settings': 'SETTINGS',
+  '/chat': 'ASK PELICAN',
+  '/brief': 'DAILY BRIEF',
+  '/morning': 'DAILY BRIEF',
+  '/smart-money': 'SMART MONEY',
+  '/community': 'COMMUNITY',
+  '/screener': 'TOKEN SCREENER',
+  '/alerts': 'AI ALERTS',
+  '/positions': 'POSITIONS',
+  '/journal': 'JOURNAL',
+  '/playbooks': 'PLAYBOOKS',
+  '/heatmap': 'HEATMAP',
+  '/correlations': 'CORRELATIONS',
+  '/earnings': 'EARNINGS',
+  '/strategies': 'STRATEGIES',
 }
 
-// =============================================================================
-// NAV TABS
-// =============================================================================
-
-const NAV_TABS: NavTab[] = [
-  { key: 'brief', label: 'Brief', href: '/morning', alwaysShow: true },
-  { key: 'chat', label: 'Chat', href: '/chat', alwaysShow: true },
-  { key: 'positions', label: 'Positions', href: '/positions', alwaysShow: true },
-  { key: 'journal', label: 'Journal', href: '/journal', alwaysShow: true },
-  { key: 'playbooks', label: 'Playbooks', href: '/playbooks', alwaysShow: true },
-  { key: 'heatmap', label: 'Heatmap', href: '/heatmap', alwaysShow: true },
-  { key: 'correlations', label: 'Correlations', href: '/correlations', alwaysShow: true },
-  { key: 'earnings', label: 'Earnings', href: '/earnings', markets: ['stocks', 'options'] },
-  { key: 'strategies', label: 'Strategies', href: '/strategies', alwaysShow: true },
-]
+function getPageTitle(pathname: string): string {
+  // Exact match
+  if (routeTitles[pathname]) return routeTitles[pathname]
+  // Prefix match (e.g. /strategies/some-slug)
+  const base = '/' + pathname.split('/')[1]
+  return routeTitles[base] || ''
+}
 
 // =============================================================================
 // MAIN COMPONENT
@@ -50,45 +57,8 @@ const NAV_TABS: NavTab[] = [
 export function TopNav({ className }: TopNavProps) {
   const pathname = usePathname()
   const { credits } = useCreditsContext()
-  const { survey } = useTraderProfile()
 
-  // Derive market flags from survey (default to stocks if no survey yet)
-  const marketsTraded = survey?.markets_traded || ['stocks']
-  const hasSurvey = !!survey
-  const tradesForex = marketsTraded.includes('forex')
-  const tradesFutures = marketsTraded.includes('futures')
-
-  // Filter tabs based on trader profile markets
-  // If no survey (onboarding incomplete), show all tabs
-  const visibleTabs = useMemo(() => {
-    if (!hasSurvey) return NAV_TABS
-    return NAV_TABS.filter(tab => {
-      if (tab.alwaysShow) return true
-      return tab.markets?.some(m => marketsTraded.includes(m))
-    })
-  }, [hasSurvey, marketsTraded])
-
-  // Resolve display label — rename "Earnings" to "Calendar" for forex/futures traders
-  const getTabLabel = (tab: NavTab): string => {
-    if (tab.key === 'earnings' && (tradesForex || tradesFutures)) return 'Calendar'
-    return tab.label
-  }
-
-  // Determine active tab based on pathname
-  const getActiveTab = (): string => {
-    if (pathname.startsWith('/morning')) return 'brief'
-    if (pathname.startsWith('/chat')) return 'chat'
-    if (pathname.startsWith('/heatmap')) return 'heatmap'
-    if (pathname.startsWith('/correlations')) return 'correlations'
-    if (pathname.startsWith('/positions')) return 'positions'
-    if (pathname.startsWith('/journal')) return 'journal'
-    if (pathname.startsWith('/playbooks')) return 'playbooks'
-    if (pathname.startsWith('/strategies')) return 'strategies'
-    if (pathname.startsWith('/earnings')) return 'earnings'
-    return 'chat' // Default
-  }
-
-  const activeTab = getActiveTab()
+  const pageTitle = getPageTitle(pathname)
 
   return (
     <nav className={cn(
@@ -96,12 +66,11 @@ export function TopNav({ className }: TopNavProps) {
       className
     )}>
       <div className="flex items-center justify-between h-14 px-4">
-        {/* Left: Logo + Tabs */}
-        <div className="flex items-center gap-4 sm:gap-6 min-w-0 flex-1 overflow-hidden">
-          {/* Logo */}
+        {/* Left: Logo */}
+        <div className="flex items-center gap-3 flex-shrink-0">
           <Link
-            href="/chat"
-            className="flex items-center gap-2 sm:gap-3 group transition-opacity hover:opacity-80 flex-shrink-0"
+            href="/dashboard"
+            className="flex items-center gap-2 sm:gap-3 group transition-opacity hover:opacity-80"
           >
             <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-[10px] flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
               style={{ background: 'linear-gradient(135deg, #1DA1C4, #178BA8)' }}>
@@ -111,56 +80,17 @@ export function TopNav({ className }: TopNavProps) {
               Crypto Analytix
             </span>
           </Link>
-
-          {/* Tabs — horizontal scroll on mobile, inline on desktop */}
-          <div
-            className="flex items-center gap-1 overflow-x-auto scrollbar-hide min-w-0 flex-1"
-            style={{ WebkitOverflowScrolling: 'touch' }}
-          >
-            {visibleTabs.map((tab) => {
-              const isActive = activeTab === tab.key
-
-              return (
-                <React.Fragment key={tab.key}>
-                  {tab.key === 'heatmap' && (
-                    <div className="hidden md:block h-4 w-px bg-[var(--border-subtle)] mx-1 flex-shrink-0" />
-                  )}
-                  <Link
-                  href={tab.href}
-                  onMouseEnter={() => {
-                    // Prefetch earnings data on hover for instant navigation
-                    if (tab.key === 'earnings') {
-                      const today = new Date()
-                      const monday = new Date(today)
-                      monday.setDate(today.getDate() - today.getDay() + 1)
-                      const friday = new Date(monday)
-                      friday.setDate(monday.getDate() + 4)
-                      const from = monday.toISOString().split('T')[0]
-                      const to = friday.toISOString().split('T')[0]
-                      fetch(`/api/earnings?from=${from}&to=${to}`).catch(() => {})
-                    }
-                  }}
-                  className={cn(
-                    "relative px-3 py-1.5 md:py-4 text-sm font-medium transition-colors duration-150 whitespace-nowrap flex-shrink-0 rounded-lg md:rounded-none active:scale-95",
-                    isActive
-                      ? "text-[var(--text-primary)] bg-[var(--surface-hover)] md:bg-transparent"
-                      : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] active:bg-[var(--surface-hover)]"
-                  )}
-                >
-                  {getTabLabel(tab)}
-                  {isActive && (
-                    <span className="hidden md:block absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--accent-primary)] rounded-full shadow-[0_0_8px_var(--accent-muted)]" />
-                  )}
-                </Link>
-                </React.Fragment>
-              )
-            })}
-          </div>
         </div>
+
+        {/* Center: Page Title */}
+        {pageTitle && (
+          <div className="absolute left-1/2 -translate-x-1/2 text-xs font-semibold tracking-widest text-[var(--text-muted)]">
+            {pageTitle}
+          </div>
+        )}
 
         {/* Right: Credits */}
         <div className="flex items-center gap-2 sm:gap-3 ml-auto flex-shrink-0">
-          {/* Credits */}
           <IconTooltip label="Credit balance" side="bottom">
             <Link
               href="/pricing"
