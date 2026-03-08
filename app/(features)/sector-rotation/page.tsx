@@ -2,17 +2,34 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { MOCK_SECTORS } from '@/lib/crypto-mock-data'
+import { MOCK_SECTORS, SectorData } from '@/lib/crypto-mock-data'
 import { SectorCard } from '@/components/sector-rotation/sector-card'
 import { RotationBriefing } from '@/components/sector-rotation/rotation-briefing'
+import { useLiveSectors } from '@/hooks/use-crypto-data'
 
 const TIMEFRAMES = ['7D', '30D', '90D'] as const
 
 export default function SectorRotationPage() {
   const [timeframe, setTimeframe] = useState<string>('7D')
   const router = useRouter()
+  const { data: liveSectorData } = useLiveSectors()
 
-  const sorted = [...MOCK_SECTORS].sort((a, b) => b.velocity - a.velocity)
+  // Merge live data into mock sectors
+  const sectors: SectorData[] = MOCK_SECTORS.map(mockSector => {
+    const live = liveSectorData?.find(ls => ls.name === mockSector.name)
+    if (!live) return mockSector
+    return {
+      ...mockSector,
+      volume: live.volume || mockSector.volume,
+      market_cap: live.market_cap || mockSector.market_cap,
+      top_tokens: live.top_tokens.length > 0
+        ? live.top_tokens.map(t => ({ symbol: t.symbol, change_7d: t.change_7d }))
+        : mockSector.top_tokens,
+      // Keep mock: velocity, smart_money_flow, sparkline, status
+    }
+  })
+
+  const sorted = [...sectors].sort((a, b) => b.velocity - a.velocity)
 
   return (
     <div className="p-6 max-w-[1200px] mx-auto">

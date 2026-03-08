@@ -1,33 +1,58 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { TokenSearch } from '@/components/token-intel/token-search'
 import { PriceActionCard, DerivativesCard, OnChainRiskCard } from '@/components/token-intel/token-data-cards'
 import { PelicanSynthesisPanel } from '@/components/token-intel/pelican-synthesis-panel'
-import { searchTokenIntel, TokenIntelData } from '@/lib/crypto-mock-data'
+import { TokenIntelData } from '@/lib/crypto-mock-data'
+import { useLiveTokenData } from '@/hooks/use-crypto-data'
+import { mergeTokenIntel } from '@/lib/use-live-or-mock'
 
 export default function TokenIntelPage() {
   const searchParams = useSearchParams()
   const initialTicker = searchParams.get('ticker')
 
   const [selectedSymbol, setSelectedSymbol] = useState<string | null>(initialTicker?.toUpperCase() || null)
-  const [data, setData] = useState<TokenIntelData | null>(null)
-  const [loading, setLoading] = useState(false)
 
-  useEffect(() => {
-    if (selectedSymbol) {
-      setLoading(true)
-      // Simulate API delay
-      const timer = setTimeout(() => {
-        setData(searchTokenIntel(selectedSymbol))
-        setLoading(false)
-      }, 800)
-      return () => clearTimeout(timer)
-    } else {
-      setData(null)
-    }
-  }, [selectedSymbol])
+  // Fetch live data from API
+  const { data: liveTokenData, isLoading: liveLoading } = useLiveTokenData(selectedSymbol)
+
+  // Merge live data with mock (live overrides prices/TVL, mock fills derivatives/risk/pelican)
+  const mergedData = selectedSymbol ? mergeTokenIntel(selectedSymbol, liveTokenData) : null
+
+  // Fallback: if not in mock, create minimal data from live API
+  const data: TokenIntelData | null = selectedSymbol
+    ? mergedData
+      || (liveTokenData ? {
+          symbol: selectedSymbol,
+          name: liveTokenData.name,
+          price: liveTokenData.price,
+          price_change_24h: liveTokenData.price_change_24h,
+          price_change_7d: liveTokenData.price_change_7d,
+          price_change_30d: liveTokenData.price_change_30d,
+          market_cap: liveTokenData.market_cap,
+          fdv: liveTokenData.fdv,
+          volume_24h: liveTokenData.volume_24h,
+          vol_mcap_ratio: liveTokenData.vol_mcap_ratio,
+          ath: liveTokenData.ath,
+          ath_date: liveTokenData.ath_date,
+          sparkline_7d: liveTokenData.sparkline_7d,
+          funding_rate: 0, funding_annualized: 0, open_interest: 0, oi_change_24h: 0,
+          long_short_ratio: 1.0, liquidations_24h: { longs: 0, shorts: 0 },
+          top_10_holders_pct: 0, holder_count: 0, active_addresses_7d: 0, active_addresses_change: 0,
+          smart_money_flow_7d: 0, exchange_netflow_7d: 0, next_unlock: null,
+          tvl: liveTokenData.tvl, tvl_change_30d: liveTokenData.tvl_change_30d,
+          risk_score: 5, risk_factors: ['Derivatives and on-chain data not yet available for this token'],
+          pelican_synthesis: `Live price data available for ${selectedSymbol}. Derivatives, on-chain analysis, and Pelican synthesis require additional data sources that are not yet connected. Use "Ask Pelican" for AI-generated analysis.`,
+          pelican_verdict: 'NEUTRAL' as const, pelican_confidence: 0,
+          pelican_checked_at: 'N/A (limited data)',
+          pelican_sources: ['CoinGecko (price)', liveTokenData.sources?.tvl ? 'DeFiLlama (TVL)' : null].filter(Boolean) as string[],
+        } as TokenIntelData : null)
+    : null
+
+  // Loading state
+  const loading = selectedSymbol !== null && !data && liveLoading
 
   return (
     <div className="p-6 max-w-[1200px] mx-auto">

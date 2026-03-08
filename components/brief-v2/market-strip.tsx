@@ -1,12 +1,27 @@
 'use client'
 
 import { CaretUp, CaretDown } from '@phosphor-icons/react'
+import { useLivePrices } from '@/hooks/use-crypto-data'
 import { MOCK_BRIEF_V2 } from '@/lib/crypto-mock-data'
 
 export function MarketStrip() {
+  const { data: livePrices } = useLivePrices(['BTC', 'ETH', 'SOL'])
+
+  // Build market strip data: live prices override mock
+  const priceMap = new Map(livePrices?.map(p => [p.symbol, p]) || [])
+
+  const stripData = MOCK_BRIEF_V2.market_strip.map(m => {
+    const live = priceMap.get(m.symbol)
+    if (live && !m.suffix && !m.label) {
+      // Override price tokens with live data
+      return { ...m, price: live.price, change: live.price_change_24h }
+    }
+    return m // Keep BTC.D and F&G as mock
+  })
+
   return (
     <div className="flex items-center gap-6 px-4 py-2 rounded-lg border bg-card mb-4 overflow-x-auto">
-      {MOCK_BRIEF_V2.market_strip.map(m => (
+      {stripData.map(m => (
         <div key={m.symbol} className="flex items-center gap-2 shrink-0">
           <span className="text-[12px] font-medium text-muted-foreground">{m.symbol}</span>
           <span className="font-mono text-[12px] tabular-nums font-medium">

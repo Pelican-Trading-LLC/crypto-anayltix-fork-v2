@@ -3,7 +3,9 @@
 import { useMemo } from 'react'
 import Link from 'next/link'
 import { ChatCircle, CaretUp, CaretDown, TrendUp, Bell, Heart } from '@phosphor-icons/react'
-import { MOCK_PORTFOLIO, MOCK_POSITIONS, MOCK_SMART_MONEY, ASSET_COLORS, formatUSD, formatPnl, formatPct, formatCompact } from '@/lib/crypto-mock-data'
+import { MOCK_POSITIONS, MOCK_SMART_MONEY, ASSET_COLORS, formatUSD, formatPnl, formatPct, formatCompact } from '@/lib/crypto-mock-data'
+import { useLivePrices, useLiveGlobalData } from '@/hooks/use-crypto-data'
+import { mergePositions } from '@/lib/use-live-or-mock'
 import dynamic from 'next/dynamic'
 
 const AreaChart = dynamic(() => import('recharts').then(m => m.AreaChart), { ssr: false })
@@ -41,7 +43,7 @@ function StatCard({ title, value, valueColor, subtitle, subtitleColor, icon, hea
 
 /* ─── Portfolio Chart ───────────────────────────────────────────── */
 
-function PortfolioChart() {
+function PortfolioChart({ positions }: { positions: typeof MOCK_POSITIONS }) {
   const data = useMemo(() => {
     const base = 65942
     const result: { date: string; value: number }[] = []
@@ -89,12 +91,12 @@ function PortfolioChart() {
       <div className="mt-4">
         <span className="text-[10px] uppercase tracking-wider text-muted-foreground">ASSET ALLOCATION</span>
         <div className="flex h-3 rounded-full overflow-hidden mt-2">
-          {MOCK_POSITIONS.map(p => (
+          {positions.map(p => (
             <div key={p.asset} style={{ width: `${p.allocation_pct}%`, backgroundColor: ASSET_COLORS[p.asset] }} />
           ))}
         </div>
         <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2">
-          {MOCK_POSITIONS.map(p => (
+          {positions.map(p => (
             <span key={p.asset} className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
               <span className="w-2 h-2 rounded-full" style={{ backgroundColor: ASSET_COLORS[p.asset] }} />
               {p.asset} {p.allocation_pct}%
@@ -108,7 +110,7 @@ function PortfolioChart() {
 
 /* ─── Market Pulse ──────────────────────────────────────────────── */
 
-function MarketPulse() {
+function MarketPulse({ btcDominance }: { btcDominance: number }) {
   return (
     <div className="rounded-xl border bg-card p-5 h-full flex flex-col">
       <div className="flex items-center justify-between mb-3">
@@ -116,7 +118,7 @@ function MarketPulse() {
         <span className="font-mono text-[11px]">Confidence: <span className="text-[#1DA1C4] font-semibold">94%</span></span>
       </div>
       <div className="flex-1 text-sm text-muted-foreground leading-relaxed space-y-3">
-        <p>Bitcoin dominance shows signs of exhaustion at 58.4%. We observe significant rotation of smart money into Layer 2 infrastructure and AI-agent protocols. Volatility expected around Thursday&apos;s FOMC minutes.</p>
+        <p>Bitcoin dominance shows signs of exhaustion at {btcDominance.toFixed(1)}%. We observe significant rotation of smart money into Layer 2 infrastructure and AI-agent protocols. Volatility expected around Thursday&apos;s FOMC minutes.</p>
         <p>Dormant whale movements of 14,200 BTC detected, suggesting potential sell pressure or OTC deals. Further monitoring required.</p>
       </div>
       <div className="flex gap-2 mt-4">
@@ -135,67 +137,79 @@ function MarketPulse() {
 
 /* ─── Top Movers Table ──────────────────────────────────────────── */
 
-function TopMoversTable() {
+function TopMoversTable({ positions, loading }: { positions: typeof MOCK_POSITIONS; loading: boolean }) {
   return (
     <div className="rounded-xl border bg-card p-5">
       <span className="text-[11px] uppercase tracking-[1.5px] font-semibold text-muted-foreground flex items-center gap-2 mb-4">
         <TrendUp size={14} /> TOP MOVERS
       </span>
-      <table className="w-full">
-        <thead>
-          <tr className="border-b border-[var(--border)]">
-            {['TOKEN', 'PRICE', '24H %', '7D %', 'VOLUME (24H)', 'PELICAN SIGNAL'].map(h => (
-              <th key={h} className={`pb-3 text-[10px] uppercase tracking-wider font-semibold text-muted-foreground ${h !== 'TOKEN' ? 'text-right' : 'text-left'}`}>{h}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {MOCK_POSITIONS.map(p => {
-            const signalColors: Record<string, string> = {
-              'Accumulation Zone': 'bg-green-500/10 text-green-500 border-green-500/20',
-              'Momentum Breakout': 'bg-[#1DA1C4]/10 text-[#1DA1C4] border-[#1DA1C4]/20',
-              'Distribution': 'bg-red-500/10 text-red-500 border-red-500/20',
-              'Whale Alert': 'bg-amber-500/10 text-amber-500 border-amber-500/20',
-              'Smart Money Inflow': 'bg-purple-500/10 text-purple-500 border-purple-500/20',
-            }
-            return (
-              <tr key={p.asset} className="border-b border-[var(--border)] last:border-0 hover:bg-accent/5 cursor-pointer transition-colors"
-                onClick={() => window.location.href = `/token-intel?ticker=${p.asset}`}>
-                <td className="py-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold text-white" style={{ backgroundColor: ASSET_COLORS[p.asset] }}>
-                      {p.asset[0]}
+      {loading && !positions.length ? (
+        <div className="space-y-3 p-4">
+          {[1,2,3,4,5].map(i => (
+            <div key={i} className="flex items-center gap-4">
+              <div className="w-7 h-7 rounded-full shimmer" />
+              <div className="flex-1 h-4 rounded shimmer" />
+              <div className="w-20 h-4 rounded shimmer" />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <table className="w-full">
+          <thead>
+            <tr className="border-b border-[var(--border)]">
+              {['TOKEN', 'PRICE', '24H %', '7D %', 'VOLUME (24H)', 'PELICAN SIGNAL'].map(h => (
+                <th key={h} className={`pb-3 text-[10px] uppercase tracking-wider font-semibold text-muted-foreground ${h !== 'TOKEN' ? 'text-right' : 'text-left'}`}>{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {positions.map(p => {
+              const signalColors: Record<string, string> = {
+                'Accumulation Zone': 'bg-green-500/10 text-green-500 border-green-500/20',
+                'Momentum Breakout': 'bg-[#1DA1C4]/10 text-[#1DA1C4] border-[#1DA1C4]/20',
+                'Distribution': 'bg-red-500/10 text-red-500 border-red-500/20',
+                'Whale Alert': 'bg-amber-500/10 text-amber-500 border-amber-500/20',
+                'Smart Money Inflow': 'bg-purple-500/10 text-purple-500 border-purple-500/20',
+              }
+              return (
+                <tr key={p.asset} className="border-b border-[var(--border)] last:border-0 hover:bg-accent/5 cursor-pointer transition-colors"
+                  onClick={() => window.location.href = `/token-intel?ticker=${p.asset}`}>
+                  <td className="py-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold text-white" style={{ backgroundColor: ASSET_COLORS[p.asset] }}>
+                        {p.asset[0]}
+                      </div>
+                      <div>
+                        <div className="text-sm font-semibold">{p.asset}</div>
+                        <div className="text-[11px] text-muted-foreground">{p.name}</div>
+                      </div>
                     </div>
-                    <div>
-                      <div className="text-sm font-semibold">{p.asset}</div>
-                      <div className="text-[11px] text-muted-foreground">{p.name}</div>
-                    </div>
-                  </div>
-                </td>
-                <td className="text-right font-mono text-[13px] tabular-nums">{formatUSD(p.current_price)}</td>
-                <td className="text-right">
-                  <span className={`font-mono text-[13px] tabular-nums inline-flex items-center gap-0.5 ${p.price_change_24h >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                    {p.price_change_24h >= 0 ? <CaretUp size={12} weight="fill" /> : <CaretDown size={12} weight="fill" />}
-                    {formatPct(p.price_change_24h)}
-                  </span>
-                </td>
-                <td className="text-right">
-                  <span className={`font-mono text-[13px] tabular-nums inline-flex items-center gap-0.5 ${p.price_change_7d >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                    {p.price_change_7d >= 0 ? <CaretUp size={12} weight="fill" /> : <CaretDown size={12} weight="fill" />}
-                    {formatPct(p.price_change_7d)}
-                  </span>
-                </td>
-                <td className="text-right font-mono text-[13px] tabular-nums text-muted-foreground">{formatCompact(p.volume_24h)}</td>
-                <td className="text-right">
-                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border ${signalColors[p.pelican_signal] || ''}`}>
-                    {p.pelican_signal}
-                  </span>
-                </td>
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
+                  </td>
+                  <td className="text-right font-mono text-[13px] tabular-nums">{formatUSD(p.current_price)}</td>
+                  <td className="text-right">
+                    <span className={`font-mono text-[13px] tabular-nums inline-flex items-center gap-0.5 ${p.price_change_24h >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                      {p.price_change_24h >= 0 ? <CaretUp size={12} weight="fill" /> : <CaretDown size={12} weight="fill" />}
+                      {formatPct(p.price_change_24h)}
+                    </span>
+                  </td>
+                  <td className="text-right">
+                    <span className={`font-mono text-[13px] tabular-nums inline-flex items-center gap-0.5 ${p.price_change_7d >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                      {p.price_change_7d >= 0 ? <CaretUp size={12} weight="fill" /> : <CaretDown size={12} weight="fill" />}
+                      {formatPct(p.price_change_7d)}
+                    </span>
+                  </td>
+                  <td className="text-right font-mono text-[13px] tabular-nums text-muted-foreground">{formatCompact(p.volume_24h)}</td>
+                  <td className="text-right">
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border ${signalColors[p.pelican_signal] || ''}`}>
+                      {p.pelican_signal}
+                    </span>
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      )}
     </div>
   )
 }
@@ -279,12 +293,26 @@ function SmartMoneyFeed() {
 /* ─── Dashboard Page ────────────────────────────────────────────── */
 
 export default function DashboardPage() {
+  const positionSymbols = MOCK_POSITIONS.map(p => p.asset)
+  const { data: livePrices, isLoading: pricesLoading } = useLivePrices(positionSymbols)
+  const { data: globalData } = useLiveGlobalData()
+
+  // Merge live prices into mock positions
+  const positions = mergePositions(livePrices)
+
+  // Recalculate portfolio totals from merged positions
+  const portfolioTotal = positions.reduce((sum, p) => sum + (p.current_price * p.quantity), 0)
+  const portfolioPnl = positions.reduce((sum, p) => sum + p.unrealized_pnl, 0)
+  const portfolioPnlPct = portfolioTotal > 0 ? (portfolioPnl / (portfolioTotal - portfolioPnl)) * 100 : 0
+
+  const btcDom = globalData?.btc_dominance ?? 58.4
+
   return (
     <div className="p-6 max-w-[1400px] mx-auto space-y-4">
       {/* Row 1: 4 stat cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard title="PORTFOLIO VALUE" value={formatUSD(MOCK_PORTFOLIO.total_value)} subtitle={`${formatPnl(MOCK_PORTFOLIO.total_pnl)} (${formatPct(MOCK_PORTFOLIO.total_pnl_pct)})`} subtitleColor="text-green-500" icon={<TrendUp size={16} />} />
-        <StatCard title="24H P&L" value={formatPnl(MOCK_PORTFOLIO.total_pnl)} valueColor="text-green-500" subtitle={formatPct(MOCK_PORTFOLIO.total_pnl_pct)} subtitleColor="text-green-500" icon={<CaretUp size={16} />} />
+        <StatCard title="PORTFOLIO VALUE" value={formatUSD(portfolioTotal)} subtitle={`${formatPnl(portfolioPnl)} (${formatPct(portfolioPnlPct)})`} subtitleColor={portfolioPnl >= 0 ? 'text-green-500' : 'text-red-500'} icon={<TrendUp size={16} />} />
+        <StatCard title="24H P&L" value={formatPnl(portfolioPnl)} valueColor={portfolioPnl >= 0 ? 'text-green-500' : 'text-red-500'} subtitle={formatPct(portfolioPnlPct)} subtitleColor={portfolioPnl >= 0 ? 'text-green-500' : 'text-red-500'} icon={portfolioPnl >= 0 ? <CaretUp size={16} /> : <CaretDown size={16} />} />
         <StatCard title="AI ALERTS TODAY" value="7" subtitle="3 High Impact" subtitleColor="text-amber-500" icon={<Bell size={16} />} />
         <StatCard title="WALLET HEALTH" value="82/100" subtitle="Strong" subtitleColor="text-green-500" icon={<Heart size={16} />} healthBar={82} />
       </div>
@@ -292,16 +320,16 @@ export default function DashboardPage() {
       {/* Row 2: Chart + Market Pulse */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
         <div className="lg:col-span-3">
-          <PortfolioChart />
+          <PortfolioChart positions={positions} />
         </div>
         <div className="lg:col-span-1">
-          <MarketPulse />
+          <MarketPulse btcDominance={btcDom} />
         </div>
       </div>
 
       {/* Row 3: Top Movers + Wallet DNA */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <TopMoversTable />
+        <TopMoversTable positions={positions} loading={pricesLoading && !livePrices} />
         <WalletDNA />
       </div>
 
