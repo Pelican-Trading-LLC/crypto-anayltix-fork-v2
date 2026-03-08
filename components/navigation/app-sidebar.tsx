@@ -19,6 +19,7 @@ import {
   GearSix,
   CaretRight,
   CaretLeft,
+  BookOpenText,
 } from '@phosphor-icons/react'
 import type { Icon as PhosphorIcon } from '@phosphor-icons/react'
 import { useAuth } from '@/lib/providers/auth-provider'
@@ -66,7 +67,8 @@ const NAV_SECTIONS: NavSection[] = [
     title: 'PELICAN AI',
     items: [
       { label: 'Ask Pelican', href: '/chat', icon: ChatCircle, accentTint: true },
-      { label: 'AI Alerts', href: '/alerts', icon: Bell, badge: '7 New' },
+      { label: 'Intelligence Alerts', href: '/alerts', icon: Bell, badge: '3 New' },
+      { label: 'Knowledge Base', href: '/knowledge-base', icon: BookOpenText },
     ],
   },
   {

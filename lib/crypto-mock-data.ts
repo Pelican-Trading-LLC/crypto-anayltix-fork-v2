@@ -501,3 +501,79 @@ export const FEATURED_WALLETS = [
   { label: 'Most Active Airdrop Farmer', address: '0xfarm...demo', archetype: 'Airdrop Farmer', stat: '23 protocols' },
   { label: 'Diamond Hands Champion', address: '0xhold...demo', archetype: 'Diamond Hands', stat: '847 day avg hold' },
 ]
+
+// ══════════════════════════════════════════════════════════════
+// KNOWLEDGE BASE — Protocol reference schema
+// ══════════════════════════════════════════════════════════════
+
+export interface ProtocolEntry {
+  id: string
+  name: string
+  category: string
+  mechanics: string
+  critical_risks: string
+  data_quirks: string
+  last_updated: string
+}
+
+export const PROTOCOL_CATEGORIES = ['All', 'Lending', 'DEX', 'LSD', 'Restaking', 'Yield/Deriv', 'Perp DEX', 'Stable/Yield', 'Bridge', 'L2', 'Oracle', 'Compute', 'NFT'] as const
+
+export const CATEGORY_COLORS: Record<string, string> = {
+  Lending: '#1DA1C4', DEX: '#A78BFA', LSD: '#F59E0B', Restaking: '#22C55E',
+  'Yield/Deriv': '#EC4899', 'Perp DEX': '#EF4444', 'Stable/Yield': '#6366F1',
+  Bridge: '#F97316', L2: '#06B6D4', Oracle: '#8B5CF6', Compute: '#14B8A6', NFT: '#E879F9',
+}
+
+export const MOCK_KNOWLEDGE_BASE: ProtocolEntry[] = [
+  { id: 'aave', name: 'Aave', category: 'Lending', mechanics: 'Over-collateralized lending. AAVE is governance/backstop.', critical_risks: 'Bad debt from oracle failure; illiquid collateral loops.', data_quirks: 'Utilization rate >90% spikes borrow rates; watch for whale liquidation walls.', last_updated: '2026-03-06' },
+  { id: 'uniswap', name: 'Uniswap', category: 'DEX', mechanics: 'AMM (V3 concentrated). UNI is purely governance.', critical_risks: 'Regulatory (SEC), fee-switch governance gridlock.', data_quirks: 'V3 volume/TVL ratio is massive compared to V2. High TVL isn\'t needed for high volume.', last_updated: '2026-03-05' },
+  { id: 'lido', name: 'Lido', category: 'LSD', mechanics: 'Liquid staking ETH. LDO governs node operators.', critical_risks: 'Smart contract risk; slashing; centralization heat.', data_quirks: 'TVL is strictly tied to ETH price. Track net new ETH staked, not USD TVL.', last_updated: '2026-03-07' },
+  { id: 'eigenlayer', name: 'EigenLayer', category: 'Restaking', mechanics: 'Re-uses staked ETH to secure AVSs.', critical_risks: 'Cascading slashing risks across multiple AVSs.', data_quirks: 'TVL cap raises cause artificial spikes. Look at active AVS utilization.', last_updated: '2026-03-04' },
+  { id: 'pendle', name: 'Pendle', category: 'Yield/Deriv', mechanics: 'Splits yield into PT/YT. PENDLE captures fees.', critical_risks: 'Complex math pricing errors; underlying protocol failure.', data_quirks: 'APY spikes attract mercenary capital. Watch PT vs YT ratios for market sentiment.', last_updated: '2026-03-06' },
+  { id: 'gmx', name: 'GMX', category: 'Perp DEX', mechanics: 'GLP/GM pool acts as counterparty. GMX = gov/fee share.', critical_risks: 'Toxic flow (traders winning too much drains the pool).', data_quirks: 'High volume is good, but if traders are consistently winning, LP yields go negative.', last_updated: '2026-03-05' },
+  { id: 'ethena', name: 'Ethena', category: 'Stable/Yield', mechanics: 'Delta-neutral synthetic dollar (USDe).', critical_risks: 'Funding rates going negative for extended periods.', data_quirks: 'If funding flips negative, the protocol bleeds money to maintain the peg. High risk.', last_updated: '2026-03-07' },
+  { id: 'hyperliquid', name: 'Hyperliquid', category: 'Perp DEX', mechanics: 'L1 Appchain for orderbooks.', critical_risks: 'Bridge risk; centralization of sequencers.', data_quirks: 'Organic volume leader; no token yet, track points/volume.', last_updated: '2026-03-07' },
+  { id: 'jupiter', name: 'Jupiter', category: 'DEX', mechanics: 'Solana DEX aggregator + perps. JUP is governance.', critical_risks: 'Solana congestion affects execution; competition from Raydium.', data_quirks: 'Volume spikes don\'t always mean organic — check unique wallets vs total volume.', last_updated: '2026-03-06' },
+  { id: 'morpho', name: 'Morpho', category: 'Lending', mechanics: 'Peer-to-peer lending matching on top of Aave/Compound.', critical_risks: 'Smart contract composability risk (protocol on protocol).', data_quirks: 'Match rate is the key metric — unmatched deposits earn base Aave rates.', last_updated: '2026-03-05' },
+  { id: 'layerzero', name: 'LayerZero', category: 'Bridge', mechanics: 'Cross-chain messaging protocol. Powers OFT tokens.', critical_risks: 'Oracle/relayer collusion; bridge exploits.', data_quirks: 'Message count is vanity — track unique senders and value bridged.', last_updated: '2026-03-04' },
+  { id: 'arbitrum', name: 'Arbitrum', category: 'L2', mechanics: 'Optimistic rollup. ARB is governance token.', critical_risks: 'Centralized sequencer; governance treasury raids.', data_quirks: 'TVL includes bridged assets — track native dApp TVL separately.', last_updated: '2026-03-06' },
+  { id: 'chainlink', name: 'Chainlink', category: 'Oracle', mechanics: 'Decentralized oracle network. LINK is node payment.', critical_risks: 'Single point of failure for DeFi pricing.', data_quirks: 'Revenue from feeds is tiny vs token valuation. Track integration count growth.', last_updated: '2026-03-05' },
+  { id: 'render', name: 'Render', category: 'Compute', mechanics: 'Decentralized GPU rendering. RNDR pays for compute.', critical_risks: 'Compute demand is speculative; competition from centralized cloud.', data_quirks: 'Track active jobs and GPU utilization, not just token price.', last_updated: '2026-03-04' },
+  { id: 'blur', name: 'Blur', category: 'NFT', mechanics: 'NFT marketplace with lending via Blend.', critical_risks: 'NFT volume is cyclical and speculative.', data_quirks: 'Wash trading inflates volume. Track unique buyers, not total volume.', last_updated: '2026-03-03' },
+]
+
+// ══════════════════════════════════════════════════════════════
+// INTELLIGENCE ALERTS — Contextual notification system
+// ══════════════════════════════════════════════════════════════
+
+export type AlertCategory = 'onchain_anomaly' | 'derivatives_warning' | 'smart_money' | 'unlock_vesting' | 'portfolio_relative' | 'cross_asset'
+
+export interface IntelAlert {
+  id: string
+  category: AlertCategory
+  severity: 'high' | 'medium' | 'low'
+  title: string
+  body: string
+  affected_assets: string[]
+  timestamp: string
+  read: boolean
+}
+
+export const ALERT_CATEGORY_CONFIG: Record<AlertCategory, { label: string; color: string; icon: string }> = {
+  onchain_anomaly: { label: 'ON-CHAIN ANOMALY', color: '#22C55E', icon: 'eye' },
+  derivatives_warning: { label: 'DERIVATIVES WARNING', color: '#EF4444', icon: 'lightning' },
+  smart_money: { label: 'SMART MONEY', color: '#1DA1C4', icon: 'trend' },
+  unlock_vesting: { label: 'UNLOCK ALERT', color: '#A78BFA', icon: 'clock' },
+  portfolio_relative: { label: 'PORTFOLIO', color: '#6366F1', icon: 'chart' },
+  cross_asset: { label: 'CROSS-ASSET', color: '#EC4899', icon: 'arrows' },
+}
+
+export const MOCK_ALERTS: IntelAlert[] = [
+  { id: 'a1', category: 'onchain_anomaly', severity: 'high', title: '$14M of $LDO just moved to Binance', body: 'Largest single inflow in 90 days. Expect heavy sell pressure. Previous inflows of this size preceded 8-15% drops within 48 hours.', affected_assets: ['LDO', 'ETH'], timestamp: '15m ago', read: false },
+  { id: 'a2', category: 'derivatives_warning', severity: 'high', title: 'WIF funding rate hit +150% annualized', body: 'Funding rate for $WIF hit +0.045% per 8h. OI at ATHs. Longs trapped. Liquidation cascade risk extreme. Previous instances at this level saw 20-40% corrections within 72 hours.', affected_assets: ['WIF'], timestamp: '2h ago', read: false },
+  { id: 'a3', category: 'smart_money', severity: 'medium', title: '3 Apex Predator wallets entered $AERO', body: 'Combined 71% hit rate on Base ecosystem plays. Average entry-to-peak time: 18 days. These wallets have historically front-run narrative shifts by 1-2 weeks.', affected_assets: ['AERO'], timestamp: '4h ago', read: false },
+  { id: 'a4', category: 'unlock_vesting', severity: 'high', title: 'SOL unlock in 5 days — $400M', body: '2.8% of circulating supply from early investor vesting. Previous SOL unlocks of this magnitude caused 12-18% drawdowns followed by recovery within 14 days. Consider hedging or reducing exposure.', affected_assets: ['SOL'], timestamp: '6h ago', read: true },
+  { id: 'a5', category: 'portfolio_relative', severity: 'medium', title: 'BTC now 66% of your portfolio', body: 'Your BTC allocation hit 66% due to price appreciation. This is a concentration risk — consider rebalancing if your target allocation is lower. A 10% BTC correction would impact your portfolio by 6.6%.', affected_assets: ['BTC'], timestamp: '8h ago', read: true },
+  { id: 'a6', category: 'cross_asset', severity: 'medium', title: 'Blake Morrow flagged risk-off shift', body: 'ForexAnalytix: CPI print came in hot at 3.4%. Fed likely to hold rates higher for longer. DXY breaking 105 support. Pelican Translation: Risk assets about to get repriced. Expect outflows from high-beta sectors like Memecoins and AI. Move to stables or delta-neutral farms until macro settles.', affected_assets: ['BTC', 'ETH', 'SOL'], timestamp: '12h ago', read: true },
+  { id: 'a7', category: 'onchain_anomaly', severity: 'low', title: 'Unusual Aave utilization spike on USDC', body: 'USDC utilization on Aave Ethereum hit 92%. Borrow rates spiked to 18% APY. This typically attracts new deposits within 24-48 hours and normalizes rates. Could signal upcoming large borrowing event.', affected_assets: ['AAVE', 'USDC'], timestamp: '14h ago', read: true },
+]
