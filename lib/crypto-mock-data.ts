@@ -413,3 +413,91 @@ export const MOCK_ROTATION_BRIEFING = {
     { from: 'Memecoins', to: 'RWA', amount: 64000000 },
   ],
 }
+
+// ══════════════════════════════════════════════════════════════
+// WALLET DNA & INTELLIGENCE
+// ══════════════════════════════════════════════════════════════
+
+export interface WalletDNAData {
+  address: string
+  label: string | null
+  archetype: string
+  archetype_description: string
+  radar: { axis: string; value: number }[]
+  total_transactions: number
+  chains_active: number
+  first_seen: string
+  avg_hold_days: number
+  sharpe_ratio: number
+  win_rate: number
+  total_pnl: number
+  mev_losses: {
+    total_90d: number
+    incidents: number
+    worst_trade: { token: string; loss: number; date: string }
+    recommendation: string
+  }
+  airdrops: {
+    protocol: string
+    status: 'likely_qualified' | 'partially_qualified' | 'not_qualified'
+    checklist: { item: string; done: boolean }[]
+    estimated_value: string | null
+  }[]
+  holdings: { token: string; value: number; pct: number }[]
+  pelican_narrative: string
+}
+
+export const MOCK_WALLET_DNA: Record<string, WalletDNAData> = {
+  '0x7a3...apex': {
+    address: '0x7a3b4c8d9e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b',
+    label: 'Accumulation Whale',
+    archetype: 'Apex Predator',
+    archetype_description: 'Consistently early to tokens that 5-10x. High hit rate, short hold times. This wallet identifies undervalued assets before the crowd and exits near peaks.',
+    radar: [
+      { axis: 'Risk', value: 85 }, { axis: 'Yield', value: 62 },
+      { axis: 'Frequency', value: 78 }, { axis: 'Diversity', value: 45 },
+      { axis: 'Holding', value: 30 }, { axis: 'Activity', value: 90 },
+    ],
+    total_transactions: 847, chains_active: 3, first_seen: '2022-04-12',
+    avg_hold_days: 14.2, sharpe_ratio: 2.94, win_rate: 78, total_pnl: 2840000,
+    mev_losses: {
+      total_90d: 847, incidents: 12,
+      worst_trade: { token: 'PEPE', loss: 234, date: '2026-03-03' },
+      recommendation: 'Use Flashbots Protect RPC for Ethereum swaps. 73% of your MEV losses came from swaps under $5,000 — for small swaps, use a private mempool aggregator like MEV Blocker.',
+    },
+    airdrops: [
+      { protocol: 'LayerZero V2', status: 'likely_qualified', checklist: [
+        { item: '10+ cross-chain transactions', done: true },
+        { item: 'Used 3+ source chains', done: true },
+        { item: 'Volume > $10,000', done: true },
+        { item: 'Active in last 30 days', done: true },
+      ], estimated_value: '$1,200-$4,800' },
+      { protocol: 'Scroll', status: 'partially_qualified', checklist: [
+        { item: 'Bridged to Scroll', done: true },
+        { item: '5+ transactions on Scroll', done: true },
+        { item: 'Used 3+ dApps', done: false },
+        { item: 'Provided liquidity', done: false },
+      ], estimated_value: '$400-$1,500' },
+      { protocol: 'Berachain', status: 'not_qualified', checklist: [
+        { item: 'Participated in testnet', done: false },
+        { item: 'Deposited to vaults', done: false },
+        { item: 'Governance participation', done: false },
+      ], estimated_value: null },
+    ],
+    holdings: [
+      { token: 'ETH', value: 1240000, pct: 38 },
+      { token: 'BTC', value: 890000, pct: 27 },
+      { token: 'SOL', value: 420000, pct: 13 },
+      { token: 'LINK', value: 340000, pct: 10 },
+      { token: 'Others', value: 390000, pct: 12 },
+    ],
+    pelican_narrative: 'This wallet has an Apex Predator profile — it entered 23 tokens in the last 6 months, 17 of which did 3x+ within 30 days of entry. The pattern is consistent: accumulate during low-volume periods, exit within 2 weeks of significant price appreciation. Currently holding concentrated positions in ETH and BTC with a SOL allocation that was added 11 days ago — given the upcoming unlock, this is either a hedge or a short-term momentum play. MEV exposure is minimal ($847 in 90 days) but could be reduced further with a private RPC. Airdrop positioning is strong for LayerZero V2.',
+  },
+}
+
+export const FEATURED_WALLETS = [
+  { label: 'Top Smart Money Wallet This Week', address: '0x7a3...apex', archetype: 'Apex Predator', stat: '78% win rate' },
+  { label: 'Biggest MEV Victim (30d)', address: '0xmev...demo', archetype: 'Degen Gambler', stat: '$12,400 lost' },
+  { label: 'Most Active Airdrop Farmer', address: '0xfarm...demo', archetype: 'Airdrop Farmer', stat: '23 protocols' },
+  { label: 'Diamond Hands Champion', address: '0xhold...demo', archetype: 'Diamond Hands', stat: '847 day avg hold' },
+]

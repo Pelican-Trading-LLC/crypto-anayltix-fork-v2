@@ -11,6 +11,7 @@ import {
   CalendarBlank,
   TrendUp,
   ArrowsClockwise,
+  Fingerprint,
   ChatCircle,
   Bell,
   GraduationCap,
@@ -58,6 +59,7 @@ const NAV_SECTIONS: NavSection[] = [
       { label: 'Calendar', href: '/calendar', icon: CalendarBlank },
       { label: 'Smart Money', href: '/smart-money', icon: TrendUp },
       { href: '/sector-rotation', label: 'Sector Rotation', icon: ArrowsClockwise },
+      { label: 'Wallet DNA', href: '/wallet-dna', icon: Fingerprint },
     ],
   },
   {
