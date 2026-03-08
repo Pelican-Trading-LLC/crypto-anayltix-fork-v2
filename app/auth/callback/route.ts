@@ -94,14 +94,14 @@ export async function GET(request: NextRequest) {
       const hasAccess = hasSubscription || hasFreeQuestions
 
       if (hasAccess) {
-        return NextResponse.redirect(new URL('/dashboard', request.url))
+        return NextResponse.redirect(new URL('/brief', request.url))
       } else {
         return NextResponse.redirect(new URL('/pricing', request.url))
       }
     }
 
     // No code provided - this shouldn't happen for OAuth, but handle gracefully
-    return NextResponse.redirect(new URL('/dashboard', request.url))
+    return NextResponse.redirect(new URL('/brief', request.url))
   } catch (error) {
     console.error('[AUTH CALLBACK] Unhandled error:', error)
     return NextResponse.redirect(new URL('/auth/error', request.url))

@@ -65,7 +65,7 @@ export default function OnboardingPage() {
 
     await supabase.from('user_credits').update({ onboarding_complete: true }).eq('user_id', user.id)
 
-    router.push('/dashboard')
+    router.push('/brief')
   }
 
   const canContinue = currentSelections.length > 0

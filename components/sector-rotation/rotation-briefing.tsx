@@ -8,7 +8,7 @@ export function RotationBriefing() {
   return (
     <div className="rounded-xl border p-5 sticky top-6"
       style={{
-        background: 'linear-gradient(180deg, rgba(29,161,196,0.04) 0%, var(--card) 30%)',
+        background: 'linear-gradient(135deg, rgba(29,161,196,0.04) 0%, var(--card) 40%)',
         borderColor: 'rgba(29,161,196,0.15)',
       }}>
 

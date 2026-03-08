@@ -15,14 +15,14 @@ export default function LearnPage() {
   const router = useRouter()
 
   return (
-    <div className="p-6 lg:p-8 max-w-[1200px] mx-auto">
+    <div className="p-6 max-w-[1200px] mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-semibold text-[var(--text-primary)]">
+          <h1 className="text-xl font-semibold">
             Learn
           </h1>
-          <p className="text-sm text-[var(--text-secondary)] mt-1">
+          <p className="text-sm text-muted-foreground mt-1">
             Crypto concepts explained for TradFi traders
           </p>
         </div>

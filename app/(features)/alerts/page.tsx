@@ -33,7 +33,7 @@ export default function AlertsPage() {
   const unreadCount = MOCK_ALERTS.filter(a => !a.read).length
 
   return (
-    <div className="max-w-[800px] mx-auto px-6 py-8">
+    <div className="p-6 max-w-[1200px] mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">

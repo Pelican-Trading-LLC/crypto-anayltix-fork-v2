@@ -20,6 +20,7 @@ import {
   CaretRight,
   CaretLeft,
   BookOpenText,
+  Bird,
 } from '@phosphor-icons/react'
 import type { Icon as PhosphorIcon } from '@phosphor-icons/react'
 import { useAuth } from '@/lib/providers/auth-provider'
@@ -47,33 +48,39 @@ interface NavSection {
 
 const NAV_SECTIONS: NavSection[] = [
   {
+    title: '', // No label for top section
+    items: [
+      { label: 'Daily Brief', href: '/brief', icon: Bird },
+    ],
+  },
+  {
     title: 'MARKETS',
     items: [
       { label: 'Dashboard', href: '/dashboard', icon: SquaresFour },
       { label: 'Token Intel', href: '/token-intel', icon: MagnifyingGlass },
+      { label: 'Sector Rotation', href: '/sector-rotation', icon: ArrowsClockwise },
     ],
   },
   {
     title: 'INTELLIGENCE',
     items: [
-      { label: 'Signals', href: '/signals', icon: Lightning },
-      { label: 'Calendar', href: '/calendar', icon: CalendarBlank },
-      { label: 'Smart Money', href: '/smart-money', icon: TrendUp },
-      { href: '/sector-rotation', label: 'Sector Rotation', icon: ArrowsClockwise },
       { label: 'Wallet DNA', href: '/wallet-dna', icon: Fingerprint },
+      { label: 'Smart Money', href: '/smart-money', icon: TrendUp },
+      { label: 'Signals', href: '/signals', icon: Lightning },
+      { label: 'AI Alerts', href: '/alerts', icon: Bell, badge: '3' },
     ],
   },
   {
     title: 'PELICAN AI',
     items: [
       { label: 'Ask Pelican', href: '/chat', icon: ChatCircle, accentTint: true },
-      { label: 'Intelligence Alerts', href: '/alerts', icon: Bell, badge: '3 New' },
-      { label: 'Knowledge Base', href: '/knowledge-base', icon: BookOpenText },
     ],
   },
   {
-    title: 'LEARN & COMMUNITY',
+    title: 'LEARN & REFERENCE',
     items: [
+      { label: 'Knowledge Base', href: '/knowledge-base', icon: BookOpenText },
+      { label: 'Calendar', href: '/calendar', icon: CalendarBlank },
       { label: 'Learn', href: '/learn', icon: GraduationCap },
       { label: 'Community', href: '/community', icon: Users },
     ],
@@ -138,9 +145,9 @@ export default function AppSidebar() {
 
       {/* Nav sections */}
       <nav className="flex-1 overflow-y-auto py-2 space-y-4">
-        {NAV_SECTIONS.map((section) => (
-          <div key={section.title}>
-            {!collapsed && (
+        {NAV_SECTIONS.map((section, idx) => (
+          <div key={section.title || idx}>
+            {!collapsed && section.title && (
               <div className="px-4 mb-1.5 text-[10px] font-semibold tracking-wider text-[var(--text-muted)] uppercase">
                 {section.title}
               </div>

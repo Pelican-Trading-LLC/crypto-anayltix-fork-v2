@@ -49,12 +49,12 @@ export default function CalendarPage() {
   const rows = Math.ceil(totalCells / 7)
 
   return (
-    <div className="p-6 lg:p-8 max-w-[1400px] mx-auto">
+    <div className="p-6 max-w-[1200px] mx-auto">
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-[var(--text-primary)]">
+        <h1 className="text-xl font-semibold">
           Crypto Calendar
         </h1>
-        <p className="text-sm text-[var(--text-secondary)] mt-1">
+        <p className="text-sm text-muted-foreground mt-1">
           March 2026 &mdash; Key events, unlocks, and macro catalysts
         </p>
       </div>

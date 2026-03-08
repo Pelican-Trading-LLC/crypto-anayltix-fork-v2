@@ -28,6 +28,10 @@ const routeTitles: Record<string, string> = {
   '/brief': 'DAILY BRIEF',
   '/morning': 'DAILY BRIEF',
   '/smart-money': 'SMART MONEY',
+  '/token-intel': 'TOKEN INTEL',
+  '/sector-rotation': 'SECTOR ROTATION',
+  '/wallet-dna': 'WALLET DNA',
+  '/knowledge-base': 'KNOWLEDGE BASE',
   '/community': 'COMMUNITY',
   '/screener': 'TOKEN SCREENER',
   '/alerts': 'AI ALERTS',
@@ -66,7 +70,7 @@ export function TopNav({ className }: TopNavProps) {
         {/* Left: Logo */}
         <div className="flex items-center gap-3 flex-shrink-0">
           <Link
-            href="/dashboard"
+            href="/brief"
             className="flex items-center gap-2 sm:gap-3 group transition-opacity hover:opacity-80"
           >
             <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-[10px] flex items-center justify-center text-white text-xs font-bold flex-shrink-0"

@@ -15,7 +15,7 @@ export default function SectorRotationPage() {
   const sorted = [...MOCK_SECTORS].sort((a, b) => b.velocity - a.velocity)
 
   return (
-    <div className="p-6 max-w-[1400px] mx-auto">
+    <div className="p-6 max-w-[1200px] mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>

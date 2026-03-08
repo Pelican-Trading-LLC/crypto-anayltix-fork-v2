@@ -26,7 +26,7 @@ export default function SignalsPage() {
     MOCK_MACRO_SIGNALS
 
   return (
-    <div className="max-w-[760px] mx-auto px-6 py-8">
+    <div className="p-6 max-w-[1200px] mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <h1 className="text-xl font-semibold">Signals</h1>
@@ -72,7 +72,7 @@ export default function SignalsPage() {
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="font-mono text-[11px] text-muted-foreground">{signal.timestamp}</span>
-                    <Bird size={16} className="text-muted-foreground hover:text-[#1DA1C4] cursor-pointer transition-colors" />
+                    <Bird size={16} weight="fill" className="text-[#1DA1C4]" />
                   </div>
                 </div>
                 <div className="flex gap-2 mb-2">
@@ -109,14 +109,20 @@ export default function SignalsPage() {
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="font-mono text-[11px] text-muted-foreground">{signal.timestamp}</span>
-                    <Bird size={16} className="text-muted-foreground hover:text-[#1DA1C4] cursor-pointer transition-colors" />
+                    <Bird size={16} weight="fill" className="text-[#1DA1C4]" />
                   </div>
                 </div>
                 <div className="pl-3 border-l-2 border-muted-foreground/20 mb-3">
                   <p className="text-[12px] italic text-muted-foreground">{signal.original_tweet}</p>
                 </div>
-                <div className="text-[10px] uppercase tracking-[1.5px] font-semibold text-[#A78BFA] mb-1">PELICAN TRANSLATION</div>
-                <p className="text-[13px] text-muted-foreground leading-relaxed mb-2">{signal.pelican_translation}</p>
+                <div className="rounded-lg p-2.5 mb-2"
+                  style={{ background: 'linear-gradient(135deg, rgba(29,161,196,0.04) 0%, var(--card) 40%)', border: '1px solid rgba(29,161,196,0.10)' }}>
+                  <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-[1.5px] font-semibold text-[#1DA1C4] mb-1">
+                    <Bird size={12} weight="fill" className="text-[#1DA1C4]" />
+                    PELICAN TRANSLATION
+                  </div>
+                  <p className="text-[13px] text-muted-foreground leading-relaxed">{signal.pelican_translation}</p>
+                </div>
                 <div className="flex items-center gap-4 text-[11px] text-muted-foreground">
                   <span className="flex items-center gap-1"><Heart size={12} /> {signal.engagement.likes.toLocaleString()}</span>
                   <span className="flex items-center gap-1"><ArrowsLeftRight size={12} /> {signal.engagement.retweets}</span>
@@ -135,7 +141,7 @@ export default function SignalsPage() {
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="font-mono text-[11px] text-muted-foreground">{signal.timestamp}</span>
-                  <Bird size={16} className="text-muted-foreground hover:text-[#1DA1C4] cursor-pointer transition-colors" />
+                  <Bird size={16} weight="fill" className="text-[#1DA1C4]" />
                 </div>
               </div>
             )}
@@ -149,7 +155,7 @@ export default function SignalsPage() {
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="font-mono text-[11px] text-muted-foreground">{signal.timestamp}</span>
-                    <Bird size={16} className="text-muted-foreground hover:text-[#1DA1C4] cursor-pointer transition-colors" />
+                    <Bird size={16} weight="fill" className="text-[#1DA1C4]" />
                   </div>
                 </div>
                 <h3 className="text-[14px] font-semibold mb-2">{signal.title}</h3>
