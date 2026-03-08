@@ -6,6 +6,8 @@ import { ChatCircle, CaretUp, CaretDown, TrendUp, Bell, Heart } from '@phosphor-
 import { MOCK_POSITIONS, MOCK_SMART_MONEY, ASSET_COLORS, formatUSD, formatPnl, formatPct, formatCompact } from '@/lib/crypto-mock-data'
 import { useLivePrices, useLiveGlobalData } from '@/hooks/use-crypto-data'
 import { mergePositions } from '@/lib/use-live-or-mock'
+import { ApiError } from '@/components/ui/api-error'
+import { DataFreshness } from '@/components/ui/data-freshness'
 import dynamic from 'next/dynamic'
 
 const AreaChart = dynamic(() => import('recharts').then(m => m.AreaChart), { ssr: false })
@@ -294,8 +296,8 @@ function SmartMoneyFeed() {
 
 export default function DashboardPage() {
   const positionSymbols = MOCK_POSITIONS.map(p => p.asset)
-  const { data: livePrices, isLoading: pricesLoading } = useLivePrices(positionSymbols)
-  const { data: globalData } = useLiveGlobalData()
+  const { data: livePrices, error: pricesError, isLoading: pricesLoading, mutate: retryPrices } = useLivePrices(positionSymbols)
+  const { data: globalData, error: globalError } = useLiveGlobalData()
 
   // Merge live prices into mock positions
   const positions = mergePositions(livePrices)
@@ -309,6 +311,8 @@ export default function DashboardPage() {
 
   return (
     <div className="p-6 max-w-[1400px] mx-auto space-y-4">
+      {pricesError && <ApiError message="Live prices unavailable — showing cached data" onRetry={() => retryPrices()} compact />}
+
       {/* Row 1: 4 stat cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard title="PORTFOLIO VALUE" value={formatUSD(portfolioTotal)} subtitle={`${formatPnl(portfolioPnl)} (${formatPct(portfolioPnlPct)})`} subtitleColor={portfolioPnl >= 0 ? 'text-green-500' : 'text-red-500'} icon={<TrendUp size={16} />} />
@@ -316,6 +320,7 @@ export default function DashboardPage() {
         <StatCard title="AI ALERTS TODAY" value="7" subtitle="3 High Impact" subtitleColor="text-amber-500" icon={<Bell size={16} />} />
         <StatCard title="WALLET HEALTH" value="82/100" subtitle="Strong" subtitleColor="text-green-500" icon={<Heart size={16} />} healthBar={82} />
       </div>
+      <DataFreshness source="CoinGecko" isLive={!!livePrices && !pricesError} />
 
       {/* Row 2: Chart + Market Pulse */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">

@@ -8,6 +8,8 @@ import { PelicanSynthesisPanel } from '@/components/token-intel/pelican-synthesi
 import { TokenIntelData } from '@/lib/crypto-mock-data'
 import { useLiveTokenData } from '@/hooks/use-crypto-data'
 import { mergeTokenIntel } from '@/lib/use-live-or-mock'
+import { ApiError } from '@/components/ui/api-error'
+import { DataFreshness } from '@/components/ui/data-freshness'
 
 export default function TokenIntelPage() {
   const searchParams = useSearchParams()
@@ -16,7 +18,7 @@ export default function TokenIntelPage() {
   const [selectedSymbol, setSelectedSymbol] = useState<string | null>(initialTicker?.toUpperCase() || null)
 
   // Fetch live data from API
-  const { data: liveTokenData, isLoading: liveLoading } = useLiveTokenData(selectedSymbol)
+  const { data: liveTokenData, error: tokenError, isLoading: liveLoading, mutate: retryToken } = useLiveTokenData(selectedSymbol)
 
   // Merge live data with mock (live overrides prices/TVL, mock fills derivatives/risk/pelican)
   const mergedData = selectedSymbol ? mergeTokenIntel(selectedSymbol, liveTokenData) : null
@@ -61,9 +63,16 @@ export default function TokenIntelPage() {
         <div>
           <h1 className="text-xl font-semibold">Token Intelligence</h1>
           <p className="text-sm text-muted-foreground mt-1">Single-ticker view with AI synthesis.</p>
+          {selectedSymbol && data && (
+            <DataFreshness source="CoinGecko" isLive={!!liveTokenData && !tokenError} />
+          )}
         </div>
         <TokenSearch onSelect={setSelectedSymbol} currentSymbol={selectedSymbol} />
       </div>
+
+      {tokenError && selectedSymbol && (
+        <ApiError message="Live data unavailable — showing cached analysis" onRetry={() => retryToken()} compact />
+      )}
 
       {/* Two-column layout */}
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">

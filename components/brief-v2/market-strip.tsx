@@ -5,7 +5,7 @@ import { useLivePrices } from '@/hooks/use-crypto-data'
 import { MOCK_BRIEF_V2 } from '@/lib/crypto-mock-data'
 
 export function MarketStrip() {
-  const { data: livePrices } = useLivePrices(['BTC', 'ETH', 'SOL'])
+  const { data: livePrices, error: stripError } = useLivePrices(['BTC', 'ETH', 'SOL'])
 
   // Build market strip data: live prices override mock
   const priceMap = new Map(livePrices?.map(p => [p.symbol, p]) || [])
@@ -37,6 +37,12 @@ export function MarketStrip() {
           ) : null}
         </div>
       ))}
+      {stripError && (
+        <span className="flex items-center gap-1 text-[10px] text-amber-500 shrink-0">
+          <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+          offline
+        </span>
+      )}
     </div>
   )
 }

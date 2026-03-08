@@ -6,13 +6,15 @@ import { MOCK_SECTORS, SectorData } from '@/lib/crypto-mock-data'
 import { SectorCard } from '@/components/sector-rotation/sector-card'
 import { RotationBriefing } from '@/components/sector-rotation/rotation-briefing'
 import { useLiveSectors } from '@/hooks/use-crypto-data'
+import { ApiError } from '@/components/ui/api-error'
+import { DataFreshness } from '@/components/ui/data-freshness'
 
 const TIMEFRAMES = ['7D', '30D', '90D'] as const
 
 export default function SectorRotationPage() {
   const [timeframe, setTimeframe] = useState<string>('7D')
   const router = useRouter()
-  const { data: liveSectorData } = useLiveSectors()
+  const { data: liveSectorData, error: sectorError, mutate: retrySectors } = useLiveSectors()
 
   // Merge live data into mock sectors
   const sectors: SectorData[] = MOCK_SECTORS.map(mockSector => {
@@ -38,6 +40,7 @@ export default function SectorRotationPage() {
         <div>
           <h1 className="text-xl font-semibold">Sector Rotation Tracker</h1>
           <p className="text-sm text-muted-foreground mt-1">Capital doesn&apos;t leave crypto; it rotates. Track the flow.</p>
+          <DataFreshness source="CoinGecko" isLive={!!liveSectorData && !sectorError} />
         </div>
         <div className="flex gap-1 p-1 rounded-lg border bg-card">
           {TIMEFRAMES.map(tf => (
@@ -50,6 +53,8 @@ export default function SectorRotationPage() {
           ))}
         </div>
       </div>
+
+      {sectorError && <ApiError message="Live sector data unavailable — showing estimates" onRetry={() => retrySectors()} compact />}
 
       {/* Two-column: Cards + Briefing */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
