@@ -311,3 +311,105 @@ export const AVAILABLE_TICKERS = Object.keys(MOCK_TOKEN_INTEL).map(k => ({
   symbol: k,
   name: MOCK_TOKEN_INTEL[k]!.name,
 }))
+
+// ════════════════════════════════════════════════════════════
+// SECTOR ROTATION DATA
+// ════════════════════════════════════════════════════════════
+
+export interface SectorData {
+  id: string
+  name: string
+  velocity: number        // rate of change score, negative = cooling
+  volume: number          // aggregate 24h volume
+  volume_change_7d: number // % change vs prior week
+  smart_money_flow: number // net $ flow from labeled wallets
+  market_cap: number
+  mcap_change_7d: number
+  top_tokens: { symbol: string; change_7d: number }[]
+  sparkline_7d: number[]  // 7 data points (daily)
+  status: 'heating_up' | 'stealth_accumulation' | 'stable' | 'cooling_down'
+}
+
+export const MOCK_SECTORS: SectorData[] = [
+  {
+    id: 'gamefi', name: 'GameFi', velocity: 4.1,
+    volume: 600000000, volume_change_7d: 45,
+    smart_money_flow: 110000000, market_cap: 12000000000, mcap_change_7d: 18.4,
+    top_tokens: [{ symbol: 'GALA', change_7d: 34.2 }, { symbol: 'IMX', change_7d: 22.8 }, { symbol: 'RON', change_7d: 28.1 }],
+    sparkline_7d: [100, 105, 108, 115, 122, 130, 141],
+    status: 'heating_up',
+  },
+  {
+    id: 'ai', name: 'AI / Compute', velocity: 3.8,
+    volume: 4200000000, volume_change_7d: 38,
+    smart_money_flow: 142000000, market_cap: 42000000000, mcap_change_7d: 15.2,
+    top_tokens: [{ symbol: 'TAO', change_7d: 28.4 }, { symbol: 'RNDR', change_7d: 18.9 }, { symbol: 'AKT', change_7d: 32.1 }],
+    sparkline_7d: [100, 103, 107, 112, 118, 125, 132],
+    status: 'heating_up',
+  },
+  {
+    id: 'rwa', name: 'RWA', velocity: 2.5,
+    volume: 900000000, volume_change_7d: 22,
+    smart_money_flow: 78000000, market_cap: 18000000000, mcap_change_7d: 8.6,
+    top_tokens: [{ symbol: 'ONDO', change_7d: 12.4 }, { symbol: 'PENDLE', change_7d: 8.8 }, { symbol: 'MKR', change_7d: 5.2 }],
+    sparkline_7d: [100, 101, 103, 105, 108, 110, 112],
+    status: 'stealth_accumulation',
+  },
+  {
+    id: 'depin', name: 'DePIN', velocity: 1.8,
+    volume: 400000000, volume_change_7d: 15,
+    smart_money_flow: 25000000, market_cap: 8500000000, mcap_change_7d: 6.2,
+    top_tokens: [{ symbol: 'HNT', change_7d: 8.2 }, { symbol: 'MOBILE', change_7d: 14.5 }, { symbol: 'FIL', change_7d: 3.8 }],
+    sparkline_7d: [100, 99, 101, 103, 105, 107, 108],
+    status: 'stealth_accumulation',
+  },
+  {
+    id: 'defi', name: 'DeFi Bluechips', velocity: 1.2,
+    volume: 2100000000, volume_change_7d: 8,
+    smart_money_flow: 45000000, market_cap: 38000000000, mcap_change_7d: 3.4,
+    top_tokens: [{ symbol: 'UNI', change_7d: 4.2 }, { symbol: 'AAVE', change_7d: -1.8 }, { symbol: 'MKR', change_7d: 5.2 }],
+    sparkline_7d: [100, 100, 101, 101, 102, 102, 103],
+    status: 'stable',
+  },
+  {
+    id: 'restaking', name: 'Restaking', velocity: 0.5,
+    volume: 1200000000, volume_change_7d: -5,
+    smart_money_flow: 12000000, market_cap: 14000000000, mcap_change_7d: 1.2,
+    top_tokens: [{ symbol: 'EIGEN', change_7d: -2.4 }, { symbol: 'ETHFI', change_7d: 1.8 }, { symbol: 'REZ', change_7d: -4.2 }],
+    sparkline_7d: [100, 101, 100, 99, 100, 100, 101],
+    status: 'stable',
+  },
+  {
+    id: 'l2', name: 'L2 / L3 Scaling', velocity: -1.8,
+    volume: 1800000000, volume_change_7d: -18,
+    smart_money_flow: -85000000, market_cap: 28000000000, mcap_change_7d: -6.8,
+    top_tokens: [{ symbol: 'ARB', change_7d: -8.4 }, { symbol: 'OP', change_7d: -5.2 }, { symbol: 'STRK', change_7d: -12.8 }],
+    sparkline_7d: [100, 98, 96, 95, 94, 93, 92],
+    status: 'cooling_down',
+  },
+  {
+    id: 'meme', name: 'Memecoins', velocity: -2.4,
+    volume: 8100000000, volume_change_7d: -32,
+    smart_money_flow: -310000000, market_cap: 62000000000, mcap_change_7d: -14.2,
+    top_tokens: [{ symbol: 'DOGE', change_7d: -8.8 }, { symbol: 'WIF', change_7d: -28.6 }, { symbol: 'PEPE', change_7d: -18.4 }],
+    sparkline_7d: [100, 95, 92, 88, 85, 83, 80],
+    status: 'cooling_down',
+  },
+]
+
+export const SECTOR_STATUS_CONFIG: Record<string, { color: string; glow: string; label: string }> = {
+  heating_up: { color: '#22C55E', glow: 'rgba(34,197,94,0.15)', label: 'Heating Up' },
+  stealth_accumulation: { color: '#1DA1C4', glow: 'rgba(29,161,196,0.12)', label: 'Stealth Accumulation' },
+  stable: { color: '#6B7280', glow: 'transparent', label: 'Stable / Chop' },
+  cooling_down: { color: '#EF4444', glow: 'rgba(239,68,68,0.12)', label: 'Cooling Down' },
+}
+
+export const MOCK_ROTATION_BRIEFING = {
+  headline: 'Capital is rotating out of Memecoins and L2s and flooding directly into AI / Compute and GameFi.',
+  body: 'GameFi is showing the highest "stealth" velocity. Price action is muted, but smart money inflows have spiked 300% this week. Whales are front-running an upcoming narrative shift — likely tied to the GDC gaming conference announcements next week. AI / Compute continues its 3-week accumulation trend with TAO and AKT leading. L2 tokens seeing consistent smart money outflows as the "L2 summer" narrative fades. Memecoins in full retreat: $310M in smart money exits, volume down 32%, and funding rates on WIF/PEPE still dangerously elevated despite the selloff.',
+  flows: [
+    { from: 'Memecoins', to: 'AI / Compute', amount: 142000000 },
+    { from: 'L2 / L3 Scaling', to: 'GameFi', amount: 85000000 },
+    { from: 'Memecoins', to: 'RWA', amount: 64000000 },
+  ],
+}

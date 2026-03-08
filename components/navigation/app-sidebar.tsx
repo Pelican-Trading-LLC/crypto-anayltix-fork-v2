@@ -10,6 +10,7 @@ import {
   Lightning,
   CalendarBlank,
   TrendUp,
+  ArrowsClockwise,
   ChatCircle,
   Bell,
   GraduationCap,
@@ -56,6 +57,7 @@ const NAV_SECTIONS: NavSection[] = [
       { label: 'Signals', href: '/signals', icon: Lightning },
       { label: 'Calendar', href: '/calendar', icon: CalendarBlank },
       { label: 'Smart Money', href: '/smart-money', icon: TrendUp },
+      { href: '/sector-rotation', label: 'Sector Rotation', icon: ArrowsClockwise },
     ],
   },
   {
