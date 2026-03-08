@@ -1,7 +1,7 @@
 "use client"
 
 import { Card, CardContent } from "@/components/ui/card"
-import { User, TrendingUp, Shield, ImageIcon } from "lucide-react"
+import { User, Shield, ImageIcon, Link2 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 
 interface Section {
@@ -12,7 +12,7 @@ interface Section {
 
 const sections: Section[] = [
   { id: "account", label: "Account", icon: User },
-  { id: "trading", label: "Trading Preferences", icon: TrendingUp },
+  { id: "exchanges", label: "Connected Exchanges", icon: Link2 },
   { id: "privacy", label: "Data & Privacy", icon: Shield },
   { id: "images", label: "Uploaded Images", icon: ImageIcon },
 ]

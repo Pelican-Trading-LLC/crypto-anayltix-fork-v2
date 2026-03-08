@@ -25,10 +25,10 @@ import {
   SettingsHeader,
   SettingsSidebar,
   AccountSection,
-  TradingSection,
   PrivacySection,
   UploadedImagesSection,
 } from "@/components/settings"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { type UserSettings, DEFAULT_SETTINGS } from "@/components/settings/types"
 
 export default function SettingsPage() {
@@ -149,11 +149,18 @@ export default function SettingsPage() {
               />
             )}
 
-            {activeSection === "trading" && (
-              <TradingSection
-                settings={settings}
-                updateSetting={updateSetting}
-              />
+            {activeSection === "exchanges" && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Connected Exchanges</CardTitle>
+                  <CardDescription>Manage your exchange connections</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">
+                    Connect your exchange via SnapTrade. Coming soon.
+                  </p>
+                </CardContent>
+              </Card>
             )}
 
             {activeSection === "privacy" && (

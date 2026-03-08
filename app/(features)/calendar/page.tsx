@@ -127,7 +127,7 @@ export default function CalendarPage() {
                     <span
                       className={`text-[13px] font-mono tabular-nums ${
                         isToday
-                          ? 'text-[var(--accent-primary,#8b5cf6)] font-semibold'
+                          ? 'text-[var(--accent-primary,#1DA1C4)] font-semibold'
                           : 'text-[var(--text-secondary)]'
                       }`}
                     >
@@ -274,7 +274,7 @@ export default function CalendarPage() {
                 {/* Ask Pelican button */}
                 <a
                   href={`/chat?prompt=${encodeURIComponent(`Tell me about ${event.title}`)}`}
-                  className="inline-flex items-center gap-1.5 text-[12px] font-medium text-[var(--accent-primary,#8b5cf6)] hover:text-[var(--accent-hover,#9d74f7)] transition-colors"
+                  className="inline-flex items-center gap-1.5 text-[12px] font-medium text-[var(--accent-primary,#1DA1C4)] hover:text-[var(--accent-hover,#25BFDF)] transition-colors"
                 >
                   <Bird size={16} weight="bold" />
                   Ask Pelican about this event
