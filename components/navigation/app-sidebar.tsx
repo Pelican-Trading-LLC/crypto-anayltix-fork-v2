@@ -47,7 +47,7 @@ const NAV_SECTIONS: NavSection[] = [
     title: 'MARKETS',
     items: [
       { label: 'Dashboard', href: '/dashboard', icon: SquaresFour },
-      { label: 'Token Screener', href: '/screener', icon: MagnifyingGlass },
+      { label: 'Token Intel', href: '/token-intel', icon: MagnifyingGlass },
     ],
   },
   {

@@ -162,3 +162,152 @@ export function formatPnl(n: number): string {
   const sign = n >= 0 ? '+' : '\u2212' // proper minus sign
   return `${sign}${Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
 }
+
+// ══════════════════════════════════════════════════════════════
+// TOKEN INTELLIGENCE — Per-token deep dive data
+// ══════════════════════════════════════════════════════════════
+
+export interface TokenIntelData {
+  symbol: string
+  name: string
+  // Price Action
+  price: number
+  price_change_24h: number
+  price_change_7d: number
+  price_change_30d: number
+  market_cap: number
+  fdv: number
+  volume_24h: number
+  vol_mcap_ratio: number
+  ath: number
+  ath_date: string
+  sparkline_7d: number[] // 168 points (hourly for 7d)
+  // Derivatives
+  funding_rate: number
+  funding_annualized: number
+  open_interest: number
+  oi_change_24h: number
+  long_short_ratio: number
+  liquidations_24h: { longs: number; shorts: number }
+  // On-Chain & Risk
+  top_10_holders_pct: number
+  holder_count: number
+  active_addresses_7d: number
+  active_addresses_change: number
+  smart_money_flow_7d: number
+  exchange_netflow_7d: number
+  next_unlock: { days: number; pct_supply: number; recipient: string } | null
+  tvl: number | null
+  tvl_change_30d: number | null
+  // Risk Score
+  risk_score: number // 1-10 (1 = safest, 10 = extreme risk)
+  risk_factors: string[]
+  // Pelican Synthesis
+  pelican_synthesis: string
+  pelican_verdict: 'BULLISH' | 'BEARISH' | 'NEUTRAL' | 'CAUTION'
+  pelican_confidence: number
+  pelican_checked_at: string
+  pelican_sources: string[]
+}
+
+export const MOCK_TOKEN_INTEL: Record<string, TokenIntelData> = {
+  BTC: {
+    symbol: 'BTC', name: 'Bitcoin',
+    price: 84230, price_change_24h: 7.44, price_change_7d: 2.1, price_change_30d: 14.8,
+    market_cap: 1660000000000, fdv: 1770000000000, volume_24h: 74200000000, vol_mcap_ratio: 0.045,
+    ath: 108000, ath_date: '2025-12-17',
+    sparkline_7d: Array.from({ length: 168 }, (_, i) => 81000 + Math.sin(i / 12) * 2000 + (i / 168) * 3000 + (Math.random() - 0.5) * 800),
+    funding_rate: 0.0082, funding_annualized: 10.72, open_interest: 18400000000, oi_change_24h: 15.4,
+    long_short_ratio: 1.24, liquidations_24h: { longs: 45000000, shorts: 120000000 },
+    top_10_holders_pct: 5.8, holder_count: 54200000, active_addresses_7d: 890000, active_addresses_change: 12.4,
+    smart_money_flow_7d: 142000000, exchange_netflow_7d: -340000000,
+    next_unlock: null, tvl: null, tvl_change_30d: null,
+    risk_score: 3, risk_factors: ['Whale concentration in top 100 wallets rising', 'Options max pain at $82,000 Friday'],
+    pelican_synthesis: 'BTC is grinding higher in a low-volatility regime with funding reset to baseline after the $120M short squeeze overnight. Dominance at 58.4% signals capital consolidation — alts are bleeding into BTC. Exchange outflows of $340M this week suggest conviction buying, not speculation. Risk: $4.2B options expiry Friday with max pain at $82K could create a gravity pull. Smart money is net long but positioning is getting crowded — long/short ratio at 1.24 is elevated. Hold existing longs, but size new entries small until post-expiry clarity.',
+    pelican_verdict: 'BULLISH', pelican_confidence: 82,
+    pelican_checked_at: '2 min ago',
+    pelican_sources: ['CoinGecko (price)', 'Coinalyze (derivatives)', 'Arkham (whale flows)', 'Dune (exchange netflow)', 'DeFiLlama (N/A for BTC)'],
+  },
+  ETH: {
+    symbol: 'ETH', name: 'Ethereum',
+    price: 2180, price_change_24h: -6.84, price_change_7d: -3.2, price_change_30d: -11.2,
+    market_cap: 262000000000, fdv: 262000000000, volume_24h: 14500000000, vol_mcap_ratio: 0.055,
+    ath: 4878, ath_date: '2024-11-10',
+    sparkline_7d: Array.from({ length: 168 }, (_, i) => 2350 - Math.sin(i / 15) * 80 - (i / 168) * 170 + (Math.random() - 0.5) * 40),
+    funding_rate: -0.0045, funding_annualized: -5.84, open_interest: 8900000000, oi_change_24h: -8.2,
+    long_short_ratio: 0.87, liquidations_24h: { longs: 89000000, shorts: 23000000 },
+    top_10_holders_pct: 34.2, holder_count: 122000000, active_addresses_7d: 420000, active_addresses_change: -6.8,
+    smart_money_flow_7d: -52000000, exchange_netflow_7d: 180000000,
+    next_unlock: null, tvl: 52000000000, tvl_change_30d: -8.4,
+    risk_score: 6, risk_factors: ['Negative funding — bears in control', 'Smart money selling $52M this week', 'ETH/BTC ratio at multi-year low', 'Exchange inflows suggest distribution'],
+    pelican_synthesis: 'ETH is in trouble. Funding flipped negative (-0.0045), OI dropping 8.2%, and smart money wallets are net sellers of $52M this week. The ETH/BTC ratio at 0.0259 is a multi-year low — capital is actively rotating out of ETH into BTC and altcoins. Exchange inflows of $180M signal distribution, not accumulation. TVL on Ethereum is down 8.4% in 30 days as protocols bleed users to Solana and L2s. The $2,100 level is critical support — below that opens $1,950 which was the Grega Horvat Elliott Wave 4 target. Not a buy here. Wait for funding to reset and smart money to stop selling.',
+    pelican_verdict: 'BEARISH', pelican_confidence: 74,
+    pelican_checked_at: '5 min ago',
+    pelican_sources: ['CoinGecko (price)', 'Coinalyze (derivatives)', 'Arkham (smart money)', 'DeFiLlama (TVL)', 'Dune (exchange flow)'],
+  },
+  SOL: {
+    symbol: 'SOL', name: 'Solana',
+    price: 138.50, price_change_24h: -2.46, price_change_7d: 1.8, price_change_30d: 22.5,
+    market_cap: 64600000000, fdv: 80200000000, volume_24h: 1400000000, vol_mcap_ratio: 0.022,
+    ath: 264, ath_date: '2025-01-19',
+    sparkline_7d: Array.from({ length: 168 }, (_, i) => 133 + Math.sin(i / 20) * 4 + (i / 168) * 5 + (Math.random() - 0.5) * 3),
+    funding_rate: 0.025, funding_annualized: 32.85, open_interest: 3200000000, oi_change_24h: 4.8,
+    long_short_ratio: 1.58, liquidations_24h: { longs: 12000000, shorts: 34000000 },
+    top_10_holders_pct: 28.4, holder_count: 8900000, active_addresses_7d: 1850000, active_addresses_change: 18.2,
+    smart_money_flow_7d: -18000000, exchange_netflow_7d: 42000000,
+    next_unlock: { days: 5, pct_supply: 2.8, recipient: 'Early investors' },
+    tvl: 8200000000, tvl_change_30d: 15.4,
+    risk_score: 7, risk_factors: ['Funding rate 0.025% — 33% annualized carry cost', 'Token unlock in 5 days (2.8% supply)', 'Long/short ratio 1.58 — overcrowded longs', 'Smart money net selling despite price stability'],
+    pelican_synthesis: 'SOL is a ticking time bomb wrapped in good fundamentals. On-chain metrics are strong — 1.85M active addresses (up 18%), TVL growing 15% monthly, ecosystem thriving. But the derivatives setup is dangerous: funding at 0.025% per 8h costs 33% annualized to hold longs. That means overcrowded longs paying through the nose. Long/short ratio at 1.58 confirms this. Add a $400M token unlock in 5 days from early investors who are sitting on 50x+ gains, and you have a recipe for a short-term flush even if the longer-term thesis is intact. If you are long, hedge or reduce before the unlock. If looking to enter, wait for the unlock dump — historically SOL drops 12-18% around large unlocks then recovers within 2 weeks.',
+    pelican_verdict: 'CAUTION', pelican_confidence: 71,
+    pelican_checked_at: '3 min ago',
+    pelican_sources: ['CoinGecko (price)', 'Coinalyze (derivatives)', 'Helius (on-chain)', 'DeFiLlama (TVL)', 'TokenUnlocks (vesting)'],
+  },
+  AAVE: {
+    symbol: 'AAVE', name: 'Aave',
+    price: 287.42, price_change_24h: 3.2, price_change_7d: -1.8, price_change_30d: 8.6,
+    market_cap: 4300000000, fdv: 4600000000, volume_24h: 420000000, vol_mcap_ratio: 0.098,
+    ath: 665, ath_date: '2024-12-02',
+    sparkline_7d: Array.from({ length: 168 }, (_, i) => 282 + Math.sin(i / 18) * 6 + (Math.random() - 0.5) * 4),
+    funding_rate: 0.003, funding_annualized: 3.94, open_interest: 280000000, oi_change_24h: 2.1,
+    long_short_ratio: 1.08, liquidations_24h: { longs: 1200000, shorts: 800000 },
+    top_10_holders_pct: 61, holder_count: 185000, active_addresses_7d: 12400, active_addresses_change: 4.2,
+    smart_money_flow_7d: 8400000, exchange_netflow_7d: -14000000,
+    next_unlock: { days: 18, pct_supply: 2.1, recipient: 'Ecosystem fund' },
+    tvl: 12800000000, tvl_change_30d: 34,
+    risk_score: 5, risk_factors: ['Top 10 holders own 61% (normal for governance tokens)', 'TVL up 34% but check if organic or incentivized', 'Unlock in 18 days — ecosystem fund, low dump risk'],
+    pelican_synthesis: 'AAVE is the poster child for "looks good, verify the details." TVL up 34% this month sounds great until you dig in — 72% of new deposits came from 3 wallets recycling liquidity between Aave markets on different chains. Real organic growth is closer to 9%. Still solid, just not the headline number. Top 10 holders at 61% is normal for a governance token (treasury + team + early VCs). Utilization rate above 80% on USDC and USDT pools — this spikes borrow rates and attracts more deposits, creating a positive loop. Upcoming unlock in 18 days is ecosystem fund, historically low sell pressure. Smart money accumulating $8.4M this week. Moderate buy — the V4 governance vote could be a catalyst.',
+    pelican_verdict: 'BULLISH', pelican_confidence: 68,
+    pelican_checked_at: '8 min ago',
+    pelican_sources: ['CoinGecko (price)', 'DeFiLlama (TVL)', 'Moralis (holders)', 'Arkham (smart money)', 'TokenUnlocks (vesting)'],
+  },
+  WIF: {
+    symbol: 'WIF', name: 'dogwifhat',
+    price: 0.82, price_change_24h: -12.4, price_change_7d: -28.6, price_change_30d: -45.2,
+    market_cap: 820000000, fdv: 820000000, volume_24h: 680000000, vol_mcap_ratio: 0.829,
+    ath: 4.83, ath_date: '2024-03-31',
+    sparkline_7d: Array.from({ length: 168 }, (_, i) => 1.15 - (i / 168) * 0.33 + (Math.random() - 0.5) * 0.08),
+    funding_rate: 0.045, funding_annualized: 59.13, open_interest: 420000000, oi_change_24h: 22.8,
+    long_short_ratio: 2.14, liquidations_24h: { longs: 34000000, shorts: 5000000 },
+    top_10_holders_pct: 42, holder_count: 145000, active_addresses_7d: 28000, active_addresses_change: -32.4,
+    smart_money_flow_7d: -45000000, exchange_netflow_7d: 62000000,
+    next_unlock: null, tvl: null, tvl_change_30d: null,
+    risk_score: 9, risk_factors: ['Funding rate 0.045% — 59% annualized carry', 'Long/short ratio 2.14 — extreme overcrowding', 'Volume/MCap ratio 0.83 — mostly speculation', 'Smart money dumping $45M', 'Active addresses down 32%', 'Exchange inflows $62M — heavy distribution'],
+    pelican_synthesis: 'WIF is a dumpster fire with a cute dog on it. Funding at 0.045% per 8h means longs are paying 59% annualized to hold — that is financial self-harm. Long/short ratio at 2.14 means degens are piled in long while smart money dumps $45M worth. Active addresses cratering 32% tells you retail is leaving. Exchange inflows of $62M scream "everyone is trying to sell." The vol/mcap ratio of 0.83 means this token trades its entire market cap in volume nearly daily — it is pure speculation, no fundamental value. The only question is when, not if, the liquidation cascade hits. At current OI levels, a 15% drop triggers $60M+ in long liquidations which cascade into more selling. Do not touch this. If you are long, exit now.',
+    pelican_verdict: 'BEARISH', pelican_confidence: 91,
+    pelican_checked_at: '1 min ago',
+    pelican_sources: ['CoinGecko (price)', 'Coinalyze (derivatives)', 'Helius (on-chain)', 'Arkham (smart money)'],
+  },
+}
+
+// Helper to search tokens
+export function searchTokenIntel(query: string): TokenIntelData | null {
+  const q = query.toUpperCase().replace(/\s/g, '')
+  return MOCK_TOKEN_INTEL[q] || null
+}
+
+// Available tickers for search autocomplete
+export const AVAILABLE_TICKERS = Object.keys(MOCK_TOKEN_INTEL).map(k => ({
+  symbol: k,
+  name: MOCK_TOKEN_INTEL[k]!.name,
+}))

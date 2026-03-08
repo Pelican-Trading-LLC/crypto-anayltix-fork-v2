@@ -160,7 +160,7 @@ function TopMoversTable() {
             }
             return (
               <tr key={p.asset} className="border-b border-[var(--border)] last:border-0 hover:bg-accent/5 cursor-pointer transition-colors"
-                onClick={() => window.location.href = `/chat?prompt=${encodeURIComponent(`Analyze ${p.asset} at ${p.current_price} — 24h change ${p.price_change_24h}%`)}`}>
+                onClick={() => window.location.href = `/token-intel?ticker=${p.asset}`}>
                 <td className="py-3">
                   <div className="flex items-center gap-3">
                     <div className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold text-white" style={{ backgroundColor: ASSET_COLORS[p.asset] }}>
