@@ -577,3 +577,34 @@ export const MOCK_ALERTS: IntelAlert[] = [
   { id: 'a6', category: 'cross_asset', severity: 'medium', title: 'Blake Morrow flagged risk-off shift', body: 'ForexAnalytix: CPI print came in hot at 3.4%. Fed likely to hold rates higher for longer. DXY breaking 105 support. Pelican Translation: Risk assets about to get repriced. Expect outflows from high-beta sectors like Memecoins and AI. Move to stables or delta-neutral farms until macro settles.', affected_assets: ['BTC', 'ETH', 'SOL'], timestamp: '12h ago', read: true },
   { id: 'a7', category: 'onchain_anomaly', severity: 'low', title: 'Unusual Aave utilization spike on USDC', body: 'USDC utilization on Aave Ethereum hit 92%. Borrow rates spiked to 18% APY. This typically attracts new deposits within 24-48 hours and normalizes rates. Could signal upcoming large borrowing event.', affected_assets: ['AAVE', 'USDC'], timestamp: '14h ago', read: true },
 ]
+
+// ══════════════════════════════════════════════
+
+export const MOCK_BRIEF_V2 = {
+  pelican_synthesis: {
+    macro_weather: 'Good morning. BTC is chop-city, rangebound between $82k and $84k. Funding rates have finally reset to baseline. While the majors sleep, smart money is quietly accumulating RWA tokens — ONDO and PENDLE saw $12M in net inflows overnight.',
+    sector_rotations: 'Capital is rotating out of L2s (down 8% with $40M outflows) and flooding directly into AI tokens for the 3rd consecutive week. Smart money is positioning heavily in TAO and AKT.',
+    the_play: 'Sell covered calls on your ETH bags, volatility is dead. Accumulate AI beta on dips.',
+  },
+  cross_asset: {
+    analyst_quote: 'ForexAnalytix: CPI print came in hot at 3.4%. Fed likely to hold rates higher for longer. DXY breaking 105 support.',
+    pelican_translation: 'Risk assets are about to get repriced. Expect immediate outflows from high-bees or delta-neutral farms (like Ethena) until the macro dust settles.',
+    analyst_name: 'Blake Morrow',
+    analyst_methodology: 'Macro',
+  },
+  what_i_missed: {
+    hours_away: 8,
+    portfolio_change: -4200,
+    portfolio_change_pct: -6.4,
+    summary: 'You went to sleep and the market dumped 12%. Your portfolio is down $4,200.',
+    what_happened: 'A fake ETF rejection rumor triggered cascading liquidations. $890M in longs liquidated across major exchanges in 4 hours.',
+    action: 'The rumor was debunked 20 mins ago. Expect a V-shaped recovery. Smart money is already buying the dip — 3 Apex Predator wallets accumulated $22M in ETH in the last hour.',
+  },
+  market_strip: [
+    { symbol: 'BTC', price: 84230, change: 7.44 },
+    { symbol: 'ETH', price: 2180, change: -6.84 },
+    { symbol: 'SOL', price: 138.50, change: -2.46 },
+    { symbol: 'BTC.D', price: 58.4, change: 0.8, suffix: '%' },
+    { symbol: 'F&G', price: 72, change: 0, label: 'Greed' },
+  ],
+}
