@@ -3,84 +3,60 @@
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { User } from '@supabase/supabase-js'
-import { Zap, Loader2, ShieldCheck } from 'lucide-react'
+import { Loader2, ShieldCheck } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useT } from '@/lib/providers/translation-provider'
 import MarketingNav from '@/components/marketing/MarketingNav'
 import MarketingFooter from '@/components/marketing/MarketingFooter'
 
-const QUERY_COSTS = {
-  conversation: { label: 'Chat / Education', cost: 2 },
-  simple: { label: 'Price check', cost: 10 },
-  basic: { label: 'Technical analysis', cost: 25 },
-  event_study: { label: 'Event study', cost: 75 },
-  multi_day_tick: { label: 'Deep analysis / Backtest', cost: 250 },
-}
-
-function CostBreakdownTable() {
-  return (
-    <div className="cost-breakdown bracket-box">
-      <h3 className="cost-breakdown-title">What things cost</h3>
-      <div className="cost-breakdown-list">
-        {Object.entries(QUERY_COSTS).map(([key, { label, cost }]) => (
-          <div key={key} className="cost-breakdown-row">
-            <span className="cost-breakdown-label">{label}</span>
-            <span className="cost-breakdown-value">
-              <Zap className="cost-breakdown-icon" />
-              {cost}
-            </span>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
 const PLANS = [
   {
-    id: 'starter',
-    name: 'Starter',
-    price: 29,
-    credits: 1000,
-    stripePriceId: process.env.NEXT_PUBLIC_STRIPE_STARTER_PRICE_ID || 'price_starter',
+    id: 'free',
+    name: 'Free',
+    price: 0,
+    stripePriceId: '',
     popular: false,
-    cta: 'Get Started',
-    bullets: [
-      'Learning what RSI, support, resistance actually mean?',
-      "Tired of trading off YouTube clips and gut feelings?",
-      "Want to ask basic questions without paying for tools you don't need yet?",
-      'Perfect for building your foundation with real data',
+    cta: 'Start Free',
+    features: [
+      'Daily market brief',
+      '7 education modules',
+      'Portfolio dashboard (demo mode)',
+      '3 Pelican questions/day',
+    ],
+  },
+  {
+    id: 'lite',
+    name: 'Lite',
+    price: 29,
+    stripePriceId: process.env.NEXT_PUBLIC_STRIPE_STARTER_PRICE_ID || 'price_lite',
+    popular: false,
+    cta: 'Start Free',
+    features: [
+      'Everything in Free',
+      'Unlimited Pelican questions',
+      'Analyst signal feed',
+      'Smart money alerts',
+      'Watchlist with alerts',
+      'Community access',
     ],
   },
   {
     id: 'pro',
     name: 'Pro',
     price: 99,
-    credits: 3500,
     stripePriceId: process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID || 'price_pro',
     popular: true,
-    cta: 'Start Trading',
-    bullets: [
-      'Using Pelican daily to validate trades before you make them',
-      'Running enough analyses and event studies to need room to breathe',
-      'Exploring multiple tickers, strategies, and setups each week',
-      'The sweet spot between casual and all-in',
-    ],
-  },
-  {
-    id: 'power',
-    name: 'Power',
-    price: 249,
-    credits: 10000,
-    stripePriceId: process.env.NEXT_PUBLIC_STRIPE_POWER_PRICE_ID || 'price_power',
-    popular: false,
-    cta: 'Go Power',
-    bullets: [
-      "Research isn't something you do sometimes, it's how you trade",
-      'Burning through analyses the way day traders burn through charts',
-      'Pressure-testing every idea before real money touches it',
-      'Maximum runway for traders who never stop asking questions',
+    cta: 'Start Free',
+    features: [
+      'Everything in Lite',
+      'Pelican Portal (full conversational AI)',
+      'Conversation history',
+      'Cross-asset translation feed',
+      'CT signal translations',
+      'Wallet tracking',
+      'Intelligence alerts',
+      'Priority support',
     ],
   }
 ]
@@ -97,7 +73,7 @@ export default function PricingPageContent() {
 
   const navLinks = [
     { href: '/#features', label: t.marketing.nav.features },
-    { href: '/how-to-use', label: 'How to Use' },
+    { href: '/how-to-use', label: 'How It Works' },
     { href: '/', label: t.marketing.nav.backToHome },
     { href: '/faq', label: t.marketing.nav.faq },
   ]
@@ -117,7 +93,7 @@ export default function PricingPageContent() {
   useEffect(() => {
     if (preselectedPlan && user && !loadingPlan) {
       const plan = PLANS.find(p => p.id === preselectedPlan)
-      if (plan) {
+      if (plan && plan.id !== 'free') {
         setTimeout(() => {
           handleSelectPlan(plan)
         }, 100)
@@ -127,6 +103,11 @@ export default function PricingPageContent() {
   }, [preselectedPlan, user, loadingPlan])
 
   const handleSelectPlan = async (plan: typeof PLANS[0]) => {
+    if (plan.id === 'free') {
+      router.push('/auth/signup')
+      return
+    }
+
     setLoadingPlan(plan.id)
     setError(null)
 
@@ -148,7 +129,6 @@ export default function PricingPageContent() {
           userId: user.id,
           userEmail: user.email,
           planName: plan.id,
-          planCredits: plan.credits
         })
       })
 
@@ -198,23 +178,13 @@ export default function PricingPageContent() {
 
           <div className="section-tag">{'// Pricing'}</div>
           <h1 className="pricing-title">
-            Simple, <span className="text-glow">Credit-Based</span> Pricing
+            Simple, <span className="text-glow">Transparent</span> Pricing
           </h1>
           <p className="pricing-subtitle">
-            Pay for what you use. No hidden fees. Cancel anytime.
+            Start free. Upgrade when you&apos;re ready. No credit card required.
           </p>
         </div>
       </section>
-
-      <section className="pricing-costs-section">
-        <div className="section-inner">
-          <CostBreakdownTable />
-        </div>
-      </section>
-
-      <p className="pricing-unified-note">
-        All plans include full access to Pelican. Same model, same capabilities. Choose the plan based on your expected usage.
-      </p>
 
       {error && (
         <div className="pricing-error">
@@ -240,13 +210,8 @@ export default function PricingPageContent() {
                 <span className="pricing-card-period">/month</span>
               </div>
 
-              <div className="pricing-card-credits">
-                <Zap className="pricing-card-credits-icon" />
-                <span>{plan.credits.toLocaleString()} credits</span>
-              </div>
-
               <ul className="pricing-card-bullets">
-                {plan.bullets.map((item) => (
+                {plan.features.map((item) => (
                   <li key={item}>{item}</li>
                 ))}
               </ul>
@@ -272,11 +237,11 @@ export default function PricingPageContent() {
 
       <div className="pricing-guarantee">
         <ShieldCheck className="pricing-guarantee-icon" />
-        <span>7-day money-back guarantee &mdash; no questions asked</span>
+        <span>Cancel anytime. No contracts, no commitments.</span>
       </div>
 
       <div className="pricing-footer-notes">
-        <p>Credits reset monthly. Unused credits roll over (up to 20%).</p>
+        <p>Free tier available forever. Upgrade or downgrade anytime.</p>
         <p>
           By subscribing, you agree to our{' '}
           <Link href="/terms">Terms of Service</Link>

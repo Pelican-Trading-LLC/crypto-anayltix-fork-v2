@@ -18,10 +18,10 @@ export function HeroSection() {
           transition={{ duration: 0.5, delay: 0.1, ease }}
           className="mx-auto max-w-4xl text-center text-4xl font-bold leading-[1.1] tracking-tight sm:text-5xl md:text-6xl lg:text-7xl"
         >
-          <span className="text-slate-900">The AI that learns</span>
+          <span className="text-slate-900">The crypto intelligence platform</span>
           <br />
-          <span className="bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
-            how you trade
+          <span className="bg-gradient-to-r from-[#1A6FB5] to-[#25BFDF] bg-clip-text text-transparent">
+            built for real traders
           </span>
         </motion.h1>
 
@@ -32,8 +32,9 @@ export function HeroSection() {
           transition={{ duration: 0.5, delay: 0.2, ease }}
           className="mx-auto mt-6 max-w-2xl text-center text-base leading-relaxed text-slate-500 md:text-lg"
         >
-          Pelican analyzes markets, grades your trades, learns your setups, and
-          coaches you to trade better. The more you use it, the smarter it gets.
+          Pelican AI translates crypto into the language you already know. Funding
+          rates explained like repo rates. On-chain data interpreted like order flow.
+          Built for traders who learned on ES, NQ, and DXY.
         </motion.p>
 
         {/* CTAs */}
@@ -45,9 +46,10 @@ export function HeroSection() {
         >
           <Link
             href="/auth/signup"
-            className="group flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-3 text-sm font-medium text-white shadow-lg shadow-blue-600/20 transition-all duration-150 hover:bg-blue-700 hover:shadow-blue-600/30 active:scale-[0.98]"
+            className="group flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-medium text-white shadow-lg shadow-[#1A6FB5]/20 transition-all duration-150 hover:shadow-[#1A6FB5]/30 active:scale-[0.98]"
+            style={{ background: 'linear-gradient(135deg, #1A6FB5, #25BFDF)' }}
           >
-            Start Trading Smarter — It&apos;s Free
+            Start for Free
             <ArrowRight
               weight="bold"
               className="h-4 w-4 transition-transform duration-150 group-hover:translate-x-0.5"
@@ -68,7 +70,7 @@ export function HeroSection() {
           transition={{ duration: 0.5, delay: 0.4, ease }}
           className="mt-4 text-center text-xs text-slate-400"
         >
-          10 free questions, no credit card required
+          Free tier available. No credit card required.
         </motion.p>
 
         {/* Product screenshot */}

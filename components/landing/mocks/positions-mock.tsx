@@ -4,40 +4,40 @@ import { cn } from '@/lib/utils'
 
 const positions = [
   {
-    ticker: 'NVDA',
-    direction: 'Long',
-    quantity: '50 shares',
-    entry: '$118.00',
-    current: '$134.55',
-    pnl: '+$827.50',
-    pnlPct: '+14.0%',
-    positive: true,
-    session: 'NY Session',
-    sessionColor: 'bg-blue-500/10 text-blue-600 border-blue-500/20',
-  },
-  {
-    ticker: 'EUR/USD',
-    direction: 'Short',
-    quantity: '10K',
-    entry: '1.0892',
-    current: '1.0845',
-    pnl: '+$470.00',
-    pnlPct: '+0.43%',
-    positive: true,
-    session: 'London',
-    sessionColor: 'bg-amber-500/10 text-amber-600 border-amber-500/20',
-  },
-  {
     ticker: 'BTC',
     direction: 'Long',
-    quantity: '0.5',
-    entry: '$67,200',
-    current: '$66,150',
-    pnl: '-$525.00',
-    pnlPct: '-1.56%',
+    quantity: '0.5 BTC',
+    entry: '$80,110',
+    current: '$84,220',
+    pnl: '+$2,055',
+    pnlPct: '+5.1%',
+    positive: true,
+    session: '24/7',
+    sessionColor: 'bg-[#1DA1C4]/10 text-[#1DA1C4] border-[#1DA1C4]/20',
+  },
+  {
+    ticker: 'ETH',
+    direction: 'Long',
+    quantity: '12.5 ETH',
+    entry: '$3,680',
+    current: '$3,890',
+    pnl: '+$2,625',
+    pnlPct: '+5.7%',
+    positive: true,
+    session: '24/7',
+    sessionColor: 'bg-[#1DA1C4]/10 text-[#1DA1C4] border-[#1DA1C4]/20',
+  },
+  {
+    ticker: 'SOL',
+    direction: 'Long',
+    quantity: '48 SOL',
+    entry: '$142.00',
+    current: '$138.50',
+    pnl: '-$168.00',
+    pnlPct: '-2.46%',
     positive: false,
     session: '24/7',
-    sessionColor: 'bg-blue-500/10 text-blue-600 border-blue-500/20',
+    sessionColor: 'bg-[#1DA1C4]/10 text-[#1DA1C4] border-[#1DA1C4]/20',
   },
 ]
 
@@ -52,7 +52,7 @@ export function PositionsMock() {
         </div>
         <div className="flex items-center gap-1.5">
           <span className="text-[10px] text-slate-400">Total P&L</span>
-          <span className="text-sm font-mono tabular-nums font-semibold text-emerald-600">+$1,247.30</span>
+          <span className="text-sm font-mono tabular-nums font-semibold text-emerald-600">+$4,512</span>
         </div>
       </div>
 

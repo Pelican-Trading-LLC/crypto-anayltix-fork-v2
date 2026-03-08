@@ -1,11 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useT } from '@/lib/providers/translation-provider';
-
 export default function MarketingFooter() {
-  const t = useT();
-
   return (
     <footer>
       <div className="footer-inner">
@@ -17,13 +13,14 @@ export default function MarketingFooter() {
           <Link href="/terms">Terms of Use</Link>
           <Link href="/privacy">Privacy Policy</Link>
           <Link href="/faq">FAQ</Link>
+          <Link href="#pricing">Pricing</Link>
         </div>
         <div className="footer-copy">
-          {t.marketing.footer.copyright}
+          &copy; {new Date().getFullYear()} Crypto Analytix. All rights reserved.
         </div>
       </div>
       <div className="footer-trust">
-        Data encrypted at rest (AES-256) and in transit (TLS). Pelican is not a financial advisor. Not investment advice.
+        Powered by Pelican AI + ForexAnalytix. Data encrypted at rest (AES-256) and in transit (TLS). Not financial advice. Trading involves risk.
       </div>
     </footer>
   );

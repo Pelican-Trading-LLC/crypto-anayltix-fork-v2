@@ -6,120 +6,72 @@ import { cn } from '@/lib/utils'
 import { Section } from '@/components/landing/section'
 import { ScrollReveal } from '@/components/landing/scroll-reveal'
 import {
-  ChatCircle,
-  Sun,
-  SquaresFour,
-  Notebook,
-  Strategy,
-  Crosshair,
-  Brain,
+  UserCircle,
+  Translate,
+  ChartBar,
+  Binoculars,
 } from '@phosphor-icons/react'
 import { ChatMock } from '@/components/landing/mocks/chat-mock'
 import { BriefMock } from '@/components/landing/mocks/brief-mock'
 import { HeatmapMock } from '@/components/landing/mocks/heatmap-mock'
-import { JournalMock } from '@/components/landing/mocks/journal-mock'
-import { PlaybookMock } from '@/components/landing/mocks/playbook-mock'
 import { PositionsMock } from '@/components/landing/mocks/positions-mock'
-import { CoachingMock } from '@/components/landing/mocks/coaching-mock'
 
 const features = [
   {
-    id: 'chat',
-    label: 'AI Chat',
-    icon: ChatCircle,
-    title: 'Ask anything about any market',
+    id: 'portfolio',
+    label: 'Portfolio AI',
+    icon: UserCircle,
+    title: 'AI That Knows Your Portfolio',
     description:
-      'Live market data, your positions, and institutional-grade analysis. Like having a senior analyst on call 24/7.',
+      'Ask Pelican about any position. It knows your entry price, your P&L, your funding costs, and your risk exposure. Every answer is personalized to YOUR portfolio.',
     highlights: [
-      'Powered by real-time Polygon data',
-      'Knows your open positions and trade history',
-      'Pre-trade checklists built into every analysis',
+      'Knows every position, entry price, and cost basis',
+      'Real-time P&L and funding cost tracking',
+      'Risk exposure analysis across your entire portfolio',
     ],
     mock: ChatMock,
   },
   {
-    id: 'brief',
-    label: 'Morning Brief',
-    icon: Sun,
-    title: 'Your daily edge, waiting for you',
+    id: 'translation',
+    label: 'Macro Translation',
+    icon: Translate,
+    title: 'Cross-Asset Translation',
     description:
-      'A personalized market briefing generated fresh every morning. Adapts to your timezone, your positions, and your playbooks.',
+      'Blake Morrow\u2019s team at ForexAnalytix publishes daily macro analysis. Pelican automatically translates it: \u201CDXY breaking below 104 support \u2014 historically, this correlates with a 15-20% BTC rally over 8 weeks.\u201D',
     highlights: [
-      'Adapts to NY, London, and Asia market sessions',
-      'Analyzes your open positions with overnight risk',
-      'Surfaces setups matching your active playbooks',
+      'ForexAnalytix macro analysis translated to crypto impact',
+      'DXY, yields, and macro events mapped to BTC/ETH/SOL',
+      'Historical correlation data backing every translation',
     ],
     mock: BriefMock,
   },
   {
-    id: 'heatmap',
-    label: 'Heatmap',
-    icon: SquaresFour,
-    title: 'See the whole market in one glance',
+    id: 'derivatives',
+    label: 'Derivatives',
+    icon: ChartBar,
+    title: 'Derivatives Intelligence',
     description:
-      'Real-time heatmap across stocks, forex, and crypto. Spot sector rotation, find opportunities, click any tile for instant AI analysis.',
+      'Funding rates, open interest, liquidation levels \u2014 explained in the language of overnight repo rates, futures basis, and carry costs. Not crypto jargon.',
     highlights: [
-      '3 markets: stocks, forex, and crypto in one view',
-      'Sector drill-down to find what\'s moving',
-      'Click any ticker for instant AI analysis',
+      'Funding rates explained as carry cost / repo rate equivalents',
+      'Open interest and liquidation heatmaps',
+      'Basis trade opportunities across exchanges',
     ],
     mock: HeatmapMock,
   },
   {
-    id: 'journal',
-    label: 'Journal',
-    icon: Notebook,
-    title: 'Your trading journal that actually works',
+    id: 'smartmoney',
+    label: 'Smart Money',
+    icon: Binoculars,
+    title: 'Smart Money Tracking',
     description:
-      'Six analytics views, automatic P&L calculation, and AI-powered trade grading. Finally, a journal you\'ll stick with.',
+      'Whale wallets, market maker flows, and institutional accumulation \u2014 with Pelican\u2019s AI interpretation of what each movement signals.',
     highlights: [
-      '6 analytics views: equity curve, calendar, by setup',
-      'Tag trades to playbooks for per-strategy analysis',
-      'AI grading scores every trade for continuous improvement',
-    ],
-    mock: JournalMock,
-  },
-  {
-    id: 'playbooks',
-    label: 'Playbooks',
-    icon: Strategy,
-    title: 'Define your edge. Track if it works.',
-    description:
-      'Document your setups with entry rules, exit rules, and checklists. Pelican tracks win rate, R-multiple, and profit factor per playbook.',
-    highlights: [
-      'Per-setup stats: win rate, R-multiple, profit factor',
-      'Pre-trade checklist enforces discipline',
-      'AI detects when a playbook starts underperforming',
-    ],
-    mock: PlaybookMock,
-  },
-  {
-    id: 'positions',
-    label: 'Positions',
-    icon: Crosshair,
-    title: 'Every position, monitored',
-    description:
-      'See all open positions across stocks, forex, and crypto with real-time P&L, session indicators, and one-click AI scanning.',
-    highlights: [
-      'Session indicators: NY, London, Asia, 24/7',
-      'Click any position for an AI-powered scan',
-      'Portfolio-level risk and exposure overview',
+      'Whale wallet monitoring with AI-powered intent analysis',
+      'Market maker flow detection across DEXs and CEXs',
+      'Institutional accumulation patterns and alerts',
     ],
     mock: PositionsMock,
-  },
-  {
-    id: 'coaching',
-    label: 'Coaching',
-    icon: Brain,
-    title: 'Your AI trading coach',
-    description:
-      'Pelican doesn\'t just answer questions — it pushes back when the data says you\'re making a mistake. It knows your win rates, your weak spots, and your patterns.',
-    highlights: [
-      'Warns you before you repeat costly patterns',
-      'Enforces your own trading plan rules',
-      'Detects tilt, revenge trading, and setup drift',
-    ],
-    mock: CoachingMock,
   },
 ] as const
 
@@ -137,8 +89,8 @@ export function PlatformShowcase() {
             One platform. Every tool you need.
           </h2>
           <p className="text-base md:text-lg text-slate-500 max-w-2xl mx-auto">
-            AI chat, morning briefs, heatmaps, journaling, playbooks, and position tracking
-            &mdash; all connected, all learning from you.
+            Portfolio intelligence, macro translation, derivatives data, and smart money tracking
+            &mdash; all connected, all personalized to your trading style.
           </p>
         </div>
       </ScrollReveal>
@@ -156,7 +108,7 @@ export function PlatformShowcase() {
                 className={cn(
                   'flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all duration-200 flex-shrink-0',
                   isActive
-                    ? 'bg-blue-500/15 text-blue-600'
+                    ? 'bg-[#1DA1C4]/15 text-[#1DA1C4]'
                     : 'text-slate-400 hover:text-slate-600 hover:bg-slate-100'
                 )}
               >
@@ -195,7 +147,7 @@ export function PlatformShowcase() {
               <ul className="space-y-3">
                 {feature.highlights.map((highlight, i) => (
                   <li key={i} className="flex items-start gap-3">
-                    <div className="w-1.5 h-1.5 rounded-full bg-blue-600 mt-2 flex-shrink-0" />
+                    <div className="w-1.5 h-1.5 rounded-full bg-[#1DA1C4] mt-2 flex-shrink-0" />
                     <span className="text-sm text-slate-600 leading-relaxed">
                       {highlight}
                     </span>

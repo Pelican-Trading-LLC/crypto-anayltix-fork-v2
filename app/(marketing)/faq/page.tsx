@@ -3,7 +3,7 @@ import { FAQFullPage } from '@/components/landing/faq-full-page';
 
 export const metadata: Metadata = {
   title: 'FAQ | Crypto Analytix',
-  description: 'Frequently asked questions about Crypto Analytix — how it works, pricing, supported markets, data sources, and more.',
+  description: 'Frequently asked questions about Crypto Analytix — AI-powered crypto intelligence for TradFi traders. Learn about Pelican AI, exchange connections, pricing, and more.',
   alternates: {
     canonical: '/faq',
   },
@@ -15,50 +15,50 @@ const faqJsonLd = {
   mainEntity: [
     {
       '@type': 'Question',
-      name: 'What is Crypto Analytix?',
+      name: "I've never traded crypto. Is this for me?",
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Pelican is an AI-powered trading intelligence platform that lets traders analyze markets, track trades, and get insights using plain English.',
+        text: "Yes \u2014 that's exactly who we built this for. If you understand TradFi concepts like futures, margin, and carry costs, Pelican will translate every crypto concept into language you already know.",
       },
     },
     {
       '@type': 'Question',
-      name: 'Who is Pelican for?',
+      name: 'How does Pelican AI work?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: "Pelican is designed for traders of all levels who want institutional-grade market intelligence without the complexity.",
+        text: "Pelican is a conversational AI that knows your portfolio, understands market data, and speaks the language of a traditional trader. It combines real-time market data with ForexAnalytix analyst content.",
       },
     },
     {
       '@type': 'Question',
-      name: "How does Pelican's pricing work?",
+      name: 'What exchanges can I connect?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Pelican uses a credit-based pricing system. Three tiers: Base ($29/month), Pro ($99/month), and Power ($249/month).',
+        text: 'We support Kraken, Coinbase, Binance, and other major exchanges through SnapTrade. Your API keys are encrypted and we never have withdrawal permissions.',
       },
     },
     {
       '@type': 'Question',
-      name: 'How many tickers does Pelican cover?',
+      name: "What's the ForexAnalytix connection?",
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Pelican provides data on 10,000+ tickers covering US stocks, Foreign Exchange (FX), and cryptocurrencies.',
+        text: 'ForexAnalytix is the largest independent TradFi analyst community with 25,000+ members. Their analysts apply established methodologies like Elliott Wave and harmonic patterns to crypto markets.',
       },
     },
     {
       '@type': 'Question',
-      name: 'What languages does Pelican support?',
+      name: 'Is my data safe?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Pelican is available in 30+ languages including Chinese, Spanish, Japanese, Korean, French, German, Portuguese, and many more.',
+        text: 'Yes. All data is encrypted at rest and in transit. Exchange connections use read-only API keys via SnapTrade. We never store your exchange credentials directly.',
       },
     },
     {
       '@type': 'Question',
-      name: 'Is the data real-time or delayed?',
+      name: 'What are the subscription tiers?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Pelican provides both real-time and historical data. All subscribers get live data on 10,000+ tickers.',
+        text: 'Three tiers: Free ($0/month) with daily briefs and 3 Pelican questions/day, Lite ($29/month) with unlimited questions and analyst signals, and Pro ($99/month) with full Pelican Portal and priority support.',
       },
     },
   ],

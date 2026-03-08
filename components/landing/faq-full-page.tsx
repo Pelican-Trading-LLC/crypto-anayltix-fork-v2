@@ -19,23 +19,23 @@ interface FAQCategory {
 
 const faqData: FAQCategory[] = [
   {
-    title: 'About Pelican',
+    title: 'About Crypto Analytix',
     items: [
       {
         question: 'What is Crypto Analytix?',
-        answer: 'Pelican is an AI-powered trading intelligence platform that lets traders analyze markets, track trades, and get insights using plain English instead of code. Think of it as having an expert analyst available 24/7 who speaks your language.',
+        answer: 'Crypto Analytix is an AI-powered crypto intelligence platform built specifically for traditional finance (TradFi) traders entering crypto. Pelican AI translates funding rates, on-chain data, derivatives, and crypto-native signals into the language you already know from stocks, forex, and futures.',
       },
       {
-        question: 'Who is Pelican for?',
-        answer: "Pelican is designed for traders of all levels who want institutional-grade market intelligence without the complexity. Whether you're a day trader, swing trader, or long-term investor, Pelican helps you make more informed decisions faster.",
+        question: "I've never traded crypto. Is this for me?",
+        answer: "Yes \u2014 that's exactly who we built this for. If you understand TradFi concepts like futures, margin, and carry costs, Pelican will translate every crypto concept into language you already know. Our education modules start from zero and build up.",
       },
       {
-        question: 'What makes Pelican different from other trading tools?',
-        answer: 'Unlike traditional platforms that require coding skills or complex interfaces, Pelican uses natural language. Just ask questions like "What caused TSLA to drop yesterday?" or "Compare AAPL vs SPY last quarter" and get instant, actionable insights. One tool instead of 20 browser tabs.',
+        question: 'How does Pelican AI work?',
+        answer: "Pelican is a conversational AI that knows your portfolio, understands market data, and speaks the language of a traditional trader. Ask it anything \u2014 from 'what are funding rates?' to 'analyze my BTC position relative to the upcoming options expiry.' It combines real-time market data with ForexAnalytix analyst content.",
       },
       {
-        question: 'What is the current status of Pelican?',
-        answer: 'Pelican is currently in Beta. You can sign up at cryptoanalytix.com to get early access and help shape the future of the platform.',
+        question: 'What is the current status of Crypto Analytix?',
+        answer: 'Crypto Analytix is currently in Beta. You can sign up at cryptoanalytix.com to get early access and help shape the future of the platform.',
       },
     ],
   },
@@ -43,37 +43,50 @@ const faqData: FAQCategory[] = [
     title: 'Features',
     items: [
       {
-        question: 'What are Natural Language Queries?',
-        answer: 'Ask questions in plain English and get instant answers. Examples: "What caused TSLA to drop yesterday?", "Compare AAPL vs SPY last quarter", "Show me the best performing tech stocks this month". No code, no complex syntax\u2014just ask.',
+        question: 'What can I ask Pelican?',
+        answer: 'Anything crypto. Examples: "What are funding rates and why do they matter?", "Analyze my ETH position", "What does the DXY move mean for crypto?", "Translate this CT thread into something I understand", "What are the whale wallets doing with BTC right now?" Pelican combines real-time market data with analyst intelligence to give you actionable answers.',
       },
       {
-        question: 'How does Plain-English Backtesting work?',
-        answer: 'Test trading ideas in seconds without writing a single line of code. Just describe your strategy: "Backtest momentum strategy on SPY, last 6 months" and Pelican returns comprehensive results including win rate, Sharpe ratio, max drawdown, and more.',
+        question: 'What is the education system?',
+        answer: "7 structured modules that bridge TradFi concepts to crypto. Each module translates something you already know (like futures basis) into the crypto equivalent (funding rates). Designed for traders, not beginners \u2014 no 'what is Bitcoin' basics.",
       },
       {
-        question: 'What is Context Memory?',
-        answer: "Pelican remembers your trading style, preferences, and past conversations. This means responses get more personalized over time, and you don't have to repeat yourself. It's like having an assistant who truly knows how you trade.",
+        question: 'What are CT signal translations?',
+        answer: "Crypto Twitter (CT) is full of alpha, but the language is opaque if you come from TradFi. Pelican monitors key CT accounts and translates their signals into structured analysis you can actually use \u2014 with context on why it matters and how it relates to your positions.",
       },
       {
-        question: 'How does Pattern Detection work?',
-        answer: "Pelican's AI continuously analyzes market data to find patterns and anomalies you might miss. It can identify trends, correlations, and unusual activity across thousands of tickers, giving you an edge in spotting opportunities.",
+        question: 'What is the analyst signal feed?',
+        answer: "ForexAnalytix analysts (Blake Morrow, Grega Horvat, and others) apply established methodologies like Elliott Wave and harmonic patterns to crypto markets. The signal feed delivers their analysis in real-time, translated into actionable crypto intelligence.",
       },
     ],
   },
   {
-    title: 'Data & Coverage',
+    title: 'Exchanges & Data',
     items: [
       {
-        question: 'How many tickers does Pelican cover?',
-        answer: 'Pelican provides data on 10,000+ tickers, covering a comprehensive range of tradeable instruments.',
+        question: 'What exchanges can I connect?',
+        answer: 'We support Kraken, Coinbase, Binance, and other major exchanges through SnapTrade. Your API keys are encrypted and we never have withdrawal permissions.',
       },
       {
-        question: 'What asset classes are supported?',
-        answer: "Pelican supports US stocks, Foreign Exchange (FX), and cryptocurrencies. Whether you trade stocks, FX, or crypto, we've got you covered.",
+        question: 'What crypto assets are covered?',
+        answer: 'Pelican covers all major cryptocurrencies including BTC, ETH, SOL, and hundreds of altcoins. We provide spot prices, derivatives data, funding rates, open interest, and on-chain metrics.',
       },
       {
-        question: 'Is the data real-time or delayed?',
-        answer: 'Pelican provides both real-time and historical data. All subscribers get live data on 10,000+ tickers for up-to-the-minute market intelligence.',
+        question: 'Is the data real-time?',
+        answer: 'Yes. Pelican provides real-time market data including prices, funding rates, open interest, and on-chain activity. Analyst signals and CT translations are delivered as they happen.',
+      },
+    ],
+  },
+  {
+    title: 'ForexAnalytix Partnership',
+    items: [
+      {
+        question: "What's the ForexAnalytix connection?",
+        answer: 'ForexAnalytix is the largest independent TradFi analyst community with 25,000+ members. Their analysts (Blake Morrow, Grega Horvat, and others) apply established methodologies like Elliott Wave and harmonic patterns to crypto markets. Pelican translates their analysis into actionable crypto intelligence.',
+      },
+      {
+        question: 'Who are the analysts?',
+        answer: 'The ForexAnalytix team includes experienced TradFi analysts who have expanded their coverage to crypto. They bring decades of experience in technical analysis, macro research, and risk management \u2014 applied to digital assets.',
       },
     ],
   },
@@ -81,54 +94,29 @@ const faqData: FAQCategory[] = [
     title: 'Pricing',
     items: [
       {
-        question: "How does Pelican's pricing work?",
-        answer: 'Pelican uses a credit-based pricing system. Credits represent analytical workload\u2014simple queries cost fewer credits, complex analyses cost more. Credits reset monthly and do not roll over.',
-      },
-      {
         question: 'What are the subscription tiers?',
-        answer: 'Three tiers: Base ($29/month, 1,000 credits) for exploration and learning, Pro ($99/month, 3,500 credits) for active traders, and Power ($249/month, 10,000 credits) for heavy and professional users.',
+        answer: 'Three tiers: Free ($0/month) with daily briefs, education modules, and 3 Pelican questions/day. Lite ($29/month) adds unlimited questions, analyst signals, smart money alerts, and community access. Pro ($99/month) adds Pelican Portal, conversation history, CT translations, wallet tracking, and priority support.',
       },
       {
-        question: 'How many credits do queries cost?',
-        answer: 'It depends on complexity: Conversation/Mentoring costs 2 credits, Simple Price Checks cost 10 credits, Basic Analysis (RSI, MACD, comparisons) costs 25 credits, Event Studies cost 75 credits, and Multi-Day Tick Analysis or backtests cost 200 credits.',
+        question: 'Is there a free tier?',
+        answer: "Yes. The free tier includes daily market briefs, 7 education modules, a portfolio dashboard in demo mode, and 3 Pelican questions per day. No credit card required.",
       },
       {
-        question: "What's included in all tiers?",
-        answer: 'All tiers include: live data on 10,000+ tickers, plain-English backtesting, context memory across sessions, one-click shareable reports, and all new features as they ship. The only difference is credit allotment.',
-      },
-      {
-        question: 'Is there a free tier or trial?',
-        answer: 'Every new account gets 10 free questions to try Pelican before subscribing. No credit card required. After that, choose a plan that fits your trading style.',
-      },
-      {
-        question: 'What happens if a query fails?',
-        answer: 'System failures automatically refund your credits. We prioritize trust and fairness\u2014you only pay for successful analyses.',
-      },
-      {
-        question: 'How does Pelican compare to Bloomberg or other terminals?',
-        answer: 'Pelican is approximately 99% cheaper than institutional terminals. Bloomberg Terminal costs ~$24,000/year, Refinitiv Eikon ~$22,000/year, FactSet ~$12,000/year. Pelican ranges from $348\u2013$2,988/year while delivering institutional-grade reasoning through natural language.',
+        question: 'Can I cancel anytime?',
+        answer: "Yes. No contracts, no commitments. Cancel from your settings page and you'll revert to the free tier.",
       },
     ],
   },
   {
-    title: 'Languages & Accessibility',
+    title: 'Security',
     items: [
       {
-        question: 'What languages does Pelican support?',
-        answer: 'Pelican is available in 30+ languages including Chinese, Spanish, Japanese, Korean, French, German, Portuguese, Italian, Dutch, Russian, Turkish, Arabic, Polish, and many more. Trade in your native language.',
-      },
-    ],
-  },
-  {
-    title: 'Team & Company',
-    items: [
-      {
-        question: 'Who founded Pelican?',
-        answer: 'Pelican was founded by Nick Groves, who serves as CEO. Nick brings 8 years of trading experience across futures, equities, FX, and crypto, with a background in crypto arbitrage.',
+        question: 'Is my data safe?',
+        answer: 'Yes. All data is encrypted at rest and in transit. Exchange connections use read-only API keys via SnapTrade (an established fintech provider). We never store your exchange credentials directly.',
       },
       {
-        question: 'Who else is on the team?',
-        answer: "Raymond Campbell is the Senior Architect with 20+ years of experience. Raymond previously helped architect the NYSE ARCA electronic trading systems, bringing institutional-grade engineering to Pelican.",
+        question: 'Can Crypto Analytix withdraw my funds?',
+        answer: 'No. Exchange connections are read-only through SnapTrade. We never request withdrawal permissions. Your funds remain fully under your control at all times.',
       },
     ],
   },
@@ -137,7 +125,7 @@ const faqData: FAQCategory[] = [
     items: [
       {
         question: 'How do I get help?',
-        answer: 'You can use the chat widget on this site for quick questions about Pelican. For account issues, billing questions, bug reports, or anything else, email us at support@cryptoanalytix.com.',
+        answer: 'You can use the chat widget on this site for quick questions about Crypto Analytix. For account issues, billing questions, bug reports, or anything else, email us at support@cryptoanalytix.com.',
       },
       {
         question: 'What if I have a billing or account issue?',
@@ -260,9 +248,9 @@ export function FAQFullPage() {
               </a>
               <Link
                 href="/auth/signup"
-                className="rounded-xl bg-blue-600 px-6 py-3 text-sm font-medium text-white hover:bg-blue-700 transition-colors"
+                className="rounded-xl bg-gradient-to-r from-[#1A6FB5] to-[#25BFDF] px-6 py-3 text-sm font-medium text-white hover:opacity-90 transition-colors"
               >
-                Start Trading Now
+                Start for Free
               </Link>
             </div>
           </div>

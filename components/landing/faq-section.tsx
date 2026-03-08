@@ -9,39 +9,34 @@ import { ScrollReveal } from '@/components/landing/scroll-reveal'
 
 const faqs = [
   {
-    question: 'How is this different from ChatGPT?',
+    question: "I've never traded crypto. Is this for me?",
     answer:
-      "ChatGPT doesn't have live market data, doesn't know your positions, can't track your setups, and forgets everything between conversations. Pelican pulls real-time data from Polygon, remembers your entire trading history, and gets more personalized every day you use it.",
+      "Yes \u2014 that's exactly who we built this for. If you understand TradFi concepts like futures, margin, and carry costs, Pelican will translate every crypto concept into language you already know. Our education modules start from zero and build up.",
   },
   {
-    question: 'What markets does Pelican support?',
+    question: 'How does Pelican AI work?',
     answer:
-      'Stocks, forex, crypto, and futures. When you sign up, you tell Pelican what you trade and the entire platform adapts — heatmap views, session indicators, morning briefings, and suggested analysis all match your market.',
+      "Pelican is a conversational AI that knows your portfolio, understands market data, and speaks the language of a traditional trader. Ask it anything \u2014 from 'what are funding rates?' to 'analyze my BTC position relative to the upcoming options expiry.' It combines real-time market data with ForexAnalytix analyst content.",
   },
   {
-    question: 'Is my trading data secure?',
+    question: 'What exchanges can I connect?',
     answer:
-      "Yes. Every table in the database has row-level security policies. Your trades, journal entries, and playbooks are only accessible to you. We don't sell your data or share it with third parties.",
+      'We support Kraken, Coinbase, Binance, and other major exchanges through SnapTrade. Your API keys are encrypted and we never have withdrawal permissions.',
   },
   {
-    question: "What does 'credits' mean?",
+    question: "What's the ForexAnalytix connection?",
     answer:
-      'Each AI query uses credits based on complexity. Simple questions use fewer credits, deep analysis uses more. Your monthly plan includes a set number that refresh each billing cycle.',
+      'ForexAnalytix is the largest independent TradFi analyst community with 25,000+ members. Their analysts (Blake Morrow, Grega Horvat, and others) apply established methodologies like Elliott Wave and harmonic patterns to crypto markets. Pelican translates their analysis into actionable crypto intelligence.',
   },
   {
-    question: 'Can I import my existing trades?',
+    question: 'Is my data safe?',
     answer:
-      'Broker CSV import is on the roadmap. For now, you can log trades manually (takes about 15 seconds per trade) or log them directly from chat.',
-  },
-  {
-    question: 'Do I need to be an experienced trader?',
-    answer:
-      "No. Pelican adapts to your level. Beginners get explained concepts and guided analysis. Advanced traders get technical depth and setup-specific coaching. Learning Mode highlights any term you don't recognize.",
+      'Yes. All data is encrypted at rest and in transit. Exchange connections use read-only API keys via SnapTrade (an established fintech provider). We never store your exchange credentials directly.',
   },
   {
     question: 'Can I cancel anytime?',
     answer:
-      'Yes. No contracts, no cancellation fees. Your data stays accessible on the free tier if you downgrade.',
+      "Yes. No contracts, no commitments. Cancel from your settings page and you'll revert to the free tier.",
   },
 ]
 
@@ -104,7 +99,7 @@ export function FAQSection() {
 
       <ScrollReveal delay={0.4}>
         <div className="text-center mt-8">
-          <Link href="/faq" className="text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors">
+          <Link href="/faq" className="text-sm text-[#1DA1C4] hover:text-[#178BA8] font-medium transition-colors">
             See all FAQs →
           </Link>
         </div>

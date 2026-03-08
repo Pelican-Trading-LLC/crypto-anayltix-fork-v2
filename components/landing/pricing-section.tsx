@@ -8,55 +8,52 @@ import { ScrollReveal } from '@/components/landing/scroll-reveal'
 
 const plans = [
   {
-    name: 'Starter',
-    price: 29,
-    credits: '1,000',
-    planId: 'starter',
-    description: 'For traders getting started with AI-assisted trading',
+    name: 'Free',
+    price: 0,
+    planId: 'free',
+    description: 'Explore crypto with TradFi training wheels',
     features: [
-      'AI chat with live market data',
-      'Morning briefing',
-      'Trade journal with analytics',
-      'Market heatmap (all asset classes)',
-      'Correlations dashboard',
-      'Learning mode',
+      'Daily market brief',
+      '7 education modules',
+      'Portfolio dashboard (demo mode)',
+      '3 Pelican questions/day',
     ],
-    cta: 'Start with Starter',
+    cta: 'Start Free',
+    highlighted: false,
+  },
+  {
+    name: 'Lite',
+    price: 29,
+    planId: 'lite',
+    description: 'For traders ready to go deeper into crypto',
+    features: [
+      'Everything in Free',
+      'Unlimited Pelican questions',
+      'Analyst signal feed',
+      'Smart money alerts',
+      'Watchlist with alerts',
+      'Community access',
+    ],
+    cta: 'Start Free',
     highlighted: false,
   },
   {
     name: 'Pro',
     price: 99,
-    credits: '3,500',
     planId: 'pro',
-    description: 'For active traders who want the full edge',
+    description: 'Full crypto intelligence for serious traders',
     features: [
-      'Everything in Starter',
-      '3.5x more monthly credits',
-      'Playbook Lab with AI grading',
-      'Advanced trade analytics',
-      'Setup-specific performance tracking',
-      'Priority response times',
+      'Everything in Lite',
+      'Pelican Portal (full conversational AI)',
+      'Conversation history',
+      'Cross-asset translation feed',
+      'CT signal translations',
+      'Wallet tracking',
+      'Intelligence alerts',
+      'Priority support',
     ],
-    cta: 'Go Pro',
+    cta: 'Start Free',
     highlighted: true,
-  },
-  {
-    name: 'Power',
-    price: 249,
-    credits: '10,000',
-    planId: 'power',
-    description: 'For professional traders and power users',
-    features: [
-      'Everything in Pro',
-      '10x more monthly credits',
-      'Advanced portfolio analytics',
-      'Maximum analysis depth',
-      'Unlimited research runway',
-      'Direct support channel',
-    ],
-    cta: 'Go Power',
-    highlighted: false,
   },
 ]
 
@@ -81,12 +78,12 @@ export function PricingSection() {
               className={cn(
                 'relative rounded-2xl p-8 flex flex-col h-full transition-all duration-300',
                 plan.highlighted
-                  ? 'bg-blue-50 border border-blue-200 shadow-md'
+                  ? 'bg-[#1DA1C4]/5 border-2 border-[#1DA1C4] shadow-md'
                   : 'bg-white border border-slate-200 shadow-sm'
               )}
             >
               {plan.highlighted && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-blue-600 text-white text-xs font-semibold rounded-full">
+                <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-gradient-to-r from-[#1A6FB5] to-[#25BFDF] text-white text-xs font-semibold rounded-full">
                   Most Popular
                 </span>
               )}
@@ -98,22 +95,19 @@ export function PricingSection() {
                 <p className="text-sm text-slate-400">{plan.description}</p>
               </div>
 
-              <div className="mb-1">
+              <div className="mb-6">
                 <span className="text-4xl font-bold text-slate-900 font-mono">
                   ${plan.price}
                 </span>
                 <span className="text-sm text-slate-400">/mo</span>
               </div>
-              <p className="text-xs text-slate-400 mb-8">
-                {plan.credits} credits/month
-              </p>
 
               <ul className="space-y-3 mb-8 flex-1">
                 {plan.features.map((feature) => (
                   <li key={feature} className="flex items-start gap-2.5">
                     <Check
                       weight="bold"
-                      className="h-4 w-4 text-blue-600 mt-0.5 shrink-0"
+                      className="h-4 w-4 text-[#1DA1C4] mt-0.5 shrink-0"
                     />
                     <span className="text-sm text-slate-500">{feature}</span>
                   </li>
@@ -121,11 +115,11 @@ export function PricingSection() {
               </ul>
 
               <Link
-                href={`/auth/signup?plan=${plan.planId}`}
+                href="/auth/signup"
                 className={cn(
                   'block w-full text-center py-3 rounded-xl font-semibold text-sm transition-all duration-200 active:scale-[0.98]',
                   plan.highlighted
-                    ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg'
+                    ? 'bg-gradient-to-r from-[#1A6FB5] to-[#25BFDF] hover:opacity-90 text-white shadow-lg'
                     : 'bg-slate-100 hover:bg-slate-200 text-slate-900 border border-slate-200'
                 )}
               >
@@ -136,33 +130,9 @@ export function PricingSection() {
         ))}
       </div>
 
-      <ScrollReveal delay={0.35}>
-        <div className="mt-12 max-w-3xl mx-auto rounded-xl border border-slate-200 bg-slate-50 p-6">
-          <h3 className="text-sm font-semibold text-slate-900 mb-4 text-center">How Pelican compares</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-            <div>
-              <div className="text-xs text-slate-400 mb-1">Bloomberg</div>
-              <div className="font-mono text-sm font-bold text-slate-900">$24,000<span className="text-slate-400 font-normal">/yr</span></div>
-            </div>
-            <div>
-              <div className="text-xs text-slate-400 mb-1">Refinitiv</div>
-              <div className="font-mono text-sm font-bold text-slate-900">$22,000<span className="text-slate-400 font-normal">/yr</span></div>
-            </div>
-            <div>
-              <div className="text-xs text-slate-400 mb-1">FactSet</div>
-              <div className="font-mono text-sm font-bold text-slate-900">$12,000<span className="text-slate-400 font-normal">/yr</span></div>
-            </div>
-            <div>
-              <div className="text-xs text-slate-400 mb-1">Pelican AI</div>
-              <div className="font-mono text-sm font-bold text-blue-600">$348<span className="text-slate-400 font-normal">/yr</span></div>
-            </div>
-          </div>
-        </div>
-      </ScrollReveal>
-
       <ScrollReveal delay={0.4}>
         <p className="text-center text-sm text-slate-400 mt-10">
-          Not ready to commit? Start with 10 free questions, no signup required.
+          Free tier available. No credit card required. Upgrade anytime.
         </p>
       </ScrollReveal>
     </Section>

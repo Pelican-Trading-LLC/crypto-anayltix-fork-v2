@@ -1,21 +1,22 @@
 'use client'
 
 import Link from 'next/link'
-import { XLogo } from '@phosphor-icons/react'
+import { XLogo, DiscordLogo } from '@phosphor-icons/react'
 
 const productLinks = [
-  { label: 'Features', href: '#platform' },
+  { label: 'Dashboard', href: '/chat' },
+  { label: 'Signals', href: '#platform' },
+  { label: 'Calendar', href: '#platform' },
+  { label: 'Learn', href: '/how-to-use' },
+  { label: 'Ask Pelican', href: '/auth/signup' },
+]
+
+const companyLinks = [
+  { label: 'About', href: '#' },
   { label: 'Pricing', href: '#pricing' },
-  { label: 'FAQ', href: '#faq' },
-]
-
-const legalLinks = [
-  { label: 'Terms of Service', href: '/terms' },
-  { label: 'Privacy Policy', href: '/privacy' },
-]
-
-const connectLinks = [
-  { label: 'Support', href: 'mailto:support@cryptoanalytix.com' },
+  { label: 'FAQ', href: '/faq' },
+  { label: 'Privacy', href: '/privacy' },
+  { label: 'Terms', href: '/terms' },
 ]
 
 export function LandingFooter() {
@@ -31,9 +32,9 @@ export function LandingFooter() {
                 Crypto Analytix
               </span>
             </div>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              AI-powered trading analysis with live market data, trade
-              journaling, and personalized coaching.
+            <p className="text-xs text-slate-400 leading-relaxed mb-3">
+              AI-powered crypto intelligence for traditional finance traders.
+              Powered by Pelican AI + ForexAnalytix.
             </p>
           </div>
 
@@ -56,13 +57,13 @@ export function LandingFooter() {
             </ul>
           </div>
 
-          {/* Legal */}
+          {/* Company */}
           <div>
             <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">
-              Legal
+              Company
             </h4>
             <ul className="space-y-2">
-              {legalLinks.map((link) => (
+              {companyLinks.map((link) => (
                 <li key={link.label}>
                   <Link
                     href={link.href}
@@ -83,7 +84,7 @@ export function LandingFooter() {
             <ul className="space-y-2">
               <li>
                 <a
-                  href="https://x.com/PelicanAI_"
+                  href="#"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-600 transition-colors"
@@ -92,22 +93,25 @@ export function LandingFooter() {
                   Twitter / X
                 </a>
               </li>
-              {connectLinks.map((link) => (
-                <li key={link.label}>
-                  <a
-                    href={link.href}
-                    target={link.href.startsWith('http') ? '_blank' : undefined}
-                    rel={
-                      link.href.startsWith('http')
-                        ? 'noopener noreferrer'
-                        : undefined
-                    }
-                    className="text-sm text-slate-400 hover:text-slate-600 transition-colors"
-                  >
-                    {link.label}
-                  </a>
-                </li>
-              ))}
+              <li>
+                <a
+                  href="#"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-600 transition-colors"
+                >
+                  <DiscordLogo weight="bold" className="h-3.5 w-3.5" />
+                  Discord
+                </a>
+              </li>
+              <li>
+                <a
+                  href="mailto:support@cryptoanalytix.com"
+                  className="text-sm text-slate-400 hover:text-slate-600 transition-colors"
+                >
+                  Support
+                </a>
+              </li>
             </ul>
           </div>
         </div>
@@ -115,7 +119,7 @@ export function LandingFooter() {
         {/* Bottom bar */}
         <div className="pt-8 border-t border-slate-200 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-xs text-slate-400">
-            &copy; {new Date().getFullYear()} Pelican AI. All rights reserved.
+            &copy; {new Date().getFullYear()} Crypto Analytix. All rights reserved.
           </p>
           <p className="text-xs text-slate-300">
             Not financial advice. Trading involves risk. Pelican is an AI model — it can make mistakes. Please double-check responses.

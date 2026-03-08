@@ -65,7 +65,7 @@ export function LandingNav() {
           </Link>
           <Link
             href="/auth/signup"
-            className="hidden rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-all duration-150 hover:bg-blue-700 active:scale-[0.98] sm:block"
+            className="hidden rounded-lg bg-gradient-to-r from-[#1A6FB5] to-[#25BFDF] px-4 py-2 text-sm font-medium text-white transition-all duration-150 hover:opacity-90 active:scale-[0.98] sm:block"
           >
             Start Free
           </Link>
@@ -124,7 +124,7 @@ export function LandingNav() {
             </Link>
             <Link
               href="/auth/signup"
-              className="rounded-lg bg-blue-600 px-4 py-2.5 text-center text-sm font-medium text-white transition-all hover:bg-blue-700"
+              className="rounded-lg bg-gradient-to-r from-[#1A6FB5] to-[#25BFDF] px-4 py-2.5 text-center text-sm font-medium text-white transition-all hover:opacity-90"
             >
               Start Free
             </Link>

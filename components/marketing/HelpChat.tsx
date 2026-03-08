@@ -168,19 +168,19 @@ export default function HelpChat({ logoUrl = '/ca-logo.svg' }: HelpChatProps) {
           >
             <Image
               src={logoUrl}
-              alt="Pelican"
+              alt="Crypto Analytix"
               width={32}
               height={32}
               style={{ objectFit: 'contain' }}
             />
             <div>
-              <div style={{ 
+              <div style={{
                 fontFamily: "'Geist Sans', system-ui, sans-serif",
                 fontSize: '18px',
                 letterSpacing: '0.05em',
                 color: 'var(--foreground)'
               }}>
-                Pelican Help
+                Crypto Analytix Help
               </div>
               <div style={{ 
                 fontFamily: "'Geist Mono', monospace",
@@ -314,7 +314,7 @@ export default function HelpChat({ logoUrl = '/ca-logo.svg' }: HelpChatProps) {
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Ask about Pelican..."
+                placeholder="Ask about Crypto Analytix..."
                 disabled={isLoading}
                 onContextMenu={(e) => e.stopPropagation()}
                 onKeyDown={(e) => {

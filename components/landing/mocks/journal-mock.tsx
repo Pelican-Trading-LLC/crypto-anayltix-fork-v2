@@ -10,9 +10,9 @@ const stats = [
 ]
 
 const trades = [
-  { ticker: 'NVDA', direction: 'Long', pnl: '+$842', r: '+2.1R', positive: true },
-  { ticker: 'EUR/USD', direction: 'Short', pnl: '-$215', r: '-0.8R', positive: false },
-  { ticker: 'AAPL', direction: 'Long', pnl: '+$156', r: '+0.6R', positive: true },
+  { ticker: 'BTC', direction: 'Long', pnl: '+$4,110', r: '+2.1R', positive: true },
+  { ticker: 'SOL', direction: 'Long', pnl: '-$168', r: '-0.5R', positive: false },
+  { ticker: 'ETH', direction: 'Long', pnl: '+$1,840', r: '+1.4R', positive: true },
 ]
 
 export function JournalMock() {
@@ -53,8 +53,8 @@ export function JournalMock() {
             {/* Area fill */}
             <defs>
               <linearGradient id="equityGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="rgb(37,99,235)" stopOpacity="0.2" />
-                <stop offset="100%" stopColor="rgb(37,99,235)" stopOpacity="0" />
+                <stop offset="0%" stopColor="#1DA1C4" stopOpacity="0.2" />
+                <stop offset="100%" stopColor="#1DA1C4" stopOpacity="0" />
               </linearGradient>
             </defs>
             <path
@@ -65,7 +65,7 @@ export function JournalMock() {
             <path
               d="M0,50 L20,48 L40,42 L60,44 L80,38 L100,35 L120,40 L140,32 L160,28 L180,30 L200,22 L220,18 L240,20 L260,14 L280,10 L300,8"
               fill="none"
-              stroke="rgb(37,99,235)"
+              stroke="#1DA1C4"
               strokeWidth="1.5"
               strokeLinecap="round"
               strokeLinejoin="round"

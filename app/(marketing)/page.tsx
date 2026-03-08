@@ -8,10 +8,10 @@ const LandingPageClient = dynamic(
 
 export const metadata: Metadata = {
   title: {
-    absolute: 'Crypto Analytix — Your AI-Powered Trading Edge',
+    absolute: 'Crypto Analytix — AI-Powered Crypto Intelligence for Real Traders',
   },
   description:
-    'Institutional-grade market analysis, personalized trade coaching, and a platform that learns how you trade. Built for stocks, forex, crypto, and futures.',
+    'The crypto intelligence platform built for TradFi traders. Pelican AI translates funding rates, on-chain data, and derivatives into the language you already know.',
   alternates: {
     canonical: '/',
   },
@@ -22,15 +22,9 @@ const organizationJsonLd = {
   '@type': 'Organization',
   name: 'Crypto Analytix',
   url: 'https://cryptoanalytix.com',
-  logo: 'https://cryptoanalytix.com/ca-logo.svg',
   description:
-    'AI-powered trading intelligence platform for traders of all levels.',
-  foundingDate: '2025',
-  contactPoint: {
-    '@type': 'ContactPoint',
-    email: 'support@cryptoanalytix.com',
-    contactType: 'customer support',
-  },
+    'AI-powered crypto intelligence platform for traditional finance traders.',
+  foundingDate: '2026',
 };
 
 const productJsonLd = {
@@ -40,11 +34,11 @@ const productJsonLd = {
   applicationCategory: 'FinanceApplication',
   operatingSystem: 'Web',
   description:
-    'AI-powered trading platform with real-time market analysis, trade journaling, AI coaching, and institutional-grade intelligence.',
+    'AI-powered crypto intelligence platform with Pelican AI, analyst signal feeds, education modules, and exchange integration for TradFi traders entering crypto.',
   offers: {
     '@type': 'AggregateOffer',
-    lowPrice: '29',
-    highPrice: '249',
+    lowPrice: '0',
+    highPrice: '99',
     priceCurrency: 'USD',
     offerCount: 3,
   },

@@ -2,15 +2,11 @@
 
 import {
   ChatCircle,
-  Sun,
-  Crosshair,
-  Notebook,
-  SquaresFour,
+  ArrowsLeftRight,
   ChartLineUp,
-  CalendarCheck,
-  Strategy,
+  Lightning,
+  CalendarBlank,
   GraduationCap,
-  ArrowsClockwise,
 } from '@phosphor-icons/react'
 import { ScrollReveal } from '@/components/landing/scroll-reveal'
 import { Section } from '@/components/landing/section'
@@ -18,53 +14,39 @@ import { Section } from '@/components/landing/section'
 const features = [
   {
     icon: ChatCircle,
-    title: 'AI Chat',
-    description: 'Ask any market question in plain English. Live data and your trade history, one conversation.',
+    title: 'Pelican AI Chat',
+    description:
+      'Ask anything about crypto. Pelican responds in the language of a futures trader, not a crypto bro. Funding rates? Think repo rates. Liquidation cascades? Think short squeezes on ES.',
   },
   {
-    icon: Sun,
-    title: 'Morning Briefings',
-    description: 'Personalized daily briefing with overnight moves, your positions, and today\'s events.',
-  },
-  {
-    icon: Crosshair,
-    title: 'Positions',
-    description: 'Monitor all open positions with real-time P&L, session indicators, and one-click AI scanning.',
-  },
-  {
-    icon: Notebook,
-    title: 'Trade Journal',
-    description: 'Six analytics views, automatic P&L, and AI grading. A journal you\'ll actually keep.',
-  },
-  {
-    icon: SquaresFour,
-    title: 'Heatmap',
-    description: 'Real-time heatmap across stocks, forex, and crypto. Click any tile for instant analysis.',
+    icon: ArrowsLeftRight,
+    title: 'Cross-Asset Translation',
+    description:
+      'ForexAnalytix analysts publish DXY, yield curve, and risk sentiment analysis. Pelican auto-translates every macro call into crypto implications for your portfolio.',
   },
   {
     icon: ChartLineUp,
-    title: 'Correlations',
-    description: 'See how assets move together. Detect divergences. Understand portfolio risk.',
+    title: 'Portfolio Dashboard',
+    description:
+      'Connect your exchange via SnapTrade. See positions, P&L, funding costs, correlation to BTC, and Pelican\u2019s AI analysis on every holding \u2014 all in one view.',
   },
   {
-    icon: CalendarCheck,
-    title: 'Earnings Calendar',
-    description: 'Upcoming earnings with AI analysis. Never get blindsided by a report again.',
+    icon: Lightning,
+    title: 'Signal Intelligence',
+    description:
+      'Analyst calls, Crypto Twitter translations, whale wallet movements, and macro translations \u2014 all filtered through Pelican\u2019s AI to highlight what matters for YOUR positions.',
   },
   {
-    icon: Strategy,
-    title: 'Playbook Lab',
-    description: 'Document your setups with rules and checklists. Track win rate per playbook.',
+    icon: CalendarBlank,
+    title: 'Crypto Calendar',
+    description:
+      'Token unlocks, governance votes, options expiries, FOMC meetings \u2014 each event mapped to potential crypto impact with Pelican\u2019s pre-analysis.',
   },
   {
     icon: GraduationCap,
-    title: 'Learning Mode',
-    description: 'Toggle on to highlight trading terms. Click any term for an instant explanation.',
-  },
-  {
-    icon: ArrowsClockwise,
-    title: 'Trade Replay',
-    description: 'Replay any closed trade tick-by-tick. See what happened and what you could improve.',
+    title: 'TradFi Bridge Education',
+    description:
+      '7 modules that explain every crypto concept using the TradFi analogs you already know. Perpetual swaps = auto-rolling futures. Custody = being your own DTCC.',
   },
 ]
 
@@ -77,7 +59,7 @@ export function FeatureGrid() {
             The Full Platform
           </h2>
           <p className="text-slate-500 text-lg max-w-2xl mx-auto">
-            Everything you need, nothing you don&apos;t. All included in every plan.
+            Everything a TradFi trader needs to cross over into crypto with confidence.
           </p>
         </div>
       </ScrollReveal>
@@ -89,7 +71,7 @@ export function FeatureGrid() {
             <ScrollReveal key={i} delay={i * 0.05}>
               <div className="p-5 rounded-xl bg-white border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
                 <Icon
-                  className="h-5 w-5 text-blue-600 mb-3"
+                  className="h-5 w-5 text-[#1DA1C4] mb-3"
                   weight="duotone"
                 />
                 <h3 className="text-sm font-semibold text-slate-900 mb-1">
