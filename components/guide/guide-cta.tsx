@@ -1,6 +1,11 @@
+'use client'
+
 import Link from "next/link"
+import { usePelicanPanelContext } from '@/providers/pelican-panel-provider'
 
 export function GuideCTA() {
+  const { openWithPrompt } = usePelicanPanelContext()
+
   return (
     <div className="mt-20 pt-12 border-t border-[var(--border-subtle)] text-center">
       <h3 className="text-xl font-bold text-[var(--text-primary)]">Ready to get started?</h3>
@@ -14,12 +19,12 @@ export function GuideCTA() {
         >
           Go to Daily Brief
         </Link>
-        <Link
-          href="/chat"
-          className="bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-[var(--text-primary)] px-6 py-3 rounded-lg font-medium hover:bg-[var(--bg-elevated)] transition-colors"
+        <button
+          onClick={() => openWithPrompt(null, { visibleMessage: 'Ask Pelican a question', fullPrompt: '[GENERAL]\nThe user wants to start a conversation with Pelican AI. Greet them and ask how you can help with crypto analysis.' }, null)}
+          className="bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-[var(--text-primary)] px-6 py-3 rounded-lg font-medium hover:bg-[var(--bg-elevated)] transition-colors cursor-pointer"
         >
           Start a Chat
-        </Link>
+        </button>
         <Link
           href="/journal"
           className="bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-[var(--text-primary)] px-6 py-3 rounded-lg font-medium hover:bg-[var(--bg-elevated)] transition-colors"

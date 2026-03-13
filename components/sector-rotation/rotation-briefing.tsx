@@ -2,9 +2,11 @@
 
 import { Bird, ArrowRight } from '@phosphor-icons/react'
 import { MOCK_ROTATION_BRIEFING, SECTOR_STATUS_CONFIG, formatCompact } from '@/lib/crypto-mock-data'
-import Link from 'next/link'
+import { usePelicanPanelContext } from '@/providers/pelican-panel-provider'
 
 export function RotationBriefing() {
+  const { openWithPrompt } = usePelicanPanelContext()
+
   return (
     <div className="rounded-xl border p-5 sticky top-6"
       style={{
@@ -49,11 +51,14 @@ export function RotationBriefing() {
       </div>
 
       {/* Ask Pelican CTA */}
-      <Link href="/chat?prompt=Which%20crypto%20narrative%20should%20I%20position%20in%20this%20week%3F%20Give%20me%20specific%20tokens%20and%20entry%20levels."
-        className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-white text-[13px] font-medium transition-all hover:brightness-110 w-full"
+      <button onClick={() => openWithPrompt(null, {
+          visibleMessage: 'What crypto narrative should I position in this week?',
+          fullPrompt: `[SECTOR ROTATION]\nHeadline: ${MOCK_ROTATION_BRIEFING.headline}\nCapital Flows: ${MOCK_ROTATION_BRIEFING.flows.map(f => `${f.from} -> ${f.to} (${formatCompact(f.amount)})`).join(', ')}\n\nWhich crypto narrative should I position in this week? Give me specific tokens and entry levels.`,
+        }, null)}
+        className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-white text-[13px] font-medium transition-all hover:brightness-110 w-full cursor-pointer"
         style={{ background: 'linear-gradient(135deg, #1A6FB5, #25BFDF)' }}>
         Ask Pelican: What to position in?
-      </Link>
+      </button>
     </div>
   )
 }

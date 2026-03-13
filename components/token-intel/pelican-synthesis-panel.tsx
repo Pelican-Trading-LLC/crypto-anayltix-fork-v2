@@ -1,12 +1,13 @@
 'use client'
 
-import { Bird, ArrowRight, Check, CircleNotch } from '@phosphor-icons/react'
+import { Bird, ArrowRight, Check, CircleNotch, WarningCircle } from '@phosphor-icons/react'
 import { TokenIntelData } from '@/lib/crypto-mock-data'
-import Link from 'next/link'
+import { usePelicanPanelContext } from '@/providers/pelican-panel-provider'
 
 interface Props {
   data: TokenIntelData | null
   loading?: boolean
+  noDataSymbol?: string | null
 }
 
 const VERDICT_STYLES: Record<string, { bg: string; text: string; border: string }> = {
@@ -16,7 +17,9 @@ const VERDICT_STYLES: Record<string, { bg: string; text: string; border: string 
   CAUTION: { bg: 'bg-amber-500/10', text: 'text-amber-500', border: 'border-amber-500/20' },
 }
 
-export function PelicanSynthesisPanel({ data, loading }: Props) {
+export function PelicanSynthesisPanel({ data, loading, noDataSymbol }: Props) {
+  const { openWithPrompt } = usePelicanPanelContext()
+
   if (loading) {
     return (
       <div className="rounded-xl border p-6 h-full flex flex-col items-center justify-center gap-3"
@@ -28,6 +31,32 @@ export function PelicanSynthesisPanel({ data, loading }: Props) {
             <span key={s} className="text-[10px] text-muted-foreground/50">{i < 3 ? '\u2713' : '...'} {s}</span>
           ))}
         </div>
+      </div>
+    )
+  }
+
+  if (noDataSymbol) {
+    return (
+      <div className="rounded-xl border p-6 h-full flex flex-col items-center justify-center"
+        style={{ background: 'rgba(239,68,68,0.02)', borderColor: 'rgba(239,68,68,0.1)' }}>
+        <WarningCircle size={48} weight="thin" className="text-amber-500/40 mb-3" />
+        <span className="text-[14px] text-muted-foreground mb-1">No analysis available for {noDataSymbol}</span>
+        <span className="text-[12px] text-muted-foreground/60 mb-4">Data sources did not return results for this token.</span>
+        <button
+          onClick={() => openWithPrompt(
+            noDataSymbol,
+            {
+              visibleMessage: `What can you tell me about ${noDataSymbol}?`,
+              fullPrompt: `[TOKEN INQUIRY]\nSymbol: ${noDataSymbol}\nContext: User searched for this token on Token Intelligence but no data was available from our feeds. Provide whatever analysis you can based on your knowledge.`
+            },
+            null
+          )}
+          className="flex items-center gap-2 px-4 py-2 rounded-lg text-white text-[13px] font-medium transition-all hover:brightness-110 cursor-pointer"
+          style={{ background: 'linear-gradient(135deg, #1A6FB5, #25BFDF)', boxShadow: '0 2px 8px rgba(29,161,196,0.2)' }}
+        >
+          <Bird size={14} weight="fill" />
+          Ask Pelican about {noDataSymbol}
+        </button>
       </div>
     )
   }
@@ -98,12 +127,21 @@ export function PelicanSynthesisPanel({ data, loading }: Props) {
         </div>
       </details>
 
-      {/* Ask Pelican Follow-up */}
-      <Link href={`/chat?prompt=${encodeURIComponent(`Deep dive on ${data.symbol} — break down the risk/reward at current levels and give me specific entry, target, and stop.`)}`}
-        className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-white text-[13px] font-medium transition-all hover:brightness-110"
-        style={{ background: 'linear-gradient(135deg, #1A6FB5, #25BFDF)', boxShadow: '0 2px 8px rgba(29,161,196,0.2)' }}>
+      {/* Ask Pelican Follow-up — opens pop-out panel */}
+      <button
+        onClick={() => openWithPrompt(
+          data.symbol,
+          {
+            visibleMessage: `Deep dive on ${data.symbol}`,
+            fullPrompt: `[TOKEN ANALYSIS]\nSymbol: ${data.symbol}\nName: ${data.name}\nPrice: $${data.price}\n24h Change: ${data.price_change_24h}%\n7d Change: ${data.price_change_7d}%\n30d Change: ${data.price_change_30d}%\nFunding Rate: ${(data.funding_rate * 100).toFixed(4)}%\nOpen Interest Change 24h: ${data.oi_change_24h}%\nLong/Short Ratio: ${data.long_short_ratio}\nRisk Score: ${data.risk_score}/10\nPelican Verdict: ${data.pelican_verdict}\n\nProvide a deep-dive trade setup: entry zones, targets, stops, position sizing guidance, and key risks to monitor. Explain derivatives concepts using TradFi analogs for a trader coming from futures/forex.`
+          },
+          null
+        )}
+        className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-white text-[13px] font-medium transition-all hover:brightness-110 cursor-pointer"
+        style={{ background: 'linear-gradient(135deg, #1A6FB5, #25BFDF)', boxShadow: '0 2px 8px rgba(29,161,196,0.2)' }}
+      >
         Ask Pelican for trade setup <ArrowRight size={14} />
-      </Link>
+      </button>
     </div>
   )
 }

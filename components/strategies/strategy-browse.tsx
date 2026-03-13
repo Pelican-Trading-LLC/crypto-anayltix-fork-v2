@@ -23,7 +23,7 @@ export function StrategyBrowse() {
       <nav className="sticky top-0 z-40 border-b border-[var(--border-subtle)] bg-[var(--bg-surface)]/90 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Link href="/chat" className="flex items-center gap-2 group transition-opacity hover:opacity-80">
+            <Link href="/dashboard" className="flex items-center gap-2 group transition-opacity hover:opacity-80">
               <Image src="/ca-logo.svg" alt="Pelican AI" width={32} height={32} className="w-8 h-8 object-contain" />
               <span className="text-sm font-semibold text-[var(--text-primary)]">Pelican AI</span>
             </Link>

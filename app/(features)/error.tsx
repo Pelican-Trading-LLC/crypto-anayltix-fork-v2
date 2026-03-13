@@ -35,10 +35,10 @@ export default function FeatureError({
           Try again
         </button>
         <button
-          onClick={() => router.push('/chat')}
+          onClick={() => router.push('/dashboard')}
           className="px-4 py-2 border border-[var(--border-default)] hover:bg-[var(--bg-elevated)] text-[var(--text-primary)] rounded-lg transition-colors text-sm font-medium"
         >
-          Go to Chat
+          Go to Dashboard
         </button>
       </div>
     </div>

@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react'
 import { Bird, Eye, Lightning, TrendUp, Clock, ChartLine, ArrowsLeftRight, Circle } from '@phosphor-icons/react'
 import { MOCK_ALERTS, ALERT_CATEGORY_CONFIG, AlertCategory } from '@/lib/crypto-mock-data'
 import Link from 'next/link'
+import { usePelicanPanelContext } from '@/providers/pelican-panel-provider'
 
 const SEVERITY_STYLES = {
   high: 'bg-red-500/10 text-red-500 border-red-500/20',
@@ -23,6 +24,7 @@ const CATEGORY_ICONS: Record<string, React.ReactNode> = {
 const FILTERS = ['All', 'onchain_anomaly', 'derivatives_warning', 'smart_money', 'unlock_vesting', 'portfolio_relative', 'cross_asset'] as const
 
 export default function AlertsPage() {
+  const { openWithPrompt } = usePelicanPanelContext()
   const [filter, setFilter] = useState<string>('All')
 
   const filtered = useMemo(() => {
@@ -97,10 +99,13 @@ export default function AlertsPage() {
                     </Link>
                   ))}
                 </div>
-                <Link href={`/chat?prompt=${encodeURIComponent(`Analyze this alert: ${alert.title}. What should I do about my positions?`)}`}
-                  className="flex items-center gap-1 text-[11px] text-[#1DA1C4] hover:underline">
+                <button onClick={() => openWithPrompt(alert.affected_assets[0] || null, {
+                    visibleMessage: `Analyze this alert: ${alert.title}`,
+                    fullPrompt: `[ALERT ANALYSIS]\nAlert: ${alert.title}\nCategory: ${alert.category}\nSeverity: ${alert.severity}\nAffected Assets: ${alert.affected_assets.join(', ')}\nDetails: ${alert.body}\n\nAnalyze this alert. What should I do about my positions?`,
+                  }, null)}
+                  className="flex items-center gap-1 text-[11px] text-[#1DA1C4] hover:underline cursor-pointer">
                   <Bird size={12} /> Ask Pelican
-                </Link>
+                </button>
               </div>
             </div>
           )

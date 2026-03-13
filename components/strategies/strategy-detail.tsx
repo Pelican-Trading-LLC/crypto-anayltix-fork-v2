@@ -3,7 +3,6 @@
 import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { useRouter } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
 import {
   Eye, ChartBar, ChatCircle, Star,
@@ -18,6 +17,7 @@ import { StrategyStats } from "./strategy-stats"
 import { BacktestChart } from "./backtest-chart"
 import { StrategyReviews } from "./strategy-reviews"
 import { ShareButton } from "./share-button"
+import { usePelicanPanelContext } from '@/providers/pelican-panel-provider'
 import type { Playbook } from "@/types/trading"
 
 type TabKey = "overview" | "stats" | "reviews"
@@ -76,7 +76,7 @@ export function StrategyDetail({ slug }: StrategyDetailProps) {
       <nav className="sticky top-0 z-40 border-b border-[var(--border-subtle)] bg-[var(--bg-surface)]/90 backdrop-blur-xl">
         <div className="max-w-4xl mx-auto px-6 h-14 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Link href="/chat" className="flex items-center gap-2 transition-opacity hover:opacity-80">
+            <Link href="/dashboard" className="flex items-center gap-2 transition-opacity hover:opacity-80">
               <Image src="/ca-logo.svg" alt="Pelican AI" width={32} height={32} className="w-8 h-8 object-contain" />
             </Link>
             <span className="text-[var(--text-muted)]">/</span>
@@ -201,11 +201,13 @@ export function StrategyDetail({ slug }: StrategyDetailProps) {
 }
 
 function AskPelicanButton({ strategy }: { strategy: Playbook }) {
-  const router = useRouter()
+  const { openWithPrompt } = usePelicanPanelContext()
 
   const handleAsk = () => {
-    const prompt = `Tell me everything about the ${strategy.name} strategy. When does it work best? What are the common failure modes and how do I avoid them? How should I size positions and manage risk with this setup? What market conditions make it most reliable? Give me real examples.`
-    router.push(`/chat?prefill=${encodeURIComponent(prompt)}`)
+    openWithPrompt(null, {
+      visibleMessage: `Tell me about the ${strategy.name} strategy`,
+      fullPrompt: `[STRATEGY ANALYSIS]\nStrategy: ${strategy.name}\nCategory: ${strategy.category || 'N/A'}\nDifficulty: ${strategy.difficulty || 'N/A'}\nDescription: ${strategy.description || 'N/A'}\nEntry Rules: ${strategy.entry_rules || 'N/A'}\nExit Rules: ${strategy.exit_rules || 'N/A'}\nRisk Rules: ${strategy.risk_rules || 'N/A'}\n\nTell me everything about the ${strategy.name} strategy. When does it work best? What are the common failure modes and how do I avoid them? How should I size positions and manage risk with this setup? What market conditions make it most reliable? Give me real examples.`,
+    }, 'playbooks')
   }
 
   return (

@@ -2,7 +2,7 @@
 
 import { MOCK_EDUCATION } from '@/lib/crypto-mock-data'
 import { Clock } from '@phosphor-icons/react'
-import { useRouter } from 'next/navigation'
+import { usePelicanPanelContext } from '@/providers/pelican-panel-provider'
 
 const categoryColors: Record<string, string> = {
   fundamentals: '#1DA1C4',
@@ -12,7 +12,7 @@ const categoryColors: Record<string, string> = {
 }
 
 export default function LearnPage() {
-  const router = useRouter()
+  const { openWithPrompt } = usePelicanPanelContext()
 
   return (
     <div className="p-6 max-w-[1200px] mx-auto">
@@ -37,9 +37,10 @@ export default function LearnPage() {
           <button
             key={module.slug}
             onClick={() =>
-              router.push(
-                `/chat?prompt=${encodeURIComponent(`Teach me about ${module.title}. I'm a TradFi trader.`)}`
-              )
+              openWithPrompt(null, {
+                visibleMessage: `Teach me about ${module.title}`,
+                fullPrompt: `[EDUCATION]\nTeach me about ${module.title}. I'm a TradFi trader entering crypto. Explain using TradFi analogs where possible. Category: ${module.category}.`,
+              }, null)
             }
             className="text-left rounded-xl border border-[rgba(255,255,255,0.06)] p-5 transition-all duration-150 hover:border-[rgba(255,255,255,0.15)] cursor-pointer"
             style={{

@@ -3,7 +3,7 @@
 import { Bird, Shield, Warning, Parachute, Check, X, Wallet } from '@phosphor-icons/react'
 import { WalletDNAData, formatCompact, formatUSD, ASSET_COLORS } from '@/lib/crypto-mock-data'
 import dynamic from 'next/dynamic'
-import Link from 'next/link'
+import { usePelicanPanelContext } from '@/providers/pelican-panel-provider'
 
 const RadarChart = dynamic(() => import('recharts').then(m => m.RadarChart), { ssr: false })
 const PolarGrid = dynamic(() => import('recharts').then(m => m.PolarGrid), { ssr: false })
@@ -14,6 +14,8 @@ const ResponsiveContainer = dynamic(() => import('recharts').then(m => m.Respons
 interface Props { data: WalletDNAData }
 
 export function WalletAnalysis({ data }: Props) {
+  const { openWithPrompt } = usePelicanPanelContext()
+
   const statusColors: Record<string, { bg: string; text: string }> = {
     likely_qualified: { bg: 'bg-green-500/10', text: 'text-green-500' },
     partially_qualified: { bg: 'bg-amber-500/10', text: 'text-amber-500' },
@@ -171,10 +173,13 @@ export function WalletAnalysis({ data }: Props) {
           <span className="text-[12px] font-semibold text-[#1DA1C4] uppercase tracking-wider">PELICAN DEEP DIVE</span>
         </div>
         <p className="text-[14px] leading-[1.75] text-foreground/90 mb-4">{data.pelican_narrative}</p>
-        <Link href={`/chat?prompt=${encodeURIComponent(`Analyze the wallet ${data.address} — what should I watch for and is this a wallet worth following?`)}`}
-          className="inline-flex items-center gap-2 text-[13px] text-[#1DA1C4] font-medium hover:underline">
+        <button onClick={() => openWithPrompt(null, {
+            visibleMessage: `Analyze wallet ${data.address}`,
+            fullPrompt: `[WALLET ANALYSIS]\nAddress: ${data.address}\nArchetype: ${data.archetype}\nLabel: ${data.label || 'Unknown'}\nAvg Hold: ${data.avg_hold_days} days\nSharpe: ${data.sharpe_ratio}\nWin Rate: ${data.win_rate}%\nMEV Losses (90d): $${data.mev_losses.total_90d}\nChains Active: ${data.chains_active}\nTotal Transactions: ${data.total_transactions}\n\nAnalyze the wallet ${data.address} — what should I watch for and is this a wallet worth following?`,
+          }, null)}
+          className="inline-flex items-center gap-2 text-[13px] text-[#1DA1C4] font-medium hover:underline cursor-pointer">
           Ask Pelican about this wallet →
-        </Link>
+        </button>
       </div>
     </div>
   )

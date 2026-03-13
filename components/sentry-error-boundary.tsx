@@ -41,8 +41,8 @@ function ErrorFallback({ error, reset }: { error: unknown; reset: () => void }) 
         </p>
         <div className="flex gap-4 justify-center">
           <Button onClick={reset}>Try Again</Button>
-          <Button variant="outline" onClick={() => window.location.href = '/chat'}>
-            New Chat
+          <Button variant="outline" onClick={() => window.location.href = '/dashboard'}>
+            Go to Dashboard
           </Button>
         </div>
       </div>

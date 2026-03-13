@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { MOCK_CALENDAR, EVENT_COLORS, ASSET_COLORS } from '@/lib/crypto-mock-data'
 import { Bird } from '@phosphor-icons/react'
+import { usePelicanPanelContext } from '@/providers/pelican-panel-provider'
 
 const IMPACT_COLORS: Record<string, string> = {
   high: '#EF4444',
@@ -37,6 +38,7 @@ function getEventsForDay(day: number) {
 }
 
 export default function CalendarPage() {
+  const { openWithPrompt } = usePelicanPanelContext()
   const [selectedDate, setSelectedDate] = useState<number | null>(null)
 
   const filteredEvents = selectedDate
@@ -272,13 +274,16 @@ export default function CalendarPage() {
                 </p>
 
                 {/* Ask Pelican button */}
-                <a
-                  href={`/chat?prompt=${encodeURIComponent(`Tell me about ${event.title}`)}`}
-                  className="inline-flex items-center gap-1.5 text-[12px] font-medium text-[var(--accent-primary,#1DA1C4)] hover:text-[var(--accent-hover,#25BFDF)] transition-colors"
+                <button
+                  onClick={() => openWithPrompt(event.asset, {
+                    visibleMessage: `Tell me about ${event.title}`,
+                    fullPrompt: `[CALENDAR EVENT]\nEvent: ${event.title}\nType: ${event.type}\nDate: ${event.date}\nAsset: ${event.asset}\nImpact: ${event.impact}\nDescription: ${event.description}\n\nTell me about this event and how it might impact ${event.asset} and the broader crypto market.`,
+                  }, 'calendar')}
+                  className="inline-flex items-center gap-1.5 text-[12px] font-medium text-[var(--accent-primary,#1DA1C4)] hover:text-[var(--accent-hover,#25BFDF)] transition-colors cursor-pointer"
                 >
                   <Bird size={16} weight="bold" />
                   Ask Pelican about this event
-                </a>
+                </button>
               </div>
             ))
           )}

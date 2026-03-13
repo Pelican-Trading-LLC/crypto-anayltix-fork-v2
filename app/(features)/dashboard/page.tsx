@@ -1,13 +1,13 @@
 'use client'
 
 import { useMemo } from 'react'
-import Link from 'next/link'
 import { ChatCircle, CaretUp, CaretDown, TrendUp, Bell, Heart } from '@phosphor-icons/react'
 import { MOCK_POSITIONS, MOCK_SMART_MONEY, ASSET_COLORS, formatUSD, formatPnl, formatPct, formatCompact } from '@/lib/crypto-mock-data'
 import { useLivePrices, useLiveGlobalData } from '@/hooks/use-crypto-data'
 import { mergePositions } from '@/lib/use-live-or-mock'
 import { ApiError } from '@/components/ui/api-error'
 import { DataFreshness } from '@/components/ui/data-freshness'
+import { usePelicanPanelContext } from '@/providers/pelican-panel-provider'
 import dynamic from 'next/dynamic'
 
 const AreaChart = dynamic(() => import('recharts').then(m => m.AreaChart), { ssr: false })
@@ -112,7 +112,7 @@ function PortfolioChart({ positions }: { positions: typeof MOCK_POSITIONS }) {
 
 /* ─── Market Pulse ──────────────────────────────────────────────── */
 
-function MarketPulse({ btcDominance }: { btcDominance: number }) {
+function MarketPulse({ btcDominance, onAskPelican }: { btcDominance: number; onAskPelican: () => void }) {
   return (
     <div className="rounded-xl border bg-card p-5 h-full flex flex-col">
       <div className="flex items-center justify-between mb-3">
@@ -130,9 +130,9 @@ function MarketPulse({ btcDominance }: { btcDominance: number }) {
           </button>
         ))}
       </div>
-      <Link href="/chat?prompt=Give+me+a+full+crypto+market+analysis" className="text-[#1DA1C4] text-sm font-medium mt-3 hover:underline">
+      <button onClick={onAskPelican} className="text-[#1DA1C4] text-sm font-medium mt-3 hover:underline cursor-pointer">
         Read Full Analysis →
-      </Link>
+      </button>
     </div>
   )
 }
@@ -295,9 +295,10 @@ function SmartMoneyFeed() {
 /* ─── Dashboard Page ────────────────────────────────────────────── */
 
 export default function DashboardPage() {
-  const positionSymbols = MOCK_POSITIONS.map(p => p.asset)
+  const { openWithPrompt } = usePelicanPanelContext()
+  const positionSymbols = useMemo(() => MOCK_POSITIONS.map(p => p.asset), [])
   const { data: livePrices, error: pricesError, isLoading: pricesLoading, mutate: retryPrices } = useLivePrices(positionSymbols)
-  const { data: globalData, error: globalError } = useLiveGlobalData()
+  const { data: globalData } = useLiveGlobalData()
 
   // Merge live prices into mock positions
   const positions = mergePositions(livePrices)
@@ -328,7 +329,7 @@ export default function DashboardPage() {
           <PortfolioChart positions={positions} />
         </div>
         <div className="lg:col-span-1">
-          <MarketPulse btcDominance={btcDom} />
+          <MarketPulse btcDominance={btcDom} onAskPelican={() => openWithPrompt(null, { visibleMessage: 'Give me a full crypto market analysis', fullPrompt: '[MARKET ANALYSIS]\nGive me a comprehensive crypto market analysis covering BTC dominance, sector rotation, smart money flows, and upcoming catalysts.' }, null)} />
         </div>
       </div>
 
@@ -342,13 +343,14 @@ export default function DashboardPage() {
       <SmartMoneyFeed />
 
       {/* Ask Pelican FAB */}
-      <Link href="/chat" className="fixed bottom-6 right-6 z-50">
-        <button className="flex items-center gap-2 px-5 py-3 rounded-full text-white text-sm font-medium shadow-lg hover:shadow-xl transition-all hover:scale-[1.02]"
+      <div className="fixed bottom-6 right-6 z-50">
+        <button onClick={() => openWithPrompt(null, { visibleMessage: 'Analyze my portfolio', fullPrompt: '[PORTFOLIO ANALYSIS]\nAnalyze my current crypto portfolio. Summarize positions, risk exposure, and any actionable insights.' }, null)}
+          className="flex items-center gap-2 px-5 py-3 rounded-full text-white text-sm font-medium shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] cursor-pointer"
           style={{ background: 'linear-gradient(135deg, #1A6FB5, #25BFDF)', boxShadow: '0 4px 20px rgba(29,161,196,0.3)' }}>
           <ChatCircle size={18} weight="fill" />
           Ask Pelican
         </button>
-      </Link>
+      </div>
     </div>
   )
 }
