@@ -22,30 +22,10 @@ import {
 
 // Market-specific default prompts (fallback when no personalization data)
 const MARKET_DEFAULT_PROMPTS: Record<string, string[]> = {
-  stocks: [
-    "What are the top gaining stocks today?",
-    "Analyze AAPL's technical setup",
-    "Why is the market down today?",
-  ],
-  forex: [
-    "Overview of the current forex session — major pairs and DXY",
-    "Which forex pair has the cleanest setup right now?",
-    "Any high-impact economic events today?",
-  ],
   crypto: [
     "Crypto market pulse — BTC dominance and major moves",
     "Scan the top altcoins for momentum setups",
     "What's driving crypto sentiment right now?",
-  ],
-  futures: [
-    "ES and NQ overnight action — key levels for today",
-    "What economic releases could impact futures today?",
-    "Futures market overview — ES, NQ, CL, GC",
-  ],
-  options: [
-    "What are the highest implied volatility plays today?",
-    "Analyze AAPL's options chain for this week",
-    "Find me an options setup with defined risk",
   ],
 }
 
@@ -75,7 +55,7 @@ export function SuggestedPrompts({ onSelect, disabled }: SuggestedPromptsProps) 
   const { openTrades, closedTrades } = useTrades()
   const { survey } = useTraderProfile()
   const { patterns: activePatterns } = useTradePatterns()
-  const primaryMarket = survey?.markets_traded?.[0] || 'stocks'
+  const primaryMarket = survey?.markets_traded?.[0] || 'crypto'
 
   const chips = useMemo((): SuggestedChip[] => {
     const result: SuggestedChip[] = []
@@ -165,51 +145,23 @@ export function SuggestedPrompts({ onSelect, disabled }: SuggestedPromptsProps) 
       })
     }
 
-    // Priority 5: Market-specific morning brief
-    const briefPrompts: Record<string, string> = {
-      stocks: openTrades.length > 0
-        ? `Morning brief focused on my positions: ${openTrades.map(t => t.ticker).join(', ')}. Key levels and what to watch today.`
-        : 'Give me a morning brief. What should I be watching today?',
-      forex: 'Forex session brief. DXY direction, major pair setups, and high-impact economic events today.',
-      crypto: 'Crypto market brief. BTC action, ETH/BTC ratio, altcoin moves, and funding rates.',
-      futures: 'Futures trading brief. ES and NQ overnight action, key levels, and economic events.',
-      options: openTrades.length > 0
-        ? `Morning brief focused on my positions: ${openTrades.map(t => t.ticker).join(', ')}. Key levels, IV changes, and what to watch today.`
-        : 'Options morning brief. High IV setups, earnings plays, and unusual activity today.',
-    }
+    // Priority 5: Morning brief
+    const briefPrompt = openTrades.length > 0
+      ? `Crypto morning brief focused on my positions: ${openTrades.map(t => t.ticker).join(', ')}. Key levels, on-chain activity, and what to watch today.`
+      : 'Crypto market brief. BTC action, ETH/BTC ratio, altcoin moves, and funding rates.'
 
     result.push({
       icon: Newspaper,
       label: 'Morning briefing',
-      prompt: briefPrompts[primaryMarket] || briefPrompts.stocks!,
+      prompt: briefPrompt,
       priority: 5,
     })
 
-    // Priority 5: Market-specific overview
-    const overviewPrompts: Record<string, { label: string; prompt: string }> = {
-      stocks: {
-        label: 'Market overview',
-        prompt: 'Quick market overview. How are indices, sectors, and key levels looking?',
-      },
-      forex: {
-        label: 'Session overview',
-        prompt: 'Overview of the current forex session. Major pair movements, DXY, and key levels.',
-      },
-      crypto: {
-        label: 'Market pulse',
-        prompt: 'Crypto market pulse. BTC dominance, major moves, and sentiment overview.',
-      },
-      futures: {
-        label: 'Futures overview',
-        prompt: 'Futures market overview. ES, NQ, CL, GC levels and overnight action.',
-      },
-      options: {
-        label: 'Options overview',
-        prompt: 'Options market overview. VIX levels, put/call ratios, and notable unusual activity.',
-      },
+    // Priority 5: Market overview
+    const overview = {
+      label: 'Market pulse',
+      prompt: 'Crypto market pulse. BTC dominance, major moves, and sentiment overview.',
     }
-
-    const overview = overviewPrompts[primaryMarket] || overviewPrompts.stocks!
     result.push({
       icon: ChartLineUp,
       label: overview.label,

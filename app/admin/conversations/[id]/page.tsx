@@ -100,7 +100,7 @@ function typeBadge(classification: string, source?: string) {
   switch (classification) {
     case 'action':
       return (
-        <Badge variant="outline" className="text-[10px] bg-purple-500/10 text-purple-400 border-purple-500/20">
+        <Badge variant="outline" className="text-[10px] bg-pink-500/10 text-pink-400 border-pink-500/20">
           ACTION{source ? ` / ${source}` : ''}
         </Badge>
       )

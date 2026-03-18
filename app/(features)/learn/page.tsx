@@ -6,7 +6,7 @@ import { usePelicanPanelContext } from '@/providers/pelican-panel-provider'
 
 const categoryColors: Record<string, string> = {
   fundamentals: '#1DA1C4',
-  derivatives: '#A78BFA',
+  derivatives: '#EC4899',
   risk: '#EF4444',
   strategy: '#22C55E',
 }

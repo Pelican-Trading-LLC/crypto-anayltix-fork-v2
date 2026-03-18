@@ -7,8 +7,14 @@ import { MOCK_ANALYST_POSTS, MOCK_CT_SIGNALS, MOCK_WALLET_SIGNALS, MOCK_MACRO_SI
 const FILTER_TABS = ['All', 'Analyst', 'CT', 'On-Chain', 'Macro'] as const
 type FilterType = typeof FILTER_TABS[number]
 
+type AnalystSignal = typeof MOCK_ANALYST_POSTS[number]
+type CTSignal = typeof MOCK_CT_SIGNALS[number]
+type WalletSignal = typeof MOCK_WALLET_SIGNALS[number]
+type MacroSignal = typeof MOCK_MACRO_SIGNALS[number]
+type Signal = AnalystSignal | CTSignal | WalletSignal | MacroSignal
+
 const borderColors: Record<string, string> = {
-  analyst: '#1DA1C4', ct: '#A78BFA', onchain: '#22C55E', macro: '#F59E0B',
+  analyst: '#1DA1C4', ct: '#EC4899', onchain: '#22C55E', macro: '#F59E0B',
 }
 
 export default function SignalsPage() {
@@ -52,8 +58,7 @@ export default function SignalsPage() {
 
       {/* Signal cards */}
       <div className="space-y-3">
-        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-        {filtered.map((signal: any) => (
+        {filtered.map((signal: Signal) => (
           <div key={signal.id} className="rounded-xl border bg-card p-4 relative overflow-hidden"
             style={{ borderLeftWidth: 3, borderLeftColor: borderColors[signal.type] || '#666' }}>
 
@@ -135,7 +140,7 @@ export default function SignalsPage() {
                 <div className="flex items-center gap-3">
                   <span className={`w-2 h-2 rounded-full ${signal.action === 'Bought' ? 'bg-green-500' : 'bg-red-500'}`} />
                   <span className="text-[13px] font-medium">{signal.wallet_label}</span>
-                  <span className="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-purple-500/10 text-purple-500">{signal.archetype}</span>
+                  <span className="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-pink-500/10 text-pink-500">{'archetype' in signal ? signal.archetype : ''}</span>
                   <span className="text-[13px] text-muted-foreground">{signal.action}</span>
                   <span className="text-[13px] font-semibold text-[#1DA1C4]">{signal.amount}</span>
                 </div>

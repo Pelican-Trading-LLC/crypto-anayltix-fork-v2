@@ -171,7 +171,7 @@ function TopMoversTable({ positions, loading }: { positions: typeof MOCK_POSITIO
                 'Momentum Breakout': 'bg-[#1DA1C4]/10 text-[#1DA1C4] border-[#1DA1C4]/20',
                 'Distribution': 'bg-red-500/10 text-red-500 border-red-500/20',
                 'Whale Alert': 'bg-amber-500/10 text-amber-500 border-amber-500/20',
-                'Smart Money Inflow': 'bg-purple-500/10 text-purple-500 border-purple-500/20',
+                'Smart Money Inflow': 'bg-pink-500/10 text-pink-500 border-pink-500/20',
               }
               return (
                 <tr key={p.asset} className="border-b border-[var(--border)] last:border-0 hover:bg-accent/5 cursor-pointer transition-colors"

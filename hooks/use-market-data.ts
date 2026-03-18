@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useCallback } from "react"
 import useSWR from "swr"
 
 export interface MarketIndex {
@@ -53,20 +53,14 @@ interface UseMarketDataOptions {
  * const { indices, vix, sectors, watchlist, isLoading, refresh } = useMarketData({
  *   refreshInterval: 60000,
  *   autoRefresh: true,
- *   watchlistSymbols: ['AAPL', 'TSLA', 'NVDA']
+ *   watchlistSymbols: ['BTC', 'ETH', 'SOL']
  * })
  * ```
- *
- * To add real data:
- * 1. Create API endpoint: /api/market-data
- * 2. Uncomment the useSWR fetcher below
- * 3. Remove placeholder data
- * 4. Add error handling as needed
  */
 export function useMarketData({
   refreshInterval = 60000,
   autoRefresh = false,
-  watchlistSymbols = ["AAPL", "TSLA", "NVDA", "SPY"],
+  watchlistSymbols = ["BTC", "ETH", "SOL", "AVAX"],
 }: UseMarketDataOptions = {}): MarketData & { refresh: () => void } {
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
 
@@ -88,17 +82,17 @@ export function useMarketData({
   // Placeholder data - fallback if API fails
   const placeholderData: MarketData = {
     indices: [
-      { symbol: "SPX", name: "S&P 500", price: null, change: null, changePercent: null },
-      { symbol: "IXIC", name: "Nasdaq", price: null, change: null, changePercent: null },
-      { symbol: "DJI", name: "Dow Jones", price: null, change: null, changePercent: null },
+      { symbol: "BTC", name: "Bitcoin", price: null, change: null, changePercent: null },
+      { symbol: "ETH", name: "Ethereum", price: null, change: null, changePercent: null },
+      { symbol: "SOL", name: "Solana", price: null, change: null, changePercent: null },
     ],
     vix: null,
     vixChange: null,
     sectors: [
-      { name: "Technology", changePercent: null },
-      { name: "Financials", changePercent: null },
-      { name: "Healthcare", changePercent: null },
-      { name: "Energy", changePercent: null },
+      { name: "DeFi", changePercent: null },
+      { name: "Layer 1", changePercent: null },
+      { name: "Layer 2", changePercent: null },
+      { name: "Gaming", changePercent: null },
     ],
     watchlist: watchlistSymbols.map((symbol) => ({
       symbol,
@@ -115,13 +109,7 @@ export function useMarketData({
     setLastUpdated(new Date())
   }, [mutate])
 
-  // Auto-refresh effect
-  useEffect(() => {
-    if (autoRefresh) {
-      const interval = setInterval(refresh, refreshInterval)
-      return () => clearInterval(interval)
-    }
-  }, [autoRefresh, refreshInterval, refresh])
+  // SWR handles auto-refresh via refreshInterval option above — no manual setInterval needed
 
   return {
     ...(data || placeholderData),

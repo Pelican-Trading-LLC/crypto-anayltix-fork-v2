@@ -268,7 +268,7 @@ export default function AdminFeaturesPage() {
                   </div>
                   <div className="h-6 rounded bg-muted overflow-hidden">
                     <div
-                      className="h-full rounded bg-purple-500/70 transition-all"
+                      className="h-full rounded bg-[var(--accent-primary)]/70 transition-all"
                       style={{ width: `${pct}%` }}
                     />
                   </div>

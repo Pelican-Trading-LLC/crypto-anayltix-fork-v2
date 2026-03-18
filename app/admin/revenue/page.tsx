@@ -270,8 +270,8 @@ export default function AdminRevenuePage() {
         </Card>
         <Card>
           <CardContent className="flex items-center gap-3 py-4">
-            <div className="rounded-md bg-purple-500/10 p-2">
-              <DollarSign className="size-4 text-purple-500" />
+            <div className="rounded-md bg-[var(--accent-muted)] p-2">
+              <DollarSign className="size-4 text-[var(--accent-primary)]" />
             </div>
             <div>
               <p className="text-xs text-muted-foreground">ARPU</p>

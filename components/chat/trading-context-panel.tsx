@@ -76,48 +76,6 @@ interface MarketPanelConfig {
 }
 
 const MARKET_PANEL_CONFIGS: Record<string, MarketPanelConfig> = {
-  stocks: {
-    indices: [
-      { symbol: "SPX", name: "S&P 500", price: null, change: null, changePercent: null },
-      { symbol: "IXIC", name: "Nasdaq", price: null, change: null, changePercent: null },
-      { symbol: "DJI", name: "Dow Jones", price: null, change: null, changePercent: null },
-    ],
-    categories: [
-      { name: "Technology", changePercent: null },
-      { name: "Financials", changePercent: null },
-      { name: "Healthcare", changePercent: null },
-      { name: "Energy", changePercent: null },
-    ],
-    categoryLabel: "Sector Performance",
-    categoryHeatmapMap: {
-      Technology: "Information Technology",
-      Financials: "Financials",
-      Healthcare: "Health Care",
-      Energy: "Energy",
-    },
-    showVix: true,
-    volatilityLabel: "VIX",
-    volatilitySubLabel: "Fear Index",
-  },
-  forex: {
-    indices: [
-      { symbol: "C:EURUSD", name: "EUR/USD", price: null, change: null, changePercent: null },
-      { symbol: "C:GBPUSD", name: "GBP/USD", price: null, change: null, changePercent: null },
-      { symbol: "C:USDJPY", name: "USD/JPY", price: null, change: null, changePercent: null },
-      { symbol: "C:AUDUSD", name: "AUD/USD", price: null, change: null, changePercent: null },
-    ],
-    categories: [
-      { name: "EUR/CHF", changePercent: null },
-      { name: "GBP/JPY", changePercent: null },
-      { name: "NZD/USD", changePercent: null },
-      { name: "USD/CAD", changePercent: null },
-    ],
-    categoryLabel: "Minor Pairs",
-    categoryHeatmapMap: {},
-    showVix: false,
-    volatilityLabel: "",
-    volatilitySubLabel: "",
-  },
   crypto: {
     indices: [
       { symbol: "X:BTCUSD", name: "Bitcoin", price: null, change: null, changePercent: null },
@@ -125,9 +83,10 @@ const MARKET_PANEL_CONFIGS: Record<string, MarketPanelConfig> = {
       { symbol: "X:SOLUSD", name: "Solana", price: null, change: null, changePercent: null },
     ],
     categories: [
-      { name: "Layer 1", changePercent: null },
       { name: "DeFi", changePercent: null },
-      { name: "Meme", changePercent: null },
+      { name: "Layer 1", changePercent: null },
+      { name: "Layer 2", changePercent: null },
+      { name: "Gaming", changePercent: null },
     ],
     categoryLabel: "Categories",
     categoryHeatmapMap: {},
@@ -135,57 +94,10 @@ const MARKET_PANEL_CONFIGS: Record<string, MarketPanelConfig> = {
     volatilityLabel: "",
     volatilitySubLabel: "",
   },
-  // futures and options share stock indices + VIX since they reference equity markets
-  futures: {
-    indices: [
-      { symbol: "SPX", name: "S&P 500", price: null, change: null, changePercent: null },
-      { symbol: "IXIC", name: "Nasdaq", price: null, change: null, changePercent: null },
-      { symbol: "DJI", name: "Dow Jones", price: null, change: null, changePercent: null },
-    ],
-    categories: [
-      { name: "Technology", changePercent: null },
-      { name: "Financials", changePercent: null },
-      { name: "Healthcare", changePercent: null },
-      { name: "Energy", changePercent: null },
-    ],
-    categoryLabel: "Sector Performance",
-    categoryHeatmapMap: {
-      Technology: "Information Technology",
-      Financials: "Financials",
-      Healthcare: "Health Care",
-      Energy: "Energy",
-    },
-    showVix: true,
-    volatilityLabel: "VIX",
-    volatilitySubLabel: "Fear Index",
-  },
-  options: {
-    indices: [
-      { symbol: "SPX", name: "S&P 500", price: null, change: null, changePercent: null },
-      { symbol: "IXIC", name: "Nasdaq", price: null, change: null, changePercent: null },
-      { symbol: "DJI", name: "Dow Jones", price: null, change: null, changePercent: null },
-    ],
-    categories: [
-      { name: "Technology", changePercent: null },
-      { name: "Financials", changePercent: null },
-      { name: "Healthcare", changePercent: null },
-      { name: "Energy", changePercent: null },
-    ],
-    categoryLabel: "Sector Performance",
-    categoryHeatmapMap: {
-      Technology: "Information Technology",
-      Financials: "Financials",
-      Healthcare: "Health Care",
-      Energy: "Energy",
-    },
-    showVix: true,
-    volatilityLabel: "VIX",
-    volatilitySubLabel: "Fear Index",
-  },
 }
 
 function getMarketConfig(primaryMarket: string): MarketPanelConfig {
-  return (MARKET_PANEL_CONFIGS[primaryMarket] ?? MARKET_PANEL_CONFIGS.stocks) as MarketPanelConfig
+  return (MARKET_PANEL_CONFIGS[primaryMarket] ?? MARKET_PANEL_CONFIGS.crypto) as MarketPanelConfig
 }
 
 interface TradingContextPanelProps {

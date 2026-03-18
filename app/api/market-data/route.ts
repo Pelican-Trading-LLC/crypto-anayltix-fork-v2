@@ -8,34 +8,19 @@ const marketDataLimiter = createUserRateLimiter('market-data', 60, '1 m')
 
 const POLYGON_API_KEY = process.env.POLYGON_API_KEY
 
-// Polygon endpoints
-const INDICES_URL = `https://api.polygon.io/v3/snapshot/indices?ticker.any_of=I:SPX,I:COMP,I:DJI,I:VIX&apiKey=${POLYGON_API_KEY}`
-const STOCKS_URL = `https://api.polygon.io/v2/snapshot/locale/us/markets/stocks/tickers?tickers=XLK,XLF,XLV,XLE,AAPL,TSLA,NVDA,SPY&apiKey=${POLYGON_API_KEY}`
+// Polygon crypto endpoints
+const CRYPTO_URL = `https://api.polygon.io/v2/snapshot/locale/global/markets/crypto/tickers?tickers=X:BTCUSD,X:ETHUSD,X:SOLUSD,X:AVAXUSD&apiKey=${POLYGON_API_KEY}`
 
 // Polygon API response interfaces
-interface PolygonIndexSnapshot {
-  ticker: string
-  value?: number
-  session?: {
-    change?: number
-    change_percent?: number
-  }
-}
-
-interface PolygonIndicesResponse {
-  results?: PolygonIndexSnapshot[]
-  status?: string
-}
-
-interface PolygonStockSnapshot {
+interface PolygonCryptoSnapshot {
   ticker: string
   todaysChangePerc?: number
   lastTrade?: { p?: number }
   day?: { c?: number }
 }
 
-interface PolygonStocksResponse {
-  tickers?: PolygonStockSnapshot[]
+interface PolygonCryptoResponse {
+  tickers?: PolygonCryptoSnapshot[]
   status?: string
 }
 
@@ -78,135 +63,90 @@ export async function GET() {
     const { success } = await marketDataLimiter.limit(user.id)
     if (!success) return rateLimitResponse()
 
-    if (!POLYGON_API_KEY) {
-      return NextResponse.json({
-        indices: [
-          { symbol: "SPX", name: "S&P 500", price: null, change: null, changePercent: null },
-          { symbol: "IXIC", name: "Nasdaq", price: null, change: null, changePercent: null },
-          { symbol: "DJI", name: "Dow Jones", price: null, change: null, changePercent: null },
-        ],
-        vix: null,
-        vixChange: null,
-        sectors: [
-          { name: "Technology", changePercent: null },
-          { name: "Financials", changePercent: null },
-          { name: "Healthcare", changePercent: null },
-          { name: "Energy", changePercent: null },
-        ],
-        watchlist: [
-          { symbol: "AAPL", price: null, changePercent: null },
-          { symbol: "TSLA", price: null, changePercent: null },
-          { symbol: "NVDA", price: null, changePercent: null },
-          { symbol: "SPY", price: null, changePercent: null },
-        ],
-      })
+    const fallbackData: MarketDataResponse = {
+      indices: [
+        { symbol: "BTC", name: "Bitcoin", price: null, change: null, changePercent: null },
+        { symbol: "ETH", name: "Ethereum", price: null, change: null, changePercent: null },
+        { symbol: "SOL", name: "Solana", price: null, change: null, changePercent: null },
+      ],
+      vix: null,
+      vixChange: null,
+      sectors: [
+        { name: "DeFi", changePercent: null },
+        { name: "Layer 1", changePercent: null },
+        { name: "Layer 2", changePercent: null },
+        { name: "Gaming", changePercent: null },
+      ],
+      watchlist: [
+        { symbol: "BTC", price: null, changePercent: null },
+        { symbol: "ETH", price: null, changePercent: null },
+        { symbol: "SOL", price: null, changePercent: null },
+        { symbol: "AVAX", price: null, changePercent: null },
+      ],
     }
 
-    // Fetch both endpoints in parallel
-    const [indicesResponse, stocksResponse] = await Promise.all([
-      fetch(INDICES_URL),
-      fetch(STOCKS_URL),
-    ])
+    if (!POLYGON_API_KEY) {
+      return NextResponse.json(fallbackData)
+    }
 
-    if (!indicesResponse.ok || !stocksResponse.ok) {
-      console.error("Polygon.io API error:", { indices: indicesResponse.status, stocks: stocksResponse.status })
+    // Fetch crypto data from Polygon
+    const cryptoResponse = await fetch(CRYPTO_URL)
+
+    if (!cryptoResponse.ok) {
+      console.error("Polygon.io API error:", { crypto: cryptoResponse.status })
       return NextResponse.json(
         { error: "Failed to fetch market data from upstream provider" },
         { status: 502 }
       )
     }
 
-    const indicesData: PolygonIndicesResponse = await indicesResponse.json()
-    const stocksData: PolygonStocksResponse = await stocksResponse.json()
+    const cryptoData: PolygonCryptoResponse = await cryptoResponse.json()
 
-    // Map indices data
-    const indicesMap: Record<string, { name: string; symbol: string }> = {
-      "I:SPX": { name: "S&P 500", symbol: "SPX" },
-      "I:COMP": { name: "Nasdaq", symbol: "IXIC" },
-      "I:DJI": { name: "Dow Jones", symbol: "DJI" },
+    // Map crypto tickers
+    const cryptoMap: Record<string, { name: string; symbol: string }> = {
+      "X:BTCUSD": { name: "Bitcoin", symbol: "BTC" },
+      "X:ETHUSD": { name: "Ethereum", symbol: "ETH" },
+      "X:SOLUSD": { name: "Solana", symbol: "SOL" },
+      "X:AVAXUSD": { name: "Avalanche", symbol: "AVAX" },
     }
 
     const indices: MarketIndex[] = []
-    let vix: number | null = null
-    let vixChange: number | null = null
-
-    // Process indices from Polygon response
-    if (indicesData.results && Array.isArray(indicesData.results)) {
-      indicesData.results.forEach((item: PolygonIndexSnapshot) => {
-        if (item.ticker === "I:VIX") {
-          // Extract VIX separately
-          vix = item.value ?? null
-          vixChange = item.session?.change_percent ?? null
-        } else {
-          // Map to indices array
-          const mapping = indicesMap[item.ticker]
-          if (mapping) {
-            indices.push({
-              symbol: mapping.symbol,
-              name: mapping.name,
-              price: item.value ?? null,
-              change: item.session?.change ?? null,
-              changePercent: item.session?.change_percent ?? null,
-            })
-          }
-        }
-      })
-    }
-
-    // Map sector ETFs
-    const sectorMap: Record<string, string> = {
-      XLK: "Technology",
-      XLF: "Financials",
-      XLV: "Healthcare",
-      XLE: "Energy",
-    }
-
-    const sectors: SectorData[] = []
     const watchlist: WatchlistTicker[] = []
 
-    // Process stocks/ETFs from Polygon response
-    if (stocksData.tickers && Array.isArray(stocksData.tickers)) {
-      stocksData.tickers.forEach((ticker: PolygonStockSnapshot) => {
-        const symbol = ticker.ticker
-
-        // Check if it's a sector ETF
-        if (sectorMap[symbol]) {
-          sectors.push({
-            name: sectorMap[symbol],
+    // Process crypto from Polygon response
+    if (cryptoData.tickers && Array.isArray(cryptoData.tickers)) {
+      cryptoData.tickers.forEach((ticker: PolygonCryptoSnapshot) => {
+        const mapping = cryptoMap[ticker.ticker]
+        if (mapping) {
+          const price = ticker.lastTrade?.p ?? ticker.day?.c ?? null
+          indices.push({
+            symbol: mapping.symbol,
+            name: mapping.name,
+            price,
+            change: null,
             changePercent: ticker.todaysChangePerc ?? null,
           })
-        }
-        // Check if it's in watchlist
-        else if (["AAPL", "TSLA", "NVDA", "SPY"].includes(symbol)) {
           watchlist.push({
-            symbol,
-            price: ticker.lastTrade?.p ?? ticker.day?.c ?? null,
+            symbol: mapping.symbol,
+            price,
             changePercent: ticker.todaysChangePerc ?? null,
           })
         }
       })
     }
 
-    // Ensure all expected sectors exist (fill with null if missing)
-    const expectedSectors = ["Technology", "Financials", "Healthcare", "Energy"]
-    expectedSectors.forEach((sectorName) => {
-      if (!sectors.find((s) => s.name === sectorName)) {
-        sectors.push({ name: sectorName, changePercent: null })
-      }
-    })
-
-    // Ensure all expected watchlist tickers exist (fill with null if missing)
-    const expectedWatchlist = ["AAPL", "TSLA", "NVDA", "SPY"]
-    expectedWatchlist.forEach((symbol) => {
-      if (!watchlist.find((w) => w.symbol === symbol)) {
-        watchlist.push({ symbol, price: null, changePercent: null })
-      }
-    })
+    // Sectors are not available from Polygon for crypto — return nulls
+    const sectors: SectorData[] = [
+      { name: "DeFi", changePercent: null },
+      { name: "Layer 1", changePercent: null },
+      { name: "Layer 2", changePercent: null },
+      { name: "Gaming", changePercent: null },
+    ]
 
     const response: MarketDataResponse = {
       indices,
-      vix,
-      vixChange,
+      vix: null,
+      vixChange: null,
       sectors,
       watchlist,
     }
@@ -223,23 +163,23 @@ export async function GET() {
     return NextResponse.json(
       {
         indices: [
-          { symbol: "SPX", name: "S&P 500", price: null, change: null, changePercent: null },
-          { symbol: "IXIC", name: "Nasdaq", price: null, change: null, changePercent: null },
-          { symbol: "DJI", name: "Dow Jones", price: null, change: null, changePercent: null },
+          { symbol: "BTC", name: "Bitcoin", price: null, change: null, changePercent: null },
+          { symbol: "ETH", name: "Ethereum", price: null, change: null, changePercent: null },
+          { symbol: "SOL", name: "Solana", price: null, change: null, changePercent: null },
         ],
         vix: null,
         vixChange: null,
         sectors: [
-          { name: "Technology", changePercent: null },
-          { name: "Financials", changePercent: null },
-          { name: "Healthcare", changePercent: null },
-          { name: "Energy", changePercent: null },
+          { name: "DeFi", changePercent: null },
+          { name: "Layer 1", changePercent: null },
+          { name: "Layer 2", changePercent: null },
+          { name: "Gaming", changePercent: null },
         ],
         watchlist: [
-          { symbol: "AAPL", price: null, changePercent: null },
-          { symbol: "TSLA", price: null, changePercent: null },
-          { symbol: "NVDA", price: null, changePercent: null },
-          { symbol: "SPY", price: null, changePercent: null },
+          { symbol: "BTC", price: null, changePercent: null },
+          { symbol: "ETH", price: null, changePercent: null },
+          { symbol: "SOL", price: null, changePercent: null },
+          { symbol: "AVAX", price: null, changePercent: null },
         ],
       },
       { status: 502 }

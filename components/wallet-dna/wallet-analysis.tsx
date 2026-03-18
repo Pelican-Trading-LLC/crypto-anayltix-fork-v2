@@ -98,7 +98,7 @@ export function WalletAnalysis({ data }: Props) {
         {/* Airdrop Eligibility */}
         <div className="rounded-xl border bg-card p-5">
           <div className="flex items-center gap-2 mb-3">
-            <Parachute size={14} weight="fill" className="text-purple-500" />
+            <Parachute size={14} weight="fill" className="text-[var(--accent-primary)]" />
             <span className="text-[11px] uppercase tracking-[1.5px] font-semibold text-muted-foreground">AIRDROP ELIGIBILITY</span>
           </div>
           <div className="space-y-3">
