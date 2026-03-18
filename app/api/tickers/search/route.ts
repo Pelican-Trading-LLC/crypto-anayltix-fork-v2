@@ -10,37 +10,7 @@ const POLYGON_API_KEY = process.env.POLYGON_API_KEY
 
 // Static fallback for common tickers when Polygon API is unavailable
 const COMMON_TICKERS: TickerSearchResult[] = [
-  { ticker: 'AAPL', name: 'Apple Inc.', type: 'CS', market: 'stocks', active: true },
-  { ticker: 'MSFT', name: 'Microsoft Corporation', type: 'CS', market: 'stocks', active: true },
-  { ticker: 'GOOGL', name: 'Alphabet Inc. Class A', type: 'CS', market: 'stocks', active: true },
-  { ticker: 'AMZN', name: 'Amazon.com Inc.', type: 'CS', market: 'stocks', active: true },
-  { ticker: 'NVDA', name: 'NVIDIA Corporation', type: 'CS', market: 'stocks', active: true },
-  { ticker: 'META', name: 'Meta Platforms Inc.', type: 'CS', market: 'stocks', active: true },
-  { ticker: 'TSLA', name: 'Tesla Inc.', type: 'CS', market: 'stocks', active: true },
-  { ticker: 'AMD', name: 'Advanced Micro Devices Inc.', type: 'CS', market: 'stocks', active: true },
-  { ticker: 'NFLX', name: 'Netflix Inc.', type: 'CS', market: 'stocks', active: true },
-  { ticker: 'SPY', name: 'SPDR S&P 500 ETF Trust', type: 'ETF', market: 'stocks', active: true },
-  { ticker: 'QQQ', name: 'Invesco QQQ Trust', type: 'ETF', market: 'stocks', active: true },
-  { ticker: 'DIA', name: 'SPDR Dow Jones Industrial Average ETF', type: 'ETF', market: 'stocks', active: true },
-  { ticker: 'IWM', name: 'iShares Russell 2000 ETF', type: 'ETF', market: 'stocks', active: true },
-  { ticker: 'VTI', name: 'Vanguard Total Stock Market ETF', type: 'ETF', market: 'stocks', active: true },
-  { ticker: 'GOOG', name: 'Alphabet Inc. Class C', type: 'CS', market: 'stocks', active: true },
-  { ticker: 'BRK.B', name: 'Berkshire Hathaway Inc. Class B', type: 'CS', market: 'stocks', active: true },
-  { ticker: 'JPM', name: 'JPMorgan Chase & Co.', type: 'CS', market: 'stocks', active: true },
-  { ticker: 'V', name: 'Visa Inc.', type: 'CS', market: 'stocks', active: true },
-  { ticker: 'JNJ', name: 'Johnson & Johnson', type: 'CS', market: 'stocks', active: true },
-  { ticker: 'WMT', name: 'Walmart Inc.', type: 'CS', market: 'stocks', active: true },
-  { ticker: 'PG', name: 'Procter & Gamble Co.', type: 'CS', market: 'stocks', active: true },
-  { ticker: 'MA', name: 'Mastercard Inc.', type: 'CS', market: 'stocks', active: true },
-  { ticker: 'UNH', name: 'UnitedHealth Group Inc.', type: 'CS', market: 'stocks', active: true },
-  { ticker: 'HD', name: 'The Home Depot Inc.', type: 'CS', market: 'stocks', active: true },
-  { ticker: 'BAC', name: 'Bank of America Corp.', type: 'CS', market: 'stocks', active: true },
-  { ticker: 'DIS', name: 'The Walt Disney Company', type: 'CS', market: 'stocks', active: true },
-  { ticker: 'INTC', name: 'Intel Corporation', type: 'CS', market: 'stocks', active: true },
-  { ticker: 'CSCO', name: 'Cisco Systems Inc.', type: 'CS', market: 'stocks', active: true },
-  { ticker: 'PYPL', name: 'PayPal Holdings Inc.', type: 'CS', market: 'stocks', active: true },
-  { ticker: 'ORCL', name: 'Oracle Corporation', type: 'CS', market: 'stocks', active: true },
-  // Crypto
+  // Crypto (primary)
   { ticker: 'BTC', name: 'Bitcoin', type: 'CRYPTO', market: 'crypto', active: true },
   { ticker: 'ETH', name: 'Ethereum', type: 'CRYPTO', market: 'crypto', active: true },
   { ticker: 'SOL', name: 'Solana', type: 'CRYPTO', market: 'crypto', active: true },
@@ -56,17 +26,19 @@ const COMMON_TICKERS: TickerSearchResult[] = [
   { ticker: 'SUI', name: 'Sui', type: 'CRYPTO', market: 'crypto', active: true },
   { ticker: 'APT', name: 'Aptos', type: 'CRYPTO', market: 'crypto', active: true },
   { ticker: 'PEPE', name: 'Pepe', type: 'CRYPTO', market: 'crypto', active: true },
-  // Forex
-  { ticker: 'EUR/USD', name: 'Euro / US Dollar', type: 'FX', market: 'fx', active: true },
-  { ticker: 'GBP/USD', name: 'British Pound / US Dollar', type: 'FX', market: 'fx', active: true },
-  { ticker: 'USD/JPY', name: 'US Dollar / Japanese Yen', type: 'FX', market: 'fx', active: true },
-  { ticker: 'USD/CAD', name: 'US Dollar / Canadian Dollar', type: 'FX', market: 'fx', active: true },
-  { ticker: 'AUD/USD', name: 'Australian Dollar / US Dollar', type: 'FX', market: 'fx', active: true },
-  { ticker: 'USD/CHF', name: 'US Dollar / Swiss Franc', type: 'FX', market: 'fx', active: true },
-  { ticker: 'NZD/USD', name: 'New Zealand Dollar / US Dollar', type: 'FX', market: 'fx', active: true },
-  { ticker: 'EUR/GBP', name: 'Euro / British Pound', type: 'FX', market: 'fx', active: true },
-  { ticker: 'EUR/JPY', name: 'Euro / Japanese Yen', type: 'FX', market: 'fx', active: true },
-  { ticker: 'GBP/JPY', name: 'British Pound / Japanese Yen', type: 'FX', market: 'fx', active: true },
+  { ticker: 'UNI', name: 'Uniswap', type: 'CRYPTO', market: 'crypto', active: true },
+  { ticker: 'AAVE', name: 'Aave', type: 'CRYPTO', market: 'crypto', active: true },
+  { ticker: 'FET', name: 'Fetch.ai', type: 'CRYPTO', market: 'crypto', active: true },
+  { ticker: 'NEAR', name: 'NEAR Protocol', type: 'CRYPTO', market: 'crypto', active: true },
+  { ticker: 'ATOM', name: 'Cosmos', type: 'CRYPTO', market: 'crypto', active: true },
+  { ticker: 'INJ', name: 'Injective', type: 'CRYPTO', market: 'crypto', active: true },
+  { ticker: 'RENDER', name: 'Render', type: 'CRYPTO', market: 'crypto', active: true },
+  { ticker: 'TIA', name: 'Celestia', type: 'CRYPTO', market: 'crypto', active: true },
+  { ticker: 'SEI', name: 'Sei', type: 'CRYPTO', market: 'crypto', active: true },
+  { ticker: 'BONK', name: 'Bonk', type: 'CRYPTO', market: 'crypto', active: true },
+  // Stablecoins
+  { ticker: 'USDT', name: 'Tether', type: 'CRYPTO', market: 'crypto', active: true },
+  { ticker: 'USDC', name: 'USD Coin', type: 'CRYPTO', market: 'crypto', active: true },
 ]
 
 export interface TickerSearchResult {
@@ -125,8 +97,8 @@ export async function GET(request: NextRequest) {
         sliced.push({
           ticker: upperQuery,
           name: `${upperQuery} (Custom)`,
-          type: 'CS',
-          market: 'stocks',
+          type: 'CRYPTO',
+          market: 'crypto',
           active: true,
         })
       }
@@ -164,8 +136,8 @@ export async function GET(request: NextRequest) {
         sliced.push({
           ticker: upperQuery,
           name: `${upperQuery} (Custom)`,
-          type: 'CS',
-          market: 'stocks',
+          type: 'CRYPTO',
+          market: 'crypto',
           active: true,
         })
       }

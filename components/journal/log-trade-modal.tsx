@@ -364,7 +364,7 @@ export function LogTradeModal({ open, onOpenChange, onSubmit, initialTicker = ""
                 const normalizedTicker = normalizeTicker(result.ticker, detectedAssetType)
                 setTicker(normalizedTicker)
               }}
-              placeholder="Search by ticker or company name (e.g., AAPL or Apple)"
+              placeholder="Search by ticker or token name (e.g., BTC or Bitcoin)"
               autoFocus
             />
           </div>

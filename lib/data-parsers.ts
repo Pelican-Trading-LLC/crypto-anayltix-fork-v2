@@ -93,7 +93,7 @@ export function parseLabelValueLine(
  *   1. 2025-01-02: $257.21          (numbered + date: price)
  *   • Win Rate: 72.4%               (bulleted + metric: value)
  *   - Total P&L: +$1,245.00         (dashed + metric: value)
- *   AAPL: $187.50                   (plain label: value)
+ *   BTC: $67,250.00                 (plain label: value)
  *   52-Week High — $198.23          (em-dash separator)
  */
 export function detectLabelValueList(text: string): LabelValueTableResult | null {

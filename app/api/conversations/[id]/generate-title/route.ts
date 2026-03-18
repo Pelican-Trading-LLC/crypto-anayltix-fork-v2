@@ -64,7 +64,7 @@ export async function POST(
               {
                 role: "system",
                 content:
-                  "Generate a concise 3-6 word title for this trading conversation. No quotes, no punctuation at the end. Just the title. Examples: 'AAPL Technical Analysis', 'Bitcoin Price Outlook', 'Options Strategy for TSLA', 'Portfolio Risk Assessment', 'Market Movers Today'.",
+                  "Generate a concise 3-6 word title for this crypto trading conversation. No quotes, no punctuation at the end. Just the title. Examples: 'Bitcoin Technical Analysis', 'ETH Price Outlook', 'Solana DeFi Strategy', 'Portfolio Risk Assessment', 'Crypto Market Movers Today'.",
               },
               {
                 role: "user",

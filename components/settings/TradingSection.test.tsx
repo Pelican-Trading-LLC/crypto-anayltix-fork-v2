@@ -6,9 +6,9 @@ import type { UserSettings } from "./types"
 const defaultSettings: UserSettings = {
   email: "test@example.com",
   default_timeframes: ["5m", "15m"],
-  preferred_markets: ["stocks"],
+  preferred_markets: ["crypto"],
   risk_tolerance: "moderate",
-  favorite_tickers: ["AAPL"],
+  favorite_tickers: ["BTC"],
 }
 
 describe("TradingSection", () => {
@@ -26,7 +26,7 @@ describe("TradingSection", () => {
     render(
       <TradingSection settings={defaultSettings} updateSetting={vi.fn()} />
     )
-    expect(screen.getByText("AAPL")).toBeInTheDocument()
+    expect(screen.getByText("BTC")).toBeInTheDocument()
   })
 
   it("calls updateSetting when a timeframe is toggled", () => {
@@ -54,9 +54,9 @@ describe("TradingSection", () => {
     render(
       <TradingSection settings={defaultSettings} updateSetting={updateSetting} />
     )
-    const input = screen.getByPlaceholderText("Enter ticker symbol (e.g., AAPL)")
-    fireEvent.change(input, { target: { value: "MSFT" } })
+    const input = screen.getByPlaceholderText("Enter ticker symbol (e.g., BTC)")
+    fireEvent.change(input, { target: { value: "ETH" } })
     fireEvent.click(screen.getByText("Add"))
-    expect(updateSetting).toHaveBeenCalledWith("favorite_tickers", ["AAPL", "MSFT"])
+    expect(updateSetting).toHaveBeenCalledWith("favorite_tickers", ["BTC", "ETH"])
   })
 })

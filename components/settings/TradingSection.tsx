@@ -146,7 +146,7 @@ export function TradingSection({ settings, updateSetting }: TradingSectionProps)
               value={tickerInput}
               onChange={(e) => setTickerInput(e.target.value.toUpperCase())}
               onKeyPress={(e) => e.key === "Enter" && addTicker()}
-              placeholder="Enter ticker symbol (e.g., AAPL)"
+              placeholder="Enter ticker symbol (e.g., BTC)"
               maxLength={10}
             />
             <Button onClick={addTicker} variant="outline">

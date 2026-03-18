@@ -24,12 +24,12 @@ export interface UserSettings {
 
 export const DEFAULT_SETTINGS: Partial<UserSettings> = {
   default_timeframes: ["5m", "15m", "1h"],
-  preferred_markets: ["stocks"],
+  preferred_markets: ["crypto"],
   risk_tolerance: "moderate",
   favorite_tickers: [],
 }
 
 export const POPULAR_TICKERS = [
-  "SPY", "QQQ", "AAPL", "TSLA", "NVDA", "MSFT", "AMZN", "GOOGL",
-  "META", "AMD", "NFLX", "DIS", "INTC", "BABA", "NIO", "PLTR"
+  "BTC", "ETH", "SOL", "AVAX", "LINK", "DOT", "ARB", "OP",
+  "UNI", "AAVE", "SUI", "APT", "NEAR", "ATOM", "INJ", "RENDER"
 ]

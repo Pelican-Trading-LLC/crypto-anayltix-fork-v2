@@ -430,7 +430,7 @@ export default function ChatPage() {
     const isLogTradeIntent = LOG_TRADE_PATTERNS.some(pattern => pattern.test(trimmed))
 
     if (isLogTradeIntent) {
-      // Try to extract a ticker from the message (e.g., "log a trade on AAPL")
+      // Try to extract a ticker from the message (e.g., "log a trade on BTC")
       const words = trimmed.split(/\s+/)
       const ticker = words.find(w => /^[A-Z]{1,5}$/.test(w) && !NOT_TICKERS.has(w))
       handleOpenLogTrade(ticker || "")

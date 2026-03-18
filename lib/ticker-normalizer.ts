@@ -19,9 +19,9 @@ import {
 export type AssetType = 'stock' | 'forex' | 'crypto'
 
 export interface NormalizedTicker {
-  /** Canonical form: no separators, uppercase. E.g. "BTCUSD", "AAPL" */
+  /** Canonical form: no separators, uppercase. E.g. "BTCUSD", "ETH" */
   canonical: string
-  /** Display form: human-readable. E.g. "BTC/USD", "EUR/USD", "AAPL" */
+  /** Display form: human-readable. E.g. "BTC/USD", "EUR/USD", "ETH" */
   display: string
   /** Detected asset type */
   assetType: AssetType

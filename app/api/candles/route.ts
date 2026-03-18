@@ -32,7 +32,7 @@ function isValidDate(dateStr: string): boolean {
 }
 
 function isValidTicker(ticker: string): boolean {
-  // Allow stocks (AAPL), forex (C:EURUSD), crypto (X:BTCUSD)
+  // Allow crypto (X:BTCUSD), forex (C:EURUSD), or other Polygon ticker formats
   return /^[A-Z0-9.:]{1,20}$/.test(ticker)
 }
 

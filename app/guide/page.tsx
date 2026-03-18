@@ -114,8 +114,8 @@ export default function GuidePage() {
             }}
           >
             <PromptExample
-              bad="What do you think about NVDA?"
-              good="I'm looking at NVDA for a swing trade. I'm bullish on the AI infrastructure buildout thesis. The daily chart shows it consolidating above the 50 SMA after earnings. What are the key levels to watch, and where would you set a stop and target for a long entry here?"
+              bad="What do you think about SOL?"
+              good="I'm looking at SOL for a swing trade. I'm bullish on the Solana DeFi ecosystem growth thesis. The daily chart shows it consolidating above the 50 SMA after breaking resistance. What are the key levels to watch, and where would you set a stop and target for a long entry here?"
             />
 
             <div className="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-lg overflow-hidden mt-6">
@@ -158,8 +158,8 @@ export default function GuidePage() {
               &quot;What if CPI comes in hot?&quot;
             </p>
             <p>
-              <strong>Reference your positions.</strong> &quot;Given my open NVDA
-              long, should I hedge with puts or reduce size?&quot;
+              <strong>Reference your positions.</strong> &quot;Given my open ETH
+              long, should I hedge or reduce size?&quot;
             </p>
             <p>
               <strong>Ask for specifics.</strong> &quot;Give me exact entry, stop, and
@@ -250,9 +250,9 @@ export default function GuidePage() {
               <strong>The Correlation Page</strong>
             </p>
             <p>
-              See how assets move relative to each other. If you hold NVDA and
-              AVGO and they&apos;re 0.87 correlated, you&apos;re essentially running
-              double the semiconductor risk. The correlation matrix helps you
+              See how assets move relative to each other. If you hold SOL and
+              AVAX and they&apos;re 0.87 correlated, you&apos;re essentially running
+              double the L1 risk. The correlation matrix helps you
               diversify intelligently.
             </p>
           </GuideSection>

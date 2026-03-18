@@ -123,8 +123,8 @@ describe("formatLine", () => {
 
 describe("applyTickerLinks", () => {
   it("applies blue color only to ticker links", () => {
-    const html = '<strong class="font-semibold">Summary:</strong> AAPL is up'
-    const result = applyTickerLinks(html, ["AAPL"])
+    const html = '<strong class="font-semibold">Summary:</strong> BTC is up'
+    const result = applyTickerLinks(html, ["BTC"])
     expect(result).toContain("text-blue-400")
     expect(result).toContain("ticker-link")
     // The strong tag should NOT have blue

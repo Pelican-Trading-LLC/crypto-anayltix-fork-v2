@@ -292,10 +292,10 @@ export function generateRiskInsights(openTrades: Trade[]): RiskInsight[] {
     })
   }
 
-  // Tech concentration
+  // L1/L2 concentration
   const techTickers = new Set([
-    'NVDA', 'AAPL', 'MSFT', 'GOOG', 'GOOGL', 'META', 'AMZN',
-    'TSLA', 'AMD', 'AVGO', 'INTC', 'CRM', 'NFLX',
+    'BTC', 'ETH', 'SOL', 'AVAX', 'DOT', 'ATOM', 'NEAR',
+    'APT', 'SUI', 'SEI', 'ARB', 'OP', 'MATIC',
   ])
   const userTechPositions = openTrades.filter((t) =>
     techTickers.has(t.ticker.toUpperCase()),

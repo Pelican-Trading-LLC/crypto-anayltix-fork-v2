@@ -25,11 +25,11 @@ interface TickerWithType {
 }
 
 function parseTickersParam(tickersParam: string): TickerWithType[] {
-  // Format: "AAPL:stock,BTCUSD:crypto,EURUSD:forex" or just "AAPL,MSFT" (default to stock)
+  // Format: "BTC:crypto,ETH:crypto,EURUSD:forex" or just "BTC,ETH" (default to crypto)
   return tickersParam.split(',').map(item => {
     const parts = item.trim().split(':')
     const ticker = parts[0] || ''
-    const assetType = parts[1] || 'stock'
+    const assetType = parts[1] || 'crypto'
     return { ticker: ticker.toUpperCase(), assetType }
   })
 }

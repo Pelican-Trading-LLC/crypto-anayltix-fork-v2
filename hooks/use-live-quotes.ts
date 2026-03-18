@@ -34,7 +34,7 @@ function detectAssetType(ticker: string): 'stock' | 'forex' | 'crypto' {
 
 /**
  * Build the query param value with asset type annotations.
- * e.g. ["AAPL", "EURUSD", "BTCUSD"] → "AAPL:stock,EURUSD:forex,BTCUSD:crypto"
+ * e.g. ["BTC", "ETH", "SOL"] → "BTC:crypto,ETH:crypto,SOL:crypto"
  */
 function buildTickerParam(tickers: string[]): string {
   return tickers
