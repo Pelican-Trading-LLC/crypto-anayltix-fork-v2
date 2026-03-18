@@ -4,7 +4,7 @@ import type React from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { ArrowLeft, Mail, Lock } from "lucide-react"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { useState } from "react"
 import { createClient } from "@/lib/supabase/client"
 
@@ -14,6 +14,8 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const redirectTo = searchParams.get('redirectTo')
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -38,13 +40,10 @@ export default function LoginPage() {
         const validPlans = ['starter', 'pro', 'power', 'founder']
         const hasSubscription = userCredits?.plan_type && validPlans.includes(userCredits.plan_type)
 
-        if (hasSubscription) {
-          router.push("/chat")
-        } else {
-          router.push("/pricing")
-        }
+        const defaultDest = hasSubscription ? '/brief' : '/pricing'
+        router.push(redirectTo || defaultDest)
       } else {
-        router.push("/pricing")
+        router.push(redirectTo || '/pricing')
       }
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "An error occurred")

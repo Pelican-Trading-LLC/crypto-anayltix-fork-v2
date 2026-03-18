@@ -6,6 +6,15 @@ import { Check, Rocket } from '@phosphor-icons/react'
 import { useAuth } from '@/lib/providers/auth-provider'
 import { createClient } from '@/lib/supabase/client'
 
+const MARKET_SLUG_MAP: Record<string, string> = {
+  'Stocks & ETFs': 'stocks',
+  'Futures': 'futures',
+  'Forex': 'forex',
+  'Options': 'options',
+  'Crypto': 'crypto',
+  'New to Trading': 'crypto',
+}
+
 const STEPS = [
   {
     title: 'What markets do you trade?',
@@ -54,16 +63,31 @@ export default function OnboardingPage() {
     setSaving(true)
     const supabase = createClient()
 
-    await supabase.from('trader_survey').upsert({
-      user_id: user.id,
-      markets_traded: skipped ? [] : selections[0],
-      experience_level: skipped ? 'skipped' : (selections[1]?.[0] || ''),
-      goals: skipped ? '' : selections[2]?.join(', ') || '',
-      skipped,
-      completed_at: new Date().toISOString(),
-    }, { onConflict: 'user_id' })
+    // Normalize market display names to URL-safe slugs, always include 'crypto'
+    const rawMarkets = skipped ? [] : (selections[0] || [])
+    const normalizedMarkets = rawMarkets.map(m => MARKET_SLUG_MAP[m] || m.toLowerCase())
+    if (!normalizedMarkets.includes('crypto')) {
+      normalizedMarkets.push('crypto')
+    }
 
-    await supabase.from('user_credits').update({ onboarding_complete: true }).eq('user_id', user.id)
+    try {
+      await supabase.from('trader_survey').upsert({
+        user_id: user.id,
+        markets_traded: normalizedMarkets,
+        experience_level: skipped ? 'skipped' : (selections[1]?.[0] || ''),
+        goals: skipped ? '' : selections[2]?.join(', ') || '',
+        skipped,
+        completed_at: new Date().toISOString(),
+      }, { onConflict: 'user_id' })
+    } catch (err) {
+      console.error('[Onboarding] Failed to save survey:', err)
+    }
+
+    try {
+      await supabase.from('user_credits').update({ onboarding_complete: true }).eq('user_id', user.id)
+    } catch (err) {
+      console.error('[Onboarding] Failed to update onboarding_complete:', err)
+    }
 
     router.push('/brief')
   }

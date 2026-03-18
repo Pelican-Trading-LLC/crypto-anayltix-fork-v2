@@ -41,6 +41,7 @@ export function PelicanSynthesisHero() {
         </div>
         <p className="text-[14px] font-medium leading-relaxed">{synth.the_play}</p>
       </div>
+      <p className="text-[10px] text-muted-foreground/60 mt-4 text-center">Sample content — live synthesis requires connected data feeds</p>
     </div>
   )
 }

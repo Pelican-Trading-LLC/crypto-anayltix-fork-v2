@@ -27,6 +27,11 @@ export default function WalletDNAPage() {
 
   return (
     <div className="p-6 max-w-[1200px] mx-auto">
+      {/* Preview Mode Banner */}
+      <div className="mb-4 rounded-lg border border-amber-500/20 bg-amber-500/5 px-4 py-2.5 flex items-center gap-2">
+        <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-amber-500/10 text-amber-500">PREVIEW</span>
+        <span className="text-[12px] text-amber-500/80">Wallet DNA is running in preview mode with sample data. Live on-chain analysis coming soon.</span>
+      </div>
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>

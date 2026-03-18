@@ -27,6 +27,7 @@ export function WhatIMissed() {
           </div>
         </div>
       </div>
+      <p className="text-[10px] text-muted-foreground/60 mt-3 text-center">Sample content — actual alerts require connected data feeds</p>
     </div>
   )
 }

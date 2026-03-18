@@ -93,10 +93,11 @@ export async function GET(request: NextRequest) {
       const hasFreeQuestions = (userCredits.free_questions_remaining ?? 0) > 0
       const hasAccess = hasSubscription || hasFreeQuestions
 
+      const redirectTo = requestUrl.searchParams.get('redirectTo')
       if (hasAccess) {
-        return NextResponse.redirect(new URL('/brief', request.url))
+        return NextResponse.redirect(new URL(redirectTo || '/brief', request.url))
       } else {
-        return NextResponse.redirect(new URL('/pricing', request.url))
+        return NextResponse.redirect(new URL(redirectTo || '/pricing', request.url))
       }
     }
 

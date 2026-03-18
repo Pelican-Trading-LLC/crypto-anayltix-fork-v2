@@ -29,6 +29,7 @@ export function CrossAssetTranslation() {
         <span className="text-[11px] uppercase tracking-wider font-bold text-[#1DA1C4]">PELICAN TRANSLATION</span>
       </div>
       <p className="text-[14px] leading-[1.75] text-foreground/90">{ca.pelican_translation}</p>
+      <p className="text-[10px] text-muted-foreground/60 mt-4 text-center">Sample content — live cross-asset data not yet connected</p>
     </div>
   )
 }

@@ -17,9 +17,34 @@ vi.mock("framer-motion", () => ({
   },
 }))
 
+vi.mock("@/hooks/use-todays-warnings", () => ({
+  useTodaysWarnings: () => ({ warnings: [] }),
+}))
+
+vi.mock("@/hooks/use-behavioral-insights", () => ({
+  useBehavioralInsights: () => ({ data: null }),
+}))
+
+vi.mock("@/hooks/use-trades", () => ({
+  useTrades: () => ({ trades: [], openTrades: [], closedTrades: [] }),
+}))
+
+vi.mock("@/hooks/use-trader-profile", () => ({
+  useTraderProfile: () => ({ survey: null }),
+}))
+
+vi.mock("@/hooks/use-trade-patterns", () => ({
+  useTradePatterns: () => ({ patterns: [] }),
+}))
+
+vi.mock("@/lib/tracking", () => ({
+  trackEvent: vi.fn(),
+}))
+
 describe("SuggestedPrompts", () => {
-  it("renders all prompts", () => {
+  it("renders default prompts when no personalization data", () => {
     render(<SuggestedPrompts onSelect={vi.fn()} />)
+    // Should render market-default prompts (fallback path)
     for (const prompt of SUGGESTED_PROMPTS) {
       expect(screen.getByText(prompt)).toBeInTheDocument()
     }
@@ -29,11 +54,14 @@ describe("SuggestedPrompts", () => {
     const onSelect = vi.fn()
     render(<SuggestedPrompts onSelect={onSelect} />)
 
-    fireEvent.click(screen.getByText(SUGGESTED_PROMPTS[0]))
-    expect(onSelect).toHaveBeenCalledWith(SUGGESTED_PROMPTS[0])
+    const firstPrompt = SUGGESTED_PROMPTS[0]!
+    const thirdPrompt = SUGGESTED_PROMPTS[2]!
 
-    fireEvent.click(screen.getByText(SUGGESTED_PROMPTS[2]))
-    expect(onSelect).toHaveBeenCalledWith(SUGGESTED_PROMPTS[2])
+    fireEvent.click(screen.getByText(firstPrompt))
+    expect(onSelect).toHaveBeenCalledWith(firstPrompt)
+
+    fireEvent.click(screen.getByText(thirdPrompt))
+    expect(onSelect).toHaveBeenCalledWith(thirdPrompt)
 
     expect(onSelect).toHaveBeenCalledTimes(2)
   })
@@ -50,7 +78,8 @@ describe("SuggestedPrompts", () => {
     const onSelect = vi.fn()
     render(<SuggestedPrompts onSelect={onSelect} disabled />)
 
-    fireEvent.click(screen.getByText(SUGGESTED_PROMPTS[0]))
+    const firstPrompt = SUGGESTED_PROMPTS[0]!
+    fireEvent.click(screen.getByText(firstPrompt))
     expect(onSelect).not.toHaveBeenCalled()
   })
 })

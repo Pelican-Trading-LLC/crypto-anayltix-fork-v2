@@ -196,18 +196,24 @@ export default function ChatPage() {
   const [termsChecked, setTermsChecked] = useState(false)
   useEffect(() => {
     if (!user || termsChecked) return
-    const supabase = createClient()
-    supabase
-      .from("user_credits")
-      .select("terms_accepted")
-      .eq("user_id", user.id)
-      .single()
-      .then(({ data }) => {
+    const checkTerms = async () => {
+      try {
+        const supabase = createClient()
+        const { data } = await supabase
+          .from("user_credits")
+          .select("terms_accepted")
+          .eq("user_id", user.id)
+          .single()
         if (data && !data.terms_accepted) {
           router.replace("/accept-terms")
         }
+      } catch (err) {
+        console.error('[Chat] Failed to check terms acceptance:', err)
+      } finally {
         setTermsChecked(true)
-      })
+      }
+    }
+    checkTerms()
   }, [user, termsChecked, router])
 
   // One-time onboarding survey check (runs after terms are verified)

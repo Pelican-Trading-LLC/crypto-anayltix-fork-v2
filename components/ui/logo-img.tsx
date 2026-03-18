@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Image from "next/image"
 
 function getLogoSymbol(ticker: string): string {
   // Strip Polygon prefixes (X: for crypto, C: for forex)
@@ -30,12 +31,14 @@ export function LogoImg({ symbol, size = 16 }: { symbol: string; size?: number }
   if (hidden) return null
 
   return (
-    <img
+    <Image
       src={`https://api.elbstream.com/logos/symbol/${logoSymbol}?format=png&size=50`}
       alt={`${symbol} logo`}
       className="rounded-sm object-contain flex-shrink-0"
-      style={{ width: size, height: size }}
+      width={size}
+      height={size}
       loading="lazy"
+      unoptimized
       onError={() => setHidden(true)}
     />
   )

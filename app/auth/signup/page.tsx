@@ -65,17 +65,25 @@ export default function SignUpPage() {
       // If email confirmation is disabled, user is immediately logged in with a session
       if (data.session && data.user) {
         // Persist terms acceptance to user_credits
-        await supabase
-          .from("user_credits")
-          .update({
-            terms_accepted: true,
-            terms_accepted_at: new Date().toISOString(),
-          })
-          .eq("user_id", data.user.id)
+        try {
+          await supabase
+            .from("user_credits")
+            .update({
+              terms_accepted: true,
+              terms_accepted_at: new Date().toISOString(),
+            })
+            .eq("user_id", data.user.id)
+        } catch (err) {
+          console.error('[Signup] Failed to update terms acceptance:', err)
+        }
 
         // Record referral if available
-        if (recordReferralRef.current) {
-          await recordReferralRef.current(data.user.id)
+        try {
+          if (recordReferralRef.current) {
+            await recordReferralRef.current(data.user.id)
+          }
+        } catch (err) {
+          console.error('[Signup] Failed to record referral:', err)
         }
 
         // User is logged in, redirect to pricing (new users need to subscribe)

@@ -23,13 +23,13 @@ const Radar = dynamic(() => import('recharts').then(m => m.Radar), { ssr: false 
 
 /* ─── Stat Card ─────────────────────────────────────────────────── */
 
-function StatCard({ title, value, valueColor, subtitle, subtitleColor, icon, healthBar }: {
-  title: string; value: string; valueColor?: string; subtitle: string; subtitleColor: string; icon: React.ReactNode; healthBar?: number
+function StatCard({ title, value, valueColor, subtitle, subtitleColor, icon, healthBar, preview }: {
+  title: string; value: string; valueColor?: string; subtitle: string; subtitleColor: string; icon: React.ReactNode; healthBar?: number; preview?: boolean
 }) {
   return (
     <div className="rounded-xl border bg-card p-5 relative overflow-hidden">
       <div className="flex items-center justify-between mb-3">
-        <span className="text-[11px] uppercase tracking-[1.5px] font-semibold text-muted-foreground">{title}</span>
+        <span className="text-[11px] uppercase tracking-[1.5px] font-semibold text-muted-foreground">{title}{preview && <PreviewBadge />}</span>
         <span className="text-muted-foreground">{icon}</span>
       </div>
       <div className={`font-mono text-2xl font-semibold tabular-nums ${valueColor || ''}`}>{value}</div>
@@ -45,14 +45,20 @@ function StatCard({ title, value, valueColor, subtitle, subtitleColor, icon, hea
 
 /* ─── Portfolio Chart ───────────────────────────────────────────── */
 
+const PreviewBadge = () => (
+  <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-amber-500/10 text-amber-500 ml-2">PREVIEW</span>
+)
+
 function PortfolioChart({ positions }: { positions: typeof MOCK_POSITIONS }) {
+  // Static placeholder data — no live portfolio data connected yet
   const data = useMemo(() => {
     const base = 65942
     const result: { date: string; value: number }[] = []
     let prev = base * 0.94
     for (let i = 29; i >= 0; i--) {
       const d = new Date(); d.setDate(d.getDate() - i)
-      prev += (Math.random() - 0.44) * base * 0.012
+      // Deterministic curve based on day index (no Math.random)
+      prev += (((i * 7 + 3) % 13) / 13 - 0.44) * base * 0.012
       result.push({ date: d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }), value: Math.round(prev * 100) / 100 })
     }
     return result
@@ -62,7 +68,7 @@ function PortfolioChart({ positions }: { positions: typeof MOCK_POSITIONS }) {
     <div className="rounded-xl border bg-card p-5">
       <div className="flex items-center justify-between mb-4">
         <span className="text-[11px] uppercase tracking-[1.5px] font-semibold text-muted-foreground flex items-center gap-2">
-          <TrendUp size={14} /> PORTFOLIO PERFORMANCE
+          <TrendUp size={14} /> PORTFOLIO PERFORMANCE<PreviewBadge />
         </span>
         <div className="flex gap-1">
           {['24H', '7D', '30D', '90D', 'YTD', 'ALL'].map(period => (
@@ -116,7 +122,7 @@ function MarketPulse({ btcDominance, onAskPelican }: { btcDominance: number; onA
   return (
     <div className="rounded-xl border bg-card p-5 h-full flex flex-col">
       <div className="flex items-center justify-between mb-3">
-        <span className="text-[11px] uppercase tracking-[1.5px] font-semibold text-muted-foreground">PELICAN AI MARKET PULSE</span>
+        <span className="text-[11px] uppercase tracking-[1.5px] font-semibold text-muted-foreground">PELICAN AI MARKET PULSE<PreviewBadge /></span>
         <span className="font-mono text-[11px]">Confidence: <span className="text-[#1DA1C4] font-semibold">94%</span></span>
       </div>
       <div className="flex-1 text-sm text-muted-foreground leading-relaxed space-y-3">
@@ -228,7 +234,7 @@ function WalletDNA() {
   return (
     <div className="rounded-xl border bg-card p-5">
       <div className="flex items-center justify-between mb-4">
-        <span className="text-[11px] uppercase tracking-[1.5px] font-semibold text-muted-foreground">WALLET DNA</span>
+        <span className="text-[11px] uppercase tracking-[1.5px] font-semibold text-muted-foreground">WALLET DNA<PreviewBadge /></span>
         <span className="px-3 py-1 rounded-full text-[11px] font-semibold text-white" style={{ background: 'linear-gradient(135deg, #1A6FB5, #25BFDF)' }}>
           Apex Predator
         </span>
@@ -258,7 +264,7 @@ function SmartMoneyFeed() {
     <div className="rounded-xl border bg-card p-5">
       <div className="flex items-center gap-2 mb-4">
         <TrendUp size={14} className="text-muted-foreground" />
-        <span className="text-[11px] uppercase tracking-[1.5px] font-semibold text-muted-foreground">SMART MONEY ACTIVITY</span>
+        <span className="text-[11px] uppercase tracking-[1.5px] font-semibold text-muted-foreground">SMART MONEY ACTIVITY<PreviewBadge /></span>
         <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
         <span className="text-[11px] text-green-500">Live</span>
       </div>
@@ -318,8 +324,8 @@ export default function DashboardPage() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard title="PORTFOLIO VALUE" value={formatUSD(portfolioTotal)} subtitle={`${formatPnl(portfolioPnl)} (${formatPct(portfolioPnlPct)})`} subtitleColor={portfolioPnl >= 0 ? 'text-green-500' : 'text-red-500'} icon={<TrendUp size={16} />} />
         <StatCard title="24H P&L" value={formatPnl(portfolioPnl)} valueColor={portfolioPnl >= 0 ? 'text-green-500' : 'text-red-500'} subtitle={formatPct(portfolioPnlPct)} subtitleColor={portfolioPnl >= 0 ? 'text-green-500' : 'text-red-500'} icon={portfolioPnl >= 0 ? <CaretUp size={16} /> : <CaretDown size={16} />} />
-        <StatCard title="AI ALERTS TODAY" value="7" subtitle="3 High Impact" subtitleColor="text-amber-500" icon={<Bell size={16} />} />
-        <StatCard title="WALLET HEALTH" value="82/100" subtitle="Strong" subtitleColor="text-green-500" icon={<Heart size={16} />} healthBar={82} />
+        <StatCard title="AI ALERTS TODAY" value="7" subtitle="3 High Impact" subtitleColor="text-amber-500" icon={<Bell size={16} />} preview />
+        <StatCard title="WALLET HEALTH" value="82/100" subtitle="Strong" subtitleColor="text-green-500" icon={<Heart size={16} />} healthBar={82} preview />
       </div>
       <DataFreshness source="CoinGecko" isLive={!!livePrices && !pricesError} />
 

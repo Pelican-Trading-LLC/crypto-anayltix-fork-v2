@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { TokenSearch } from '@/components/token-intel/token-search'
 import { PriceActionCard, DerivativesCard, OnChainRiskCard } from '@/components/token-intel/token-data-cards'
@@ -18,6 +18,14 @@ export default function TokenIntelPage() {
   const initialTicker = searchParams.get('ticker')
 
   const [selectedSymbol, setSelectedSymbol] = useState<string | null>(initialTicker?.toUpperCase() || null)
+
+  // Sync selectedSymbol when URL searchParams change
+  useEffect(() => {
+    const ticker = searchParams.get('ticker')
+    if (ticker && ticker.toUpperCase() !== selectedSymbol) {
+      setSelectedSymbol(ticker.toUpperCase())
+    }
+  }, [searchParams]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Fetch live data from API
   const { data: liveTokenData, error: tokenError, isLoading: liveLoading, mutate: retryToken } = useLiveTokenData(selectedSymbol)

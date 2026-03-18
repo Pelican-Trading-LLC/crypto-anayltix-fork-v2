@@ -43,14 +43,23 @@ export default function SectorRotationPage() {
           <DataFreshness source="CoinGecko" isLive={!!liveSectorData && !sectorError} />
         </div>
         <div className="flex gap-1 p-1 rounded-lg border bg-card">
-          {TIMEFRAMES.map(tf => (
-            <button key={tf} onClick={() => setTimeframe(tf)}
-              className={`px-3 py-1.5 rounded-md text-[11px] font-medium transition-colors cursor-pointer ${
-                timeframe === tf ? 'bg-[#1DA1C4]/15 text-[#1DA1C4]' : 'text-muted-foreground hover:text-foreground'
-              }`}>
-              {tf}
-            </button>
-          ))}
+          {TIMEFRAMES.map(tf => {
+            const disabled = tf !== '7D'
+            return (
+              <button key={tf}
+                onClick={() => { if (!disabled) setTimeframe(tf) }}
+                title={disabled ? 'Coming soon' : undefined}
+                className={`px-3 py-1.5 rounded-md text-[11px] font-medium transition-colors ${
+                  disabled
+                    ? 'opacity-50 cursor-not-allowed text-muted-foreground'
+                    : timeframe === tf
+                      ? 'bg-[#1DA1C4]/15 text-[#1DA1C4] cursor-pointer'
+                      : 'text-muted-foreground hover:text-foreground cursor-pointer'
+                }`}>
+                {tf}
+              </button>
+            )
+          })}
         </div>
       </div>
 
