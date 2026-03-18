@@ -35,13 +35,6 @@ const routeTitles: Record<string, string> = {
   '/community': 'COMMUNITY',
   '/screener': 'TOKEN SCREENER',
   '/alerts': 'AI ALERTS',
-  '/positions': 'POSITIONS',
-  '/journal': 'JOURNAL',
-  '/playbooks': 'PLAYBOOKS',
-  '/heatmap': 'HEATMAP',
-  '/correlations': 'CORRELATIONS',
-  '/earnings': 'EARNINGS',
-  '/strategies': 'STRATEGIES',
 }
 
 function getPageTitle(pathname: string): string {
