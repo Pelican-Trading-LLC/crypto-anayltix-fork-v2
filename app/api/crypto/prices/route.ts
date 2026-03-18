@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 import { getSimplePrice, getMarketData, idsFromSymbols, SYMBOL_TO_COINGECKO_ID } from '@/lib/api/coingecko'
 import { cached } from '@/lib/redis'
 
+export const dynamic = 'force-dynamic'
+
 /**
  * GET /api/crypto/prices?symbols=BTC,ETH,SOL&detail=true
  *
@@ -55,7 +57,7 @@ export async function GET(request: Request) {
         market_cap_rank: coin.market_cap_rank,
       }))
 
-      return NextResponse.json({ data: result, cached: false, timestamp: Date.now() })
+      return NextResponse.json({ data: result, timestamp: Date.now() })
     } else {
       const cacheKey = `cg:simple:${ids.sort().join(',')}`
       const data = await cached(cacheKey, 60, () =>
@@ -74,7 +76,7 @@ export async function GET(request: Request) {
         volume_24h: vals.usd_24h_vol || 0,
       }))
 
-      return NextResponse.json({ data: result, cached: false, timestamp: Date.now() })
+      return NextResponse.json({ data: result, timestamp: Date.now() })
     }
   } catch (error) {
     console.error('[API /crypto/prices]', error)

@@ -3,6 +3,8 @@ import { getMarketData, symbolToId } from '@/lib/api/coingecko'
 import { getProtocolTvl, getProtocolSlug } from '@/lib/api/defillama'
 import { cached } from '@/lib/redis'
 
+export const dynamic = 'force-dynamic'
+
 /**
  * GET /api/crypto/token/BTC
  * Returns combined CoinGecko market data + DeFiLlama TVL for a single token.
@@ -41,7 +43,7 @@ export async function GET(
       const tvl = tvlData.status === 'fulfilled' ? tvlData.value : null
 
       if (!market) {
-        throw new Error(`No market data found for ${upperSymbol}`)
+        return null
       }
 
       let tvlCurrent: number | null = null
@@ -81,6 +83,10 @@ export async function GET(
         },
       }
     })
+
+    if (!data) {
+      return NextResponse.json({ error: `No market data found for ${upperSymbol}` }, { status: 404 })
+    }
 
     return NextResponse.json({ data, timestamp: Date.now() })
   } catch (error) {

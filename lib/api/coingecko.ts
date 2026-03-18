@@ -156,6 +156,10 @@ export const SYMBOL_TO_COINGECKO_ID: Record<string, string> = {
   TIA: 'celestia', JUP: 'jupiter-exchange-solana', ETHFI: 'ether-fi',
   REZ: 'renzo', AERO: 'aerodrome-finance', STX: 'blockstack',
   INJ: 'injective-protocol', PYTH: 'pyth-network', W: 'wormhole',
+  AXS: 'axie-infinity', SAND: 'the-sandbox', AR: 'arweave',
+  IOTX: 'iotex', ALT: 'altlayer', MANTA: 'manta-network',
+  METIS: 'metis-token', STRK: 'starknet', BONK: 'bonk',
+  FLOKI: 'floki', PEPE: 'pepe', FET: 'fetch-ai',
 }
 
 export function symbolToId(symbol: string): string | null {

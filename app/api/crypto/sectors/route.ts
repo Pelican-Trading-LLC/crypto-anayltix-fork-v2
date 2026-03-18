@@ -2,18 +2,21 @@ import { NextResponse } from 'next/server'
 import { getMarketData, idsFromSymbols } from '@/lib/api/coingecko'
 import { cached } from '@/lib/redis'
 
+export const dynamic = 'force-dynamic'
+
 /**
  * GET /api/crypto/sectors
  * Returns aggregated market data per sector. Cached 10 min.
  */
 
+// Removed MAPLE, DIMO, PUFFER — no confirmed CoinGecko IDs
 const SECTOR_DEFINITIONS: Record<string, string[]> = {
   'AI / Compute': ['TAO', 'RNDR', 'AKT', 'FET', 'NEAR'],
   'GameFi': ['GALA', 'IMX', 'RON', 'AXS', 'SAND'],
-  'RWA': ['ONDO', 'PENDLE', 'MKR', 'COMP', 'MAPLE'],
-  'DePIN': ['HNT', 'FIL', 'AR', 'IOTX', 'DIMO'],
+  'RWA': ['ONDO', 'PENDLE', 'MKR', 'COMP'],
+  'DePIN': ['HNT', 'FIL', 'AR', 'IOTX'],
   'DeFi Bluechips': ['UNI', 'AAVE', 'MKR', 'CRV', 'LDO'],
-  'Restaking': ['EIGEN', 'ETHFI', 'REZ', 'ALT', 'PUFFER'],
+  'Restaking': ['EIGEN', 'ETHFI', 'REZ', 'ALT'],
   'L2 / L3 Scaling': ['ARB', 'OP', 'STRK', 'MANTA', 'METIS'],
   'Memecoins': ['DOGE', 'WIF', 'PEPE', 'BONK', 'FLOKI'],
 }
@@ -53,6 +56,7 @@ export async function GET() {
 
         return {
           name,
+          token_count: symbols.length,
           volume: totalVolume,
           market_cap: totalMcap,
           top_tokens: tokenData.slice(0, 3),

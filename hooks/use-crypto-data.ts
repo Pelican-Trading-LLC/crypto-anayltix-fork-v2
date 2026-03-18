@@ -62,6 +62,7 @@ export interface LiveGlobalData {
   btc_dominance: number
   eth_dominance: number
   market_cap_change_24h: number
+  active_cryptocurrencies: number
 }
 
 export interface LiveSectorData {

@@ -141,7 +141,8 @@ export const MOCK_EDUCATION = [
 
 // ── Formatting Helpers ───────────────────────────────────────
 
-export function formatCompact(n: number): string {
+export function formatCompact(n: number | null | undefined): string {
+  if (n == null || isNaN(n)) return '--'
   if (n >= 1e12) return `${(n / 1e12).toFixed(1)}T`
   if (n >= 1e9) return `${(n / 1e9).toFixed(1)}B`
   if (n >= 1e6) return `${(n / 1e6).toFixed(1)}M`
@@ -149,16 +150,20 @@ export function formatCompact(n: number): string {
   return `${n.toFixed(0)}`
 }
 
-export function formatUSD(n: number): string {
+export function formatUSD(n: number | null | undefined): string {
+  if (n == null || isNaN(n)) return '$--'
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)
 }
 
-export function formatPct(n: number, sign = true): string {
+export function formatPct(n: number | null | undefined, sign = true): string {
+  if (n == null || isNaN(n)) return '--%'
   const s = sign && n > 0 ? '+' : ''
   return `${s}${n.toFixed(2)}%`
 }
 
-export function formatPnl(n: number): string {
+export function formatPnl(n: number | null | undefined): string {
+  if (n == null || isNaN(n)) return '$--'
+  if (Object.is(n, -0)) n = 0
   const sign = n >= 0 ? '+' : '\u2212' // proper minus sign
   return `${sign}${Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
 }

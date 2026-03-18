@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 import { getGlobalData } from '@/lib/api/coingecko'
 import { cached } from '@/lib/redis'
 
+export const dynamic = 'force-dynamic'
+
 /**
  * GET /api/crypto/global
  * Returns BTC dominance, total market cap, etc. Cached 2 min.
