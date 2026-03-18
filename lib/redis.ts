@@ -26,7 +26,18 @@ export async function cached<T>(
 
   try {
     const hit = await redis.get<T>(key)
-    if (hit !== null && hit !== undefined) return hit
+    if (hit !== null && hit !== undefined) {
+      // Upstash SDK may return a raw string if the value was double-serialized.
+      // Handle both already-parsed objects and string returns defensively.
+      if (typeof hit === 'string') {
+        try {
+          return JSON.parse(hit) as T
+        } catch {
+          return hit as T
+        }
+      }
+      return hit
+    }
   } catch (e) {
     console.warn(`[Redis] Cache read failed for ${key}:`, e)
   }
@@ -34,7 +45,7 @@ export async function cached<T>(
   const data = await fetcher()
 
   try {
-    await redis.set(key, JSON.stringify(data), { ex: ttlSeconds })
+    await redis.set(key, data, { ex: ttlSeconds })
   } catch (e) {
     console.warn(`[Redis] Cache write failed for ${key}:`, e)
   }

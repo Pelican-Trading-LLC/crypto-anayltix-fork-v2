@@ -12,15 +12,20 @@ type RateLimiterLike = {
   limit: (identifier: string) => Promise<RateLimitResult>
 }
 
-function createDenyAllLimiter(): RateLimiterLike {
-  console.error('UPSTASH_REDIS_REST_URL or UPSTASH_REDIS_REST_TOKEN is not set. Rate limiting will DENY all requests.')
+let noOpWarned = false
+
+function createNoOpLimiter(): RateLimiterLike {
+  if (!noOpWarned) {
+    console.warn('[rate-limit] Upstash not configured — rate limiting disabled')
+    noOpWarned = true
+  }
   return {
     async limit() {
       return {
-        success: false,
+        success: true,
         limit: 0,
         remaining: 0,
-        reset: Date.now() + 60_000,
+        reset: 0,
       }
     },
   }
@@ -42,7 +47,7 @@ function createRedisClient() {
  */
 export function createUserRateLimiter(prefix: string, requests: number, window: `${number} ${"ms" | "s" | "m" | "h" | "d"}` | `${number}${"ms" | "s" | "m" | "h" | "d"}`) {
   const redis = createRedisClient()
-  if (!redis) return createDenyAllLimiter()
+  if (!redis) return createNoOpLimiter()
 
   return new Ratelimit({
     redis,
@@ -56,7 +61,7 @@ export function createUserRateLimiter(prefix: string, requests: number, window: 
  */
 export function createIpRateLimiter(prefix: string, requests: number, window: `${number} ${"ms" | "s" | "m" | "h" | "d"}` | `${number}${"ms" | "s" | "m" | "h" | "d"}`) {
   const redis = createRedisClient()
-  if (!redis) return createDenyAllLimiter()
+  if (!redis) return createNoOpLimiter()
 
   return new Ratelimit({
     redis,
