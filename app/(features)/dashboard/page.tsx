@@ -7,6 +7,8 @@ import { useLivePrices, useLiveGlobalData } from '@/hooks/use-crypto-data'
 import { mergePositions } from '@/lib/use-live-or-mock'
 import { ApiError } from '@/components/ui/api-error'
 import { DataFreshness } from '@/components/ui/data-freshness'
+import { FA_TRAFFIC_LIGHT } from '@/lib/forexanalytix-mock-data'
+import { FABadge } from '@/components/forexanalytix/fa-badge'
 import { usePelicanPanelContext } from '@/providers/pelican-panel-provider'
 import dynamic from 'next/dynamic'
 
@@ -298,6 +300,39 @@ function SmartMoneyFeed() {
   )
 }
 
+/* ─── Macro Regime Strip ───────────────────────────────────────── */
+
+function MacroRegimeStrip() {
+  const signals = FA_TRAFFIC_LIGHT.signals
+  const signalColors = { green: '#22C55E', amber: '#F59E0B', red: '#EF4444' }
+
+  return (
+    <div className="rounded-xl border bg-card px-5 py-3">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-6">
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] uppercase tracking-[1.5px] font-semibold text-muted-foreground">MACRO REGIME</span>
+            <FABadge />
+          </div>
+          {signals.map(s => (
+            <div key={s.indicator} className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full" style={{ backgroundColor: signalColors[s.signal] }} />
+              <span className="text-[11px] font-medium text-muted-foreground">{s.indicator}</span>
+              <span className="font-mono text-[12px] tabular-nums font-semibold">{s.value}</span>
+            </div>
+          ))}
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-amber-500/10 text-amber-500">
+            {FA_TRAFFIC_LIGHT.regime}
+          </span>
+          <span className="font-mono text-[11px] text-muted-foreground">{FA_TRAFFIC_LIGHT.updated}</span>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 /* ─── Dashboard Page ────────────────────────────────────────────── */
 
 export default function DashboardPage() {
@@ -328,6 +363,7 @@ export default function DashboardPage() {
         <StatCard title="WALLET HEALTH" value="82/100" subtitle="Strong" subtitleColor="text-green-500" icon={<Heart size={16} />} healthBar={82} preview />
       </div>
       <DataFreshness source="CoinGecko" isLive={!!livePrices && !pricesError} />
+      <MacroRegimeStrip />
 
       {/* Row 2: Chart + Market Pulse */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">

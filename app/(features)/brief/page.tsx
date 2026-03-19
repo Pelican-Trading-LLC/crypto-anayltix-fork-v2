@@ -5,6 +5,9 @@ import { PelicanSynthesisHero } from '@/components/brief-v2/pelican-synthesis-he
 import { CrossAssetTranslation } from '@/components/brief-v2/cross-asset-translation'
 import { BriefAlertsSidebar } from '@/components/brief-v2/brief-alerts-sidebar'
 import { WhatIMissed } from '@/components/brief-v2/what-i-missed'
+import { FACESummary } from '@/components/brief-v2/face-summary'
+import { MorningRead } from '@/components/brief-v2/morning-read'
+import { FABlogPosts } from '@/components/brief-v2/fa-blog-posts'
 
 export default function BriefPage() {
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
@@ -26,6 +29,9 @@ export default function BriefPage() {
         <div className="lg:col-span-2 space-y-4">
           <PelicanSynthesisHero />
           <CrossAssetTranslation />
+          <FACESummary />
+          <MorningRead />
+          <FABlogPosts />
         </div>
 
         {/* Right: Alerts + What I Missed (1/3) */}

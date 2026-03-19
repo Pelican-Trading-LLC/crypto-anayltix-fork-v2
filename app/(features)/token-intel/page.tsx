@@ -11,7 +11,9 @@ import { useLiveTokenData } from '@/hooks/use-crypto-data'
 import { mergeTokenIntel } from '@/lib/use-live-or-mock'
 import { ApiError } from '@/components/ui/api-error'
 import { DataFreshness } from '@/components/ui/data-freshness'
-import { WarningCircle } from '@phosphor-icons/react'
+import { WarningCircle, Bird } from '@phosphor-icons/react'
+import { FA_PIPS } from '@/lib/forexanalytix-mock-data'
+import { FABadge } from '@/components/forexanalytix/fa-badge'
 
 export default function TokenIntelPage() {
   const searchParams = useSearchParams()
@@ -96,6 +98,47 @@ export default function TokenIntelPage() {
               <PriceActionCard data={data} />
               <DerivativesCard data={data} />
               <OnChainRiskCard data={data} />
+              {(() => {
+                const matchingPip = FA_PIPS.find(p => p.asset === data.symbol && p.status === 'active')
+                if (!matchingPip) return null
+                return (
+                  <div className="rounded-xl border bg-card p-4" style={{ borderLeftWidth: 3, borderLeftColor: '#1DA1C4' }}>
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[11px] uppercase tracking-[1.5px] font-semibold text-muted-foreground">FA COVERAGE</span>
+                        <FABadge />
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold text-white" style={{ backgroundColor: matchingPip.analyst_color }}>
+                        {matchingPip.analyst_initials}
+                      </div>
+                      <span className="text-[13px] font-medium">{matchingPip.analyst_name}</span>
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${matchingPip.direction === 'BULLISH' ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}`}>
+                        {matchingPip.direction}
+                      </span>
+                    </div>
+                    <h4 className="text-[13px] font-semibold mb-1">{matchingPip.title}</h4>
+                    <div className="flex gap-2 mb-2">
+                      {Object.entries(matchingPip.key_levels).map(([k, v]) => (
+                        <span key={k} className="px-2 py-0.5 rounded-md bg-muted text-[10px] font-mono">
+                          <span className="uppercase text-muted-foreground">{k}</span> <span className="font-semibold">{v}</span>
+                        </span>
+                      ))}
+                    </div>
+                    {matchingPip.crypto_translation && (
+                      <div className="rounded-lg p-2 mt-2" style={{ background: 'linear-gradient(135deg, rgba(29,161,196,0.04) 0%, var(--card) 40%)', border: '1px solid rgba(29,161,196,0.10)' }}>
+                        <div className="flex items-center gap-1 text-[9px] uppercase tracking-[1.5px] font-semibold text-[#1DA1C4] mb-0.5">
+                          <Bird size={10} weight="fill" />
+                          PELICAN TRANSLATION
+                        </div>
+                        <p className="text-[12px] text-muted-foreground leading-relaxed">{matchingPip.crypto_translation}</p>
+                      </div>
+                    )}
+                    <a href="/forexanalytix" className="text-[11px] font-medium text-[#1DA1C4] hover:underline mt-2 inline-block">View all PiPs &rarr;</a>
+                  </div>
+                )
+              })()}
             </>
           ) : noDataAvailable ? (
             /* No data available for the selected ticker */

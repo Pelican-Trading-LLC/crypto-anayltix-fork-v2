@@ -21,6 +21,7 @@ import {
   CaretLeft,
   BookOpenText,
   Bird,
+  Pulse,
 } from '@phosphor-icons/react'
 import type { Icon as PhosphorIcon } from '@phosphor-icons/react'
 import { useAuth } from '@/lib/providers/auth-provider'
@@ -51,6 +52,12 @@ const NAV_SECTIONS: NavSection[] = [
     title: '', // No label for top section
     items: [
       { label: 'Daily Brief', href: '/brief', icon: Bird },
+    ],
+  },
+  {
+    title: 'FOREXANALYTIX',
+    items: [
+      { label: 'ForexAnalytix', href: '/forexanalytix', icon: Pulse, badge: '5 PiPs', accentTint: true },
     ],
   },
   {

@@ -3,8 +3,11 @@
 import { useState } from 'react'
 import { ArrowsClockwise, Bird, Heart, ArrowsLeftRight } from '@phosphor-icons/react'
 import { MOCK_ANALYST_POSTS, MOCK_CT_SIGNALS, MOCK_WALLET_SIGNALS, MOCK_MACRO_SIGNALS } from '@/lib/crypto-mock-data'
+import { FA_PIPS } from '@/lib/forexanalytix-mock-data'
+import { PiPCard } from '@/components/forexanalytix/pip-card'
+import { FABadge } from '@/components/forexanalytix/fa-badge'
 
-const FILTER_TABS = ['All', 'Analyst', 'CT', 'On-Chain', 'Macro'] as const
+const FILTER_TABS = ['All', 'Analyst', 'CT', 'On-Chain', 'Macro', 'FA PiPs'] as const
 type FilterType = typeof FILTER_TABS[number]
 
 type AnalystSignal = typeof MOCK_ANALYST_POSTS[number]
@@ -29,7 +32,8 @@ export default function SignalsPage() {
     filter === 'Analyst' ? MOCK_ANALYST_POSTS :
     filter === 'CT' ? MOCK_CT_SIGNALS :
     filter === 'On-Chain' ? MOCK_WALLET_SIGNALS :
-    MOCK_MACRO_SIGNALS
+    filter === 'Macro' ? MOCK_MACRO_SIGNALS :
+    [] // FA PiPs handled separately below
 
   return (
     <div className="p-6 max-w-[1200px] mx-auto">
@@ -56,9 +60,24 @@ export default function SignalsPage() {
         ))}
       </div>
 
+      {/* FA PiPs banner */}
+      <div className="flex items-center justify-between rounded-xl border bg-card px-4 py-2.5 mb-4">
+        <div className="flex items-center gap-2">
+          <FABadge size="md" />
+          <span className="text-[12px] text-muted-foreground">
+            <span className="font-semibold text-foreground">{FA_PIPS.filter(p => p.status === 'active').length} active PiPs</span> from ForexAnalytix analysts
+          </span>
+        </div>
+        <a href="/forexanalytix" className="text-[12px] font-medium text-[#1DA1C4] hover:underline">
+          View FA Hub &rarr;
+        </a>
+      </div>
+
       {/* Signal cards */}
       <div className="space-y-3">
-        {filtered.map((signal: Signal) => (
+        {filter === 'FA PiPs' ? (
+          FA_PIPS.map(pip => <PiPCard key={pip.id} pip={pip} />)
+        ) : filtered.map((signal: Signal) => (
           <div key={signal.id} className="rounded-xl border bg-card p-4 relative overflow-hidden"
             style={{ borderLeftWidth: 3, borderLeftColor: borderColors[signal.type] || '#666' }}>
 
