@@ -18,9 +18,6 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(data)
   } catch (error) {
     console.error('[API /polymarket/events]', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch Polymarket events', details: error instanceof Error ? error.message : 'Unknown error' },
-      { status: 500 }
-    )
+    return NextResponse.json([])
   }
 }

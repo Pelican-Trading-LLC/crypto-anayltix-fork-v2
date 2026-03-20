@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
     const query = req.nextUrl.searchParams.get('q') || ''
 
     if (!query) {
-      return NextResponse.json({ error: 'Missing q parameter' }, { status: 400 })
+      return NextResponse.json([])
     }
 
     const data = await cached(
@@ -21,9 +21,6 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(data)
   } catch (error) {
     console.error('[API /polymarket/search]', error)
-    return NextResponse.json(
-      { error: 'Failed to search Polymarket events', details: error instanceof Error ? error.message : 'Unknown error' },
-      { status: 500 }
-    )
+    return NextResponse.json([])
   }
 }
