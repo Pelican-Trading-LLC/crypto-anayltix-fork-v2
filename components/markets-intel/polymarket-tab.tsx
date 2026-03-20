@@ -79,7 +79,11 @@ export function PolymarketTab() {
   const currentTag = SUB_TABS[activeSubTab]?.tag ?? 'crypto'
   const { data: events, isLoading } = usePolymarketEvents(currentTag, 12)
 
-  const markets: ParsedMarket[] = events?.flatMap(e => e.markets.map(parseMarket)) ?? []
+  const markets: ParsedMarket[] = (Array.isArray(events) ? events : [])
+    .flatMap(e => (Array.isArray(e?.markets) ? e.markets : []).map(m => {
+      try { return parseMarket(m) } catch { return null }
+    }))
+    .filter((m): m is ParsedMarket => m !== null)
 
   return (
     <div>

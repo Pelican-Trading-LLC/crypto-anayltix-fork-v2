@@ -29,7 +29,9 @@ export function BriefPredictionMarkets() {
   const { data: cryptoMarkets, isLoading: cryptoLoading } = useCryptoMarkets(4)
 
   const isLoading = fedLoading && cryptoLoading
-  const isEmpty = !fedMarkets.length && !cryptoMarkets.length
+  const safeFed = Array.isArray(fedMarkets) ? fedMarkets : []
+  const safeCrypto = Array.isArray(cryptoMarkets) ? cryptoMarkets : []
+  const isEmpty = !safeFed.length && !safeCrypto.length
 
   if (isLoading) {
     return (
@@ -54,21 +56,21 @@ export function BriefPredictionMarkets() {
       </div>
 
       {/* Fed & Macro */}
-      {fedMarkets.length > 0 && (
+      {safeFed.length > 0 && (
         <div className="mb-4">
           <span className="text-[10px] uppercase tracking-wider text-muted-foreground/70 font-medium">Fed & Macro</span>
           <div className="mt-2">
-            {fedMarkets.map(m => <MarketRow key={m.id} market={m} />)}
+            {safeFed.map(m => <MarketRow key={m.id} market={m} />)}
           </div>
         </div>
       )}
 
       {/* Crypto */}
-      {cryptoMarkets.length > 0 && (
+      {safeCrypto.length > 0 && (
         <div>
           <span className="text-[10px] uppercase tracking-wider text-muted-foreground/70 font-medium">Crypto</span>
           <div className="mt-2">
-            {cryptoMarkets.map(m => <MarketRow key={m.id} market={m} />)}
+            {safeCrypto.map(m => <MarketRow key={m.id} market={m} />)}
           </div>
         </div>
       )}

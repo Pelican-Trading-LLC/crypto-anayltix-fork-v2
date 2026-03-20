@@ -60,12 +60,14 @@ export function BriefTokenizationPulse() {
                 </div>
                 <div className="flex items-center gap-3 flex-shrink-0">
                   <span className="font-mono text-[12px] tabular-nums">{formatCompact(asset.totalValue)}</span>
-                  {asset.apy !== null && (
+                  {asset.apy != null && (
                     <span className="font-mono text-[11px] text-green-500 tabular-nums">{asset.apy}%</span>
                   )}
-                  <span className={`font-mono text-[11px] tabular-nums ${asset.change30d >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                    {asset.change30d >= 0 ? '+' : ''}{asset.change30d.toFixed(1)}%
+                  {asset.change30d != null && (
+                  <span className={`font-mono text-[11px] tabular-nums ${(asset.change30d ?? 0) >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                    {(asset.change30d ?? 0) >= 0 ? '+' : ''}{(asset.change30d ?? 0).toFixed(1)}%
                   </span>
+                  )}
                 </div>
               </div>
             ))}

@@ -3,7 +3,10 @@
 import useSWR from 'swr'
 import type { RWAAsset, RWAMarketSummary } from '@/lib/api/rwa'
 
-const fetcher = (url: string) => fetch(url).then(r => r.json())
+const fetcher = (url: string) =>
+  fetch(url)
+    .then(r => (r.ok ? r.json() : { assets: [], summary: null }))
+    .catch(() => ({ assets: [], summary: null }))
 
 export function useRWAData() {
   return useSWR<{ assets: RWAAsset[]; summary: RWAMarketSummary }>(

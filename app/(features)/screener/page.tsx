@@ -23,7 +23,12 @@ function AllTab() {
   const { data: events } = usePolymarketEvents('crypto', 5)
   const { data: rwaData } = useRWAData()
   const { openWithPrompt } = usePelicanPanelContext()
-  const markets: ParsedMarket[] = events?.flatMap(e => e.markets.map(parseMarket)).slice(0, 5) ?? []
+  const markets: ParsedMarket[] = (Array.isArray(events) ? events : [])
+    .flatMap(e => (Array.isArray(e?.markets) ? e.markets : []).map(m => {
+      try { return parseMarket(m) } catch { return null }
+    }))
+    .filter((m): m is ParsedMarket => m !== null)
+    .slice(0, 5)
   const assets = rwaData?.assets?.slice(0, 10) ?? []
 
   return (

@@ -27,8 +27,8 @@ export interface PolymarketMarket {
   question: string
   conditionId: string
   slug: string
-  outcomes: string[]
-  outcomePrices: string[]
+  outcomes: string | string[]
+  outcomePrices: string | string[]
   volume: number
   liquidity: number
   active: boolean
@@ -50,16 +50,35 @@ export interface ParsedMarket {
 // ── Helpers ──────────────────────────────────────
 
 export function parseMarket(m: PolymarketMarket): ParsedMarket {
-  const prices = m.outcomePrices?.map(Number) ?? []
+  let prices: number[] = []
+  try {
+    const raw = m.outcomePrices
+    if (typeof raw === 'string') {
+      prices = JSON.parse(raw).map(Number)
+    } else if (Array.isArray(raw)) {
+      prices = raw.map(Number)
+    }
+  } catch { prices = [] }
+
+  let outcomes: string[] = ['Yes', 'No']
+  try {
+    const raw = m.outcomes
+    if (typeof raw === 'string') {
+      outcomes = JSON.parse(raw)
+    } else if (Array.isArray(raw)) {
+      outcomes = raw
+    }
+  } catch { outcomes = ['Yes', 'No'] }
+
   return {
-    id: m.id,
-    question: m.question,
+    id: m.id || '',
+    question: m.question || '',
     yesPrice: prices[0] ?? 0,
     noPrice: prices[1] ?? 0,
-    volume: m.volume,
-    liquidity: m.liquidity,
-    slug: m.slug,
-    outcomes: m.outcomes ?? ['Yes', 'No'],
+    volume: m.volume || 0,
+    liquidity: m.liquidity || 0,
+    slug: m.slug || '',
+    outcomes,
   }
 }
 
