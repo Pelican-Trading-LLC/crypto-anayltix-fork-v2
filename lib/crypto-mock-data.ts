@@ -627,3 +627,408 @@ export const MOCK_BRIEF_V2 = {
     { symbol: 'F&G', price: 72, change: 0, label: 'Greed' },
   ],
 }
+
+// ═══════════════════════════════════════════
+// TOKEN ANALYTIX — NEW UNIFIED DATA
+// ═══════════════════════════════════════════
+
+export interface UnifiedAsset {
+  symbol: string;
+  name: string;
+  category: 'crypto' | 'equity' | 'etf' | 'rwa' | 'defi' | 'commodity' | 'stablecoin';
+  price: number;
+  change24h: number;
+  marketCap: string;
+  volume: string;
+  pelicanInsight: string;
+  correlations: Record<string, number>;
+}
+
+export interface MacroInstrument {
+  symbol: string;
+  label: string;
+  value: string;
+  sublabel: string;
+  direction: 'Bullish' | 'Bearish' | 'Neutral';
+  insight: string;
+}
+
+export interface PredictionContract {
+  id: string;
+  question: string;
+  leadingOutcome: string;
+  probability: number;
+  volume: string;
+  category: 'macro' | 'crypto' | 'geopolitical' | 'regulatory';
+  signal: string;
+  isContrarian: boolean;
+}
+
+export interface XPost {
+  user: string;
+  verified: boolean;
+  time: string;
+  text: string;
+}
+
+export interface AnalystProfile {
+  name: string;
+  initials: string;
+  specialty: string;
+  instruments: string;
+  crypto: string;
+  winRate: string;
+  pips: string;
+  color: string;
+}
+
+export interface AnalystCall {
+  analyst: string;
+  instrument: string;
+  direction: 'Bullish' | 'Bearish' | 'Neutral';
+  quote: string;
+  time: string;
+}
+
+export interface Signal {
+  type: 'Convergence' | 'Contrarian' | 'On-Chain' | 'Analyst' | 'Macro' | 'Tokenization' | 'Technical';
+  severity: 'HIGH' | 'MEDIUM' | 'LOW';
+  title: string;
+  description: string;
+  tokens: string[];
+  action: 'Position' | 'Watch' | 'Hedge' | 'Confirm';
+  confidence: string;
+  time: string;
+  color: string;
+}
+
+export interface CalendarEvent {
+  date: string;
+  dayOfWeek: string;
+  type: 'macro' | 'crypto' | 'prediction' | 'tokenization' | 'webinar';
+  title: string;
+  time: string;
+  impact: 'High' | 'Medium' | 'Low' | null;
+  pelicanBrief: string | null;
+}
+
+export interface TokenizationSector {
+  category: string;
+  totalValue: string;
+  growth: string;
+  items: { name: string; value: string; yield?: string }[];
+}
+
+export interface LearningPath {
+  id: string;
+  title: string;
+  description: string;
+  totalLessons: number;
+  completedLessons: number;
+  color: string;
+  modules: { title: string; completed: boolean }[];
+}
+
+// ═══════════════════════════════════════════
+// UNIFIED ASSET UNIVERSE
+// ═══════════════════════════════════════════
+
+export const UNIFIED_ASSETS: UnifiedAsset[] = [
+  { symbol: 'BTC', name: 'Bitcoin', category: 'crypto', price: 84230, change24h: 7.44, marketCap: '1.65T', volume: '42.8B', pelicanInsight: 'DXY breakdown fueling rally. H&S target 101.50 on dollar = 15-45% historical BTC upside. Bull flag on weekly.', correlations: { SPX: 0.72, GOLD: 0.45, DXY: -0.68, AAPL: 0.58 } },
+  { symbol: 'ETH', name: 'Ethereum', category: 'crypto', price: 2180, change24h: -6.84, marketCap: '262B', volume: '18.2B', pelicanInsight: 'Underperforming BTC as dominance rises. Grega sees Wave 4 correction. Support at $2,050 critical. ETH/BTC ratio at cycle lows.', correlations: { SPX: 0.68, GOLD: 0.38, DXY: -0.61, BTC: 0.91 } },
+  { symbol: 'SOL', name: 'Solana', category: 'crypto', price: 138.50, change24h: -2.46, marketCap: '64B', volume: '3.8B', pelicanInsight: 'ETF approval probability at 28% on Polymarket. Network TPS leading all L1s. Consolidating above 200MA.', correlations: { SPX: 0.61, BTC: 0.88 } },
+  { symbol: 'LINK', name: 'Chainlink', category: 'crypto', price: 14.20, change24h: 3.10, marketCap: '8.9B', volume: '580M', pelicanInsight: 'Oracle infrastructure for tokenized assets. CCIP cross-chain protocol gaining institutional adoption.', correlations: { BTC: 0.82, ETH: 0.85 } },
+  { symbol: 'AAVE', name: 'Aave', category: 'defi', price: 92.40, change24h: 1.80, marketCap: '1.4B', volume: '120M', pelicanInsight: 'Largest DeFi lending protocol. Now supports USDY and other yield-bearing stablecoins as collateral.', correlations: { ETH: 0.78, BTC: 0.65 } },
+  { symbol: 'AAPL', name: 'Apple (Tokenized)', category: 'equity', price: 178.22, change24h: 1.20, marketCap: '2.75T', volume: '8.1B', pelicanInsight: 'Tokenized on Kraken. Identical exposure to NYSE AAPL with 24/7 settlement and T+0 clearing.', correlations: { SPX: 0.85, BTC: 0.58, QQQ: 0.91 } },
+  { symbol: 'NVDA', name: 'Nvidia (Tokenized)', category: 'equity', price: 892.40, change24h: 3.10, marketCap: '2.21T', volume: '14.2B', pelicanInsight: 'AI capex cycle intact. Tokenized version settles T+0 vs T+1 on Nasdaq. Same fundamentals, better rails.', correlations: { SPX: 0.79, BTC: 0.52, QQQ: 0.94 } },
+  { symbol: 'TSLA', name: 'Tesla (Tokenized)', category: 'equity', price: 172.80, change24h: -1.30, marketCap: '551B', volume: '9.4B', pelicanInsight: 'High-vol tokenized equity. 24/7 trading captures Asia session moves that NYSE misses.', correlations: { SPX: 0.71, BTC: 0.48 } },
+  { symbol: 'MSFT', name: 'Microsoft (Tokenized)', category: 'equity', price: 415.60, change24h: 0.80, marketCap: '3.09T', volume: '6.2B', pelicanInsight: 'Largest company by market cap, now tradeable 24/7 as a token on Kraken.', correlations: { SPX: 0.88, QQQ: 0.93 } },
+  { symbol: 'SPY', name: 'S&P 500 ETF (Tokenized)', category: 'etf', price: 528.40, change24h: 0.45, marketCap: '520B', volume: '28B', pelicanInsight: 'Tokenized SPY on Kraken. Trade the index 24/7 including weekends. Bull flag breakout targeting 5,400.', correlations: { BTC: 0.72, GOLD: 0.31, DXY: -0.52 } },
+  { symbol: 'QQQ', name: 'Nasdaq 100 ETF (Tokenized)', category: 'etf', price: 448.90, change24h: 0.62, marketCap: '260B', volume: '15B', pelicanInsight: 'Tech-heavy index, AI sector weight at ATH. Tokenized = weekend exposure.', correlations: { BTC: 0.69, SPY: 0.96 } },
+  { symbol: 'ONDO', name: 'Ondo Finance', category: 'rwa', price: 1.82, change24h: 12.30, marketCap: '2.4B', volume: '890M', pelicanInsight: 'Leading RWA protocol. USDY yield-bearing stablecoin at 4.85% APY. Surging on Nasdaq tokenization news.', correlations: { SPX: 0.42 } },
+  { symbol: 'MKR', name: 'Maker', category: 'defi', price: 1420, change24h: 2.80, marketCap: '1.2B', volume: '45M', pelicanInsight: 'MakerDAO holds $2.1B in RWAs as collateral. Largest DeFi protocol with real-world asset exposure.', correlations: { SPX: 0.38 } },
+  { symbol: 'PAXG', name: 'Pax Gold', category: 'commodity', price: 2338, change24h: 1.08, marketCap: '680M', volume: '24M', pelicanInsight: 'Each PAXG = 1oz LBMA-vaulted physical gold. Digital gold alternative to GLD ETF with no expense ratio.', correlations: { GOLD: 0.95, BTC: 0.45, DXY: -0.78 } },
+  { symbol: 'USDY', name: 'Ondo US Dollar Yield', category: 'stablecoin', price: 1.049, change24h: 0.01, marketCap: '548M', volume: '12M', pelicanInsight: 'Yield-bearing stablecoin at 4.85% APY. Backed by tokenized T-bills. The money market fund of crypto.', correlations: {} },
+];
+
+export const TICKER_DATA = [
+  { symbol: 'BTC', price: '$84,230', change: '+7.44%', up: true },
+  { symbol: 'ETH', price: '$2,180', change: '-6.84%', up: false },
+  { symbol: 'SOL', price: '$138.50', change: '-2.46%', up: false },
+  { symbol: 'AAPL', price: '$178.22', change: '+1.20%', up: true },
+  { symbol: 'SPY', price: '$528.40', change: '+0.45%', up: true },
+  { symbol: 'ONDO', price: '$1.82', change: '+12.3%', up: true },
+  { symbol: 'BTC.D', price: '58.4%', change: '+0.80%', up: true },
+  { symbol: 'DXY', price: '104.00', change: '-0.32%', up: false },
+  { symbol: 'GOLD', price: '$2,340', change: '+1.12%', up: true },
+  { symbol: 'F&G', price: '72', change: null, badge: 'GREED' },
+] as const;
+
+// ═══════════════════════════════════════════
+// MACRO REGIME
+// ═══════════════════════════════════════════
+
+export const MACRO_REGIME = {
+  overall: { direction: 'Risk-On' as const, confidence: 85, signalsAligned: 4, signalsTotal: 5 },
+  instruments: [
+    { symbol: 'DXY', label: 'DXY', value: '104.00', sublabel: 'Head & shoulders breakdown', direction: 'Bearish' as const, insight: 'Dollar weakness = crypto strength. BTC rallies 15-45% historically when DXY breaks below 104.' },
+    { symbol: 'GOLD', label: 'Gold (XAU)', value: '$2,340', sublabel: 'Wave 5 extension targeting $2,520', direction: 'Bullish' as const, insight: 'Gold leads BTC by 2-4 weeks. Digital gold narrative strengthens.' },
+    { symbol: 'SPX', label: 'SPX', value: '5,280', sublabel: 'Bull flag confirmed', direction: 'Bullish' as const, insight: 'BTC-SPX correlation at 0.72. Risk-on equities = risk-on crypto.' },
+    { symbol: '10Y', label: '10Y UST', value: '4.25%', sublabel: 'Post-CPI sell-off', direction: 'Bearish' as const, insight: 'Rising yields compete with risk assets. Watch 4.50% as the danger level.' },
+    { symbol: 'VIX', label: 'VIX', value: '14.2', sublabel: 'Complacency zone', direction: 'Neutral' as const, insight: 'Low VIX = calm markets. Watch for vol expansion above 20.' },
+  ] as MacroInstrument[],
+};
+
+// ═══════════════════════════════════════════
+// PREDICTION MARKETS
+// ═══════════════════════════════════════════
+
+export const PREDICTION_MARKETS: PredictionContract[] = [
+  { id: 'fed-april', question: 'Fed decision in April?', leadingOutcome: 'No change', probability: 96, volume: '$13M', category: 'macro', signal: 'Neutral', isContrarian: false },
+  { id: 'btc-65k', question: 'BTC above $65K in March?', leadingOutcome: 'Yes', probability: 43, volume: '$2.1M', category: 'crypto', signal: 'Contrarian Buy', isContrarian: true },
+  { id: 'eth-2400', question: 'ETH hit $2,400 in March?', leadingOutcome: 'Yes', probability: 32, volume: '$890K', category: 'crypto', signal: 'Contrarian Buy', isContrarian: true },
+  { id: 'fed-hike', question: 'Fed rate hike in 2026?', leadingOutcome: 'No', probability: 82, volume: '$246K', category: 'macro', signal: 'Bullish', isContrarian: false },
+  { id: 'sol-etf', question: 'SEC approve spot SOL ETF by June?', leadingOutcome: 'Yes', probability: 28, volume: '$1.4M', category: 'regulatory', signal: 'Watch', isContrarian: false },
+  { id: 'btc-100k', question: 'BTC above $100K by June?', leadingOutcome: 'Yes', probability: 38, volume: '$4.8M', category: 'crypto', signal: 'Contrarian Buy', isContrarian: true },
+  { id: 'us-recession', question: 'US recession by Dec 2026?', leadingOutcome: 'No', probability: 74, volume: '$8.2M', category: 'macro', signal: 'Bullish', isContrarian: false },
+];
+
+export const CONTRARIAN_SPOTLIGHT = {
+  question: 'Will BTC drop below $65K before March expiry?',
+  currentProbability: 41,
+  volume: '$57M',
+  moveRequired: '-7.4%',
+  history: [
+    { date: 'Mar 8', probability: 80, btcPrice: 66500, label: 'BTC BOTTOM — rallied 14.3% over next week' },
+    { date: 'Mar 15', probability: 20, btcPrice: 76000, label: 'BTC TOP — fell 7.6% from this level' },
+  ],
+  pelicanAnalysis: 'Extreme readings on this contract act as contrarian mean-reversion signals. 80% probability marked the BTC bottom on March 8 (BTC rallied 14.3%). 20% marked the top on March 15 (BTC fell 7.6%). This behaves like RSI for macro sentiment. At 41%, neutral — watch for 60%+ as a buy signal. $57M volume makes this the most liquid crypto prediction contract active.',
+};
+
+// ═══════════════════════════════════════════
+// X FEED
+// ═══════════════════════════════════════════
+
+export const X_FEED: XPost[] = [
+  { user: '@zaborack', verified: true, time: '4m', text: '$57M in volume on a single contract: Will BTC drop below $65K? 80% probability marked the bottom. 20% marked the top. Prediction market data is becoming a leading indicator.' },
+  { user: '@WatcherGuru', verified: true, time: '12m', text: 'BREAKING: Nasdaq receives SEC approval to list tokenized stock securities. Trading begins April 2026.' },
+  { user: '@CryptoHayes', verified: true, time: '28m', text: 'DXY breaking the head & shoulders neckline. If 101 goes, risk assets go parabolic. Digital gold + equities + crypto all benefit.' },
+  { user: '@BlakeMorrow_FA', verified: true, time: '41m', text: 'Most important chart in the world right now is DXY. H&S target 101.50. If that hits, every risk asset on the planet benefits.' },
+  { user: '@DegenSpartan', verified: false, time: '1h', text: 'ICE investing $2B in Polymarket. NYSE parent company betting on prediction markets. This is not a drill.' },
+  { user: '@Pentosh1', verified: true, time: '1h', text: 'BTC weekly close above $83K is massive. Higher high on the weekly. Monthly trend intact. Bears running out of time.' },
+  { user: '@inversebrah', verified: true, time: '2h', text: 'Tokenized AAPL on Kraken trades 24/7. I can buy Apple stock at 3am on a Sunday. The future is here and nobody is talking about it.' },
+  { user: '@CredibleCrypto', verified: true, time: '2h', text: 'Gold wave 5 extension in play. $2,520 target. If gold leads BTC by 2-4 weeks like the last 3 cycles, new ATH attempt incoming.' },
+];
+
+// ═══════════════════════════════════════════
+// FOREXANALYTIX ANALYST DATA
+// ═══════════════════════════════════════════
+
+export const FA_ANALYSTS: AnalystProfile[] = [
+  { name: 'Blake Morrow', initials: 'BM', specialty: 'MACRO + HARMONICS', instruments: 'DXY, EUR/USD, Gold, SPX, BTC', crypto: 'BTC, ETH', winRate: '74%', pips: '312 PIPs', color: '#3B82F6' },
+  { name: 'Grega Horvat', initials: 'GH', specialty: 'ELLIOTT WAVE', instruments: 'EUR/USD, GBP/USD, Gold, Oil, ETH', crypto: 'ETH, SOL', winRate: '68%', pips: '287 PIPs', color: '#8B5CF6' },
+  { name: 'Steve Voulgaridis', initials: 'SV', specialty: 'CANDLESTICK + TECHNICAL', instruments: 'USD/JPY, AUD/USD, DAX, BTC', crypto: 'BTC', winRate: '71%', pips: '245 PIPs', color: '#EF4444' },
+  { name: 'Dale Pinkert', initials: 'DP', specialty: 'MACRO + INTERMARKET', instruments: 'DXY, SPX, 10Y UST, Gold', crypto: '\u2014', winRate: 'FACE Host', pips: '', color: '#F59E0B' },
+];
+
+export const ANALYST_CALLS: AnalystCall[] = [
+  { analyst: 'Blake Morrow', instrument: 'DXY', direction: 'Bearish', quote: 'H&S target 101.50. Most important chart in the world right now.', time: '2h ago' },
+  { analyst: 'Blake Morrow', instrument: 'BTC', direction: 'Bullish', quote: 'Adding to bat pattern position at $82,400.', time: '2h ago' },
+  { analyst: 'Grega Horvat', instrument: 'Gold', direction: 'Bullish', quote: 'Wave 5 extension. Target $2,520.', time: '3h ago' },
+  { analyst: 'Grega Horvat', instrument: 'ETH', direction: 'Bearish', quote: 'Wave 4 correction before 3,000.', time: '3h ago' },
+  { analyst: 'Steve Voulgaridis', instrument: 'SPX', direction: 'Bullish', quote: 'Bull flag breakout confirmed. 5,400 target.', time: '5h ago' },
+  { analyst: 'Dale Pinkert', instrument: 'DXY', direction: 'Bearish', quote: 'Real yields declining. Financial conditions loosening. Dollar has more room to fall.', time: '6h ago' },
+];
+
+export const ANALYST_CONSENSUS = [
+  { instrument: 'DXY', views: { blake: 'Bearish', grega: 'Bearish', steve: 'Bearish', dale: 'Bearish' }, consensus: 'UNANIMOUS BEARISH' },
+  { instrument: 'Gold', views: { blake: 'Bullish', grega: 'Bullish', steve: 'Neutral', dale: 'Bullish' }, consensus: '3/4 BULLISH' },
+  { instrument: 'BTC', views: { blake: 'Bullish', grega: 'Neutral', steve: 'Bullish', dale: 'Neutral' }, consensus: '2/4 BULLISH' },
+  { instrument: 'ETH', views: { blake: 'Neutral', grega: 'Bearish', steve: 'Neutral', dale: 'Neutral' }, consensus: 'LEAN BEARISH' },
+  { instrument: 'SPX', views: { blake: 'Bullish', grega: 'Neutral', steve: 'Bullish', dale: 'Bullish' }, consensus: '3/4 BULLISH' },
+];
+
+// ═══════════════════════════════════════════
+// TOKENIZATION DATA
+// ═══════════════════════════════════════════
+
+export const TOKENIZATION_PULSE: TokenizationSector[] = [
+  { category: 'Tokenized US Treasuries', totalValue: '$11.59B', growth: '+3.93% this week', items: [
+    { name: 'BlackRock BUIDL', value: '$1.9B', yield: '4.8% APY' },
+    { name: 'Ondo USDY', value: '$548M', yield: '4.85% APY' },
+    { name: 'Franklin OnChain FOBXX', value: '$425M', yield: '4.6% APY' },
+  ]},
+  { category: 'Private Credit', totalValue: '$3.2B', growth: '+180% YoY', items: [
+    { name: 'Maple Finance', value: '' },
+    { name: 'Centrifuge', value: '' },
+    { name: 'Goldfinch', value: '', yield: '8-12% APY' },
+  ]},
+  { category: 'Tokenized Stocks', totalValue: '$1.05B', growth: '+10.29% this month', items: [
+    { name: 'Circle Internet Group (via Ondo)', value: '$91M' },
+    { name: 'Exodus Movement (via Securitize)', value: '$73M' },
+    { name: 'Alphabet Class A (via Ondo)', value: '$54M' },
+  ]},
+  { category: 'Commodities', totalValue: '$1.27B', growth: '+7.2% this month', items: [
+    { name: 'Pax Gold (PAXG)', value: '$680M', yield: 'Physical gold in LBMA vaults' },
+    { name: 'Tether Gold (XAUT)', value: '$590M', yield: 'Physical gold in Swiss vaults' },
+  ]},
+];
+
+export const TOKENIZATION_MILESTONES = [
+  { title: 'SEC approves tokenized stocks on Nasdaq', description: 'Listed securities can now trade as tokens under existing regulatory framework. First trades expected April 2026.', impact: 'High' as const, time: '2d ago' },
+  { title: 'ICE (NYSE parent) invests $2B in Polymarket', description: 'Largest traditional exchange operator making a massive bet on prediction markets as financial infrastructure.', impact: 'High' as const, time: '3d ago' },
+  { title: 'BlackRock BUIDL crosses $1.9B TVL', description: 'Largest tokenized money market fund. Growing $200M/month. Institutional demand for on-chain T-bill exposure accelerating.', impact: 'Medium' as const, time: '5d ago' },
+  { title: 'Ondo USDY integrates with 4 new DeFi protocols', description: 'Yield-bearing stablecoin expanding composability. Now collateral on Aave, Compound, Morpho, and Euler.', impact: 'Medium' as const, time: '1w ago' },
+];
+
+export const TRADFI_EQUIVALENTS = [
+  { traditional: 'Money market fund', tokenized: 'BUIDL / USDY / FOBXX', advantage: '24/7 yield + DeFi composability' },
+  { traditional: 'Stock certificate (AAPL)', tokenized: 'Tokenized AAPL on Kraken', advantage: 'T+0 settlement, 24/7 trading' },
+  { traditional: 'Gold ETF (GLD)', tokenized: 'PAXG / XAUT', advantage: 'Direct ownership, no expense ratio' },
+  { traditional: 'Futures contract', tokenized: 'Polymarket prediction contract', advantage: 'No margin calls, binary outcome' },
+  { traditional: 'S&P 500 Index fund', tokenized: 'Tokenized SPY on Kraken', advantage: 'Weekend trading, fractional' },
+  { traditional: 'Corporate bond', tokenized: 'Maple Finance / Centrifuge', advantage: '8-12% yield, transparent default data' },
+];
+
+export const TRADFI_BRIDGE_PREDICTIONS = [
+  { traditional: 'Options IV / Put-Call Ratio', tokenized: 'Prediction market probability extremes' },
+  { traditional: 'RSI overbought / oversold', tokenized: 'Contract probability at 80%+ or sub-20%' },
+  { traditional: 'VIX as fear gauge', tokenized: 'Polymarket volume spikes on tail-risk contracts' },
+  { traditional: 'Fed Funds Futures', tokenized: 'Polymarket rate decision contracts' },
+  { traditional: 'CME Open Interest', tokenized: 'Prediction market volume + liquidity depth' },
+];
+
+// ═══════════════════════════════════════════
+// SIGNALS
+// ═══════════════════════════════════════════
+
+export const SIGNALS_DATA: Signal[] = [
+  { type: 'Convergence', severity: 'HIGH', title: '5-Signal Macro Convergence Detected', description: 'DXY broke key support + Gold ATH + SPX breakout + FA team unanimous bearish USD + Prediction markets repriced rate expectations. 5 independent signals pointing same direction.', tokens: ['BTC', 'ETH', 'SPY'], action: 'Position', confidence: '92%', time: '14m ago', color: '#8B5CF6' },
+  { type: 'Contrarian', severity: 'HIGH', title: 'Polymarket BTC $65K contract at contrarian zone', description: 'Contract probability rising toward 60%. Last two instances of 60%+ marked local BTC bottoms within 48 hours.', tokens: ['BTC'], action: 'Watch', confidence: '78%', time: '1h ago', color: '#8B5CF6' },
+  { type: 'On-Chain', severity: 'HIGH', title: 'Whale accumulation spike \u2014 BTC', description: '3 wallets with >1,000 BTC added 4,200 BTC ($354M) in 6 hours. Same addresses accumulated before Oct 2023 rally.', tokens: ['BTC'], action: 'Position', confidence: '85%', time: '2h ago', color: '#06B6D4' },
+  { type: 'Analyst', severity: 'MEDIUM', title: 'Analyst alignment: 4/4 bearish DXY', description: 'Blake, Grega, Steve, and Dale all bearish dollar. Unanimous bearish DXY preceded 78% avg BTC rally previously.', tokens: ['BTC', 'ETH', 'SOL'], action: 'Position', confidence: '88%', time: '3h ago', color: '#3B82F6' },
+  { type: 'Macro', severity: 'MEDIUM', title: 'Risk-On regime confirmed (85% confidence)', description: '4 of 5 macro indicators aligned: DXY bearish, Gold bullish, SPX bullish, VIX low. Only 10Y yield is warning.', tokens: ['BTC', 'SPY', 'ONDO'], action: 'Position', confidence: '85%', time: '4h ago', color: '#10B981' },
+  { type: 'Tokenization', severity: 'MEDIUM', title: 'Nasdaq tokenized stock listing approved by SEC', description: 'First regulated exchange approved for tokenized equities. Structural tailwind for RWA sector.', tokens: ['ONDO', 'MKR', 'CFG'], action: 'Watch', confidence: 'N/A', time: '1d ago', color: '#F59E0B' },
+  { type: 'Technical', severity: 'LOW', title: 'BTC golden cross on daily (50/200 MA)', description: '50-day crossed above 200-day. Historically bullish but mixed reliability. Combined with macro setup, adds confirmation.', tokens: ['BTC'], action: 'Confirm', confidence: '62%', time: '1d ago', color: '#64748B' },
+];
+
+// ═══════════════════════════════════════════
+// CALENDAR
+// ═══════════════════════════════════════════
+
+export const CALENDAR_EVENTS: CalendarEvent[] = [
+  { date: '2026-03-20', dayOfWeek: 'THU', type: 'webinar', title: 'FACE Daily Webinar', time: '8:30 AM ET', impact: null, pelicanBrief: null },
+  { date: '2026-03-21', dayOfWeek: 'FRI', type: 'prediction', title: 'Polymarket Situation Room opens in DC', time: 'All Day', impact: 'Medium', pelicanBrief: 'Physical prediction market venue. Watch for PR-driven volume spikes on Polymarket this weekend.' },
+  { date: '2026-03-24', dayOfWeek: 'MON', type: 'crypto', title: 'Arbitrum unlock \u2014 92.6M ARB ($98M)', time: '12:00 PM UTC', impact: 'Medium', pelicanBrief: 'Large unlock vs daily volume. Historically causes 5-8% dip in first 48h. Watch $0.95 support.' },
+  { date: '2026-03-26', dayOfWeek: 'WED', type: 'macro', title: 'FOMC Meeting Minutes Released', time: '2:00 PM ET', impact: 'High', pelicanBrief: 'Markets looking for balance sheet language. Any hawkish surprise could push 10Y above 4.50% danger level. Reduce leverage beforehand.' },
+  { date: '2026-03-28', dayOfWeek: 'FRI', type: 'macro', title: 'Core PCE Inflation (Feb)', time: '8:30 AM ET', impact: 'High', pelicanBrief: 'Fed preferred inflation measure. Consensus 2.7% YoY. Hot (>2.8%) = repriced rate odds. Cool (<2.6%) = risk-on accelerates. BTC vol \u00b14%.' },
+  { date: '2026-03-31', dayOfWeek: 'MON', type: 'prediction', title: 'BTC $65K March contract expires', time: '11:59 PM UTC', impact: 'High', pelicanBrief: '$57M volume contract resolving. Watch for new April/May contracts to gauge forward sentiment.' },
+  { date: '2026-04-01', dayOfWeek: 'TUE', type: 'tokenization', title: 'Nasdaq tokenized stock trading begins', time: 'Market Open', impact: 'High', pelicanBrief: 'First regulated exchange listing tokenized equities. Historic. Watch ONDO, MKR for RWA sector sympathy. Compare volumes to Kraken tokenized stocks.' },
+  { date: '2026-04-02', dayOfWeek: 'WED', type: 'macro', title: 'ISM Manufacturing PMI', time: '10:00 AM ET', impact: 'Medium', pelicanBrief: 'Leading indicator. Above 50 = expansion = risk-on. Below 49 = recession fears. Watch DXY reaction first.' },
+  { date: '2026-04-04', dayOfWeek: 'FRI', type: 'macro', title: 'Non-Farm Payrolls (March)', time: '8:30 AM ET', impact: 'High', pelicanBrief: 'Consensus +185K. Hot = higher rates = bearish. Weak = cuts back on table = bullish. Prediction markets pricing 96% no April cut regardless.' },
+  { date: '2026-04-10', dayOfWeek: 'THU', type: 'macro', title: 'CPI Inflation (March)', time: '8:30 AM ET', impact: 'High', pelicanBrief: 'The big one. Consensus 2.9% YoY. Above 3% devastating for risk. Below 2.7% could reprice cut odds from 0% to 20%+. Maximum vol event.' },
+];
+
+// ═══════════════════════════════════════════
+// KNOWLEDGE BASE / LEARNING PATHS
+// ═══════════════════════════════════════════
+
+export const LEARNING_PATHS: LearningPath[] = [
+  { id: 'equities', title: 'I Trade Equities', description: 'Options, stocks, ETFs \u2192 tokenized equivalents, 24/7 markets, on-chain settlement', totalLessons: 12, completedLessons: 4, color: '#3B82F6', modules: [
+    { title: 'What is a tokenized stock? (Same equity, new rails)', completed: true },
+    { title: 'Kraken setup: buying tokenized AAPL', completed: true },
+    { title: 'Settlement comparison: T+1 vs T+0', completed: true },
+    { title: 'Why 24/7 trading matters for risk management', completed: true },
+    { title: 'Yield-bearing stablecoins as cash management', completed: false },
+    { title: 'Portfolio migration: what moves on-chain first', completed: false },
+    { title: 'Understanding on-chain order books', completed: false },
+    { title: 'DeFi composability for equity traders', completed: false },
+    { title: 'Tax implications of tokenized securities', completed: false },
+    { title: 'Custody options: exchange vs self-custody', completed: false },
+    { title: 'Cross-margin with tokenized assets', completed: false },
+    { title: 'Building a hybrid TradFi + token portfolio', completed: false },
+  ]},
+  { id: 'futures', title: 'I Trade Futures/Options', description: 'Derivatives \u2192 prediction markets, DeFi options, perpetual contracts', totalLessons: 10, completedLessons: 2, color: '#8B5CF6', modules: [
+    { title: 'Prediction markets as binary options', completed: true },
+    { title: 'Reading Polymarket like an options chain', completed: true },
+    { title: 'Contrarian signals: probability extremes as RSI', completed: false },
+    { title: 'DeFi perpetuals vs CME futures', completed: false },
+    { title: 'Funding rates as sentiment indicators', completed: false },
+    { title: 'Building multi-leg strategies with prediction contracts', completed: false },
+    { title: 'Polymarket volume analysis techniques', completed: false },
+    { title: 'On-chain derivatives protocols (dYdX, GMX)', completed: false },
+    { title: 'Cross-exchange basis trading', completed: false },
+    { title: 'Automated prediction market strategies', completed: false },
+  ]},
+  { id: 'forex', title: 'I Trade Forex', description: 'Currency pairs \u2192 stablecoins, DXY-crypto correlation, macro regime trading', totalLessons: 8, completedLessons: 0, color: '#10B981', modules: [
+    { title: 'Stablecoins are currency pairs (USDC/USDT \u2248 EUR/USD)', completed: false },
+    { title: 'DXY as the crypto macro driver', completed: false },
+    { title: 'Carry trade: yield-bearing stablecoins vs FX carry', completed: false },
+    { title: 'How ForexAnalytix macro analysis applies to crypto', completed: false },
+    { title: 'Cross-asset correlation trading', completed: false },
+    { title: 'Macro regime identification for crypto positioning', completed: false },
+    { title: 'Central bank policy \u2192 crypto flow analysis', completed: false },
+    { title: 'Building a macro-driven crypto strategy', completed: false },
+  ]},
+  { id: 'new', title: 'New to Tokenization', description: 'Start from zero \u2192 understand why all assets are moving on-chain', totalLessons: 15, completedLessons: 0, color: '#F59E0B', modules: [
+    { title: 'What is tokenization? (No jargon version)', completed: false },
+    { title: 'Why BlackRock is tokenizing T-bills', completed: false },
+    { title: 'The settlement revolution explained', completed: false },
+    { title: 'SEC approvals and what they mean', completed: false },
+    { title: 'Your first Kraken account + tokenized trade', completed: false },
+    { title: 'Wallets, keys, and self-custody basics', completed: false },
+    { title: 'Understanding stablecoins as infrastructure', completed: false },
+    { title: 'DeFi 101: lending, borrowing, yield', completed: false },
+    { title: 'Prediction markets explained', completed: false },
+    { title: 'On-chain transparency vs TradFi opacity', completed: false },
+    { title: 'Risk management in 24/7 markets', completed: false },
+    { title: 'Reading on-chain data (block explorers)', completed: false },
+    { title: 'Gas fees and transaction costs', completed: false },
+    { title: 'Cross-chain bridges and interoperability', completed: false },
+    { title: 'Building your first tokenized portfolio', completed: false },
+  ]},
+];
+
+export const TRADFI_GLOSSARY = [
+  { traditional: 'Brokerage account', tokenized: 'Kraken / self-custody wallet' },
+  { traditional: 'Stock certificate', tokenized: 'ERC-20 tokenized equity' },
+  { traditional: 'Money market fund', tokenized: 'Yield-bearing stablecoin (USDY, BUIDL)' },
+  { traditional: 'Options contract', tokenized: 'Prediction market contract' },
+  { traditional: 'SWIFT transfer', tokenized: 'Stablecoin transfer (USDC)' },
+  { traditional: 'Clearing house (DTCC)', tokenized: 'Smart contract settlement' },
+  { traditional: 'Margin account', tokenized: 'DeFi lending position (Aave, Compound)' },
+  { traditional: 'Market maker', tokenized: 'Automated market maker (AMM)' },
+];
+
+// ═══════════════════════════════════════════
+// PELICAN SYNTHESIS STRINGS
+// ═══════════════════════════════════════════
+
+export const PELICAN_SYNTHESES = {
+  morningBrief: `While you slept: DXY broke the head-and-shoulders neckline (104.00), Gold extended to $2,340 on wave 5 targeting $2,520, and SPX confirmed a bull flag breakout above 5,280. BTC rallied 7.4% to $84,230 on the dollar weakness. Prediction markets pricing 96% chance of no April rate cut. The macro regime is Risk-On at 85% confidence \u2014 4 of 5 signals aligned for crypto strength. One risk to monitor: 10Y yield at 4.25% post-CPI; a move above 4.50% would pressure all risk assets. Nasdaq's SEC approval for tokenized stock listings is the structural story \u2014 this accelerates the convergence thesis. Your portfolio is up $2,602 overnight (+4.11%).`,
+
+  macroRegime: `4 of 5 macro signals aligned for crypto strength. DXY breakdown + Gold ATH + SPX breakout = most bullish macro backdrop since October 2023. Only risk: JPY carry trade unwind could cause short-term volatility. Prediction markets pricing 96% chance of no April rate cut \u2014 upside depends entirely on dollar weakness and risk appetite, not monetary policy catalysts.`,
+
+  marketPulse: `ONDO +12.3% on Nasdaq tokenization approval. BTC +7.4% on DXY breakdown \u2014 dollar weakness is the dominant driver. Tokenized equities (AAPL, NVDA) tracking NYSE counterparts with identical returns but 24/7 settlement. USDY yield at 4.85% beating traditional money markets by 60 bps. ETH lagging as BTC dominance pushes higher \u2014 rotation into majors typical of early risk-on.`,
+
+  tokenization: `In TradFi terms: $11.5B in T-bills are now trading 24/7 on-chain with instant settlement. BlackRock's BUIDL yields 4.8% \u2014 60 bps above average money market funds. The arbitrage isn't yield, it's settlement speed and DeFi composability. Your T-bill can be used as collateral in a lending protocol at 3 AM on a Sunday. That's a structural advantage traditional custody can't match. The SEC's Nasdaq approval means this isn't crypto-native anymore \u2014 it's regulated financial infrastructure.`,
+
+  analystConsensus: `The entire team is bearish DXY \u2014 unanimous. If Blake's H&S target of 101.50 hits, BTC historically rallies 15-45%. That's $97K-$122K from current levels. Gold consensus is 3/4 bullish with Grega's $2,520 target. Gold leads BTC by 2-4 weeks, so if Gold hits target, expect BTC ATH attempt within a month. ETH is the divergence \u2014 Grega is outright bearish (Wave 4 correction). ETH underperformance vs BTC may continue until dominance peaks. Actionable: overweight BTC, neutral ETH, wait for Wave 4 completion signal from Grega before adding ETH exposure.`,
+
+  webinarRecap: `Analyst unanimity on DXY weakness is rare. Last time all four were bearish simultaneously (Oct 2023), BTC rallied 78% over the following 4 months. Key disagreement is on ETH \u2014 Grega's Wave 4 target of $1,950 is 10% below current price. If correct, wait. If the correction is shallow (hold $2,050), the risk/reward favors early entry. Dale's point about the rally being liquidity-driven, not policy-driven, is the most underappreciated insight \u2014 the Fed doesn't need to cut for crypto to rally. Dollar weakness alone is sufficient fuel.`,
+};
+
+// ═══════════════════════════════════════════
+// ASK PELICAN SUGGESTED PROMPTS
+// ═══════════════════════════════════════════
+
+export const PELICAN_SUGGESTED_PROMPTS = [
+  { category: 'Macro', prompt: 'Analyze BTC\'s macro setup using ForexAnalytix views, prediction market odds, and on-chain flows' },
+  { category: 'Scenario', prompt: 'If the Fed cuts in June, model how my portfolio performs based on historical rate-cut cycles' },
+  { category: 'Bridge', prompt: 'Compare risk/reward of AAPL stock at Schwab vs tokenized AAPL on Kraken \u2014 yield, settlement, 24/7 access' },
+  { category: 'Contrarian', prompt: 'Scan Polymarket for contracts where probability diverges from implied options volatility' },
+  { category: 'Portfolio', prompt: 'Which of my holdings have tokenized equivalents with better yield or settlement?' },
+  { category: 'Education', prompt: 'Explain prediction markets as options contracts to someone who trades SPX options' },
+  { category: 'On-Chain', prompt: 'Show me whale wallet movements for BTC in the last 24 hours and what they signal' },
+  { category: 'Analyst', prompt: 'Summarize where Blake, Grega, Steve, and Dale disagree and who to follow for ETH' },
+];
