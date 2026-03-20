@@ -8,7 +8,7 @@ const educationLimiter = createUserRateLimiter('education-chat', 20, '1 h')
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
-const SYSTEM_PROMPT = `You are CryptoAnalytix's crypto education assistant. You explain crypto trading concepts, DeFi protocols, on-chain metrics, token economics, and market terminology in clear, simple language for retail traders.
+const SYSTEM_PROMPT = `You are TokenAnalytix's crypto education assistant. You explain crypto trading concepts, DeFi protocols, on-chain metrics, token economics, and market terminology in clear, simple language for retail traders.
 
 Rules:
 - Only discuss crypto trading and digital asset concepts

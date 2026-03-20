@@ -8,7 +8,7 @@ const LandingPageClient = dynamic(
 
 export const metadata: Metadata = {
   title: {
-    absolute: 'Crypto Analytix — AI-Powered Crypto Intelligence for Real Traders',
+    absolute: 'Token Analytix — AI-Powered Crypto Intelligence for Real Traders',
   },
   description:
     'The crypto intelligence platform built for TradFi traders. Pelican AI translates funding rates, on-chain data, and derivatives into the language you already know.',
@@ -20,8 +20,8 @@ export const metadata: Metadata = {
 const organizationJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
-  name: 'Crypto Analytix',
-  url: 'https://cryptoanalytix.com',
+  name: 'Token Analytix',
+  url: 'https://tokenanalytix.com',
   description:
     'AI-powered crypto intelligence platform for traditional finance traders.',
   foundingDate: '2026',
@@ -30,7 +30,7 @@ const organizationJsonLd = {
 const productJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
-  name: 'Crypto Analytix',
+  name: 'Token Analytix',
   applicationCategory: 'FinanceApplication',
   operatingSystem: 'Web',
   description:

@@ -85,7 +85,7 @@ export default function AcceptTermsPage() {
             <div className="w-20 h-20 mb-4 relative">
               <Image
                 src="/ca-logo.svg"
-                alt="Crypto Analytix"
+                alt="Token Analytix"
                 width={80}
                 height={80}
                 className="object-contain"

@@ -2,21 +2,21 @@ import type { Metadata } from 'next'
 import PricingPageContent from '@/components/pricing/PricingPageContent'
 
 export const metadata: Metadata = {
-  title: 'Pricing | Crypto Analytix — AI-Powered Crypto Intelligence Plans',
+  title: 'Pricing | Token Analytix — AI-Powered Crypto Intelligence Plans',
   description: 'Free, Lite ($29/mo), and Pro ($99/mo) plans. The crypto intelligence platform built for TradFi traders. Pelican AI, analyst signals, and exchange integration.',
   alternates: {
-    canonical: 'https://cryptoanalytix.com/pricing',
+    canonical: 'https://tokenanalytix.com/pricing',
   },
 }
 
 const pricingJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Product',
-  name: 'Crypto Analytix',
+  name: 'Token Analytix',
   description: 'AI-powered crypto intelligence platform for traditional finance traders.',
   brand: {
     '@type': 'Organization',
-    name: 'Crypto Analytix',
+    name: 'Token Analytix',
   },
   offers: [
     {

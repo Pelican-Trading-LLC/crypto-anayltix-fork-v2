@@ -21,7 +21,7 @@ export default function UnauthorizedPage() {
         </h1>
         <p className="text-muted-foreground mb-8">
           This environment is restricted to the Pelican founding team.
-          If you believe you should have access, contact nick@cryptoanalytix.com.
+          If you believe you should have access, contact nick@tokenanalytix.com.
         </p>
         <button
           onClick={handleSignOut}

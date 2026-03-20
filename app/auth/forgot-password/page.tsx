@@ -58,7 +58,7 @@ export default function ForgotPasswordPage() {
             <div className="w-12 h-12 mb-4 relative">
               <Image
                 src="/ca-logo.svg"
-                alt="Crypto Analytix"
+                alt="Token Analytix"
                 width={48}
                 height={48}
                 className="object-contain"

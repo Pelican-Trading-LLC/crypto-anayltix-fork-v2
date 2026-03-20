@@ -107,7 +107,7 @@ export function HowToUsePage() {
         <ScrollReveal>
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4">
-              Getting Started with Crypto Analytix
+              Getting Started with Token Analytix
             </h1>
             <p className="text-lg text-slate-500 max-w-2xl mx-auto">
               From signup to crypto fluency &mdash; five steps to navigate crypto markets with confidence.

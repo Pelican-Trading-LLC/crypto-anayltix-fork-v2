@@ -1,5 +1,5 @@
 // ══════════════════════════════════════════════════════════════
-// CRYPTO ANALYTIX — Mock Data
+// TOKEN ANALYTIX — Mock Data
 // Single source of truth. Every component imports from here.
 // ══════════════════════════════════════════════════════════════
 

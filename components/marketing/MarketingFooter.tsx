@@ -6,8 +6,8 @@ export default function MarketingFooter() {
     <footer>
       <div className="footer-inner">
         <div className="footer-logo">
-          <div className="w-8 h-8 rounded-[8px] flex items-center justify-center text-white text-[10px] font-bold" style={{ background: 'linear-gradient(135deg, #1DA1C4, #178BA8)' }}>CA</div>
-          <span>Crypto Analytix</span>
+          <div className="w-8 h-8 rounded-[8px] flex items-center justify-center text-white text-[10px] font-bold" style={{ background: 'linear-gradient(135deg, #1DA1C4, #178BA8)' }}>TA</div>
+          <span>Token Analytix</span>
         </div>
         <div className="footer-links">
           <Link href="/terms">Terms of Use</Link>
@@ -16,7 +16,7 @@ export default function MarketingFooter() {
           <Link href="#pricing">Pricing</Link>
         </div>
         <div className="footer-copy">
-          &copy; {new Date().getFullYear()} Crypto Analytix. All rights reserved.
+          &copy; {new Date().getFullYear()} Token Analytix. All rights reserved.
         </div>
       </div>
       <div className="footer-trust">

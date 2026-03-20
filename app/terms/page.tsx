@@ -3,8 +3,8 @@ import Link from 'next/link';
 import '../legal-styles.css';
 
 export const metadata: Metadata = {
-  title: 'Terms of Service | Crypto Analytix',
-  description: 'Terms and Conditions of Service for Crypto Analytix, LLC — governing your access to and use of the Pelican platform and services.',
+  title: 'Terms of Service | Token Analytix',
+  description: 'Terms and Conditions of Service for Token Analytix, LLC — governing your access to and use of the Pelican platform and services.',
   alternates: {
     canonical: '/terms',
   },
@@ -19,7 +19,7 @@ export default function TermsPage() {
       <main id="main-content" className="legal-content">
         <h1>Terms of Service</h1>
         <p className="legal-meta">
-          <strong>CRYPTO ANALYTIX, LLC</strong><br />
+          <strong>TOKEN ANALYTIX, LLC</strong><br />
           Effective Date: November 23, 2025<br />
           Last Updated: November 23, 2025
         </p>
@@ -27,7 +27,7 @@ export default function TermsPage() {
         <section>
           <h2>1. INTRODUCTION</h2>
           <p>
-            These Terms and Conditions of Service (the &quot;Terms,&quot; &quot;Agreement,&quot; or &quot;TOS&quot;) constitute a legally binding agreement between you (&quot;User,&quot; &quot;you,&quot; or &quot;your&quot;) and Crypto Analytix, LLC, a Delaware limited liability company (&quot;Pelican,&quot; &quot;Company,&quot; &quot;we,&quot; &quot;us,&quot; or &quot;our&quot;), governing your access to and use of the Pelican platform, services, websites, applications, APIs, tools, and all related software and documentation (collectively, the &quot;Services&quot;).
+            These Terms and Conditions of Service (the &quot;Terms,&quot; &quot;Agreement,&quot; or &quot;TOS&quot;) constitute a legally binding agreement between you (&quot;User,&quot; &quot;you,&quot; or &quot;your&quot;) and Token Analytix, LLC, a Delaware limited liability company (&quot;Pelican,&quot; &quot;Company,&quot; &quot;we,&quot; &quot;us,&quot; or &quot;our&quot;), governing your access to and use of the Pelican platform, services, websites, applications, APIs, tools, and all related software and documentation (collectively, the &quot;Services&quot;).
           </p>
           <p>
             By accessing, browsing, or using the Services in any manner, including but not limited to visiting or browsing the website, registering an account, or accessing any content, information, or materials, you agree to be bound by these Terms. If you do not agree to all provisions of these Terms, you are not authorized to access or use the Services and must immediately cease all use.
@@ -96,14 +96,14 @@ export default function TermsPage() {
             For questions about these Terms, please contact:
           </p>
           <p>
-            <strong>Crypto Analytix, LLC</strong><br />
+            <strong>Token Analytix, LLC</strong><br />
             2045 W Grand Ave<br />
             STE B 773866<br />
             Chicago, IL 60612 US
           </p>
           <p>
             Email: <a href="mailto:legal@pelican.ai">legal@pelican.ai</a><br />
-            Support: <a href="mailto:support@cryptoanalytix.com">support@cryptoanalytix.com</a>
+            Support: <a href="mailto:support@tokenanalytix.com">support@tokenanalytix.com</a>
           </p>
         </section>
 

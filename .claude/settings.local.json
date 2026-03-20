@@ -22,7 +22,10 @@
       "Bash(tee:*)",
       "Bash(git stash:*)",
       "Bash(git pull:*)",
-      "Read(//c/Users/grove/Desktop/**)"
+      "Read(//c/Users/grove/Desktop/**)",
+      "Bash(for f:*)",
+      "Bash(do sed:*)",
+      "Bash(npx next:*)"
     ],
     "deny": [],
     "ask": []

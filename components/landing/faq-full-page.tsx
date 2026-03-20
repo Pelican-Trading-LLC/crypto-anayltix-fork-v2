@@ -19,11 +19,11 @@ interface FAQCategory {
 
 const faqData: FAQCategory[] = [
   {
-    title: 'About Crypto Analytix',
+    title: 'About Token Analytix',
     items: [
       {
-        question: 'What is Crypto Analytix?',
-        answer: 'Crypto Analytix is an AI-powered crypto intelligence platform built specifically for traditional finance (TradFi) traders entering crypto. Pelican AI translates funding rates, on-chain data, derivatives, and crypto-native signals into the language you already know from stocks, forex, and futures.',
+        question: 'What is Token Analytix?',
+        answer: 'Token Analytix is an AI-powered crypto intelligence platform built specifically for traditional finance (TradFi) traders entering crypto. Pelican AI translates funding rates, on-chain data, derivatives, and crypto-native signals into the language you already know from stocks, forex, and futures.',
       },
       {
         question: "I've never traded crypto. Is this for me?",
@@ -34,8 +34,8 @@ const faqData: FAQCategory[] = [
         answer: "Pelican is a conversational AI that knows your portfolio, understands market data, and speaks the language of a traditional trader. Ask it anything \u2014 from 'what are funding rates?' to 'analyze my BTC position relative to the upcoming options expiry.' It combines real-time market data with ForexAnalytix analyst content.",
       },
       {
-        question: 'What is the current status of Crypto Analytix?',
-        answer: 'Crypto Analytix is currently in Beta. You can sign up at cryptoanalytix.com to get early access and help shape the future of the platform.',
+        question: 'What is the current status of Token Analytix?',
+        answer: 'Token Analytix is currently in Beta. You can sign up at tokenanalytix.com to get early access and help shape the future of the platform.',
       },
     ],
   },
@@ -115,7 +115,7 @@ const faqData: FAQCategory[] = [
         answer: 'Yes. All data is encrypted at rest and in transit. Exchange connections use read-only API keys via SnapTrade (an established fintech provider). We never store your exchange credentials directly.',
       },
       {
-        question: 'Can Crypto Analytix withdraw my funds?',
+        question: 'Can Token Analytix withdraw my funds?',
         answer: 'No. Exchange connections are read-only through SnapTrade. We never request withdrawal permissions. Your funds remain fully under your control at all times.',
       },
     ],
@@ -125,15 +125,15 @@ const faqData: FAQCategory[] = [
     items: [
       {
         question: 'How do I get help?',
-        answer: 'You can use the chat widget on this site for quick questions about Crypto Analytix. For account issues, billing questions, bug reports, or anything else, email us at support@cryptoanalytix.com.',
+        answer: 'You can use the chat widget on this site for quick questions about Token Analytix. For account issues, billing questions, bug reports, or anything else, email us at support@tokenanalytix.com.',
       },
       {
         question: 'What if I have a billing or account issue?',
-        answer: 'For billing questions, payment issues, account access problems, or refund requests, please email support@cryptoanalytix.com and our team will help you directly.',
+        answer: 'For billing questions, payment issues, account access problems, or refund requests, please email support@tokenanalytix.com and our team will help you directly.',
       },
       {
         question: 'How do I report a bug?',
-        answer: 'If you encounter a bug or technical issue with the platform, email support@cryptoanalytix.com with details about what happened. Screenshots and steps to reproduce are always helpful!',
+        answer: 'If you encounter a bug or technical issue with the platform, email support@tokenanalytix.com with details about what happened. Screenshots and steps to reproduce are always helpful!',
       },
     ],
   },
@@ -163,7 +163,7 @@ export function FAQFullPage() {
               Frequently Asked Questions
             </h1>
             <p className="text-lg text-slate-500 max-w-2xl mx-auto">
-              Everything you need to know about Crypto Analytix.
+              Everything you need to know about Token Analytix.
             </p>
           </div>
         </ScrollReveal>
@@ -241,7 +241,7 @@ export function FAQFullPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <a
-                href="mailto:support@cryptoanalytix.com"
+                href="mailto:support@tokenanalytix.com"
                 className="rounded-xl border border-slate-200 px-6 py-3 text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors"
               >
                 Email Support

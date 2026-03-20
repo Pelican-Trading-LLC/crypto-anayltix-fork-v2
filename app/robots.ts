@@ -9,6 +9,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/auth/', '/admin/', '/chat/', '/settings/', '/profile/', '/api/', '/accept-terms/'],
       },
     ],
-    sitemap: 'https://cryptoanalytix.com/sitemap.xml',
+    sitemap: 'https://tokenanalytix.com/sitemap.xml',
   }
 }

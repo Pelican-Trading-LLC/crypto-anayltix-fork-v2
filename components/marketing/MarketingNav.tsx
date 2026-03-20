@@ -108,8 +108,8 @@ export default function MarketingNav({
     <nav>
       <div className="nav-inner">
         <Link href="/" className="nav-logo">
-          <div className="w-8 h-8 rounded-[8px] flex items-center justify-center text-white text-[10px] font-bold" style={{ background: 'linear-gradient(135deg, #1DA1C4, #178BA8)' }}>CA</div>
-          <span>Crypto Analytix</span>
+          <div className="w-8 h-8 rounded-[8px] flex items-center justify-center text-white text-[10px] font-bold" style={{ background: 'linear-gradient(135deg, #1DA1C4, #178BA8)' }}>TA</div>
+          <span>Token Analytix</span>
         </Link>
         <div className="nav-links">
           {links.map((link) =>

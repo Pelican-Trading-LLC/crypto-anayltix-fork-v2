@@ -122,22 +122,23 @@ export default function AppSidebar() {
       {/* Logo */}
       <div className="flex items-center gap-2.5 px-3 h-14 border-b border-[var(--border-subtle)] flex-shrink-0">
         <div
-          className="w-8 h-8 rounded-[8px] flex items-center justify-center text-white text-[11px] font-bold flex-shrink-0"
-          style={{ background: 'linear-gradient(135deg, #1DA1C4, #178BA8)' }}
+          className="w-[30px] h-[30px] rounded-[8px] flex items-center justify-center text-white text-[11px] font-bold flex-shrink-0"
+          style={{ background: 'linear-gradient(135deg, #06B6D4, #8B5CF6)' }}
         >
-          CA
+          TA
         </div>
         <AnimatePresence>
           {!collapsed && (
-            <motion.span
+            <motion.div
               initial={{ opacity: 0, width: 0 }}
               animate={{ opacity: 1, width: 'auto' }}
               exit={{ opacity: 0, width: 0 }}
               transition={{ duration: 0.15 }}
-              className="text-sm font-bold text-[var(--text-primary)] tracking-tight whitespace-nowrap overflow-hidden"
+              className="whitespace-nowrap overflow-hidden"
             >
-              CryptoAnalytix
-            </motion.span>
+              <div className="text-[14px] font-bold text-white leading-tight">Token Analytix</div>
+              <div className="text-[9px] font-mono text-[var(--text-muted)] tracking-[0.5px] leading-tight">POWERED BY PELICAN AI</div>
+            </motion.div>
           )}
         </AnimatePresence>
       </div>

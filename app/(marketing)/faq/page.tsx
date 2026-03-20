@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import { FAQFullPage } from '@/components/landing/faq-full-page';
 
 export const metadata: Metadata = {
-  title: 'FAQ | Crypto Analytix',
-  description: 'Frequently asked questions about Crypto Analytix — AI-powered crypto intelligence for TradFi traders. Learn about Pelican AI, exchange connections, pricing, and more.',
+  title: 'FAQ | Token Analytix',
+  description: 'Frequently asked questions about Token Analytix — AI-powered crypto intelligence for TradFi traders. Learn about Pelican AI, exchange connections, pricing, and more.',
   alternates: {
     canonical: '/faq',
   },

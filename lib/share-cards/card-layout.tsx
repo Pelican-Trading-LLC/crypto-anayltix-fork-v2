@@ -126,7 +126,7 @@ export function CardLayout({
                 letterSpacing: "0.05em",
               }}
             >
-              cryptoanalytix.com
+              tokenanalytix.com
             </span>
           </div>
         )}

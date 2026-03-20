@@ -67,11 +67,11 @@ export function TopNav({ className }: TopNavProps) {
             className="flex items-center gap-2 sm:gap-3 group transition-opacity hover:opacity-80"
           >
             <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-[10px] flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
-              style={{ background: 'linear-gradient(135deg, #1DA1C4, #178BA8)' }}>
-              CA
+              style={{ background: 'linear-gradient(135deg, #06B6D4, #8B5CF6)' }}>
+              TA
             </div>
             <span className="hidden sm:inline text-base font-bold text-[var(--text-primary)] tracking-tight">
-              Crypto Analytix
+              Token Analytix
             </span>
           </Link>
         </div>

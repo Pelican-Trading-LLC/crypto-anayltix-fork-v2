@@ -23,8 +23,8 @@ export function LandingNav() {
       <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-6">
         {/* Left: Logo */}
         <Link href="/" className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-[8px] flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0" style={{ background: 'linear-gradient(135deg, #1DA1C4, #178BA8)' }}>CA</div>
-          <span className="text-sm font-semibold text-slate-900">Crypto Analytix</span>
+          <div className="w-8 h-8 rounded-[8px] flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0" style={{ background: 'linear-gradient(135deg, #1DA1C4, #178BA8)' }}>TA</div>
+          <span className="text-sm font-semibold text-slate-900">Token Analytix</span>
         </Link>
 
         {/* Center: Nav links (hidden on mobile) */}
