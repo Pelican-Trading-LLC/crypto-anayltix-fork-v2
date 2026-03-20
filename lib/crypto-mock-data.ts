@@ -353,12 +353,12 @@ export const MOCK_SECTORS: SectorData[] = [
     status: 'heating_up',
   },
   {
-    id: 'rwa', name: 'RWA', velocity: 2.5,
-    volume: 900000000, volume_change_7d: 22,
-    smart_money_flow: 78000000, market_cap: 18000000000, mcap_change_7d: 8.6,
-    top_tokens: [{ symbol: 'ONDO', change_7d: 12.4 }, { symbol: 'PENDLE', change_7d: 8.8 }, { symbol: 'MKR', change_7d: 5.2 }],
-    sparkline_7d: [100, 101, 103, 105, 108, 110, 112],
-    status: 'stealth_accumulation',
+    id: 'rwa', name: 'RWA', velocity: 3.9,
+    volume: 2400000000, volume_change_7d: 68,
+    smart_money_flow: 890000000, market_cap: 24000000000, mcap_change_7d: 18.4,
+    top_tokens: [{ symbol: 'ONDO', change_7d: 22.4 }, { symbol: 'CFG', change_7d: 34.8 }, { symbol: 'MPL', change_7d: 28.2 }, { symbol: 'LINK', change_7d: 14.6 }],
+    sparkline_7d: [100, 108, 118, 126, 132, 138, 148],
+    status: 'heating_up',
   },
   {
     id: 'depin', name: 'DePIN', velocity: 1.8,
@@ -410,12 +410,13 @@ export const SECTOR_STATUS_CONFIG: Record<string, { color: string; glow: string;
 }
 
 export const MOCK_ROTATION_BRIEFING = {
-  headline: 'Capital is rotating out of Memecoins and L2s and flooding directly into AI / Compute and GameFi.',
-  body: 'GameFi is showing the highest "stealth" velocity. Price action is muted, but smart money inflows have spiked 300% this week. Whales are front-running an upcoming narrative shift — likely tied to the GDC gaming conference announcements next week. AI / Compute continues its 3-week accumulation trend with TAO and AKT leading. L2 tokens seeing consistent smart money outflows as the "L2 summer" narrative fades. Memecoins in full retreat: $310M in smart money exits, volume down 32%, and funding rates on WIF/PEPE still dangerously elevated despite the selloff.',
+  headline: 'Capital is rotating out of Memecoins and L2s into AI / Compute, GameFi, and RWA — institutional money is pouring into tokenized treasuries.',
+  body: 'GameFi is showing the highest "stealth" velocity. Price action is muted, but smart money inflows have spiked 300% this week. Whales are front-running an upcoming narrative shift — likely tied to the GDC gaming conference announcements next week. AI / Compute continues its 3-week accumulation trend with TAO and AKT leading. L2 tokens seeing consistent smart money outflows as the "L2 summer" narrative fades. Memecoins in full retreat: $310M in smart money exits, volume down 32%, and funding rates on WIF/PEPE still dangerously elevated despite the selloff. RWA is the stealth winner this cycle — BlackRock BUIDL just crossed $1.7B, and institutional smart money inflows hit $890M this week. This isn\'t retail speculation; it\'s TradFi infrastructure being built on-chain. ONDO, CFG, and MPL are the plays.',
   flows: [
     { from: 'Memecoins', to: 'AI / Compute', amount: 142000000 },
     { from: 'L2 / L3 Scaling', to: 'GameFi', amount: 85000000 },
     { from: 'Memecoins', to: 'RWA', amount: 64000000 },
+    { from: 'L2 / L3 Scaling', to: 'RWA', amount: 120000000 },
   ],
 }
 
@@ -521,12 +522,13 @@ export interface ProtocolEntry {
   last_updated: string
 }
 
-export const PROTOCOL_CATEGORIES = ['All', 'Lending', 'DEX', 'LSD', 'Restaking', 'Yield/Deriv', 'Perp DEX', 'Stable/Yield', 'Bridge', 'L2', 'Oracle', 'Compute', 'NFT'] as const
+export const PROTOCOL_CATEGORIES = ['All', 'Lending', 'DEX', 'LSD', 'Restaking', 'Yield/Deriv', 'Perp DEX', 'Stable/Yield', 'Bridge', 'L2', 'Oracle', 'Compute', 'NFT', 'Tokenized Assets'] as const
 
 export const CATEGORY_COLORS: Record<string, string> = {
   Lending: '#1DA1C4', DEX: '#A78BFA', LSD: '#F59E0B', Restaking: '#22C55E',
   'Yield/Deriv': '#EC4899', 'Perp DEX': '#EF4444', 'Stable/Yield': '#6366F1',
   Bridge: '#F97316', L2: '#06B6D4', Oracle: '#8B5CF6', Compute: '#14B8A6', NFT: '#E879F9',
+  'Tokenized Assets': '#14B8A6',
 }
 
 export const MOCK_KNOWLEDGE_BASE: ProtocolEntry[] = [
@@ -545,13 +547,18 @@ export const MOCK_KNOWLEDGE_BASE: ProtocolEntry[] = [
   { id: 'chainlink', name: 'Chainlink', category: 'Oracle', mechanics: 'Decentralized oracle network. LINK is node payment.', critical_risks: 'Single point of failure for DeFi pricing.', data_quirks: 'Revenue from feeds is tiny vs token valuation. Track integration count growth.', last_updated: '2026-03-05' },
   { id: 'render', name: 'Render', category: 'Compute', mechanics: 'Decentralized GPU rendering. RNDR pays for compute.', critical_risks: 'Compute demand is speculative; competition from centralized cloud.', data_quirks: 'Track active jobs and GPU utilization, not just token price.', last_updated: '2026-03-04' },
   { id: 'blur', name: 'Blur', category: 'NFT', mechanics: 'NFT marketplace with lending via Blend.', critical_risks: 'NFT volume is cyclical and speculative.', data_quirks: 'Wash trading inflates volume. Track unique buyers, not total volume.', last_updated: '2026-03-03' },
+  { id: 'buidl', name: 'BlackRock BUIDL', category: 'Tokenized Assets', mechanics: 'Tokenized US Treasury fund on Ethereum via Securitize. Institutional-only ($5M min). BUIDL tokens represent shares in a fund holding short-term Treasuries.', critical_risks: 'Counterparty risk (BlackRock/Securitize), regulatory reclassification, smart contract risk on Securitize platform.', data_quirks: 'TVL spikes correlate with Treasury yield changes. Track AUM growth rate, not absolute TVL — institutional adoption velocity matters more.', last_updated: '2026-03-18' },
+  { id: 'usdy', name: 'Ondo USDY', category: 'Tokenized Assets', mechanics: 'Tokenized note backed by US Treasuries and bank deposits. Yield-bearing stablecoin alternative. Available on multiple chains via LayerZero.', critical_risks: 'Regulatory uncertainty on yield-bearing tokens, redemption delays, Ondo counterparty risk.', data_quirks: 'Cross-chain deployment inflates apparent TVL. Track net new mints on Ethereum mainnet for real demand signal.', last_updated: '2026-03-17' },
+  { id: 'paxg', name: 'Paxos Gold (PAXG)', category: 'Tokenized Assets', mechanics: 'Each PAXG = 1 troy oz of London Good Delivery gold held in Brink\'s vaults. Fully redeemable. Regulated by NYDFS.', critical_risks: 'Gold price volatility, regulatory changes, custodial risk at Brink\'s.', data_quirks: 'Premium/discount to spot gold is the key metric. During crypto crashes, PAXG often trades at 1-3% premium as flight-to-safety.', last_updated: '2026-03-16' },
+  { id: 'maple-kb', name: 'Maple Finance', category: 'Tokenized Assets', mechanics: 'Institutional lending protocol. Pool delegates underwrite loans to crypto-native institutions. MPL token governs and captures fees.', critical_risks: 'Credit risk on borrowers (learned the hard way in 2022 with Orthogonal Trading default). Under-collateralized by design.', data_quirks: 'Default rate is THE metric. Post-2022 restructuring focused on over-collateralized pools. Track active loan book size vs historical defaults.', last_updated: '2026-03-15' },
+  { id: 'centrifuge-kb', name: 'Centrifuge', category: 'Tokenized Assets', mechanics: 'Brings real-world assets on-chain as NFTs used as collateral. CFG token for governance. Tinlake pools for various asset types.', critical_risks: 'Underlying asset quality varies wildly. Legal enforceability of on-chain claims on real-world assets untested in court.', data_quirks: 'Pool-level analysis required — aggregate TVL is misleading. Some pools have 0% default, others have significant write-downs.', last_updated: '2026-03-14' },
 ]
 
 // ══════════════════════════════════════════════════════════════
 // INTELLIGENCE ALERTS — Contextual notification system
 // ══════════════════════════════════════════════════════════════
 
-export type AlertCategory = 'onchain_anomaly' | 'derivatives_warning' | 'smart_money' | 'unlock_vesting' | 'portfolio_relative' | 'cross_asset'
+export type AlertCategory = 'onchain_anomaly' | 'derivatives_warning' | 'smart_money' | 'unlock_vesting' | 'portfolio_relative' | 'cross_asset' | 'prediction_market' | 'rwa_event'
 
 export interface IntelAlert {
   id: string
@@ -571,6 +578,8 @@ export const ALERT_CATEGORY_CONFIG: Record<AlertCategory, { label: string; color
   unlock_vesting: { label: 'UNLOCK ALERT', color: '#A78BFA', icon: 'clock' },
   portfolio_relative: { label: 'PORTFOLIO', color: '#6366F1', icon: 'chart' },
   cross_asset: { label: 'CROSS-ASSET', color: '#EC4899', icon: 'arrows' },
+  prediction_market: { label: 'PREDICTION MARKET', color: '#8B5CF6', icon: 'chart' },
+  rwa_event: { label: 'RWA EVENT', color: '#14B8A6', icon: 'bank' },
 }
 
 export const MOCK_ALERTS: IntelAlert[] = [
@@ -583,6 +592,9 @@ export const MOCK_ALERTS: IntelAlert[] = [
   { id: 'a7', category: 'onchain_anomaly', severity: 'low', title: 'Unusual Aave utilization spike on USDC', body: 'USDC utilization on Aave Ethereum hit 92%. Borrow rates spiked to 18% APY. This typically attracts new deposits within 24-48 hours and normalizes rates. Could signal upcoming large borrowing event.', affected_assets: ['AAVE', 'USDC'], timestamp: '14h ago', read: true },
   { id: 'a_fa1', category: 'cross_asset', severity: 'high', title: 'Blake Morrow: DXY breaking critical 104 support', body: 'ForexAnalytix: DXY testing 104 support for the 3rd time this week. Previous breakdowns at this level preceded 15-25% BTC rallies within 4 weeks. Blake\'s harmonic analysis shows EUR/USD bullish bat completion — if DXY breaks, crypto gets a tailwind. Pelican Translation: This is the macro signal crypto traders wait for. Position for BTC strength, reduce stablecoin allocation.', affected_assets: ['BTC', 'ETH', 'SOL'], timestamp: '1h ago', read: false },
   { id: 'a_fa2', category: 'cross_asset', severity: 'medium', title: 'FA FACE Webinar: Risk-off regime developing in bonds', body: 'ForexAnalytix FACE panel (Blake Morrow, Dale Pinkert, Joel Kruger) flagged rising US10Y yields as the dominant risk. 4.32% and climbing. COT data shows institutional shorts building in Treasuries. Pelican Translation: Rising yields historically crush altcoins first, then BTC. If US10Y breaks 4.50%, expect a 10-15% drawdown in high-beta crypto. Reduce leverage now.', affected_assets: ['ETH', 'SOL', 'AVAX'], timestamp: '3h ago', read: false },
+  { id: 'a_pm1', category: 'prediction_market', severity: 'high', title: 'BTC $100K by June odds surged to 68%', body: 'Polymarket prediction market for BTC reaching $100K by June 2026 jumped from 42% to 68% in 24 hours. Volume spiked to $12M. This aligns with spot ETF inflow acceleration and historically bullish Q2 seasonality. Smart money positioning suggests institutional conviction is building.', affected_assets: ['BTC'], timestamp: '30m ago', read: false },
+  { id: 'a_pm2', category: 'prediction_market', severity: 'medium', title: 'Fed rate cut probability dropped to 22%', body: 'Polymarket odds for a June FOMC rate cut fell from 45% to 22% after hotter-than-expected jobs data. This repricing removes a key bullish catalyst for risk assets. Historically, when rate cut odds drop >20% in a week, crypto sees 5-10% pullbacks within 2 weeks.', affected_assets: ['BTC', 'ETH', 'SOL'], timestamp: '2h ago', read: false },
+  { id: 'a_rwa1', category: 'rwa_event', severity: 'medium', title: 'BlackRock BUIDL crossed $1.7B TVL', body: 'BlackRock\'s tokenized Treasury fund BUIDL hit $1.7B in total value, up 12.4% in 30 days. This is the largest single tokenized asset and signals accelerating institutional adoption of on-chain treasuries. RWA sector velocity has increased from 2.5 to 3.9 this month.', affected_assets: ['ONDO', 'LINK'], timestamp: '4h ago', read: false },
 ]
 
 // ══════════════════════════════════════════════

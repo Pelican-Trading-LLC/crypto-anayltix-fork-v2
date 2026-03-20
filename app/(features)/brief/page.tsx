@@ -8,6 +8,8 @@ import { WhatIMissed } from '@/components/brief-v2/what-i-missed'
 import { FACESummary } from '@/components/brief-v2/face-summary'
 import { MorningRead } from '@/components/brief-v2/morning-read'
 import { FABlogPosts } from '@/components/brief-v2/fa-blog-posts'
+import { BriefPredictionMarkets } from '@/components/brief-v2/brief-prediction-markets'
+import { BriefTokenizationPulse } from '@/components/brief-v2/brief-tokenization-pulse'
 
 export default function BriefPage() {
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
@@ -29,6 +31,8 @@ export default function BriefPage() {
         <div className="lg:col-span-2 space-y-4">
           <PelicanSynthesisHero />
           <CrossAssetTranslation />
+          <BriefPredictionMarkets />
+          <BriefTokenizationPulse />
           <FACESummary />
           <MorningRead />
           <FABlogPosts />

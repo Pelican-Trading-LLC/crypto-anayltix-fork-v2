@@ -10,6 +10,9 @@ import { DataFreshness } from '@/components/ui/data-freshness'
 import { FA_TRAFFIC_LIGHT } from '@/lib/forexanalytix-mock-data'
 import { FABadge } from '@/components/forexanalytix/fa-badge'
 import { usePelicanPanelContext } from '@/providers/pelican-panel-provider'
+import { useCryptoMarkets, useFedRateMarkets } from '@/hooks/use-polymarket'
+import { useRWAData } from '@/hooks/use-rwa'
+import Link from 'next/link'
 import dynamic from 'next/dynamic'
 
 const AreaChart = dynamic(() => import('recharts').then(m => m.AreaChart), { ssr: false })
@@ -333,6 +336,102 @@ function MacroRegimeStrip() {
   )
 }
 
+/* ─── Prediction Market Signals ─────────────────────────────── */
+
+function PredictionMarketStrip() {
+  const { data: cryptoMarkets } = useCryptoMarkets(3)
+  const { data: fedMarkets } = useFedRateMarkets(3)
+  const allMarkets = [...fedMarkets, ...cryptoMarkets].slice(0, 6)
+
+  if (!allMarkets.length) return null
+
+  return (
+    <div className="rounded-xl border bg-card px-5 py-3">
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-3">
+          <span className="text-[11px] uppercase tracking-[1.5px] font-semibold text-muted-foreground">PREDICTION MARKET SIGNALS</span>
+          <span className="text-[10px] text-muted-foreground/60">via Polymarket</span>
+        </div>
+        <Link href="/screener" className="text-[11px] text-[#1DA1C4] hover:underline font-medium">
+          View all markets →
+        </Link>
+      </div>
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+        {allMarkets.map(m => (
+          <div key={m.id} className="flex flex-col gap-1 p-2 rounded-lg bg-[var(--bg-elevated)] border border-[var(--border-subtle)]">
+            <span className="text-[11px] text-muted-foreground line-clamp-2 leading-tight min-h-[2.5em]">
+              {m.question.length > 60 ? m.question.slice(0, 60) + '…' : m.question}
+            </span>
+            <div className="flex items-center justify-between mt-auto">
+              <span className={`font-mono text-sm font-semibold tabular-nums ${m.yesPrice >= 0.6 ? 'text-green-500' : m.yesPrice <= 0.4 ? 'text-red-500' : 'text-amber-500'}`}>
+                {(m.yesPrice * 100).toFixed(0)}%
+              </span>
+              <span className="font-mono text-[10px] text-muted-foreground tabular-nums">
+                {formatCompact(m.volume)}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="mt-3 px-3 py-2 rounded-lg bg-[#1DA1C4]/5 border border-[#1DA1C4]/10">
+        <p className="text-[12px] text-muted-foreground leading-relaxed">
+          <span className="text-[#1DA1C4] font-semibold">Pelican:</span> Prediction markets are pricing in continued crypto strength with BTC upside bias. Fed rate cut odds declining — watch for macro headwinds if yields push higher.
+        </p>
+      </div>
+    </div>
+  )
+}
+
+/* ─── Tokenization Pulse ────────────────────────────────────── */
+
+function TokenizationPulse() {
+  const { data } = useRWAData()
+  const summary = data?.summary
+
+  if (!summary) {
+    return (
+      <div className="rounded-xl border bg-card p-5">
+        <span className="text-[11px] uppercase tracking-[1.5px] font-semibold text-muted-foreground">TOKENIZATION PULSE</span>
+        <div className="mt-4 space-y-3">
+          {[1,2,3,4].map(i => <div key={i} className="h-8 rounded shimmer" />)}
+        </div>
+      </div>
+    )
+  }
+
+  const stats = [
+    { label: 'Total Tokenized', value: formatCompact(summary.totalTokenized), change: summary.change30d },
+    { label: 'Treasuries', value: formatCompact(summary.treasuries), change: 12.4 },
+    { label: 'Private Credit', value: formatCompact(summary.privateCredit), change: 15.8 },
+    { label: 'Equities', value: formatCompact(summary.equities), change: 8.2 },
+  ]
+
+  return (
+    <div className="rounded-xl border bg-card p-5">
+      <div className="flex items-center justify-between mb-4">
+        <span className="text-[11px] uppercase tracking-[1.5px] font-semibold text-muted-foreground">TOKENIZATION PULSE</span>
+        <span className="text-[10px] text-muted-foreground/60">via rwa.xyz</span>
+      </div>
+      <div className="space-y-3">
+        {stats.map(s => (
+          <div key={s.label} className="flex items-center justify-between">
+            <span className="text-[12px] text-muted-foreground">{s.label}</span>
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-[13px] font-semibold tabular-nums">{s.value}</span>
+              <span className={`font-mono text-[11px] tabular-nums ${s.change >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                {s.change >= 0 ? '+' : ''}{s.change.toFixed(1)}%
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+      <Link href="/screener?tab=tokenization" className="text-[#1DA1C4] text-[11px] font-medium mt-3 block hover:underline">
+        Explore tokenized assets →
+      </Link>
+    </div>
+  )
+}
+
 /* ─── Dashboard Page ────────────────────────────────────────────── */
 
 export default function DashboardPage() {
@@ -364,6 +463,7 @@ export default function DashboardPage() {
       </div>
       <DataFreshness source="CoinGecko" isLive={!!livePrices && !pricesError} />
       <MacroRegimeStrip />
+      <PredictionMarketStrip />
 
       {/* Row 2: Chart + Market Pulse */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
@@ -375,10 +475,11 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Row 3: Top Movers + Wallet DNA */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      {/* Row 3: Top Movers + Wallet DNA + Tokenization */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <TopMoversTable positions={positions} loading={pricesLoading && !livePrices} />
         <WalletDNA />
+        <TokenizationPulse />
       </div>
 
       {/* Row 4: Smart Money Feed */}

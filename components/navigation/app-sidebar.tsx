@@ -22,6 +22,7 @@ import {
   BookOpenText,
   Bird,
   Pulse,
+  Scales,
 } from '@phosphor-icons/react'
 import type { Icon as PhosphorIcon } from '@phosphor-icons/react'
 import { useAuth } from '@/lib/providers/auth-provider'
@@ -65,6 +66,7 @@ const NAV_SECTIONS: NavSection[] = [
     items: [
       { label: 'Dashboard', href: '/dashboard', icon: SquaresFour },
       { label: 'Token Intel', href: '/token-intel', icon: MagnifyingGlass },
+      { label: 'Markets Intel', href: '/screener', icon: Scales },
       { label: 'Sector Rotation', href: '/sector-rotation', icon: ArrowsClockwise },
     ],
   },
