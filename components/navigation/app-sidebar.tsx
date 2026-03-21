@@ -5,24 +5,18 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  SquaresFour,
-  MagnifyingGlass,
-  Lightning,
-  CalendarBlank,
-  TrendUp,
-  ArrowsClockwise,
-  Fingerprint,
-  ChatCircle,
-  Bell,
-  GraduationCap,
+  Monitor,
+  Pulse,
+  Clock,
+  GridFour,
   Users,
+  Eye,
+  ChatCircle,
+  BookOpenText,
+  CalendarBlank,
   GearSix,
   CaretRight,
   CaretLeft,
-  BookOpenText,
-  Bird,
-  Pulse,
-  Scales,
 } from '@phosphor-icons/react'
 import type { Icon as PhosphorIcon } from '@phosphor-icons/react'
 import { useAuth } from '@/lib/providers/auth-provider'
@@ -35,8 +29,11 @@ interface NavItem {
   label: string
   href: string
   icon: PhosphorIcon
-  badge?: string
-  accentTint?: boolean
+  badge?: {
+    text: string
+    color: 'green' | 'cyan' | 'red'
+  }
+  notificationCount?: number
 }
 
 interface NavSection {
@@ -45,56 +42,70 @@ interface NavSection {
 }
 
 // =============================================================================
-// NAV STRUCTURE
+// NAV STRUCTURE — 9 tabs, grouped by section
 // =============================================================================
 
 const NAV_SECTIONS: NavSection[] = [
   {
-    title: '', // No label for top section
+    title: '',
     items: [
-      { label: 'Daily Brief', href: '/brief', icon: Bird },
-    ],
-  },
-  {
-    title: 'FOREXANALYTIX',
-    items: [
-      { label: 'ForexAnalytix', href: '/forexanalytix', icon: Pulse, badge: '5 PiPs', accentTint: true },
+      { label: 'Situation Room', href: '/dashboard', icon: Monitor },
     ],
   },
   {
     title: 'MARKETS',
     items: [
-      { label: 'Dashboard', href: '/dashboard', icon: SquaresFour },
-      { label: 'Token Intel', href: '/token-intel', icon: MagnifyingGlass },
-      { label: 'Markets Intel', href: '/screener', icon: Scales },
-      { label: 'Sector Rotation', href: '/sector-rotation', icon: ArrowsClockwise },
+      { label: 'Market Pulse', href: '/market-pulse', icon: Pulse },
+      {
+        label: 'Predictions',
+        href: '/predictions',
+        icon: Clock,
+        badge: { text: 'LIVE', color: 'green' },
+      },
+      { label: 'Tokenization', href: '/tokenization', icon: GridFour },
     ],
   },
   {
     title: 'INTELLIGENCE',
     items: [
-      { label: 'Wallet DNA', href: '/wallet-dna', icon: Fingerprint },
-      { label: 'Smart Money', href: '/smart-money', icon: TrendUp },
-      { label: 'Signals', href: '/signals', icon: Lightning },
-      { label: 'AI Alerts', href: '/alerts', icon: Bell, badge: '3' },
+      {
+        label: 'Analyst Desk',
+        href: '/analyst-desk',
+        icon: Users,
+        badge: { text: 'FA', color: 'cyan' },
+      },
+      {
+        label: 'Signals & Alerts',
+        href: '/signals',
+        icon: Eye,
+        notificationCount: 3,
+      },
     ],
   },
   {
     title: 'PELICAN AI',
     items: [
-      { label: 'Ask Pelican', href: '/chat', icon: ChatCircle, accentTint: true },
+      { label: 'Ask Pelican', href: '/pelican-portal', icon: ChatCircle },
     ],
   },
   {
-    title: 'LEARN & REFERENCE',
+    title: 'LEARN',
     items: [
-      { label: 'Knowledge Base', href: '/knowledge-base', icon: BookOpenText },
+      { label: 'Knowledge Base', href: '/learn', icon: BookOpenText },
       { label: 'Calendar', href: '/calendar', icon: CalendarBlank },
-      { label: 'Learn', href: '/learn', icon: GraduationCap },
-      { label: 'Community', href: '/community', icon: Users },
     ],
   },
 ]
+
+// =============================================================================
+// BADGE COLORS
+// =============================================================================
+
+const BADGE_STYLES: Record<string, { bg: string; text: string }> = {
+  green: { bg: 'rgba(34,197,94,0.15)', text: '#22c55e' },
+  cyan: { bg: 'rgba(6,182,212,0.15)', text: '#06B6D4' },
+  red: { bg: 'rgba(239,68,68,0.15)', text: '#ef4444' },
+}
 
 // =============================================================================
 // SIDEBAR COMPONENT
@@ -136,27 +147,22 @@ export default function AppSidebar() {
               transition={{ duration: 0.15 }}
               className="whitespace-nowrap overflow-hidden"
             >
-              <div className="text-[14px] font-bold text-white leading-tight">Token Analytix</div>
-              <div className="text-[9px] font-mono text-[var(--text-muted)] tracking-[0.5px] leading-tight">POWERED BY PELICAN AI</div>
+              <div className="text-[14px] font-bold text-white leading-tight" style={{ fontWeight: 700 }}>
+                Token Analytix
+              </div>
+              <div className="text-[9px] font-mono text-[var(--text-muted)] leading-tight" style={{ letterSpacing: '0.5px' }}>
+                POWERED BY PELICAN AI
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
       </div>
 
-      {/* Search placeholder */}
-      {!collapsed && (
-        <div className="px-3 py-2 flex-shrink-0">
-          <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-[var(--bg-elevated)] border border-[var(--border-subtle)] text-[var(--text-muted)] text-xs">
-            <MagnifyingGlass size={14} />
-            <span>Search...</span>
-          </div>
-        </div>
-      )}
-
       {/* Nav sections */}
       <nav className="flex-1 overflow-y-auto py-2 space-y-4">
         {NAV_SECTIONS.map((section, idx) => (
           <div key={section.title || idx}>
+            {/* Section header */}
             {!collapsed && section.title && (
               <div className="px-4 mb-1.5 text-[10px] font-semibold tracking-wider text-[var(--text-muted)] uppercase">
                 {section.title}
@@ -173,31 +179,54 @@ export default function AppSidebar() {
                     href={item.href}
                     className={`flex items-center gap-3 px-3 py-2 mx-2 rounded-lg text-[13px] font-medium transition-colors relative ${
                       active
-                        ? 'text-[#1DA1C4]'
+                        ? 'text-[#06B6D4]'
                         : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-elevated)]'
                     }`}
                     style={
                       active
-                        ? { background: 'linear-gradient(90deg, rgba(29,161,196,0.08) 0%, transparent 80%)' }
-                        : item.accentTint && !active
-                          ? { background: 'rgba(29,161,196,0.04)' }
-                          : undefined
+                        ? { background: 'rgba(6,182,212,0.12)' }
+                        : undefined
                     }
                   >
+                    {/* Active left border */}
                     {active && (
-                      <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r bg-[#1DA1C4]" />
+                      <span
+                        className="absolute left-0 top-1/2 -translate-y-1/2 w-[2px] h-5 rounded-r"
+                        style={{ background: '#06B6D4' }}
+                      />
                     )}
+
                     <Icon
                       size={18}
                       weight={active ? 'fill' : 'regular'}
                       className="flex-shrink-0"
+                      style={active ? { color: '#06B6D4' } : undefined}
                     />
+
                     {!collapsed && (
                       <>
                         <span className="flex-1 truncate">{item.label}</span>
+
+                        {/* Badge (LIVE, FA, etc.) */}
                         {item.badge && (
-                          <span className="ml-auto px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#1DA1C4]/15 text-[#1DA1C4]">
-                            {item.badge}
+                          <span
+                            className="ml-auto px-1.5 py-0.5 rounded-full text-[10px] font-bold leading-none"
+                            style={{
+                              background: BADGE_STYLES[item.badge.color].bg,
+                              color: BADGE_STYLES[item.badge.color].text,
+                            }}
+                          >
+                            {item.badge.text}
+                          </span>
+                        )}
+
+                        {/* Notification count dot */}
+                        {item.notificationCount != null && item.notificationCount > 0 && (
+                          <span
+                            className="ml-auto min-w-[18px] h-[18px] flex items-center justify-center rounded-full text-[10px] font-bold leading-none text-white"
+                            style={{ background: '#ef4444' }}
+                          >
+                            {item.notificationCount}
                           </span>
                         )}
                       </>
@@ -209,8 +238,6 @@ export default function AppSidebar() {
           </div>
         ))}
       </nav>
-
-      {/* Spacer is handled by flex-1 on nav */}
 
       {/* User section */}
       <div className="p-3 border-t border-[var(--border-subtle)] flex-shrink-0">

@@ -25,7 +25,10 @@
       "Read(//c/Users/grove/Desktop/**)",
       "Bash(for f:*)",
       "Bash(do sed:*)",
-      "Bash(npx next:*)"
+      "Bash(npx next:*)",
+      "Bash(npx tsc:*)",
+      "Bash(./node_modules/.bin/tsc --noEmit --pretty)",
+      "Bash(ls \"app/\\(features\\)/\")"
     ],
     "deny": [],
     "ask": []
