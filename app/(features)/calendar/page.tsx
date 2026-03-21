@@ -1,212 +1,109 @@
 'use client'
 
 import { useState } from 'react'
-import { MOCK_CALENDAR, EVENT_COLORS, ASSET_COLORS } from '@/lib/crypto-mock-data'
+import { CALENDAR_EVENTS, type CalendarEvent } from '@/lib/crypto-mock-data'
 import { Bird } from '@phosphor-icons/react'
-import { usePelicanPanelContext } from '@/providers/pelican-panel-provider'
 
-const IMPACT_COLORS: Record<string, string> = {
-  high: '#EF4444',
-  medium: '#F59E0B',
-  low: '#6B7280',
+const FILTER_TYPES = ['All', 'Macro', 'Crypto', 'Prediction', 'Tokenization', 'Webinar'] as const
+type FilterType = (typeof FILTER_TYPES)[number]
+
+const TYPE_COLORS: Record<CalendarEvent['type'], { bg: string; text: string }> = {
+  macro: { bg: 'rgba(239,68,68,0.12)', text: '#ef4444' },
+  crypto: { bg: 'rgba(245,158,11,0.12)', text: '#f59e0b' },
+  prediction: { bg: 'rgba(139,92,246,0.12)', text: '#8b5cf6' },
+  tokenization: { bg: 'rgba(34,197,94,0.12)', text: '#22c55e' },
+  webinar: { bg: 'rgba(6,182,212,0.12)', text: '#06b6d4' },
 }
 
-const EVENT_TYPE_LABELS: Record<string, string> = {
-  token_unlock: 'Token Unlock',
-  governance: 'Governance',
-  fed_meeting: 'Fed Meeting',
-  earnings: 'Earnings',
-  expiration: 'Expiration',
-  halving: 'Halving',
-  upgrade: 'Upgrade',
+const IMPACT_STYLES: Record<string, { bg: string; text: string }> = {
+  High: { bg: 'rgba(239,68,68,0.12)', text: '#ef4444' },
+  Medium: { bg: 'rgba(245,158,11,0.12)', text: '#f59e0b' },
+  Low: { bg: 'rgba(107,114,128,0.12)', text: '#6b7280' },
 }
 
-// March 2026 starts on Sunday (day 0), has 31 days
-const YEAR = 2026
-const MONTH = 2 // 0-indexed: March
-const DAYS_IN_MONTH = 31
-const FIRST_DAY_OF_WEEK = new Date(YEAR, MONTH, 1).getDay() // 0 = Sun
-
-// Convert Sunday-start (0-6) to Monday-start offset (0-6)
-const MONDAY_OFFSET = FIRST_DAY_OF_WEEK === 0 ? 6 : FIRST_DAY_OF_WEEK - 1
-
-const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-
-function getEventsForDay(day: number) {
-  const dateStr = `2026-03-${String(day).padStart(2, '0')}`
-  return MOCK_CALENDAR.filter((e) => e.date === dateStr)
+function formatDate(iso: string): { month: string; day: string } {
+  const d = new Date(iso + 'T00:00:00')
+  const month = d.toLocaleString('en-US', { month: 'short' }).toUpperCase()
+  const day = String(d.getDate())
+  return { month, day }
 }
 
 export default function CalendarPage() {
-  const { openWithPrompt } = usePelicanPanelContext()
-  const [selectedDate, setSelectedDate] = useState<number | null>(null)
+  const [filter, setFilter] = useState<FilterType>('All')
 
-  const filteredEvents = selectedDate
-    ? MOCK_CALENDAR.filter(
-        (e) => e.date === `2026-03-${String(selectedDate).padStart(2, '0')}`
-      )
-    : MOCK_CALENDAR
-
-  const totalCells = MONDAY_OFFSET + DAYS_IN_MONTH
-  const rows = Math.ceil(totalCells / 7)
+  const filtered =
+    filter === 'All'
+      ? CALENDAR_EVENTS
+      : CALENDAR_EVENTS.filter(
+          (e) => e.type === filter.toLowerCase()
+        )
 
   return (
-    <div className="p-6 max-w-[1200px] mx-auto">
+    <div className="p-6 max-w-[900px] mx-auto">
+      {/* Header */}
       <div className="mb-6">
-        <h1 className="text-xl font-semibold">
-          Crypto Calendar
+        <h1 className="text-2xl font-semibold text-[var(--text-primary)]">
+          Calendar
         </h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          March 2026 &mdash; Key events, unlocks, and macro catalysts
+        <p className="text-sm text-[var(--text-secondary)] mt-1">
+          Macro events, crypto catalysts, prediction market expiries
         </p>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-6">
-        {/* ── Left Panel: Month Grid ── */}
-        <div className="w-full lg:w-[55%]">
-          <div
-            className="rounded-xl border border-[rgba(255,255,255,0.06)] p-5"
-            style={{ background: 'var(--bg-surface, #111118)' }}
-          >
-            {/* Month header */}
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-[15px] font-semibold text-[var(--text-primary)]">
-                March 2026
-              </span>
-              {selectedDate && (
-                <button
-                  onClick={() => setSelectedDate(null)}
-                  className="text-xs text-[var(--text-muted)] hover:text-[var(--text-secondary)] transition-colors"
-                >
-                  Clear filter
-                </button>
-              )}
-            </div>
-
-            {/* Weekday headers */}
-            <div className="grid grid-cols-7 gap-1 mb-1">
-              {WEEKDAYS.map((d) => (
-                <div
-                  key={d}
-                  className="text-center text-[11px] uppercase tracking-wider font-medium text-[var(--text-muted)] py-1"
-                >
-                  {d}
-                </div>
-              ))}
-            </div>
-
-            {/* Day cells */}
-            <div className="grid grid-cols-7 gap-1">
-              {Array.from({ length: rows * 7 }).map((_, i) => {
-                const day = i - MONDAY_OFFSET + 1
-                const isValidDay = day >= 1 && day <= DAYS_IN_MONTH
-                const events = isValidDay ? getEventsForDay(day) : []
-                const isSelected = selectedDate === day
-                const isToday = day === 8 // March 8, 2026
-
-                if (!isValidDay) {
-                  return <div key={i} className="h-14" />
-                }
-
-                return (
-                  <button
-                    key={i}
-                    onClick={() =>
-                      setSelectedDate(isSelected ? null : day)
-                    }
-                    className="h-14 rounded-lg flex flex-col items-center justify-center gap-1 transition-all duration-150 hover:bg-[var(--bg-elevated,#16161f)] cursor-pointer"
-                    style={{
-                      background: isSelected
-                        ? 'rgba(139,92,246,0.15)'
-                        : undefined,
-                      border: isSelected
-                        ? '1px solid rgba(139,92,246,0.3)'
-                        : isToday
-                        ? '1px solid rgba(255,255,255,0.15)'
-                        : '1px solid transparent',
-                    }}
-                  >
-                    <span
-                      className={`text-[13px] font-mono tabular-nums ${
-                        isToday
-                          ? 'text-[var(--accent-primary,#1DA1C4)] font-semibold'
-                          : 'text-[var(--text-secondary)]'
-                      }`}
-                    >
-                      {day}
-                    </span>
-                    {events.length > 0 && (
-                      <div className="flex gap-[3px]">
-                        {events.map((ev) => (
-                          <span
-                            key={ev.id}
-                            className="block rounded-full"
-                            style={{
-                              width: 5,
-                              height: 5,
-                              backgroundColor:
-                                EVENT_COLORS[ev.type] || '#6B7280',
-                            }}
-                          />
-                        ))}
-                      </div>
-                    )}
-                  </button>
-                )
-              })}
-            </div>
-
-            {/* Legend */}
-            <div className="mt-5 pt-4 border-t border-[rgba(255,255,255,0.06)] flex flex-wrap gap-x-4 gap-y-2">
-              {Object.entries(EVENT_COLORS).map(([type, color]) => (
-                <div key={type} className="flex items-center gap-1.5">
-                  <span
-                    className="block rounded-full"
-                    style={{
-                      width: 7,
-                      height: 7,
-                      backgroundColor: color,
-                    }}
-                  />
-                  <span className="text-[11px] text-[var(--text-muted)] capitalize">
-                    {EVENT_TYPE_LABELS[type] || type}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* ── Right Panel: Event Cards ── */}
-        <div className="w-full lg:w-[45%] flex flex-col gap-3">
-          <div className="flex items-center justify-between mb-1">
-            <span className="text-sm font-medium text-[var(--text-secondary)]">
-              {selectedDate
-                ? `Events on March ${selectedDate}`
-                : 'All upcoming events'}
-            </span>
-            <span className="text-xs font-mono tabular-nums text-[var(--text-muted)]">
-              {filteredEvents.length} event{filteredEvents.length !== 1 ? 's' : ''}
-            </span>
-          </div>
-
-          {filteredEvents.length === 0 ? (
-            <div
-              className="rounded-xl border border-[rgba(255,255,255,0.06)] p-8 flex flex-col items-center justify-center text-center"
-              style={{ background: 'var(--bg-surface, #111118)' }}
+      {/* Filter buttons */}
+      <div className="flex flex-wrap gap-2 mb-8">
+        {FILTER_TYPES.map((t) => {
+          const active = filter === t
+          return (
+            <button
+              key={t}
+              onClick={() => setFilter(t)}
+              className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 cursor-pointer"
+              style={{
+                background: active ? 'rgba(6,182,212,0.15)' : 'transparent',
+                color: active ? '#06b6d4' : 'var(--text-muted)',
+                border: active
+                  ? '1px solid rgba(6,182,212,0.3)'
+                  : '1px solid var(--border-subtle)',
+              }}
             >
-              <p className="text-sm text-[var(--text-muted)]">
-                No events on this day.
-              </p>
-            </div>
-          ) : (
-            filteredEvents.map((event) => (
+              {t}
+            </button>
+          )
+        })}
+      </div>
+
+      {/* Timeline */}
+      <div className="relative">
+        {filtered.map((event, i) => {
+          const { month, day } = formatDate(event.date)
+          const typeColor = TYPE_COLORS[event.type]
+          const impactStyle = event.impact ? IMPACT_STYLES[event.impact] : null
+          const isLast = i === filtered.length - 1
+
+          return (
+            <div key={`${event.date}-${event.title}`} className="flex gap-5 relative">
+              {/* Timeline connector line */}
+              {!isLast && (
+                <div
+                  className="absolute left-[40px] top-[60px] bottom-0 w-px"
+                  style={{ background: 'var(--border-subtle)' }}
+                />
+              )}
+
+              {/* Date block */}
+              <div className="flex-shrink-0 w-[80px] pt-4 text-center">
+                <div className="font-mono font-bold text-lg text-[var(--text-primary)]">
+                  {month} {day}
+                </div>
+                <div className="text-xs text-[var(--text-muted)]">
+                  {event.dayOfWeek}
+                </div>
+              </div>
+
+              {/* Event card */}
               <div
-                key={event.id}
-                className="rounded-xl border border-[rgba(255,255,255,0.06)] p-4 transition-all duration-150 hover:border-[rgba(255,255,255,0.15)]"
-                style={{
-                  background: 'var(--bg-surface, #111118)',
-                }}
+                className="flex-1 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-4 mb-4 transition-all duration-150 hover:border-[var(--border-hover)]"
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = 'translateY(-1px)'
                 }}
@@ -214,80 +111,73 @@ export default function CalendarPage() {
                   e.currentTarget.style.transform = 'translateY(0)'
                 }}
               >
-                {/* Top row: badges */}
-                <div className="flex items-center gap-2 mb-2 flex-wrap">
-                  {/* Type badge */}
+                {/* Top row: type tag + impact badge */}
+                <div className="flex items-center gap-2 flex-wrap mb-2">
                   <span
-                    className="text-[11px] font-medium px-2 py-0.5 rounded-full"
+                    className="text-[11px] font-medium px-2 py-0.5 rounded-full capitalize"
                     style={{
-                      backgroundColor: `${EVENT_COLORS[event.type] || '#6B7280'}20`,
-                      color: EVENT_COLORS[event.type] || '#6B7280',
+                      backgroundColor: typeColor.bg,
+                      color: typeColor.text,
                     }}
                   >
-                    {EVENT_TYPE_LABELS[event.type] || event.type}
+                    {event.type}
                   </span>
 
-                  {/* Impact badge */}
-                  <span
-                    className="text-[11px] font-medium px-2 py-0.5 rounded-full uppercase"
-                    style={{
-                      backgroundColor: `${IMPACT_COLORS[event.impact]}20`,
-                      color: IMPACT_COLORS[event.impact],
-                    }}
-                  >
-                    {event.impact}
-                  </span>
-
-                  {/* Asset pill */}
-                  <span
-                    className="text-[11px] font-semibold font-mono px-2 py-0.5 rounded-full ml-auto"
-                    style={{
-                      backgroundColor: `${ASSET_COLORS[event.asset] || '#6B7280'}20`,
-                      color: ASSET_COLORS[event.asset] || '#6B7280',
-                    }}
-                  >
-                    {event.asset}
-                  </span>
+                  {impactStyle && (
+                    <span
+                      className="text-[11px] font-medium px-2 py-0.5 rounded-full"
+                      style={{
+                        backgroundColor: impactStyle.bg,
+                        color: impactStyle.text,
+                      }}
+                    >
+                      {event.impact}
+                    </span>
+                  )}
                 </div>
 
                 {/* Title */}
-                <h3 className="text-[14px] font-semibold text-[var(--text-primary)] mb-1">
+                <h3 className="font-semibold text-[var(--text-primary)] mb-1">
                   {event.title}
                 </h3>
 
-                {/* Date */}
-                <p className="text-[12px] font-mono tabular-nums text-[var(--text-muted)] mb-2">
-                  {new Date(event.date + 'T00:00:00').toLocaleDateString(
-                    'en-US',
-                    {
-                      weekday: 'short',
-                      month: 'short',
-                      day: 'numeric',
-                      year: 'numeric',
-                    }
-                  )}
+                {/* Time */}
+                <p className="font-mono text-xs text-[var(--text-muted)] mb-1">
+                  {event.time}
                 </p>
 
-                {/* Description */}
-                <p className="text-[13px] text-[var(--text-secondary)] mb-3 leading-relaxed">
-                  {event.description}
-                </p>
-
-                {/* Ask Pelican button */}
-                <button
-                  onClick={() => openWithPrompt(event.asset, {
-                    visibleMessage: `Tell me about ${event.title}`,
-                    fullPrompt: `[CALENDAR EVENT]\nEvent: ${event.title}\nType: ${event.type}\nDate: ${event.date}\nAsset: ${event.asset}\nImpact: ${event.impact}\nDescription: ${event.description}\n\nTell me about this event and how it might impact ${event.asset} and the broader crypto market.`,
-                  }, 'calendar')}
-                  className="inline-flex items-center gap-1.5 text-[12px] font-medium text-[var(--accent-primary,#1DA1C4)] hover:text-[var(--accent-hover,#25BFDF)] transition-colors cursor-pointer"
-                >
-                  <Bird size={16} weight="bold" />
-                  Ask Pelican about this event
-                </button>
+                {/* Pelican pre-brief */}
+                {event.pelicanBrief && (
+                  <div
+                    className="mt-2 pl-3"
+                    style={{
+                      background: 'rgba(6,182,212,0.04)',
+                      borderLeft: '2px solid rgba(6,182,212,0.3)',
+                    }}
+                  >
+                    <div className="flex items-center gap-1 mb-0.5">
+                      <Bird size={12} weight="bold" className="text-[#06b6d4] opacity-60" />
+                      <span className="text-[10px] font-medium text-[#06b6d4] opacity-60 uppercase tracking-wider">
+                        Pelican Brief
+                      </span>
+                    </div>
+                    <p className="text-[12px] text-[var(--text-secondary)] leading-relaxed italic">
+                      {event.pelicanBrief}
+                    </p>
+                  </div>
+                )}
               </div>
-            ))
-          )}
-        </div>
+            </div>
+          )
+        })}
+
+        {filtered.length === 0 && (
+          <div className="text-center py-12">
+            <p className="text-sm text-[var(--text-muted)]">
+              No events match this filter.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   )

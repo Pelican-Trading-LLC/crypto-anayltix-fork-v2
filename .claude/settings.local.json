@@ -28,7 +28,9 @@
       "Bash(npx next:*)",
       "Bash(npx tsc:*)",
       "Bash(./node_modules/.bin/tsc --noEmit --pretty)",
-      "Bash(ls \"app/\\(features\\)/\")"
+      "Bash(ls \"app/\\(features\\)/\")",
+      "Bash(do echo:*)",
+      "Read(//c/Users/grove/Desktop/Pelican Docs/crypto-anayltix-fork-v2/app/\\(features\\)/$f/**)"
     ],
     "deny": [],
     "ask": []
