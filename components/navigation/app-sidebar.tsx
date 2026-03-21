@@ -208,17 +208,20 @@ export default function AppSidebar() {
                         <span className="flex-1 truncate">{item.label}</span>
 
                         {/* Badge (LIVE, FA, etc.) */}
-                        {item.badge && (
-                          <span
-                            className="ml-auto px-1.5 py-0.5 rounded-full text-[10px] font-bold leading-none"
-                            style={{
-                              background: BADGE_STYLES[item.badge.color].bg,
-                              color: BADGE_STYLES[item.badge.color].text,
-                            }}
-                          >
-                            {item.badge.text}
-                          </span>
-                        )}
+                        {item.badge != null && (() => {
+                          const badgeStyle = BADGE_STYLES[item.badge.color] ?? { bg: 'transparent', text: 'inherit' }
+                          return (
+                            <span
+                              className="ml-auto px-1.5 py-0.5 rounded-full text-[10px] font-bold leading-none"
+                              style={{
+                                background: badgeStyle.bg,
+                                color: badgeStyle.text,
+                              }}
+                            >
+                              {item.badge.text}
+                            </span>
+                          )
+                        })()}
 
                         {/* Notification count dot */}
                         {item.notificationCount != null && item.notificationCount > 0 && (
