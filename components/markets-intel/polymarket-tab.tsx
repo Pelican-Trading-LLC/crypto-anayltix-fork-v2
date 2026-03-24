@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { usePolymarketEvents } from '@/hooks/use-polymarket'
-import { parseMarket } from '@/lib/api/polymarket'
+import { safeParseEvents } from '@/lib/api/polymarket'
 import type { ParsedMarket } from '@/lib/api/polymarket'
 import { formatCompact } from '@/lib/crypto-mock-data'
 import { usePelicanPanelContext } from '@/providers/pelican-panel-provider'
@@ -79,11 +79,7 @@ export function PolymarketTab() {
   const currentTag = SUB_TABS[activeSubTab]?.tag ?? 'crypto'
   const { data: events, isLoading } = usePolymarketEvents(currentTag, 12)
 
-  const markets: ParsedMarket[] = (Array.isArray(events) ? events : [])
-    .flatMap(e => (Array.isArray(e?.markets) ? e.markets : []).map(m => {
-      try { return parseMarket(m) } catch { return null }
-    }))
-    .filter((m): m is ParsedMarket => m !== null)
+  const markets = safeParseEvents(events)
 
   return (
     <div>

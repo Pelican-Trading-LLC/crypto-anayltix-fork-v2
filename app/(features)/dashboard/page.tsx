@@ -341,7 +341,7 @@ function MacroRegimeStrip() {
 function PredictionMarketStrip() {
   const { data: cryptoMarkets } = useCryptoMarkets(3)
   const { data: fedMarkets } = useFedRateMarkets(3)
-  const allMarkets = [...(Array.isArray(fedMarkets) ? fedMarkets : []), ...(Array.isArray(cryptoMarkets) ? cryptoMarkets : [])].slice(0, 6)
+  const allMarkets = [...fedMarkets, ...cryptoMarkets].slice(0, 6)
 
   if (!allMarkets.length) return null
 

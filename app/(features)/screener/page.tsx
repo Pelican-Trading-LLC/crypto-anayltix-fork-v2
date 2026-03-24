@@ -8,8 +8,7 @@ import { PolymarketTab } from '@/components/markets-intel/polymarket-tab'
 import { RWATab } from '@/components/markets-intel/rwa-tab'
 import { usePolymarketEvents } from '@/hooks/use-polymarket'
 import { useRWAData } from '@/hooks/use-rwa'
-import { parseMarket } from '@/lib/api/polymarket'
-import type { ParsedMarket } from '@/lib/api/polymarket'
+import { safeParseEvents } from '@/lib/api/polymarket'
 import { formatCompact } from '@/lib/crypto-mock-data'
 import { usePelicanPanelContext } from '@/providers/pelican-panel-provider'
 
@@ -23,12 +22,7 @@ function AllTab() {
   const { data: events } = usePolymarketEvents('crypto', 5)
   const { data: rwaData } = useRWAData()
   const { openWithPrompt } = usePelicanPanelContext()
-  const markets: ParsedMarket[] = (Array.isArray(events) ? events : [])
-    .flatMap(e => (Array.isArray(e?.markets) ? e.markets : []).map(m => {
-      try { return parseMarket(m) } catch { return null }
-    }))
-    .filter((m): m is ParsedMarket => m !== null)
-    .slice(0, 5)
+  const markets = safeParseEvents(events).slice(0, 5)
   const assets = rwaData?.assets?.slice(0, 10) ?? []
 
   return (
@@ -75,9 +69,13 @@ function AllTab() {
                     {asset.apy !== null ? <span className="text-green-500">{asset.apy}%</span> : <span className="text-muted-foreground">---</span>}
                   </td>
                   <td className="px-4 py-3 font-mono text-[12px] tabular-nums text-right">
-                    <span className={asset.change30d >= 0 ? 'text-green-500' : 'text-red-500'}>
-                      {asset.change30d >= 0 ? '+' : ''}{asset.change30d.toFixed(1)}%
-                    </span>
+                    {asset.change30d != null ? (
+                      <span className={asset.change30d >= 0 ? 'text-green-500' : 'text-red-500'}>
+                        {asset.change30d >= 0 ? '+' : ''}{asset.change30d.toFixed(1)}%
+                      </span>
+                    ) : (
+                      <span className="text-muted-foreground">---</span>
+                    )}
                   </td>
                   <td className="px-4 py-3 text-[11px] text-muted-foreground truncate max-w-[200px]">{asset.underlying}</td>
                   <td className="px-4 py-3">

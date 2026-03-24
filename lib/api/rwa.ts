@@ -13,7 +13,7 @@ export interface RWAAsset {
   category: 'treasuries' | 'private_credit' | 'commodities' | 'equities' | 'real_estate' | 'other'
   totalValue: number
   apy: number | null
-  change30d: number
+  change30d: number | null
   underlying: string
 }
 

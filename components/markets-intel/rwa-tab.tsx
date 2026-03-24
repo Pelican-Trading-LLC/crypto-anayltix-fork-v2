@@ -100,9 +100,13 @@ export function RWATab() {
                     {asset.apy !== null ? <span className="text-green-500">{asset.apy}%</span> : <span className="text-muted-foreground">---</span>}
                   </td>
                   <td className="px-4 py-3 font-mono text-[12px] tabular-nums text-right">
-                    <span className={asset.change30d >= 0 ? 'text-green-500' : 'text-red-500'}>
-                      {asset.change30d >= 0 ? '+' : ''}{asset.change30d.toFixed(1)}%
-                    </span>
+                    {asset.change30d != null ? (
+                      <span className={asset.change30d >= 0 ? 'text-green-500' : 'text-red-500'}>
+                        {asset.change30d >= 0 ? '+' : ''}{asset.change30d.toFixed(1)}%
+                      </span>
+                    ) : (
+                      <span className="text-muted-foreground">---</span>
+                    )}
                   </td>
                   <td className="px-4 py-3 text-[11px] text-muted-foreground max-w-[200px] truncate">{asset.underlying}</td>
                   <td className="px-4 py-3">

@@ -49,26 +49,15 @@ export interface ParsedMarket {
 
 // ── Helpers ──────────────────────────────────────
 
-export function parseMarket(m: PolymarketMarket): ParsedMarket {
-  let prices: number[] = []
-  try {
-    const raw = m.outcomePrices
-    if (typeof raw === 'string') {
-      prices = JSON.parse(raw).map(Number)
-    } else if (Array.isArray(raw)) {
-      prices = raw.map(Number)
-    }
-  } catch { prices = [] }
+function parseJsonOrArray<T>(raw: string | T[] | undefined, fallback: T[]): T[] {
+  if (!raw) return fallback
+  if (Array.isArray(raw)) return raw
+  try { return JSON.parse(raw) } catch { return fallback }
+}
 
-  let outcomes: string[] = ['Yes', 'No']
-  try {
-    const raw = m.outcomes
-    if (typeof raw === 'string') {
-      outcomes = JSON.parse(raw)
-    } else if (Array.isArray(raw)) {
-      outcomes = raw
-    }
-  } catch { outcomes = ['Yes', 'No'] }
+export function parseMarket(m: PolymarketMarket): ParsedMarket {
+  const prices = parseJsonOrArray(m.outcomePrices, []).map(Number)
+  const outcomes = parseJsonOrArray(m.outcomes, ['Yes', 'No'])
 
   return {
     id: m.id || '',
@@ -80,6 +69,15 @@ export function parseMarket(m: PolymarketMarket): ParsedMarket {
     slug: m.slug || '',
     outcomes,
   }
+}
+
+/** Safely parse an array of PolymarketEvents into ParsedMarkets. Handles malformed data gracefully. */
+export function safeParseEvents(data: unknown): ParsedMarket[] {
+  if (!Array.isArray(data)) return []
+  return data.flatMap((e: Partial<PolymarketEvent>) => {
+    const mkts = Array.isArray(e?.markets) ? e.markets : []
+    return mkts.map((m) => parseMarket(m))
+  })
 }
 
 // ── Endpoints ──────────────────────────────────────
