@@ -34,7 +34,7 @@ import {
 // TYPES
 // =============================================================================
 
-export type PelicanPanelContext = 'heatmap' | 'earnings' | 'journal' | 'morning' | 'brief' | 'search' | 'correlations' | 'calendar' | 'playbooks' | 'ask-pelican' | null
+export type PelicanPanelContext = 'heatmap' | 'earnings' | 'journal' | 'morning' | 'brief' | 'search' | 'correlations' | 'calendar' | 'playbooks' | 'ask-pelican' | 'v2-token' | 'v2-wallet' | 'v2-setup' | 'v2-prediction' | 'v2-alert' | 'v2-research' | null
 
 interface PelicanPanelState {
   isOpen: boolean
