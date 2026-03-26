@@ -1032,3 +1032,419 @@ export const PELICAN_SUGGESTED_PROMPTS = [
   { category: 'On-Chain', prompt: 'Show me whale wallet movements for BTC in the last 24 hours and what they signal' },
   { category: 'Analyst', prompt: 'Summarize where Blake, Grega, Steve, and Dale disagree and who to follow for ETH' },
 ];
+
+// ══════════════════════════════════════════════════════════════
+// V2 UI REBUILD — Mock Data
+// ══════════════════════════════════════════════════════════════
+
+export interface V2Token {
+  chain: 'solana' | 'ethereum' | 'base'
+  name: string
+  ticker: string
+  emoji: string
+  price: number
+  change24h: number | null  // null = N/A
+  mcap: number
+  traders: number
+  volume: number
+  liquidity: number
+  inflows: number
+  outflows: number
+  netFlows: number
+}
+
+export interface V2Wallet {
+  label: string
+  emoji: string
+  address: string
+  totalPnl: number
+  realizedPnl: number
+  roi: number
+  winRate: number
+  trades: number
+  tokensTraded: string[]
+}
+
+export interface V2AnalystSetup {
+  analyst: string
+  avatarColor: string
+  token: string
+  pattern: 'Bull Flag' | 'Cup & Handle' | 'Falling Wedge' | 'Head & Shoulders' | 'Elliott Wave' | 'Bat Pattern'
+  direction: 'Bullish' | 'Bearish'
+  description: string
+  entry: number
+  target: number
+  stop: number
+  timeframe: string
+}
+
+export interface V2ResearchArticle {
+  source: string
+  sourceColor: string
+  timeAgo: string
+  title: string
+  tokens: string[]
+}
+
+export interface V2XPost {
+  handle: string
+  verified: boolean
+  timeAgo: string
+  text: string
+}
+
+export interface V2PredictionCard {
+  id: string
+  question: string
+  tokenLogo: string
+  priceLevels: { price: string; probability: number }[]
+  volumeStr: string
+  resolution: string
+  category: 'crypto' | 'macro' | 'stocks' | 'regulatory' | 'geopolitical'
+  tickers: string[]
+  probabilityHistory: number[]  // 30 data points for the line chart
+}
+
+export interface V2Alert {
+  token: string
+  type: 'Price' | 'On-Chain' | 'Technical' | 'Prediction' | 'Convergence'
+  condition: string
+  status: 'Armed' | 'Triggered'
+  severity: 'High' | 'Medium' | 'Low'
+  created: string
+  postTriggerAnalysis?: string
+}
+
+export interface V2TopTokenTrading {
+  chain: 'solana'
+  token: string
+  emoji: string
+  flows24h: number
+  flows7d: number
+  flows30d: number
+  traders: number
+  tokenAgeDays: number
+  mcap: number
+}
+
+export interface V2TopTokenHolding {
+  chain: 'solana'
+  token: string
+  emoji: string
+  balance: number
+  balanceChange24h: number
+  shareOfHoldings: number
+  holders: number
+  mcap: number
+}
+
+export interface V2RecentTrade {
+  wallet: string
+  walletAddr: string
+  token: string
+  direction: 'Buy' | 'Sell'
+  amount: number
+  price: number
+  time: string
+}
+
+// ── V2 Token Feed (20 rows) ─────────────────────────────────
+
+export const V2_TOKENS: V2Token[] = [
+  { chain: 'solana', name: 'FAF Token', ticker: 'FAF', emoji: '\u{1F525}', price: 0.000390, change24h: 214.3, mcap: 390000, traders: 1842, volume: 2100000, liquidity: 185000, inflows: 890000, outflows: 410000, netFlows: 480000 },
+  { chain: 'solana', name: 'Punch Cat', ticker: 'PUNCH', emoji: '\u{1F94A}', price: 0.00123, change24h: -57.2, mcap: 1230000, traders: 3210, volume: 5400000, liquidity: 620000, inflows: 1200000, outflows: 3100000, netFlows: -1900000 },
+  { chain: 'solana', name: 'Wojak', ticker: 'WOJAK', emoji: '\u{1F622}', price: 0.000841, change24h: 14.7, mcap: 841000, traders: 2456, volume: 3200000, liquidity: 410000, inflows: 720000, outflows: 580000, netFlows: 140000 },
+  { chain: 'solana', name: 'My Knife Shop', ticker: '\u6211\u7684\u5200\u5E97', emoji: '\u{1F52A}', price: 0.0000512, change24h: 342.1, mcap: 51200, traders: 890, volume: 780000, liquidity: 42000, inflows: 420000, outflows: 95000, netFlows: 325000 },
+  { chain: 'solana', name: 'Captcha Coin', ticker: 'CAPTCHA', emoji: '\u{1F916}', price: 0.00284, change24h: -12.4, mcap: 2840000, traders: 4120, volume: 8900000, liquidity: 1200000, inflows: 2100000, outflows: 2800000, netFlows: -700000 },
+  { chain: 'solana', name: 'Virtual Nut', ticker: 'VNUT', emoji: '\u{1F95C}', price: 0.000195, change24h: null, mcap: 195000, traders: 672, volume: 420000, liquidity: 89000, inflows: 110000, outflows: 98000, netFlows: 12000 },
+  { chain: 'solana', name: 'No Hat Zone', ticker: 'NOHAT', emoji: '\u{1F6AB}', price: 0.00456, change24h: 87.3, mcap: 4560000, traders: 5890, volume: 12000000, liquidity: 2100000, inflows: 5400000, outflows: 2100000, netFlows: 3300000 },
+  { chain: 'solana', name: 'Vendoor', ticker: 'VDOR', emoji: '\u{1F6AA}', price: 0.000073, change24h: -34.8, mcap: 73000, traders: 345, volume: 210000, liquidity: 31000, inflows: 45000, outflows: 120000, netFlows: -75000 },
+  { chain: 'solana', name: 'Cat Fu', ticker: 'CATFU', emoji: '\u{1F431}', price: 0.00891, change24h: 6.2, mcap: 8910000, traders: 7230, volume: 18000000, liquidity: 3400000, inflows: 4200000, outflows: 3800000, netFlows: 400000 },
+  { chain: 'solana', name: 'Pigeon Protocol', ticker: 'PIGEON', emoji: '\u{1F426}', price: 0.000612, change24h: -8.9, mcap: 612000, traders: 1120, volume: 1400000, liquidity: 220000, inflows: 310000, outflows: 480000, netFlows: -170000 },
+  { chain: 'solana', name: 'One Token', ticker: '1', emoji: '1\uFE0F\u20E3', price: 0.000042, change24h: 1200.5, mcap: 42000, traders: 2100, volume: 3800000, liquidity: 56000, inflows: 2900000, outflows: 310000, netFlows: 2590000 },
+  { chain: 'solana', name: 'Until Protocol', ticker: 'UNTIL', emoji: '\u231B', price: 0.00341, change24h: null, mcap: 3410000, traders: 1890, volume: 4100000, liquidity: 890000, inflows: 1200000, outflows: 1100000, netFlows: 100000 },
+  { chain: 'solana', name: 'Pelican Token', ticker: 'PTOKEN', emoji: '\u{1FA69}', price: 0.0156, change24h: 45.6, mcap: 15600000, traders: 9800, volume: 34000000, liquidity: 5600000, inflows: 12000000, outflows: 7800000, netFlows: 4200000 },
+  { chain: 'solana', name: 'Jupiter', ticker: 'JUP', emoji: '\u{1FA90}', price: 0.44, change24h: 3.2, mcap: 541000000, traders: 42100, volume: 89000000, liquidity: 34000000, inflows: 18000000, outflows: 15000000, netFlows: 3000000 },
+  { chain: 'solana', name: 'Chud Token', ticker: 'CHUD', emoji: '\u{1F480}', price: 0.000291, change24h: -71.4, mcap: 291000, traders: 4500, volume: 6700000, liquidity: 180000, inflows: 800000, outflows: 4200000, netFlows: -3400000 },
+  { chain: 'solana', name: 'MemeSquared', ticker: 'MS2', emoji: '\u{1F4D0}', price: 0.00178, change24h: 23.1, mcap: 1780000, traders: 2340, volume: 4500000, liquidity: 560000, inflows: 1800000, outflows: 1200000, netFlows: 600000 },
+  { chain: 'solana', name: 'Spawn', ticker: 'SPAWN', emoji: '\u{1F47E}', price: 0.00562, change24h: -3.4, mcap: 5620000, traders: 3100, volume: 7800000, liquidity: 1800000, inflows: 2100000, outflows: 2400000, netFlows: -300000 },
+  { chain: 'solana', name: 'Layoff Token', ticker: 'LAYOFF', emoji: '\u{1F4E6}', price: 0.000089, change24h: 567.8, mcap: 89000, traders: 1560, volume: 2300000, liquidity: 67000, inflows: 1800000, outflows: 210000, netFlows: 1590000 },
+  { chain: 'solana', name: 'Big Fat', ticker: '\u5927\u80D6', emoji: '\u{1F437}', price: 0.000234, change24h: -21.3, mcap: 234000, traders: 780, volume: 890000, liquidity: 120000, inflows: 210000, outflows: 410000, netFlows: -200000 },
+  { chain: 'solana', name: 'Samba Coin', ticker: 'SAMBA', emoji: '\u{1F483}', price: 0.00412, change24h: 9.8, mcap: 4120000, traders: 2890, volume: 6100000, liquidity: 1400000, inflows: 2400000, outflows: 1900000, netFlows: 500000 },
+];
+
+// ── V2 Wallets (12 rows) ────────────────────────────────────
+
+export const V2_WALLETS: V2Wallet[] = [
+  { label: '30D Smart Trader', emoji: '\u{1F3C6}', address: '7xKp...3mNq', totalPnl: 121400, realizedPnl: 98200, roi: 487, winRate: 82, trades: 14, tokensTraded: ['PTOKEN', 'NOHAT', 'JUP', 'CATFU'] },
+  { label: 'DEX Whale', emoji: '\u{1F40B}', address: '4vRm...8xLp', totalPnl: 89300, realizedPnl: 76500, roi: 312, winRate: 71, trades: 28, tokensTraded: ['JUP', 'CATFU', 'SPAWN', 'SAMBA', 'PUNCH'] },
+  { label: 'Early Adopter', emoji: '\u{1F3AF}', address: '9tBn...2wKf', totalPnl: 67800, realizedPnl: 54200, roi: 245, winRate: 78, trades: 11, tokensTraded: ['1', 'FAF', 'LAYOFF'] },
+  { label: 'Sniper Bot', emoji: '\u{1F916}', address: '3mYx...7vPq', totalPnl: 54100, realizedPnl: 48900, roi: 198, winRate: 85, trades: 42, tokensTraded: ['WOJAK', 'CHUD', 'MS2', 'VNUT'] },
+  { label: 'Degen King', emoji: '\u{1F451}', address: '8kWz...1nRt', totalPnl: 43200, realizedPnl: 38700, roi: 156, winRate: 58, trades: 50, tokensTraded: ['PUNCH', 'CHUD', 'VDOR', '\u5927\u80D6', 'LAYOFF', 'FAF'] },
+  { label: 'Copy Trader Alpha', emoji: '\u{1F4CB}', address: '2pLx...5mGj', totalPnl: 34500, realizedPnl: 29800, roi: 134, winRate: 73, trades: 19, tokensTraded: ['JUP', 'PTOKEN', 'NOHAT'] },
+  { label: 'NFT Flipper', emoji: '\u{1F3A8}', address: '6vNk...4rSw', totalPnl: 28900, realizedPnl: 24100, roi: 89, winRate: 64, trades: 35, tokensTraded: ['CATFU', 'PIGEON', 'CAPTCHA'] },
+  { label: 'MEV Hunter', emoji: '\u26A1', address: '1wQp...9zTf', totalPnl: 22400, realizedPnl: 21800, roi: 78, winRate: 81, trades: 38, tokensTraded: ['JUP', 'SAMBA', 'SPAWN'] },
+  { label: 'Quiet Accumulator', emoji: '\u{1F92B}', address: '5hDr...3kMv', totalPnl: 18700, realizedPnl: 15200, roi: 62, winRate: 69, trades: 22, tokensTraded: ['UNTIL', 'PTOKEN', 'MS2', 'CATFU'] },
+  { label: 'Airdrop Farmer', emoji: '\u{1F33E}', address: '8nFx...6pBw', totalPnl: 12300, realizedPnl: 10100, roi: 45, winRate: 61, trades: 31, tokensTraded: ['JUP', 'WOJAK', 'CAPTCHA', 'NOHAT'] },
+  { label: 'Momentum Rider', emoji: '\u{1F3C4}', address: '4cKw...2jNr', totalPnl: 8900, realizedPnl: 7200, roi: 28, winRate: 55, trades: 18, tokensTraded: ['FAF', 'LAYOFF', '1'] },
+  { label: 'Diamond Hands', emoji: '\u{1F48E}', address: '7rTm...8vLq', totalPnl: 5400, realizedPnl: 3800, roi: 15, winRate: 57, trades: 8, tokensTraded: ['JUP', 'PTOKEN'] },
+];
+
+// ── V2 Analyst Setups (6 rows) ──────────────────────────────
+
+export const V2_ANALYST_SETUPS: V2AnalystSetup[] = [
+  { analyst: 'Blake Morrow', avatarColor: '#2A5ADA', token: 'BTC', pattern: 'Bat Pattern', direction: 'Bullish', description: 'Classic bullish bat completion at the 0.886 XA retracement near $82,400. Harmonic confluence with weekly demand zone. Volume profile confirms accumulation. R/R: 2.8:1.', entry: 82400, target: 89500, stop: 80800, timeframe: '4H' },
+  { analyst: 'Blake Morrow', avatarColor: '#2A5ADA', token: 'ETH', pattern: 'Cup & Handle', direction: 'Bullish', description: 'Multi-week cup & handle pattern forming on ETH/USD daily. Handle pullback to $1,920 support with declining volume \u2014 textbook. Breakout above $2,050 confirms. Target measured move to $2,400.', entry: 1950, target: 2400, stop: 1850, timeframe: '1D' },
+  { analyst: 'Nick Groves', avatarColor: '#9945FF', token: 'SOL', pattern: 'Bull Flag', direction: 'Bullish', description: 'SOL consolidating in a tight bull flag after 18% rally. Flag pole measured move projects to $158. On-chain data shows smart money accumulating during consolidation. Volume declining in flag \u2014 classic.', entry: 134, target: 158, stop: 126, timeframe: '4H' },
+  { analyst: 'Grega Horvat', avatarColor: '#E84142', token: 'BTC', pattern: 'Elliott Wave', direction: 'Bullish', description: 'BTC completing wave 4 corrective ABC at $81,500 support. Wave 5 impulse targeting 1.618 extension at $98,400. RSI divergence on the 4H confirms momentum shift. Invalidation below wave 1 high at $78,200.', entry: 82000, target: 98400, stop: 78200, timeframe: '1D' },
+  { analyst: 'Jack Marshall', avatarColor: '#22c55e', token: 'AAPL', pattern: 'Falling Wedge', direction: 'Bullish', description: 'AAPL forming a falling wedge on the daily \u2014 historically 68% bullish breakout rate. Volume contraction within the wedge. Earnings catalyst in 2 weeks could accelerate the move. Measured target $235.', entry: 215, target: 235, stop: 208, timeframe: '1D' },
+  { analyst: 'Jack Marshall', avatarColor: '#22c55e', token: 'NVDA', pattern: 'Head & Shoulders', direction: 'Bearish', description: 'NVDA printing a textbook H&S top on the 4H. Left shoulder at $168, head at $174, right shoulder forming at $167. Neckline at $160. Break below confirms pattern with a measured target of $146. AI hype fading.', entry: 160, target: 146, stop: 170, timeframe: '4H' },
+];
+
+// ── V2 Research Feed (8 articles) ───────────────────────────
+
+export const V2_RESEARCH_FEED: V2ResearchArticle[] = [
+  { source: 'The Block', sourceColor: '#f59e0b', timeAgo: '23m ago', title: 'Solana DEX volume surpasses Ethereum for third consecutive week amid memecoin surge', tokens: ['SOL', 'JUP', 'RAY'] },
+  { source: 'Blockworks', sourceColor: '#3b82f6', timeAgo: '1h ago', title: 'BlackRock BUIDL fund crosses $2B AUM as institutional demand for tokenized treasuries accelerates', tokens: ['ETH', 'USDC'] },
+  { source: 'Messari', sourceColor: '#06b6d4', timeAgo: '2h ago', title: 'Q1 2026 DeFi report: lending protocols see 340% TVL growth driven by restaking narratives', tokens: ['ETH', 'AAVE', 'EIGEN'] },
+  { source: 'Delphi Digital', sourceColor: '#8b5cf6', timeAgo: '3h ago', title: 'Prediction markets reach $4.2B in open interest \u2014 Polymarket dominates with 78% market share', tokens: ['MATIC'] },
+  { source: 'Arkham Intel', sourceColor: '#22c55e', timeAgo: '4h ago', title: 'Whale alert: Jump Trading moves 12,400 ETH ($24.2M) to Binance \u2014 potential distribution event', tokens: ['ETH'] },
+  { source: 'CoinDesk Research', sourceColor: '#f59e0b', timeAgo: '5h ago', title: 'Bitcoin mining difficulty hits all-time high as hashrate surges 23% post-halving adjustment', tokens: ['BTC'] },
+  { source: 'Nansen Research', sourceColor: '#06b6d4', timeAgo: '7h ago', title: 'Smart money wallets rotating from memecoins to AI tokens \u2014 RENDER and FET see $89M inflows', tokens: ['RENDER', 'FET', 'SOL'] },
+  { source: 'DeFiLlama', sourceColor: '#22c55e', timeAgo: '8h ago', title: 'Solana TVL reaches $8.4B new ATH, Jupiter aggregator processing 62% of all DEX volume', tokens: ['SOL', 'JUP'] },
+];
+
+// ── V2 X Feed (12 posts) ────────────────────────────────────
+
+export const V2_X_FEED: V2XPost[] = [
+  { handle: '@CryptoHayes', verified: true, timeAgo: '12m ago', text: 'ETH is cooked below 2.2k. Funding negative, OI dropping, no bid. Next stop 1.8k. The merge narrative is dead, L2s are cannibalizing the base layer. Only saving grace is the ETF flows.' },
+  { handle: '@Pentosh1', verified: true, timeAgo: '28m ago', text: 'BTC weekly close above 84k and we are going to 95k minimum. The chart is screaming breakout. Every dip buyer from 78k is in profit. Short sellers running out of ammo.' },
+  { handle: '@HsakaTrades', verified: true, timeAgo: '45m ago', text: 'SOL/ETH ratio at ATH. People sleeping on this. The flippening isn\'t ETH flipping BTC, it\'s SOL flipping ETH. DeFi activity, NFTs, memecoins \u2014 all migrated. Devs follow users.' },
+  { handle: '@GCRClassic', verified: false, timeAgo: '1h ago', text: 'Everyone is bullish again. You know what that means. The crowd is never right at the extremes. I\'m not saying short here, but I am saying this is where you reduce risk, not add it.' },
+  { handle: '@inversebrah', verified: false, timeAgo: '2h ago', text: 'just watched a $2M market buy on JUP. someone knows something. or they\'re just degen. either way i\'m following that wallet.' },
+  { handle: '@EmperorBTC', verified: true, timeAgo: '2h ago', text: 'Thread on why BTC mining difficulty ATH is actually bullish: miners are investing BILLIONS in infrastructure post-halving. They wouldn\'t do that if they expected sub-$60k prices. Follow the capex.' },
+  { handle: '@MustStopMurad', verified: true, timeAgo: '3h ago', text: 'Memecoins are not going away. They are the native financial product of the internet generation. Every cycle people call the top on memes. Every cycle memes outperform "fundamentals." Cope.' },
+  { handle: '@Rewkang', verified: false, timeAgo: '4h ago', text: 'The Solana phone meta is underrated. 150k devices in the wild, each one a crypto-native distribution channel. When the next airdrop hits Saga holders, the FOMO will be insane.' },
+  { handle: '@CryptoKaleo', verified: true, timeAgo: '5h ago', text: 'AAPL tokenized shares doing more volume on Kraken than some mid-cap cryptos. The lines between TradFi and DeFi are blurring faster than anyone expected. Bullish on convergence.' },
+  { handle: '@zaborack', verified: false, timeAgo: '6h ago', text: 'Prediction markets are the most honest price discovery mechanism we have. No analyst bias, no corporate spin. Just money where your mouth is. Polymarket > CNBC.' },
+  { handle: '@DegenSpartan', verified: false, timeAgo: '7h ago', text: 'SOL funding at 0.025% lmao shorts getting rekt soon. This is the setup. Every time funding gets this extreme on SOL it squeezes 15-20%. Set your longs and walk away.' },
+  { handle: '@CredibleCrypto', verified: true, timeAgo: '8h ago', text: 'BTC structure is identical to the Oct 2023 breakout. Same accumulation range, same volume profile, same whale behavior. History doesn\'t repeat but it rhymes. Target 110k by summer.' },
+];
+
+// ── V2 Prediction Cards (12 cards) ──────────────────────────
+
+function generateProbabilityHistory(endProbability: number, volatility: number = 8): number[] {
+  const points: number[] = []
+  let current = endProbability + (Math.random() - 0.5) * 30
+  current = Math.max(5, Math.min(95, current))
+  for (let i = 0; i < 30; i++) {
+    points.push(Math.round(Math.max(2, Math.min(98, current))))
+    const drift = (endProbability - current) * 0.08
+    current += drift + (Math.random() - 0.5) * volatility
+  }
+  points[29] = endProbability
+  return points
+}
+
+export const V2_PREDICTION_CARDS: V2PredictionCard[] = [
+  {
+    id: 'pred-1', question: 'Will BTC close above $90K end of March?', tokenLogo: '\u20BF',
+    priceLevels: [{ price: '$90,000', probability: 72 }, { price: '$85,000', probability: 89 }],
+    volumeStr: '$14.2M', resolution: 'Mar 31, 2026', category: 'crypto', tickers: ['BTC'],
+    probabilityHistory: generateProbabilityHistory(72, 10),
+  },
+  {
+    id: 'pred-2', question: 'Fed decision in April?', tokenLogo: '\u{1F3DB}\uFE0F',
+    priceLevels: [{ price: 'No change', probability: 96 }, { price: '25bp cut', probability: 4 }],
+    volumeStr: '$8.7M', resolution: 'Apr 30, 2026', category: 'macro', tickers: [],
+    probabilityHistory: generateProbabilityHistory(96, 3),
+  },
+  {
+    id: 'pred-3', question: 'Will AAPL close above $220 end of March?', tokenLogo: '\u{1F34E}',
+    priceLevels: [{ price: '$220', probability: 58 }, { price: '$210', probability: 81 }],
+    volumeStr: '$5.1M', resolution: 'Mar 31, 2026', category: 'stocks', tickers: ['AAPL'],
+    probabilityHistory: generateProbabilityHistory(58, 12),
+  },
+  {
+    id: 'pred-4', question: 'BTC drop below $65K in March?', tokenLogo: '\u20BF',
+    priceLevels: [{ price: 'Yes', probability: 41 }, { price: 'No', probability: 59 }],
+    volumeStr: '$11.3M', resolution: 'Mar 31, 2026', category: 'crypto', tickers: ['BTC'],
+    probabilityHistory: generateProbabilityHistory(41, 14),
+  },
+  {
+    id: 'pred-5', question: 'SEC approve SOL ETF by June?', tokenLogo: '\u25CE',
+    priceLevels: [{ price: 'Yes', probability: 28 }, { price: 'No', probability: 72 }],
+    volumeStr: '$6.8M', resolution: 'Jun 30, 2026', category: 'regulatory', tickers: ['SOL'],
+    probabilityHistory: generateProbabilityHistory(28, 8),
+  },
+  {
+    id: 'pred-6', question: 'What will NVDA hit in March 2026?', tokenLogo: '\u{1F7E2}',
+    priceLevels: [{ price: '$200+', probability: 24 }, { price: '$164', probability: 62 }],
+    volumeStr: '$9.4M', resolution: 'Mar 31, 2026', category: 'stocks', tickers: ['NVDA'],
+    probabilityHistory: generateProbabilityHistory(62, 11),
+  },
+  {
+    id: 'pred-7', question: 'Will Google close above $260 end of March?', tokenLogo: '\u{1F50D}',
+    priceLevels: [{ price: '$260', probability: 44 }, { price: '$250', probability: 71 }],
+    volumeStr: '$3.8M', resolution: 'Mar 31, 2026', category: 'stocks', tickers: ['GOOGL'],
+    probabilityHistory: generateProbabilityHistory(44, 13),
+  },
+  {
+    id: 'pred-8', question: 'ETH hit $2,400 in March?', tokenLogo: '\u039E',
+    priceLevels: [{ price: 'Yes', probability: 32 }, { price: 'No', probability: 68 }],
+    volumeStr: '$7.2M', resolution: 'Mar 31, 2026', category: 'crypto', tickers: ['ETH'],
+    probabilityHistory: generateProbabilityHistory(32, 10),
+  },
+  {
+    id: 'pred-9', question: 'What will S&P 500 hit by end of March?', tokenLogo: '\u{1F4C8}',
+    priceLevels: [{ price: '$6,400+', probability: 35 }, { price: '$6,300', probability: 54 }],
+    volumeStr: '$12.1M', resolution: 'Mar 31, 2026', category: 'macro', tickers: ['SPX'],
+    probabilityHistory: generateProbabilityHistory(54, 9),
+  },
+  {
+    id: 'pred-10', question: 'Will MSFT finish week above $340?', tokenLogo: '\u{1FA9F}',
+    priceLevels: [{ price: 'Yes', probability: 99 }, { price: 'No', probability: 1 }],
+    volumeStr: '$2.4M', resolution: 'Mar 28, 2026', category: 'stocks', tickers: ['MSFT'],
+    probabilityHistory: generateProbabilityHistory(99, 2),
+  },
+  {
+    id: 'pred-11', question: 'Fed rate hike in 2026?', tokenLogo: '\u{1F3DB}\uFE0F',
+    priceLevels: [{ price: 'Yes', probability: 18 }, { price: 'No', probability: 82 }],
+    volumeStr: '$4.5M', resolution: 'Dec 31, 2026', category: 'macro', tickers: [],
+    probabilityHistory: generateProbabilityHistory(18, 6),
+  },
+  {
+    id: 'pred-12', question: 'Trump crypto executive order Q2?', tokenLogo: '\u{1F1FA}\u{1F1F8}',
+    priceLevels: [{ price: 'Yes', probability: 64 }, { price: 'No', probability: 36 }],
+    volumeStr: '$6.1M', resolution: 'Jun 30, 2026', category: 'geopolitical', tickers: ['BTC', 'ETH'],
+    probabilityHistory: generateProbabilityHistory(64, 11),
+  },
+];
+
+// ── V2 Alerts (10 rows) ─────────────────────────────────────
+
+export const V2_ALERTS: V2Alert[] = [
+  { token: 'BTC', type: 'Price', condition: 'BTC crosses above $90,000', status: 'Armed', severity: 'High', created: '2h ago' },
+  { token: 'ETH', type: 'On-Chain', condition: 'Whale wallet moves >10K ETH to exchange', status: 'Triggered', severity: 'High', created: '4h ago', postTriggerAnalysis: 'Jump Trading deposited 12,400 ETH ($24.2M) to Binance. Historically, Jump exchange deposits precede selling within 24-48h. ETH price dropped 2.1% in the hour following. Monitor for further deposits.' },
+  { token: 'SOL', type: 'Technical', condition: 'SOL RSI crosses above 70 on 4H', status: 'Armed', severity: 'Medium', created: '6h ago' },
+  { token: 'BTC', type: 'Prediction', condition: 'BTC $90K March probability drops below 60%', status: 'Armed', severity: 'Medium', created: '1d ago' },
+  { token: 'JUP', type: 'On-Chain', condition: 'Smart money wallets accumulate >$5M JUP', status: 'Triggered', severity: 'Medium', created: '8h ago', postTriggerAnalysis: 'Three tracked smart money wallets bought a combined $7.2M JUP over 6 hours. Average entry $0.42. These wallets have a 74% historical win rate on SOL ecosystem tokens. JUP rallied 8% following accumulation.' },
+  { token: 'AAPL', type: 'Price', condition: 'Tokenized AAPL drops below $210', status: 'Armed', severity: 'Low', created: '2d ago' },
+  { token: 'ETH', type: 'Convergence', condition: '3+ bearish signals align on ETH (on-chain + technical + CT sentiment)', status: 'Triggered', severity: 'High', created: '3h ago', postTriggerAnalysis: 'Convergence alert: (1) Whale ETH deposits to exchanges up 340%, (2) ETH/BTC ratio at 52-week low, (3) CT sentiment score dropped to 23/100. Last time all three aligned (Nov 2024), ETH dropped 18% over 2 weeks.' },
+  { token: 'NVDA', type: 'Technical', condition: 'NVDA breaks below H&S neckline at $160', status: 'Armed', severity: 'High', created: '12h ago' },
+  { token: 'SOL', type: 'Prediction', condition: 'SOL ETF approval probability rises above 40%', status: 'Armed', severity: 'Low', created: '3d ago' },
+  { token: 'BTC', type: 'On-Chain', condition: 'Mining difficulty increases >5% in single adjustment', status: 'Armed', severity: 'Low', created: '1d ago' },
+];
+
+// ── V2 Top Tokens Trading (12 rows) ─────────────────────────
+
+export const V2_TOP_TOKENS_TRADING: V2TopTokenTrading[] = [
+  { chain: 'solana', token: 'JUP', emoji: '\u{1FA90}', flows24h: 18000000, flows7d: 42000000, flows30d: 89000000, traders: 42100, tokenAgeDays: 420, mcap: 541000000 },
+  { chain: 'solana', token: 'PTOKEN', emoji: '\u{1FA69}', flows24h: 12000000, flows7d: 28000000, flows30d: 52000000, traders: 9800, tokenAgeDays: 90, mcap: 15600000 },
+  { chain: 'solana', token: 'CATFU', emoji: '\u{1F431}', flows24h: 4200000, flows7d: 12000000, flows30d: 18000000, traders: 7230, tokenAgeDays: 45, mcap: 8910000 },
+  { chain: 'solana', token: 'NOHAT', emoji: '\u{1F6AB}', flows24h: 5400000, flows7d: 8900000, flows30d: 14000000, traders: 5890, tokenAgeDays: 32, mcap: 4560000 },
+  { chain: 'solana', token: 'SPAWN', emoji: '\u{1F47E}', flows24h: 2100000, flows7d: 6200000, flows30d: 11000000, traders: 3100, tokenAgeDays: 68, mcap: 5620000 },
+  { chain: 'solana', token: 'CAPTCHA', emoji: '\u{1F916}', flows24h: 2100000, flows7d: 5100000, flows30d: -63670, traders: 4120, tokenAgeDays: 55, mcap: 2840000 },
+  { chain: 'solana', token: 'PUNCH', emoji: '\u{1F94A}', flows24h: 1200000, flows7d: -1400000, flows30d: 3200000, traders: 3210, tokenAgeDays: 28, mcap: 1230000 },
+  { chain: 'solana', token: 'SAMBA', emoji: '\u{1F483}', flows24h: 2400000, flows7d: 5800000, flows30d: 9400000, traders: 2890, tokenAgeDays: 72, mcap: 4120000 },
+  { chain: 'solana', token: 'MS2', emoji: '\u{1F4D0}', flows24h: 1800000, flows7d: 3200000, flows30d: 5600000, traders: 2340, tokenAgeDays: 21, mcap: 1780000 },
+  { chain: 'solana', token: 'WOJAK', emoji: '\u{1F622}', flows24h: 720000, flows7d: 1800000, flows30d: -890000, traders: 2456, tokenAgeDays: 180, mcap: 841000 },
+  { chain: 'solana', token: 'FAF', emoji: '\u{1F525}', flows24h: 890000, flows7d: 2100000, flows30d: 4500000, traders: 1842, tokenAgeDays: 14, mcap: 390000 },
+  { chain: 'solana', token: 'LAYOFF', emoji: '\u{1F4E6}', flows24h: 1800000, flows7d: 3400000, flows30d: 5100000, traders: 1560, tokenAgeDays: 7, mcap: 89000 },
+];
+
+// ── V2 Top Tokens Holding (10 rows) ─────────────────────────
+
+export const V2_TOP_TOKENS_HOLDING: V2TopTokenHolding[] = [
+  { chain: 'solana', token: 'JUP', emoji: '\u{1FA90}', balance: 15200000, balanceChange24h: 3.2, shareOfHoldings: 18, holders: 342000, mcap: 541000000 },
+  { chain: 'solana', token: 'PENGU', emoji: '\u{1F427}', balance: 8900000, balanceChange24h: -1.4, shareOfHoldings: 11, holders: 189000, mcap: 312000000 },
+  { chain: 'solana', token: 'META', emoji: '\u{1F310}', balance: 7200000, balanceChange24h: 5.8, shareOfHoldings: 9, holders: 78000, mcap: 245000000 },
+  { chain: 'solana', token: 'RENDER', emoji: '\u{1F3A8}', balance: 6100000, balanceChange24h: 8.2, shareOfHoldings: 7, holders: 124000, mcap: 4200000000 },
+  { chain: 'solana', token: 'PUMP', emoji: '\u{1F48A}', balance: 4800000, balanceChange24h: -4.1, shareOfHoldings: 6, holders: 267000, mcap: 890000000 },
+  { chain: 'solana', token: 'FARTCOIN', emoji: '\u{1F4A8}', balance: 3400000, balanceChange24h: 12.4, shareOfHoldings: 4, holders: 156000, mcap: 420000000 },
+  { chain: 'solana', token: 'MPLX', emoji: '\u2699\uFE0F', balance: 2100000, balanceChange24h: -0.8, shareOfHoldings: 3, holders: 45000, mcap: 178000000 },
+  { chain: 'solana', token: 'WOJAK', emoji: '\u{1F622}', balance: 1800000, balanceChange24h: 2.1, shareOfHoldings: 2, holders: 89000, mcap: 841000 },
+  { chain: 'solana', token: 'BONK', emoji: '\u{1F415}', balance: 1200000, balanceChange24h: -2.9, shareOfHoldings: 2, holders: 712000, mcap: 1800000000 },
+  { chain: 'solana', token: 'RAY', emoji: '\u2600\uFE0F', balance: 890000, balanceChange24h: 1.7, shareOfHoldings: 2, holders: 98000, mcap: 560000000 },
+];
+
+// ── V2 Recent Trades (10 rows) ──────────────────────────────
+
+export const V2_RECENT_TRADES: V2RecentTrade[] = [
+  { wallet: '30D Smart Trader', walletAddr: '7xKp...3mNq', token: 'JUP', direction: 'Buy', amount: 142000, price: 0.44, time: '2m ago' },
+  { wallet: 'DEX Whale', walletAddr: '4vRm...8xLp', token: 'CATFU', direction: 'Sell', amount: 89000, price: 0.00891, time: '5m ago' },
+  { wallet: 'Sniper Bot', walletAddr: '3mYx...7vPq', token: 'FAF', direction: 'Buy', amount: 2400000, price: 0.000390, time: '8m ago' },
+  { wallet: 'Early Adopter', walletAddr: '9tBn...2wKf', token: 'LAYOFF', direction: 'Buy', amount: 5600000, price: 0.000089, time: '12m ago' },
+  { wallet: 'Degen King', walletAddr: '8kWz...1nRt', token: 'CHUD', direction: 'Sell', amount: 1800000, price: 0.000291, time: '18m ago' },
+  { wallet: 'MEV Hunter', walletAddr: '1wQp...9zTf', token: 'SAMBA', direction: 'Buy', amount: 320000, price: 0.00412, time: '25m ago' },
+  { wallet: 'Copy Trader Alpha', walletAddr: '2pLx...5mGj', token: 'PTOKEN', direction: 'Buy', amount: 45000, price: 0.0156, time: '38m ago' },
+  { wallet: 'Quiet Accumulator', walletAddr: '5hDr...3kMv', token: 'NOHAT', direction: 'Buy', amount: 210000, price: 0.00456, time: '1h ago' },
+  { wallet: 'NFT Flipper', walletAddr: '6vNk...4rSw', token: 'PUNCH', direction: 'Sell', amount: 560000, price: 0.00123, time: '1h ago' },
+  { wallet: 'Airdrop Farmer', walletAddr: '8nFx...6pBw', token: 'WOJAK', direction: 'Buy', amount: 890000, price: 0.000841, time: '2h ago' },
+];
+
+// ── V2 Watchlist Tokens (5 rows) ────────────────────────────
+
+export const V2_WATCHLIST_TOKENS: V2Token[] = [
+  { chain: 'solana', name: 'Bitcoin', ticker: 'BTC', emoji: '\u20BF', price: 87000, change24h: 4.2, mcap: 1720000000000, traders: 890000, volume: 74200000000, liquidity: 12000000000, inflows: 2100000000, outflows: 1800000000, netFlows: 300000000 },
+  { chain: 'ethereum', name: 'Ethereum', ticker: 'ETH', emoji: '\u039E', price: 1950, change24h: -3.8, mcap: 234000000000, traders: 520000, volume: 14500000000, liquidity: 8900000000, inflows: 890000000, outflows: 1200000000, netFlows: -310000000 },
+  { chain: 'solana', name: 'Solana', ticker: 'SOL', emoji: '\u25CE', price: 134, change24h: 2.1, mcap: 58000000000, traders: 310000, volume: 1400000000, liquidity: 2100000000, inflows: 420000000, outflows: 380000000, netFlows: 40000000 },
+  { chain: 'ethereum', name: 'Ondo Finance', ticker: 'ONDO', emoji: '\u{1F3E6}', price: 0.92, change24h: 12.3, mcap: 1340000000, traders: 45000, volume: 89000000, liquidity: 34000000, inflows: 28000000, outflows: 14000000, netFlows: 14000000 },
+  { chain: 'solana', name: 'Jupiter', ticker: 'JUP', emoji: '\u{1FA90}', price: 0.44, change24h: 3.2, mcap: 541000000, traders: 42100, volume: 89000000, liquidity: 34000000, inflows: 18000000, outflows: 15000000, netFlows: 3000000 },
+];
+
+// ── Pelican Analysis Generator ──────────────────────────────
+
+export function getPelicanAnalysis(type: 'token' | 'wallet' | 'setup' | 'prediction' | 'alert', item: unknown): string {
+  switch (type) {
+    case 'token': {
+      const t = item as V2Token
+      const direction = t.change24h !== null && t.change24h > 0 ? 'up' : t.change24h !== null && t.change24h < 0 ? 'down' : 'flat'
+      const changeStr = t.change24h !== null ? `${t.change24h > 0 ? '+' : ''}${t.change24h}%` : 'N/A'
+      const flowDirection = t.netFlows > 0 ? 'positive' : t.netFlows < 0 ? 'negative' : 'neutral'
+      const smartMoneyNote = t.traders > 5000 ? `High trader count (${formatCompact(t.traders)}) suggests broad interest.` : `Trader count at ${formatCompact(t.traders)} \u2014 still early.`
+      if (direction === 'up') {
+        return `${t.ticker} is ${direction} ${changeStr} in 24h with $${formatCompact(t.volume)} volume. Net flows are ${flowDirection} at $${formatCompact(Math.abs(t.netFlows))} \u2014 inflows of $${formatCompact(t.inflows)} vs outflows of $${formatCompact(t.outflows)}. ${smartMoneyNote} Market cap at $${formatCompact(t.mcap)} with $${formatCompact(t.liquidity)} liquidity. Momentum is building \u2014 watch for continuation above current levels.`
+      } else if (direction === 'down') {
+        return `${t.ticker} is ${direction} ${changeStr} in 24h on $${formatCompact(t.volume)} volume. Net flows are ${flowDirection} at $${formatCompact(Math.abs(t.netFlows))} \u2014 outflows dominating with $${formatCompact(t.outflows)} leaving. ${smartMoneyNote} Market cap at $${formatCompact(t.mcap)}. Liquidity at $${formatCompact(t.liquidity)} \u2014 ${t.liquidity < t.volume * 0.1 ? 'thin relative to volume, exit risk elevated' : 'adequate for current volume'}. Watch for support levels.`
+      }
+      return `${t.ticker} showing no 24h change data. Volume at $${formatCompact(t.volume)} with $${formatCompact(t.liquidity)} liquidity. Net flows slightly ${flowDirection} at $${formatCompact(Math.abs(t.netFlows))}. ${smartMoneyNote} Insufficient momentum signal \u2014 wait for directional conviction.`
+    }
+    case 'wallet': {
+      const w = item as V2Wallet
+      const performanceTier = w.roi > 200 ? 'elite' : w.roi > 100 ? 'strong' : w.roi > 50 ? 'solid' : 'moderate'
+      const riskProfile = w.winRate > 75 ? 'highly selective with excellent risk management' : w.winRate > 65 ? 'disciplined with above-average hit rate' : 'aggressive with a higher-frequency approach'
+      return `${w.label} (${w.address}) has generated $${formatCompact(w.totalPnl)} total PnL with ${w.roi}% ROI across ${w.trades} trades \u2014 ${performanceTier} performance tier. Win rate of ${w.winRate}% indicates this wallet is ${riskProfile}. Realized PnL at $${formatCompact(w.realizedPnl)}. Currently trading ${w.tokensTraded.slice(0, 3).join(', ')}${w.tokensTraded.length > 3 ? ` and ${w.tokensTraded.length - 3} others` : ''}. Historical pattern suggests high-conviction entries \u2014 worth monitoring for new positions.`
+    }
+    case 'setup': {
+      const s = item as V2AnalystSetup
+      const rrRatio = Math.abs(s.target - s.entry) / Math.abs(s.entry - s.stop)
+      return `${s.analyst} identifies a ${s.pattern} on ${s.token} \u2014 ${s.direction}. Entry at $${formatCompact(s.entry)}, target $${formatCompact(s.target)}, stop $${formatCompact(s.stop)}. Risk-reward ratio: ${rrRatio.toFixed(1)}:1 on the ${s.timeframe} timeframe. ${s.description} On-chain data ${s.direction === 'Bullish' ? 'supports accumulation thesis with smart money inflows aligned to the setup' : 'shows distribution patterns consistent with the bearish pattern'}. Prediction markets ${s.direction === 'Bullish' ? 'lean bullish on this asset near-term' : 'show elevated put activity'}.`
+    }
+    case 'prediction': {
+      const p = item as V2PredictionCard
+      const topLevel = p.priceLevels[0]
+      if (!topLevel) return `"${p.question}" \u2014 no price levels available.`
+      const isHighConviction = topLevel.probability > 70
+      const isContrarian = topLevel.probability < 35
+      const lastProb = p.probabilityHistory[p.probabilityHistory.length - 1] ?? 0
+      const midProb = p.probabilityHistory[Math.floor(p.probabilityHistory.length / 2)] ?? 0
+      const trendDirection = p.probabilityHistory.length >= 2
+        ? lastProb > midProb
+          ? 'trending higher'
+          : 'trending lower'
+        : 'stable'
+      return `"${p.question}" \u2014 leading outcome "${topLevel.price}" at ${topLevel.probability}% probability. Volume: ${p.volumeStr} traded. Resolution: ${p.resolution}. Probability has been ${trendDirection} over the past 30 periods. ${isHighConviction ? 'High-conviction market consensus \u2014 contrarian bets here carry elevated risk but asymmetric upside if correct.' : isContrarian ? 'Market is skeptical \u2014 this is where contrarian alpha lives. If you have a differentiated thesis, the odds are in your favor.' : 'Market is split \u2014 this is a genuine coin flip. Watch for catalyst events that could break the deadlock.'}`
+    }
+    case 'alert': {
+      const a = item as V2Alert
+      if (a.status === 'Triggered' && a.postTriggerAnalysis) {
+        return `TRIGGERED: ${a.condition}. ${a.postTriggerAnalysis}`
+      }
+      const urgency = a.severity === 'High' ? 'This is a high-priority alert \u2014 immediate attention recommended when triggered.' : a.severity === 'Medium' ? 'Medium priority \u2014 review within the hour when triggered.' : 'Low priority \u2014 informational, review at your convenience.'
+      return `${a.type} alert on ${a.token}: "${a.condition}" \u2014 currently ${a.status.toLowerCase()}. Set ${a.created}. ${urgency} ${a.type === 'Convergence' ? 'Convergence alerts fire when multiple independent signals align, historically the strongest edge.' : a.type === 'On-Chain' ? 'On-chain alerts track real wallet movements \u2014 leading indicators vs lagging price action.' : a.type === 'Prediction' ? 'Prediction market alerts catch shifts in crowd consensus before they reflect in spot markets.' : 'Monitoring for the specified condition.'}`
+    }
+    default:
+      return 'Analysis unavailable for this item type.'
+  }
+}
