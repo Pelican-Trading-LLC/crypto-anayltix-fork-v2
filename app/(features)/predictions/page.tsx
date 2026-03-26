@@ -1,214 +1,220 @@
-'use client'
+"use client"
 
-import { useState } from 'react'
-import { Lightning, ArrowRight } from '@phosphor-icons/react'
-import {
-  PREDICTION_MARKETS,
-  CONTRARIAN_SPOTLIGHT,
-  TRADFI_BRIDGE_PREDICTIONS,
-  PELICAN_SYNTHESES,
-} from '@/lib/crypto-mock-data'
+import React, { useState, useMemo } from 'react'
+import { FilterPill } from '@/components/v2/filter-pill'
+import { PredictionCard } from '@/components/v2/predictions/prediction-card'
+import { V2_PREDICTION_CARDS } from '@/lib/crypto-mock-data'
 
-const TABS = ['Macro & Fed', 'Crypto', 'Geopolitical', 'Regulatory', 'Contrarian Signals'] as const
-type Tab = typeof TABS[number]
+const CATEGORIES = ['All', 'Crypto', 'Macro / Fed', 'Stocks', 'Regulatory', 'Geopolitical'] as const
+type Category = typeof CATEGORIES[number]
 
-const TAB_CATEGORY_MAP: Record<Tab, string | null> = {
-  'Macro & Fed': 'macro',
+const CATEGORY_MAP: Record<Category, string | null> = {
+  'All': null,
   'Crypto': 'crypto',
-  'Geopolitical': 'geopolitical',
+  'Macro / Fed': 'macro',
+  'Stocks': 'stocks',
   'Regulatory': 'regulatory',
-  'Contrarian Signals': null,
+  'Geopolitical': 'geopolitical',
 }
 
-function probColor(p: number) {
-  if (p > 70) return 'bg-green-500'
-  if (p >= 30) return 'bg-amber-400'
-  return 'bg-red-500'
-}
+const TICKER_TABS = ['BTC', 'ETH', 'SOL', 'AAPL', 'NVDA', 'SPX', 'TSLA', 'GOOGL', 'Fed Rates', 'More'] as const
 
 export default function PredictionsPage() {
-  const [activeTab, setActiveTab] = useState<Tab>('Macro & Fed')
+  const [search, setSearch] = useState('')
+  const [activeCategory, setActiveCategory] = useState<Category>('All')
+  const [activeTicker, setActiveTicker] = useState<string | null>(null)
 
-  const filtered = activeTab === 'Contrarian Signals'
-    ? PREDICTION_MARKETS.filter(c => c.isContrarian)
-    : PREDICTION_MARKETS.filter(c => c.category === TAB_CATEGORY_MAP[activeTab])
+  const filtered = useMemo(() => {
+    let cards = V2_PREDICTION_CARDS
+
+    // Category filter
+    const catKey = CATEGORY_MAP[activeCategory]
+    if (catKey) {
+      cards = cards.filter((c) => c.category === catKey)
+    }
+
+    // Ticker filter
+    if (activeTicker && activeTicker !== 'More') {
+      if (activeTicker === 'Fed Rates') {
+        cards = cards.filter(
+          (c) => c.category === 'macro' || c.question.toLowerCase().includes('fed')
+        )
+      } else {
+        cards = cards.filter((c) => c.tickers.includes(activeTicker))
+      }
+    }
+
+    // Search filter
+    if (search.trim()) {
+      const q = search.trim().toLowerCase()
+      cards = cards.filter(
+        (c) =>
+          c.question.toLowerCase().includes(q) ||
+          c.tickers.some((t) => t.toLowerCase().includes(q))
+      )
+    }
+
+    return cards
+  }, [activeCategory, activeTicker, search])
 
   return (
-    <div className="p-6 max-w-[1200px] mx-auto space-y-8">
-      {/* ── Page Header ── */}
-      <div className="flex items-center gap-3">
-        <div>
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-semibold text-[var(--text-primary)]">Predictions</h1>
-            <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-green-500/15 text-green-400 text-[11px] font-semibold tracking-wide">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-              LIVE
-            </span>
-          </div>
-          <p className="text-sm text-[var(--text-secondary)] mt-1">
-            Prediction market intelligence — contrarian signals, probability-as-indicator
-          </p>
-        </div>
-      </div>
-
-      {/* ── Contrarian Signal Spotlight ── */}
-      <div className="bg-gradient-to-r from-[rgba(139,92,246,0.06)] to-[rgba(6,182,212,0.06)] border border-[rgba(139,92,246,0.15)] rounded-xl p-6">
-        <div className="flex items-center gap-2 mb-4">
-          <Lightning size={20} weight="fill" className="text-amber-400" />
-          <h2 className="text-lg font-semibold text-[var(--text-primary)]">Contrarian Signal Spotlight</h2>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Left side */}
-          <div className="space-y-4">
-            <p className="text-lg font-semibold text-[var(--text-primary)]">
-              {CONTRARIAN_SPOTLIGHT.question}
-            </p>
-
-            {/* Stat boxes */}
-            <div className="grid grid-cols-3 gap-3">
-              <div className="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-lg p-3 text-center">
-                <p className="text-[11px] uppercase tracking-wider text-[var(--text-muted)] mb-1">Current Probability</p>
-                <p className="text-3xl font-mono text-amber-400 tabular-nums">{CONTRARIAN_SPOTLIGHT.currentProbability}%</p>
-              </div>
-              <div className="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-lg p-3 text-center">
-                <p className="text-[11px] uppercase tracking-wider text-[var(--text-muted)] mb-1">Volume</p>
-                <p className="text-xl font-mono text-[var(--text-primary)] tabular-nums">{CONTRARIAN_SPOTLIGHT.volume}</p>
-              </div>
-              <div className="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-lg p-3 text-center">
-                <p className="text-[11px] uppercase tracking-wider text-[var(--text-muted)] mb-1">Move Required</p>
-                <p className="text-xl font-mono text-red-400 tabular-nums">{CONTRARIAN_SPOTLIGHT.moveRequired}</p>
-              </div>
-            </div>
-
-            {/* Historical instances */}
-            <div>
-              <p className="text-xs uppercase tracking-wider text-[var(--text-muted)] mb-2">Historical Instances</p>
-              <div className="flex flex-wrap gap-2">
-                {CONTRARIAN_SPOTLIGHT.history.map((h, i) => (
-                  <div key={i} className="flex items-center gap-2 bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-lg px-3 py-2 text-xs">
-                    <span className="font-mono text-[var(--text-secondary)] tabular-nums">{h.date}</span>
-                    <span className="text-[var(--text-muted)]">|</span>
-                    <span className="font-mono text-amber-400 tabular-nums">{h.probability}%</span>
-                    <span className="text-[var(--text-muted)]">|</span>
-                    <span className="font-mono text-[var(--text-secondary)] tabular-nums">${h.btcPrice.toLocaleString()}</span>
-                    <span className="text-[var(--text-muted)]">|</span>
-                    <span className={`font-medium ${h.label.includes('BOTTOM') ? 'text-green-400' : 'text-red-400'}`}>
-                      {h.label}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Right side — Pelican Analysis */}
-          <div className="relative rounded-xl overflow-hidden bg-[rgba(6,182,212,0.04)] border border-[rgba(6,182,212,0.12)]">
-            <div className="h-[2px] bg-gradient-to-r from-cyan-500/60 via-cyan-400 to-cyan-500/60" />
-            <div className="p-4">
-              <p className="text-xs uppercase tracking-wider text-cyan-400 font-semibold mb-2">Pelican Analysis</p>
-              <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-                {CONTRARIAN_SPOTLIGHT.pelicanAnalysis}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ── Tab Bar ── */}
-      <div className="flex gap-1 p-1 rounded-xl bg-[var(--bg-surface)] border border-[var(--border-subtle)]">
-        {TABS.map(tab => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`px-3 py-1.5 rounded-lg text-[12px] font-medium transition-colors cursor-pointer ${
-              activeTab === tab
-                ? 'bg-[#06B6D4]/15 text-[#06B6D4]'
-                : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
-            }`}
+    <div
+      style={{
+        background: 'var(--v2-bg-base)',
+        padding: '24px',
+        minHeight: '100vh',
+      }}
+    >
+      <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
+        {/* Header */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+            marginBottom: '20px',
+          }}
+        >
+          <h1
+            style={{
+              fontSize: '16px',
+              fontWeight: 700,
+              color: 'var(--v2-text-primary)',
+              margin: 0,
+            }}
           >
-            {tab}
-          </button>
-        ))}
-      </div>
+            Prediction Room
+          </h1>
+          <span
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              padding: '2px 8px',
+              borderRadius: '9999px',
+              background: 'var(--v2-violet-dim, rgba(139,92,246,0.15))',
+              color: 'var(--v2-violet, #8b5cf6)',
+              fontSize: '11px',
+              fontWeight: 600,
+              lineHeight: '18px',
+            }}
+          >
+            via Polymarket
+          </span>
+        </div>
 
-      {/* ── Prediction Contracts Table ── */}
-      <div className="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl overflow-hidden">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-[var(--border-subtle)]">
-              <th className="text-left text-[11px] uppercase tracking-wider text-[var(--text-muted)] font-medium px-4 py-3">Question</th>
-              <th className="text-left text-[11px] uppercase tracking-wider text-[var(--text-muted)] font-medium px-4 py-3">Leading Outcome</th>
-              <th className="text-left text-[11px] uppercase tracking-wider text-[var(--text-muted)] font-medium px-4 py-3 w-[180px]">Probability</th>
-              <th className="text-right text-[11px] uppercase tracking-wider text-[var(--text-muted)] font-medium px-4 py-3">Volume</th>
-              <th className="text-left text-[11px] uppercase tracking-wider text-[var(--text-muted)] font-medium px-4 py-3">Signal</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map(contract => (
-              <tr
-                key={contract.id}
-                className={`border-b border-[var(--border-subtle)] last:border-b-0 hover:bg-[var(--bg-elevated)] transition-colors ${
-                  contract.isContrarian ? 'border-l-2 border-l-violet-500' : ''
-                }`}
-              >
-                <td className="px-4 py-3">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm text-[var(--text-primary)]">{contract.question}</span>
-                    {contract.isContrarian && (
-                      <span className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-violet-500/15 text-violet-400 text-[10px] font-semibold whitespace-nowrap">
-                        <Lightning size={10} weight="fill" /> CONTRARIAN
-                      </span>
-                    )}
-                  </div>
-                </td>
-                <td className="px-4 py-3 text-sm text-[var(--text-secondary)]">{contract.leadingOutcome}</td>
-                <td className="px-4 py-3">
-                  <div className="flex items-center gap-2">
-                    <div className="flex-1 h-2 rounded-full bg-[var(--bg-base)] overflow-hidden">
-                      <div
-                        className={`h-full rounded-full ${probColor(contract.probability)}`}
-                        style={{ width: `${contract.probability}%` }}
-                      />
-                    </div>
-                    <span className="text-xs font-mono text-[var(--text-primary)] tabular-nums w-8 text-right">
-                      {contract.probability}%
-                    </span>
-                  </div>
-                </td>
-                <td className="px-4 py-3 text-right text-sm font-mono text-[var(--text-secondary)] tabular-nums">
-                  {contract.volume}
-                </td>
-                <td className="px-4 py-3 text-sm text-[var(--text-secondary)]">{contract.signal}</td>
-              </tr>
-            ))}
-            {filtered.length === 0 && (
-              <tr>
-                <td colSpan={5} className="px-4 py-8 text-center text-sm text-[var(--text-muted)]">
-                  No contracts in this category
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+        {/* Search bar */}
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search a Polymarket question or paste URL..."
+          style={{
+            width: '100%',
+            height: '44px',
+            padding: '0 14px',
+            fontSize: '13px',
+            color: 'var(--v2-text-primary)',
+            background: 'var(--v2-bg-elevated)',
+            border: '1px solid var(--v2-border)',
+            borderRadius: '6px',
+            outline: 'none',
+            marginBottom: '16px',
+            boxSizing: 'border-box',
+          }}
+        />
 
-      {/* ── TradFi Bridge ── */}
-      <div>
-        <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-4">
-          TradFi <ArrowRight size={16} weight="bold" className="inline text-[var(--text-muted)] mx-1" /> Prediction Market Bridge
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {TRADFI_BRIDGE_PREDICTIONS.map((item, i) => (
-            <div
-              key={i}
-              className="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-lg p-3 flex items-center gap-3 hover:border-[var(--border-hover)] transition-colors"
-            >
-              <span className="text-sm text-[var(--text-muted)] flex-1">{item.traditional}</span>
-              <ArrowRight size={14} weight="bold" className="text-[var(--text-muted)] shrink-0" />
-              <span className="text-sm text-[var(--text-primary)] flex-1">{item.tokenized}</span>
-            </div>
+        {/* Category filter pills */}
+        <div
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: '6px',
+            marginBottom: '12px',
+          }}
+        >
+          {CATEGORIES.map((cat) => (
+            <FilterPill
+              key={cat}
+              label={cat}
+              active={activeCategory === cat}
+              onClick={() => {
+                setActiveCategory(cat)
+                setActiveTicker(null)
+              }}
+            />
           ))}
+        </div>
+
+        {/* Ticker tabs */}
+        <div
+          style={{
+            display: 'flex',
+            gap: '6px',
+            overflowX: 'auto',
+            marginBottom: '20px',
+            paddingBottom: '4px',
+          }}
+        >
+          {TICKER_TABS.map((ticker) => (
+            <button
+              key={ticker}
+              type="button"
+              onClick={() =>
+                setActiveTicker(activeTicker === ticker ? null : ticker)
+              }
+              style={{
+                padding: '4px 12px',
+                borderRadius: '9999px',
+                border: `1px solid ${
+                  activeTicker === ticker
+                    ? 'var(--v2-cyan-dim, rgba(6,182,212,0.4))'
+                    : 'var(--v2-border)'
+                }`,
+                background:
+                  activeTicker === ticker
+                    ? 'var(--v2-cyan-dim, rgba(6,182,212,0.12))'
+                    : 'transparent',
+                color:
+                  activeTicker === ticker
+                    ? 'var(--v2-cyan, #06B6D4)'
+                    : 'var(--v2-text-secondary)',
+                fontSize: '11px',
+                fontWeight: 600,
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+                lineHeight: '18px',
+                flexShrink: 0,
+              }}
+            >
+              {ticker}
+            </button>
+          ))}
+        </div>
+
+        {/* Cards grid */}
+        <div
+          style={{
+            display: 'grid',
+            gap: '14px',
+          }}
+          className="grid-cols-1 md:grid-cols-2 xl:grid-cols-3"
+        >
+          {filtered.map((card) => (
+            <PredictionCard key={card.id} card={card} />
+          ))}
+          {filtered.length === 0 && (
+            <div
+              style={{
+                gridColumn: '1 / -1',
+                textAlign: 'center',
+                padding: '48px 0',
+                fontSize: '13px',
+                color: 'var(--v2-text-tertiary)',
+              }}
+            >
+              No predictions match your filters
+            </div>
+          )}
         </div>
       </div>
     </div>
