@@ -107,7 +107,7 @@ export function TopTokens() {
           <span className="v2-mono" style={{ fontSize: '13px', color: 'var(--v2-green)' }}>
             ${formatCompact(t.flows24h)}
           </span>
-          <FlowBar value={t.flows24h} maxValue={maxFlow24h} color="green" />
+          <FlowBar value={t.flows24h} maxAbsolute={maxFlow24h} />
         </span>
       ),
     },
@@ -127,7 +127,7 @@ export function TopTokens() {
           >
             {t.flows7d < 0 ? '-' : ''}${formatCompact(Math.abs(t.flows7d))}
           </span>
-          <FlowBar value={t.flows7d} maxValue={maxFlow7d} />
+          <FlowBar value={t.flows7d} maxAbsolute={maxFlow7d} />
         </span>
       ),
     },
@@ -147,7 +147,7 @@ export function TopTokens() {
           >
             {t.flows30d < 0 ? '-' : ''}${formatCompact(Math.abs(t.flows30d))}
           </span>
-          <FlowBar value={t.flows30d} maxValue={maxFlow30d} />
+          <FlowBar value={t.flows30d} maxAbsolute={maxFlow30d} />
         </span>
       ),
     },
@@ -219,7 +219,7 @@ export function TopTokens() {
           <span className="v2-mono" style={{ fontSize: '13px', color: 'var(--v2-text-primary)' }}>
             ${formatCompact(t.balance)}
           </span>
-          <FlowBar value={t.balance} maxValue={maxBalance} color="green" />
+          <FlowBar value={t.balance} maxAbsolute={maxBalance} />
         </span>
       ),
     },

@@ -139,7 +139,7 @@ export function TokenTable() {
           <span className="v2-mono" style={{ color: 'var(--v2-text-primary)' }}>
             ${formatCompact(token.volume)}
           </span>
-          <FlowBar value={token.volume} maxValue={maxVolume} color="auto" />
+          <FlowBar value={token.volume} maxAbsolute={maxVolume} />
         </span>
       ),
     },
@@ -164,7 +164,7 @@ export function TokenTable() {
           <span className="v2-mono" style={{ color: 'var(--v2-green)' }}>
             ${formatCompact(token.inflows)}
           </span>
-          <FlowBar value={token.inflows} maxValue={maxInflow} color="green" />
+          <FlowBar value={token.inflows} maxAbsolute={maxInflow} />
         </span>
       ),
     },

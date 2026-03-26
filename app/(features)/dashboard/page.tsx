@@ -115,7 +115,7 @@ export default function DashboardPage() {
           }}
         >
           <FilterPill label="Solana" active />
-          <FilterPill label="Spot" active color="#22c55e" />
+          <FilterPill label="Spot" active color="green" />
           <FilterPill label="Perps" />
           <FilterPill label="All Caps &#9662;" />
           <FilterPill label="Sectors &#9662;" />

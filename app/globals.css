@@ -270,51 +270,147 @@
 }
 
 /* ======================================================================
-   V2 UI Rebuild — Nansen/Polymarket Design Tokens
+   V2 UI Overhaul — Bloomberg/Nansen Production Tokens
    ====================================================================== */
 
 :root {
-  --v2-bg-base: #080C14;
-  --v2-bg-surface: #0C1018;
-  --v2-bg-elevated: #0E1420;
-  --v2-bg-hover: #131B29;
-  --v2-border: rgba(255, 255, 255, 0.06);
-  --v2-border-active: rgba(255, 255, 255, 0.10);
-  --v2-text-primary: #E8EAED;
+  /* Surface & Depth System — 4 layers */
+  --v2-bg-base: #06090F;
+  --v2-bg-surface-1: #0B0F18;
+  --v2-bg-surface-2: #0F1420;
+  --v2-bg-surface-3: #141B28;
+  --v2-bg-surface-4: #1A2235;
+  /* Aliases for backward compat */
+  --v2-bg-surface: var(--v2-bg-surface-1);
+  --v2-bg-elevated: var(--v2-bg-surface-2);
+  --v2-bg-hover: var(--v2-bg-surface-3);
+
+  /* Borders — 3 levels */
+  --v2-border: rgba(255, 255, 255, 0.04);
+  --v2-border-default: rgba(255, 255, 255, 0.07);
+  --v2-border-strong: rgba(255, 255, 255, 0.12);
+  --v2-border-active: rgba(255, 255, 255, 0.12);
+
+  /* Text — 4 levels */
+  --v2-text-primary: #E2E8F0;
   --v2-text-secondary: #8B949E;
-  --v2-text-tertiary: #484F58;
-  --v2-green: #22C55E;
-  --v2-green-dim: rgba(34, 197, 94, 0.12);
-  --v2-red: #EF4444;
-  --v2-red-dim: rgba(239, 68, 68, 0.12);
-  --v2-cyan: #06B6D4;
-  --v2-cyan-dim: rgba(6, 182, 212, 0.10);
-  --v2-cyan-glow: rgba(6, 182, 212, 0.05);
-  --v2-violet: #8B5CF6;
-  --v2-violet-dim: rgba(139, 92, 246, 0.10);
-  --v2-amber: #F59E0B;
-  --v2-amber-dim: rgba(245, 158, 11, 0.10);
-  --v2-blue: #3B82F6;
+  --v2-text-tertiary: #4A5568;
+  --v2-text-quaternary: #2D3748;
+
+  /* Data colors — muted, not neon */
+  --v2-green: #34D399;
+  --v2-green-dim: rgba(52, 211, 153, 0.06);
+  --v2-red: #F87171;
+  --v2-red-dim: rgba(248, 113, 113, 0.06);
+  --v2-amber: #FBBF24;
+  --v2-amber-dim: rgba(251, 191, 36, 0.06);
+
+  /* Accent — less electric cyan */
+  --v2-cyan: #22D3EE;
+  --v2-cyan-muted: #0E7490;
+  --v2-cyan-dim: rgba(34, 211, 238, 0.06);
+  --v2-cyan-glow: rgba(34, 211, 238, 0.10);
+
+  /* Violet for AI/prediction elements */
+  --v2-violet: #A78BFA;
+  --v2-violet-muted: #6D28D9;
+  --v2-violet-dim: rgba(167, 139, 250, 0.06);
+
+  --v2-blue: #60A5FA;
 }
 
 /* V2 Typography — scoped to V2 components only */
 .v2-mono {
   font-family: var(--font-jetbrains-mono, 'JetBrains Mono'), ui-monospace, monospace;
   font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
 }
 
 .v2-sans {
   font-family: var(--font-dm-sans, 'DM Sans'), -apple-system, system-ui, sans-serif;
 }
 
-/* V2 table rows */
+/* V2 table rows — 40px not 38px */
 .v2-row {
-  height: 38px;
+  display: flex;
+  align-items: center;
+  height: 40px;
   border-bottom: 1px solid var(--v2-border);
-  transition: background 0.12s ease;
+  transition: background-color 120ms ease;
 }
 .v2-row:hover {
-  background: var(--v2-bg-hover);
+  background-color: var(--v2-bg-surface-3);
+}
+
+/* Analyze button fades in on row hover */
+.v2-row .v2-analyze-btn {
+  opacity: 0.5;
+  transition: opacity 120ms ease;
+}
+.v2-row:hover .v2-analyze-btn {
+  opacity: 1;
+}
+
+/* Table header */
+.v2-header-row {
+  display: flex;
+  align-items: center;
+  height: 36px;
+  border-bottom: 1px solid var(--v2-border-default);
+  background: var(--v2-bg-surface-2);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+/* Table container with custom scrollbar */
+.v2-table-container {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: visible;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.08) transparent;
+}
+.v2-table-container::-webkit-scrollbar { height: 6px; }
+.v2-table-container::-webkit-scrollbar-track { background: transparent; }
+.v2-table-container::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 3px; }
+.v2-table-container::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.14); }
+
+/* Shimmer loading animation */
+@keyframes v2-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+.v2-skeleton {
+  background: linear-gradient(90deg, var(--v2-bg-surface-2) 25%, var(--v2-bg-surface-3) 50%, var(--v2-bg-surface-2) 75%);
+  background-size: 200% 100%;
+  animation: v2-shimmer 1.5s ease-in-out infinite;
+  border-radius: 4px;
+}
+
+/* LIVE badge pulse */
+@keyframes v2-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.v2-pulse-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--v2-green);
+  animation: v2-pulse 2s ease-in-out infinite;
+}
+
+/* Selected row (future) */
+.v2-row-selected {
+  background: var(--v2-cyan-dim);
+  border-left: 2px solid var(--v2-cyan);
+}
+
+/* Triggered row */
+.v2-row-triggered {
+  border-left: 2px solid var(--v2-green);
+  background: rgba(52, 211, 153, 0.03);
 }
 
 /* ======================================================================

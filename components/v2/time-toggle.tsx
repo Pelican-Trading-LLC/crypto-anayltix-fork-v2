@@ -13,8 +13,8 @@ export function TimeToggle({ options, value, onChange }: TimeToggleProps) {
     <div
       style={{
         display: 'inline-flex',
-        border: '1px solid var(--v2-border-active)',
-        borderRadius: '4px',
+        border: '1px solid var(--v2-border-default)',
+        borderRadius: '6px',
         overflow: 'hidden',
       }}
     >
@@ -25,15 +25,17 @@ export function TimeToggle({ options, value, onChange }: TimeToggleProps) {
           className="v2-mono"
           onClick={() => onChange(option)}
           style={{
-            padding: '4px 10px',
+            height: '28px',
+            padding: '0 10px',
             fontSize: '11px',
-            fontWeight: 600,
+            fontWeight: value === option ? 600 : 500,
             background: value === option ? 'var(--v2-cyan-dim)' : 'transparent',
-            color: value === option ? 'var(--v2-cyan)' : 'var(--v2-text-secondary)',
+            color: value === option ? 'var(--v2-cyan)' : 'var(--v2-text-tertiary)',
             border: 'none',
-            borderRight: i < options.length - 1 ? '1px solid var(--v2-border-active)' : 'none',
+            borderRight: i < options.length - 1 ? '1px solid var(--v2-border)' : 'none',
             cursor: 'pointer',
             lineHeight: 1,
+            transition: 'background-color 120ms ease, color 120ms ease',
           }}
         >
           {option}

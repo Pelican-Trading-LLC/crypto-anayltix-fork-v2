@@ -35,8 +35,8 @@ export default function SmartMoneyPage() {
         >
           Smart Money
         </span>
-        <FilterPill label="Solana" active color="#06B6D4" />
-        <FilterPill label="Spot" active color="#22c55e" />
+        <FilterPill label="Solana" active color="cyan" />
+        <FilterPill label="Spot" active color="green" />
         <FilterPill label="Perps" />
       </div>
 

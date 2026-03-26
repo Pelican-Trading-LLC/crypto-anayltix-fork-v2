@@ -45,15 +45,14 @@ export function PelicanSynthesisBox({ children }: PelicanSynthesisBoxProps) {
     <div
       style={{
         position: 'relative',
-        background: 'var(--v2-cyan-glow)',
-        border: '1px solid var(--v2-cyan-dim)',
-        borderRadius: '6px',
+        background: 'var(--v2-bg-surface-2)',
+        border: '1px solid var(--v2-border-default)',
+        borderRadius: '8px',
         padding: '16px',
-        paddingTop: '18px',
         overflow: 'hidden',
       }}
     >
-      {/* Top accent gradient bar */}
+      {/* Top accent gradient bar — subtle cyan to violet */}
       <div
         style={{
           position: 'absolute',
@@ -61,12 +60,13 @@ export function PelicanSynthesisBox({ children }: PelicanSynthesisBoxProps) {
           left: 0,
           right: 0,
           height: '2px',
-          background: 'linear-gradient(90deg, var(--v2-cyan), var(--v2-violet))',
+          background: 'linear-gradient(90deg, rgba(34, 211, 238, 0.35), rgba(167, 139, 250, 0.35))',
         }}
       />
       <div
+        className="v2-sans"
         style={{
-          fontSize: '12px',
+          fontSize: '12.5px',
           lineHeight: 1.7,
           color: 'var(--v2-text-secondary)',
         }}
@@ -104,13 +104,14 @@ export function QuickStatsGrid({ stats }: QuickStatsGridProps) {
         <div
           key={i}
           style={{
-            background: 'var(--v2-bg-elevated)',
+            background: 'var(--v2-bg-surface-2)',
             border: '1px solid var(--v2-border)',
             borderRadius: '6px',
             padding: '10px',
           }}
         >
           <div
+            className="v2-sans"
             style={{
               fontSize: '11px',
               color: 'var(--v2-text-tertiary)',

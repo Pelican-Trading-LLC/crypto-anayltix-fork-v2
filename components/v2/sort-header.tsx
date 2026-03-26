@@ -40,17 +40,17 @@ export function SortHeader({ label, sortKey, currentSort, onSort }: SortHeaderPr
       }}
     >
       <span>{label}</span>
-      <span style={{ display: 'flex', flexDirection: 'column', gap: '1px' }}>
-        <svg width="6" height="4" viewBox="0 0 6 4" fill="none">
+      <span style={{ display: 'flex', flexDirection: 'column', gap: '1px', height: '8px', justifyContent: 'center' }}>
+        <svg width="6" height="3" viewBox="0 0 6 3" fill="none">
           <path
-            d="M3 0L6 4H0L3 0Z"
-            fill={direction === 'asc' ? 'var(--v2-cyan)' : 'var(--v2-text-tertiary)'}
+            d="M3 0L6 3H0L3 0Z"
+            fill={direction === 'asc' ? 'var(--v2-cyan)' : 'var(--v2-text-quaternary)'}
           />
         </svg>
-        <svg width="6" height="4" viewBox="0 0 6 4" fill="none">
+        <svg width="6" height="3" viewBox="0 0 6 3" fill="none">
           <path
-            d="M3 4L0 0H6L3 4Z"
-            fill={direction === 'desc' ? 'var(--v2-cyan)' : 'var(--v2-text-tertiary)'}
+            d="M3 3L0 0H6L3 3Z"
+            fill={direction === 'desc' ? 'var(--v2-cyan)' : 'var(--v2-text-quaternary)'}
           />
         </svg>
       </span>

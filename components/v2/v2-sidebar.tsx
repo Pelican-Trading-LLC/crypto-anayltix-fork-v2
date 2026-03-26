@@ -40,22 +40,49 @@ function NavItem({
     <Link
       href={item.route}
       className={cn(
-        'relative flex items-center gap-[10px] h-9 px-3 rounded-md text-[13px] font-medium transition-colors',
+        'v2-sans relative flex items-center gap-[8px] mx-[6px] my-[1px] rounded-[6px] transition-colors',
         isActive
-          ? 'bg-[rgba(6,182,212,0.08)] text-[var(--v2-text-primary)] border-l-2 border-[var(--v2-cyan)]'
-          : 'text-[var(--v2-text-secondary)] hover:bg-[var(--v2-bg-hover)] border-l-2 border-transparent'
+          ? 'border-l-2 border-[var(--v2-cyan)]'
+          : 'border-l-2 border-transparent hover:bg-[var(--v2-bg-surface-3)]'
       )}
+      style={{
+        height: '36px',
+        padding: '0 12px',
+        fontSize: '12.5px',
+        fontWeight: isActive ? 500 : 400,
+        color: isActive ? 'var(--v2-text-primary)' : 'var(--v2-text-secondary)',
+        background: isActive ? 'var(--v2-cyan-dim)' : undefined,
+      }}
     >
       <item.icon
-        size={20}
+        size={16}
         weight={isActive ? 'fill' : 'regular'}
-        className={cn(
-          isActive ? 'text-[var(--v2-cyan)]' : 'text-[var(--v2-text-secondary)]'
-        )}
+        style={{
+          color: isActive ? 'var(--v2-cyan)' : 'var(--v2-text-tertiary)',
+          flexShrink: 0,
+        }}
       />
       <span>{item.label}</span>
       {item.badge != null && (
-        <span className="absolute top-1 right-2 flex items-center justify-center w-4 h-4 rounded-full bg-[var(--v2-cyan)] text-white text-[10px] font-semibold leading-none">
+        <span
+          className="v2-mono"
+          style={{
+            position: 'absolute',
+            top: '4px',
+            right: '8px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '16px',
+            height: '16px',
+            borderRadius: '50%',
+            background: 'var(--v2-red)',
+            color: 'white',
+            fontSize: '9px',
+            fontWeight: 700,
+            lineHeight: 1,
+          }}
+        >
           {item.badge}
         </span>
       )}
@@ -71,33 +98,59 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
   const pathname = usePathname()
 
   return (
-    <div className="v2-sans flex flex-col h-full w-[200px] bg-[var(--v2-bg-surface)] border-r border-[var(--v2-border)]">
+    <div
+      className="v2-sans flex flex-col h-full"
+      style={{
+        width: '180px',
+        background: 'var(--v2-bg-surface-1)',
+        borderRight: '1px solid var(--v2-border)',
+      }}
+    >
       {/* Logo area */}
-      <div className="p-5">
+      <div style={{ padding: '16px 14px 12px' }}>
         <div className="flex items-center justify-between">
-          <span className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-violet-500 bg-clip-text text-transparent">
-            TA
+          <span
+            style={{
+              fontSize: '13px',
+              fontWeight: 700,
+              color: 'var(--v2-text-primary)',
+            }}
+          >
+            Token Analytix
           </span>
           {onClose && (
             <button
               onClick={onClose}
-              className="md:hidden text-[var(--v2-text-secondary)] hover:text-[var(--v2-text-primary)] transition-colors"
+              className="md:hidden"
+              style={{
+                color: 'var(--v2-text-secondary)',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+              }}
               aria-label="Close sidebar"
             >
-              <X size={20} />
+              <X size={16} />
             </button>
           )}
         </div>
-        <p className="text-sm font-bold text-[var(--v2-text-primary)] mt-1">
-          Token Analytix
-        </p>
-        <p className="text-[9px] uppercase tracking-[1px] text-[var(--v2-text-tertiary)] mt-0.5">
-          Powered by Pelican AI
+        <p
+          className="v2-mono"
+          style={{
+            fontSize: '8px',
+            fontWeight: 500,
+            color: 'var(--v2-text-quaternary)',
+            textTransform: 'uppercase',
+            letterSpacing: '0.06em',
+            marginTop: '2px',
+          }}
+        >
+          POWERED BY PELICAN AI
         </p>
       </div>
 
       {/* Nav items */}
-      <nav className="flex-1 px-2 space-y-0.5">
+      <nav className="flex-1" style={{ paddingTop: '4px' }}>
         {navItems.map((item) => (
           <NavItem
             key={item.route}
@@ -108,25 +161,58 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
       </nav>
 
       {/* User area */}
-      <div className="p-4 border-t border-[var(--v2-border)]">
+      <div style={{ padding: '12px 14px', borderTop: '1px solid var(--v2-border)' }}>
         <div className="flex items-center gap-2">
-          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-[var(--v2-bg-elevated)] text-[var(--v2-text-secondary)] text-sm font-medium shrink-0">
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '24px',
+              height: '24px',
+              borderRadius: '50%',
+              background: 'var(--v2-bg-surface-3)',
+              color: 'var(--v2-text-secondary)',
+              fontSize: '11px',
+              fontWeight: 500,
+              flexShrink: 0,
+            }}
+          >
             N
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-xs text-[var(--v2-text-secondary)] truncate">
+            <p
+              style={{
+                fontSize: '11px',
+                color: 'var(--v2-text-tertiary)',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}
+            >
               nick@pelicantrading.ai
             </p>
-            <span className="inline-block text-[10px] text-[var(--v2-cyan)] bg-[var(--v2-cyan-dim)] px-1.5 py-0.5 rounded-full mt-0.5">
+            <span
+              className="v2-mono"
+              style={{
+                fontSize: '9px',
+                fontWeight: 600,
+                color: 'var(--v2-cyan)',
+              }}
+            >
               Pro
             </span>
           </div>
           <Link
             href="/settings"
-            className="text-[var(--v2-text-tertiary)] hover:text-[var(--v2-text-secondary)] transition-colors shrink-0"
+            style={{
+              color: 'var(--v2-text-tertiary)',
+              flexShrink: 0,
+              transition: 'color 120ms ease',
+            }}
             aria-label="Settings"
           >
-            <Gear size={16} />
+            <Gear size={14} />
           </Link>
         </div>
       </div>
@@ -150,7 +236,13 @@ export default function V2Sidebar() {
 
       {/* Mobile hamburger button */}
       <button
-        className="md:hidden fixed top-4 left-4 z-50 w-10 h-10 flex items-center justify-center rounded-lg bg-[var(--v2-bg-surface)] border border-[var(--v2-border)] text-[var(--v2-text-secondary)] hover:text-[var(--v2-text-primary)] transition-colors"
+        className="md:hidden fixed top-4 left-4 z-50 w-10 h-10 flex items-center justify-center rounded-lg"
+        style={{
+          background: 'var(--v2-bg-surface-1)',
+          border: '1px solid var(--v2-border)',
+          color: 'var(--v2-text-secondary)',
+          cursor: 'pointer',
+        }}
         onClick={() => setMobileOpen(true)}
         aria-label="Open navigation"
       >

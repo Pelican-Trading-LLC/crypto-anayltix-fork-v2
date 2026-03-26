@@ -4,31 +4,41 @@ import React from 'react'
 
 interface FlowBarProps {
   value: number
-  maxValue: number
-  color?: 'green' | 'red' | 'auto'
+  maxAbsolute: number
+  width?: number
+  height?: number
 }
 
-export function FlowBar({ value, maxValue, color = 'auto' }: FlowBarProps) {
-  const fillPercent = Math.min((Math.abs(value) / maxValue) * 100, 100)
-
-  let fillColor: string
-  if (color === 'green') {
-    fillColor = 'var(--v2-green)'
-  } else if (color === 'red') {
-    fillColor = 'var(--v2-red)'
-  } else {
-    fillColor = value >= 0 ? 'var(--v2-green)' : 'var(--v2-red)'
+export function FlowBar({ value, maxAbsolute, width = 48, height = 4 }: FlowBarProps) {
+  if (value === 0 || maxAbsolute === 0) {
+    return (
+      <span
+        style={{
+          display: 'inline-flex',
+          width: `${width}px`,
+          height: `${height}px`,
+          borderRadius: `${height / 2}px`,
+          background: 'rgba(255,255,255,0.04)',
+          verticalAlign: 'middle',
+        }}
+      />
+    )
   }
+
+  const fillPercent = Math.max(4, Math.min((Math.abs(value) / maxAbsolute) * 100, 100))
+  const isPositive = value > 0
+  const fillColor = isPositive ? 'var(--v2-green)' : 'var(--v2-red)'
 
   return (
     <span
       style={{
         display: 'inline-flex',
-        width: '40px',
-        height: '5px',
-        borderRadius: '2px',
+        alignItems: 'center',
+        justifyContent: isPositive ? 'flex-start' : 'flex-end',
+        width: `${width}px`,
+        height: `${height}px`,
+        borderRadius: `${height / 2}px`,
         background: 'rgba(255,255,255,0.04)',
-        marginLeft: '6px',
         verticalAlign: 'middle',
         overflow: 'hidden',
       }}
@@ -37,8 +47,9 @@ export function FlowBar({ value, maxValue, color = 'auto' }: FlowBarProps) {
         style={{
           width: `${fillPercent}%`,
           height: '100%',
-          borderRadius: '2px',
+          borderRadius: `${height / 2}px`,
           background: fillColor,
+          opacity: 0.8,
         }}
       />
     </span>

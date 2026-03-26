@@ -53,7 +53,7 @@ export function ProfitableWallets() {
           <span className="v2-mono" style={{ color: 'var(--v2-green)' }}>
             +${formatCompact(wallet.realizedPnl)}
           </span>
-          <FlowBar value={wallet.realizedPnl} maxValue={maxPnl} color="green" />
+          <FlowBar value={wallet.realizedPnl} maxAbsolute={maxPnl} />
         </span>
       ),
     },
@@ -67,7 +67,7 @@ export function ProfitableWallets() {
           <span className="v2-mono" style={{ color: 'var(--v2-green)' }}>
             +{wallet.roi}%
           </span>
-          <FlowBar value={wallet.roi} maxValue={maxRoi} color="green" />
+          <FlowBar value={wallet.roi} maxAbsolute={maxRoi} />
         </span>
       ),
     },

@@ -43,7 +43,7 @@ export function Leaderboard() {
           <span className="v2-mono" style={{ color: 'var(--v2-green)', fontSize: '13px' }}>
             ${formatCompact(w.totalPnl)}
           </span>
-          <FlowBar value={w.totalPnl} maxValue={maxPnl} color="green" />
+          <FlowBar value={w.totalPnl} maxAbsolute={maxPnl} />
         </span>
       ),
     },
