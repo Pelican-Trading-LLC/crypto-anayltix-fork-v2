@@ -85,7 +85,7 @@ export default function LoginPage() {
         <div className="bg-card border border-border rounded-3xl p-8 shadow-xl">
           <div className="flex flex-col items-center text-center mb-8">
             <div className="w-[50px] h-[50px] rounded-[14px] flex items-center justify-center text-white text-lg font-bold mb-4"
-              style={{ background: 'linear-gradient(135deg, #1DA1C4, #178BA8)' }}>
+              style={{ background: 'linear-gradient(135deg, #2C5F8A, #5B4F8A)' }}>
               CA
             </div>
             <h1 className="text-2xl font-bold tracking-tight text-foreground">Welcome back</h1>

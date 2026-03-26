@@ -5,10 +5,10 @@ import { Clock } from '@phosphor-icons/react'
 import { usePelicanPanelContext } from '@/providers/pelican-panel-provider'
 
 const categoryColors: Record<string, string> = {
-  fundamentals: '#1DA1C4',
+  fundamentals: '#4A90C4',
   derivatives: '#EC4899',
-  risk: '#EF4444',
-  strategy: '#22C55E',
+  risk: '#E06565',
+  strategy: '#3EBD8C',
 }
 
 export default function LearnPage() {

@@ -12,20 +12,20 @@ import "./globals.css"
 
 export function generateMetadata(): Metadata {
   return {
-    metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://cryptoanalytix.com'),
+    metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://tokenanalytix.com'),
     title: {
-      default: 'Crypto Analytix',
-      template: '%s | Crypto Analytix',
+      default: 'Token Analytix',
+      template: '%s | Token Analytix',
     },
     description: 'AI-powered crypto intelligence for traditional traders',
     openGraph: {
-      title: 'Crypto Analytix',
+      title: 'Token Analytix',
       description: 'AI-powered crypto intelligence for traditional traders',
       type: 'website',
     },
     twitter: {
       card: 'summary',
-      title: 'Crypto Analytix',
+      title: 'Token Analytix',
       description: 'AI-powered crypto intelligence for traditional traders',
     },
     other: {
@@ -48,7 +48,7 @@ export default function RootLayout({
         <meta name="theme-color" content="#2e2e2e" />
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem("crypto-analytix-theme")||"dark";document.documentElement.classList.toggle("dark",t==="dark")}catch(e){}})()`,
+            __html: `(function(){try{var t=localStorage.getItem("token-analytix-theme")||"dark";document.documentElement.classList.toggle("dark",t==="dark")}catch(e){}})()`,
           }}
         />
       </head>

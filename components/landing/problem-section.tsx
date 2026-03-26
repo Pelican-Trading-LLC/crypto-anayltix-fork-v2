@@ -46,7 +46,7 @@ export function ProblemSection() {
             <div className="rounded-xl border border-slate-200 bg-white p-6 transition-all duration-150 hover:border-slate-300 hover:bg-slate-50">
               <problem.icon
                 weight="regular"
-                className="mb-4 h-8 w-8 text-[#1DA1C4]"
+                className="mb-4 h-8 w-8 text-[#4A90C4]"
               />
               <h3 className="text-sm font-semibold text-slate-900 leading-snug">
                 {problem.title}

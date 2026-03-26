@@ -7,8 +7,8 @@ import Link from 'next/link'
 import { usePelicanPanelContext } from '@/providers/pelican-panel-provider'
 
 const SEVERITY_STYLES = {
-  high: 'bg-red-500/10 text-red-500 border-red-500/20',
-  medium: 'bg-amber-500/10 text-amber-500 border-amber-500/20',
+  high: 'bg-[#E06565]/10 text-[#E06565] border-[#E06565]/20',
+  medium: 'bg-[#D4A042]/10 text-[#D4A042] border-[#D4A042]/20',
   low: 'bg-gray-500/10 text-gray-400 border-gray-500/20',
 }
 
@@ -41,7 +41,7 @@ export default function AlertsPage() {
         <div className="flex items-center gap-3">
           <h1 className="text-xl font-semibold">Intelligence Alerts</h1>
           {unreadCount > 0 && (
-            <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-[#1DA1C4]/15 text-[#1DA1C4]">
+            <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-[#4A90C4]/15 text-[#4A90C4]">
               {unreadCount} New
             </span>
           )}
@@ -55,7 +55,7 @@ export default function AlertsPage() {
           return (
             <button key={f} onClick={() => setFilter(f)}
               className={`px-2.5 py-1.5 rounded-lg text-[11px] font-medium transition-colors cursor-pointer ${
-                filter === f ? 'bg-[#1DA1C4]/15 text-[#1DA1C4]' : 'text-muted-foreground hover:text-foreground'
+                filter === f ? 'bg-[#4A90C4]/15 text-[#4A90C4]' : 'text-muted-foreground hover:text-foreground'
               }`}>
               {f === 'All' ? 'All' : cfg?.label}
             </button>
@@ -80,7 +80,7 @@ export default function AlertsPage() {
                   <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold border ${SEVERITY_STYLES[alert.severity]}`}>
                     {alert.severity.toUpperCase()}
                   </span>
-                  {!alert.read && <Circle size={6} weight="fill" className="text-[#1DA1C4]" />}
+                  {!alert.read && <Circle size={6} weight="fill" className="text-[#4A90C4]" />}
                 </div>
                 <span className="font-mono text-[11px] text-muted-foreground">{alert.timestamp}</span>
               </div>
@@ -94,7 +94,7 @@ export default function AlertsPage() {
                 <div className="flex gap-1.5">
                   {alert.affected_assets.map(a => (
                     <Link key={a} href={`/token-intel?ticker=${a}`}
-                      className="px-2 py-0.5 rounded-md border border-[var(--border)] text-[10px] font-mono font-medium hover:border-[#1DA1C4]/40 hover:text-[#1DA1C4] transition-colors">
+                      className="px-2 py-0.5 rounded-md border border-[var(--border)] text-[10px] font-mono font-medium hover:border-[#4A90C4]/40 hover:text-[#4A90C4] transition-colors">
                       {a}
                     </Link>
                   ))}
@@ -103,7 +103,7 @@ export default function AlertsPage() {
                     visibleMessage: `Analyze this alert: ${alert.title}`,
                     fullPrompt: `[ALERT ANALYSIS]\nAlert: ${alert.title}\nCategory: ${alert.category}\nSeverity: ${alert.severity}\nAffected Assets: ${alert.affected_assets.join(', ')}\nDetails: ${alert.body}\n\nAnalyze this alert. What should I do about my positions?`,
                   }, null)}
-                  className="flex items-center gap-1 text-[11px] text-[#1DA1C4] hover:underline cursor-pointer">
+                  className="flex items-center gap-1 text-[11px] text-[#4A90C4] hover:underline cursor-pointer">
                   <Bird size={12} /> Ask Pelican
                 </button>
               </div>

@@ -23,8 +23,8 @@ export function LandingNav() {
       <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-6">
         {/* Left: Logo */}
         <Link href="/" className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-[8px] flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0" style={{ background: 'linear-gradient(135deg, #1DA1C4, #178BA8)' }}>CA</div>
-          <span className="text-sm font-semibold text-slate-900">Crypto Analytix</span>
+          <div className="w-8 h-8 rounded-[8px] flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0" style={{ background: 'linear-gradient(135deg, #2C5F8A, #5B4F8A)' }}>CA</div>
+          <span className="text-sm font-semibold text-slate-900">Token Analytix</span>
         </Link>
 
         {/* Center: Nav links (hidden on mobile) */}
@@ -65,7 +65,7 @@ export function LandingNav() {
           </Link>
           <Link
             href="/auth/signup"
-            className="hidden rounded-lg bg-gradient-to-r from-[#1A6FB5] to-[#25BFDF] px-4 py-2 text-sm font-medium text-white transition-all duration-150 hover:opacity-90 active:scale-[0.98] sm:block"
+            className="hidden rounded-lg bg-gradient-to-r from-[#2C5F8A] to-[#5BA3D9] px-4 py-2 text-sm font-medium text-white transition-all duration-150 hover:opacity-90 active:scale-[0.98] sm:block"
           >
             Start Free
           </Link>
@@ -124,7 +124,7 @@ export function LandingNav() {
             </Link>
             <Link
               href="/auth/signup"
-              className="rounded-lg bg-gradient-to-r from-[#1A6FB5] to-[#25BFDF] px-4 py-2.5 text-center text-sm font-medium text-white transition-all hover:opacity-90"
+              className="rounded-lg bg-gradient-to-r from-[#2C5F8A] to-[#5BA3D9] px-4 py-2.5 text-center text-sm font-medium text-white transition-all hover:opacity-90"
             >
               Start Free
             </Link>

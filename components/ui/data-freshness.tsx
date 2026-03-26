@@ -8,9 +8,9 @@ interface Props {
 export function DataFreshness({ source, isLive }: Props) {
   return (
     <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
-      <span className={`w-1.5 h-1.5 rounded-full ${isLive ? 'bg-green-500' : 'bg-amber-500'}`} />
+      <span className={`w-1.5 h-1.5 rounded-full ${isLive ? 'bg-[#3EBD8C]' : 'bg-[#D4A042]'}`} />
       <span>{source}</span>
-      {!isLive && <span className="text-amber-500">(mock)</span>}
+      {!isLive && <span className="text-[#D4A042]">(mock)</span>}
     </div>
   )
 }

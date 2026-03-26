@@ -392,7 +392,7 @@ export function UserDetail({ user }: UserDetailProps) {
             Grant
           </Button>
           {grantResult && (
-            <span className={`text-xs ${grantResult.ok ? 'text-green-400' : 'text-red-400'}`}>
+            <span className={`text-xs ${grantResult.ok ? 'text-[#3EBD8C]' : 'text-[#E06565]'}`}>
               {grantResult.msg}
             </span>
           )}

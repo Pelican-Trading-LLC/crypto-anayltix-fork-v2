@@ -229,7 +229,7 @@ export function SecuritySection({ user, supabase }: SecuritySectionProps) {
 
       <Card className="border-red-200">
         <CardHeader>
-          <CardTitle className="text-red-600">Danger Zone</CardTitle>
+          <CardTitle className="text-[#E06565]">Danger Zone</CardTitle>
           <CardDescription>Irreversible actions</CardDescription>
         </CardHeader>
         <CardContent>

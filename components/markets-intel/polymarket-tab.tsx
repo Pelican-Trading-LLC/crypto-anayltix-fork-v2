@@ -21,10 +21,10 @@ function MarketCard({ market }: { market: ParsedMarket }) {
   const { openWithPrompt } = usePelicanPanelContext()
   const pct = (market.yesPrice * 100).toFixed(0)
   const noPct = (market.noPrice * 100).toFixed(0)
-  const color = market.yesPrice >= 0.6 ? '#22C55E' : market.yesPrice <= 0.4 ? '#EF4444' : '#F59E0B'
+  const color = market.yesPrice >= 0.6 ? '#3EBD8C' : market.yesPrice <= 0.4 ? '#E06565' : '#D4A042'
 
   return (
-    <div className="rounded-xl border bg-card p-4 hover:border-[var(--border-hover)] transition-all hover:-translate-y-px">
+    <div className="group rounded-xl border bg-card p-4 hover:border-[var(--border-hover)] transition-all hover:-translate-y-px">
       <div className="text-[13px] font-medium mb-3 line-clamp-2 leading-tight min-h-[2.5em]">
         {market.question}
       </div>
@@ -64,7 +64,7 @@ function MarketCard({ market }: { market: ParsedMarket }) {
             visibleMessage: `Analyze: ${market.question}`,
             fullPrompt: `[PREDICTION MARKET ANALYSIS]\nAnalyze this Polymarket prediction: "${market.question}"\nCurrent YES price: ${pct}%\nVolume: $${market.volume.toLocaleString()}\n\nProvide:\n1. What this prediction implies for crypto markets\n2. Historical accuracy of similar prediction markets\n3. How traders should position based on these odds\n4. Key catalysts that could shift the odds`
           }, null)}
-          className="flex items-center gap-1 text-[11px] text-[#1DA1C4] hover:underline font-medium cursor-pointer"
+          className="flex items-center gap-1 text-[11px] text-[#4A90C4] hover:underline font-medium cursor-pointer opacity-40 group-hover:opacity-90 transition-opacity"
         >
           <ChatCircle size={12} weight="fill" />
           Ask Pelican
@@ -91,7 +91,7 @@ export function PolymarketTab() {
             onClick={() => setActiveSubTab(i)}
             className={`px-3 py-1.5 rounded-lg text-[12px] font-medium transition-colors ${
               i === activeSubTab
-                ? 'bg-[#1DA1C4]/15 text-[#1DA1C4]'
+                ? 'bg-[#4A90C4]/15 text-[#4A90C4]'
                 : 'text-muted-foreground hover:text-foreground hover:bg-[var(--bg-elevated)]'
             }`}
           >

@@ -115,29 +115,39 @@ export default function AppSidebar() {
       transition={{ type: 'spring', stiffness: 300, damping: 30 }}
       className="relative hidden md:flex flex-col flex-shrink-0 h-screen border-r border-[var(--border-default)]"
       style={{
-        background: 'rgba(var(--bg-surface-rgb, 17 17 24) / 0.95)',
-        backdropFilter: 'blur(20px) saturate(1.2)',
+        background: 'var(--bg-surface-1)',
       }}
     >
       {/* Logo */}
       <div className="flex items-center gap-2.5 px-3 h-14 border-b border-[var(--border-subtle)] flex-shrink-0">
         <div
-          className="w-8 h-8 rounded-[8px] flex items-center justify-center text-white text-[11px] font-bold flex-shrink-0"
-          style={{ background: 'linear-gradient(135deg, #1DA1C4, #178BA8)' }}
+          className="flex items-center justify-center flex-shrink-0"
+          style={{
+            width: 28,
+            height: 28,
+            borderRadius: 6,
+            background: 'linear-gradient(135deg, #2C5F8A, #1E3A5F)',
+            border: '1px solid rgba(90, 130, 180, 0.2)',
+          }}
         >
-          CA
+          <span style={{ fontSize: 12, fontWeight: 800, color: '#5BA3D9', lineHeight: 1 }}>TA</span>
         </div>
         <AnimatePresence>
           {!collapsed && (
-            <motion.span
+            <motion.div
               initial={{ opacity: 0, width: 0 }}
               animate={{ opacity: 1, width: 'auto' }}
               exit={{ opacity: 0, width: 0 }}
               transition={{ duration: 0.15 }}
-              className="text-sm font-bold text-[var(--text-primary)] tracking-tight whitespace-nowrap overflow-hidden"
+              className="whitespace-nowrap overflow-hidden"
             >
-              CryptoAnalytix
-            </motion.span>
+              <div className="text-[13px] font-bold text-[var(--text-primary)] tracking-tight leading-tight">
+                Token Analytix
+              </div>
+              <div className="text-[8px] font-semibold font-mono tracking-[0.08em] text-[var(--text-quaternary)]">
+                POWERED BY PELICAN AI
+              </div>
+            </motion.div>
           )}
         </AnimatePresence>
       </div>
@@ -172,19 +182,19 @@ export default function AppSidebar() {
                     href={item.href}
                     className={`flex items-center gap-3 px-3 py-2 mx-2 rounded-lg text-[13px] font-medium transition-colors relative ${
                       active
-                        ? 'text-[#1DA1C4]'
-                        : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-elevated)]'
+                        ? 'text-[#4A90C4]'
+                        : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[rgba(90,130,180,0.04)]'
                     }`}
                     style={
                       active
-                        ? { background: 'linear-gradient(90deg, rgba(29,161,196,0.08) 0%, transparent 80%)' }
+                        ? { background: 'linear-gradient(90deg, rgba(74,144,196,0.08) 0%, transparent 80%)' }
                         : item.accentTint && !active
-                          ? { background: 'rgba(29,161,196,0.04)' }
+                          ? { background: 'rgba(74,144,196,0.04)' }
                           : undefined
                     }
                   >
                     {active && (
-                      <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r bg-[#1DA1C4]" />
+                      <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r bg-[#4A90C4]" />
                     )}
                     <Icon
                       size={18}
@@ -195,7 +205,7 @@ export default function AppSidebar() {
                       <>
                         <span className="flex-1 truncate">{item.label}</span>
                         {item.badge && (
-                          <span className="ml-auto px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#1DA1C4]/15 text-[#1DA1C4]">
+                          <span className="ml-auto px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#4A90C4]/15 text-[#4A90C4]">
                             {item.badge}
                           </span>
                         )}

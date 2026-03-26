@@ -72,7 +72,7 @@ function renderFormattedContent(content: string): string {
 
 function OwnerBadge({ owner }: { owner: string }) {
   if (owner === 'team') {
-    return <Badge variant="outline" className="text-[10px] px-1.5 py-0 bg-amber-500/10 text-amber-400 border-amber-500/20">TEAM</Badge>
+    return <Badge variant="outline" className="text-[10px] px-1.5 py-0 bg-[#D4A042]/10 text-[#D4A042] border-[#D4A042]/20">TEAM</Badge>
   }
   return <Badge variant="outline" className="text-[10px] px-1.5 py-0 bg-blue-500/10 text-blue-400 border-blue-500/20">USER</Badge>
 }

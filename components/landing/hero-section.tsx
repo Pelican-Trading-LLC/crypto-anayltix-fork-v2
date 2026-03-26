@@ -20,7 +20,7 @@ export function HeroSection() {
         >
           <span className="text-slate-900">The crypto intelligence platform</span>
           <br />
-          <span className="bg-gradient-to-r from-[#1A6FB5] to-[#25BFDF] bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-[#2C5F8A] to-[#5BA3D9] bg-clip-text text-transparent">
             built for real traders
           </span>
         </motion.h1>
@@ -46,8 +46,8 @@ export function HeroSection() {
         >
           <Link
             href="/auth/signup"
-            className="group flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-medium text-white shadow-lg shadow-[#1A6FB5]/20 transition-all duration-150 hover:shadow-[#1A6FB5]/30 active:scale-[0.98]"
-            style={{ background: 'linear-gradient(135deg, #1A6FB5, #25BFDF)' }}
+            className="group flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-medium text-white shadow-lg shadow-[#2C5F8A]/20 transition-all duration-150 hover:shadow-[#2C5F8A]/30 active:scale-[0.98]"
+            style={{ background: 'linear-gradient(135deg, #2C5F8A, #5B4F8A)' }}
           >
             Start for Free
             <ArrowRight

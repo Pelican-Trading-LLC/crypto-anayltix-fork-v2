@@ -1,8 +1,11 @@
 'use client'
 
 import { useMemo } from 'react'
-import { ChatCircle, CaretUp, CaretDown, TrendUp, Bell, Heart } from '@phosphor-icons/react'
+import { ChatCircle, CaretUp, CaretDown, TrendUp, Bell, Heart, MagnifyingGlass, ArrowRight } from '@phosphor-icons/react'
 import { MOCK_POSITIONS, MOCK_SMART_MONEY, ASSET_COLORS, formatUSD, formatPnl, formatPct, formatCompact } from '@/lib/crypto-mock-data'
+import { TokenIcon } from '@/components/shared/token-icon'
+import { ResearchFeed } from '@/components/shared/research-feed'
+import { XFeed } from '@/components/shared/x-feed'
 import { useLivePrices, useLiveGlobalData } from '@/hooks/use-crypto-data'
 import { mergePositions } from '@/lib/use-live-or-mock'
 import { ApiError } from '@/components/ui/api-error'
@@ -41,7 +44,7 @@ function StatCard({ title, value, valueColor, subtitle, subtitleColor, icon, hea
       <div className={`font-mono text-xs tabular-nums mt-1 ${subtitleColor}`}>{subtitle}</div>
       {healthBar !== undefined && (
         <div className="mt-3 h-1.5 rounded-full bg-muted overflow-hidden">
-          <div className="h-full rounded-full bg-[#1DA1C4] transition-all" style={{ width: `${healthBar}%` }} />
+          <div className="h-full rounded-full bg-[#4A90C4] transition-all" style={{ width: `${healthBar}%` }} />
         </div>
       )}
     </div>
@@ -51,7 +54,7 @@ function StatCard({ title, value, valueColor, subtitle, subtitleColor, icon, hea
 /* ─── Portfolio Chart ───────────────────────────────────────────── */
 
 const PreviewBadge = () => (
-  <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-amber-500/10 text-amber-500 ml-2">PREVIEW</span>
+  <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-[#D4A042]/10 text-[#D4A042] ml-2">PREVIEW</span>
 )
 
 function PortfolioChart({ positions }: { positions: typeof MOCK_POSITIONS }) {
@@ -77,7 +80,7 @@ function PortfolioChart({ positions }: { positions: typeof MOCK_POSITIONS }) {
         </span>
         <div className="flex gap-1">
           {['24H', '7D', '30D', '90D', 'YTD', 'ALL'].map(period => (
-            <button key={period} className={`px-2.5 py-1 rounded-md text-[11px] font-medium ${period === '30D' ? 'bg-[#1DA1C4]/15 text-[#1DA1C4]' : 'text-muted-foreground hover:text-foreground'}`}>
+            <button key={period} className={`px-2.5 py-1 rounded-md text-[11px] font-medium ${period === '30D' ? 'bg-[#4A90C4]/15 text-[#4A90C4]' : 'text-muted-foreground hover:text-foreground'}`}>
               {period}
             </button>
           ))}
@@ -88,14 +91,14 @@ function PortfolioChart({ positions }: { positions: typeof MOCK_POSITIONS }) {
           <AreaChart data={data}>
             <defs>
               <linearGradient id="portfolioGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#1DA1C4" stopOpacity={0.3} />
-                <stop offset="100%" stopColor="#1DA1C4" stopOpacity={0} />
+                <stop offset="0%" stopColor="#4A90C4" stopOpacity={0.3} />
+                <stop offset="100%" stopColor="#4A90C4" stopOpacity={0} />
               </linearGradient>
             </defs>
             <XAxis dataKey="date" tick={{ fontSize: 11, fill: 'var(--muted-foreground)' }} axisLine={false} tickLine={false} interval="preserveStartEnd" />
             <YAxis tick={{ fontSize: 11, fill: 'var(--muted-foreground)' }} axisLine={false} tickLine={false} tickFormatter={(v: number) => `${(v / 1000).toFixed(1)}K`} domain={['auto', 'auto']} />
             <Tooltip contentStyle={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 8, fontSize: 12 }} formatter={(value) => [formatUSD(Number(value ?? 0)), 'Value']} />
-            <Area type="monotone" dataKey="value" stroke="#1DA1C4" strokeWidth={2} fill="url(#portfolioGrad)" />
+            <Area type="monotone" dataKey="value" stroke="#4A90C4" strokeWidth={2} fill="url(#portfolioGrad)" />
           </AreaChart>
         </ResponsiveContainer>
       </div>
@@ -128,7 +131,7 @@ function MarketPulse({ btcDominance, onAskPelican }: { btcDominance: number; onA
     <div className="rounded-xl border bg-card p-5 h-full flex flex-col">
       <div className="flex items-center justify-between mb-3">
         <span className="text-[11px] uppercase tracking-[1.5px] font-semibold text-muted-foreground">PELICAN AI MARKET PULSE<PreviewBadge /></span>
-        <span className="font-mono text-[11px]">Confidence: <span className="text-[#1DA1C4] font-semibold">94%</span></span>
+        <span className="font-mono text-[11px]">Confidence: <span className="text-[#4A90C4] font-semibold">94%</span></span>
       </div>
       <div className="flex-1 text-sm text-muted-foreground leading-relaxed space-y-3">
         <p>Bitcoin dominance shows signs of exhaustion at {btcDominance.toFixed(1)}%. We observe significant rotation of smart money into Layer 2 infrastructure and AI-agent protocols. Volatility expected around Thursday&apos;s FOMC minutes.</p>
@@ -136,12 +139,12 @@ function MarketPulse({ btcDominance, onAskPelican }: { btcDominance: number; onA
       </div>
       <div className="flex gap-2 mt-4">
         {['On-Chain', 'Macro', 'DeFi'].map((tab, i) => (
-          <button key={tab} className={`px-3 py-1.5 rounded-lg text-[11px] font-medium ${i === 0 ? 'bg-[#1DA1C4]/15 text-[#1DA1C4]' : 'text-muted-foreground hover:text-foreground'}`}>
+          <button key={tab} className={`px-3 py-1.5 rounded-lg text-[11px] font-medium ${i === 0 ? 'bg-[#4A90C4]/15 text-[#4A90C4]' : 'text-muted-foreground hover:text-foreground'}`}>
             {tab}
           </button>
         ))}
       </div>
-      <button onClick={onAskPelican} className="text-[#1DA1C4] text-sm font-medium mt-3 hover:underline cursor-pointer">
+      <button onClick={onAskPelican} className="text-[#4A90C4] text-sm font-medium mt-3 hover:underline cursor-pointer">
         Read Full Analysis →
       </button>
     </div>
@@ -178,35 +181,32 @@ function TopMoversTable({ positions, loading }: { positions: typeof MOCK_POSITIO
           <tbody>
             {positions.map(p => {
               const signalColors: Record<string, string> = {
-                'Accumulation Zone': 'bg-green-500/10 text-green-500 border-green-500/20',
-                'Momentum Breakout': 'bg-[#1DA1C4]/10 text-[#1DA1C4] border-[#1DA1C4]/20',
-                'Distribution': 'bg-red-500/10 text-red-500 border-red-500/20',
-                'Whale Alert': 'bg-amber-500/10 text-amber-500 border-amber-500/20',
+                'Accumulation Zone': 'bg-[#3EBD8C]/10 text-[#3EBD8C] border-[#3EBD8C]/20',
+                'Momentum Breakout': 'bg-[#4A90C4]/10 text-[#4A90C4] border-[#4A90C4]/20',
+                'Distribution': 'bg-[#E06565]/10 text-[#E06565] border-[#E06565]/20',
+                'Whale Alert': 'bg-[#D4A042]/10 text-[#D4A042] border-[#D4A042]/20',
                 'Smart Money Inflow': 'bg-pink-500/10 text-pink-500 border-pink-500/20',
               }
               return (
                 <tr key={p.asset} className="border-b border-[var(--border)] last:border-0 hover:bg-accent/5 cursor-pointer transition-colors"
                   onClick={() => window.location.href = `/token-intel?ticker=${p.asset}`}>
-                  <td className="py-3">
+                  <td className="py-2">
                     <div className="flex items-center gap-3">
-                      <div className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold text-white" style={{ backgroundColor: ASSET_COLORS[p.asset] }}>
-                        {p.asset[0]}
-                      </div>
+                      <TokenIcon symbol={p.asset} size={24} />
                       <div>
-                        <div className="text-sm font-semibold">{p.asset}</div>
-                        <div className="text-[11px] text-muted-foreground">{p.name}</div>
+                        <div className="text-[12.5px] font-semibold">{p.name || p.asset}</div>
                       </div>
                     </div>
                   </td>
                   <td className="text-right font-mono text-[13px] tabular-nums">{formatUSD(p.current_price)}</td>
                   <td className="text-right">
-                    <span className={`font-mono text-[13px] tabular-nums inline-flex items-center gap-0.5 ${p.price_change_24h >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                    <span className={`font-mono text-[13px] tabular-nums inline-flex items-center gap-0.5 ${p.price_change_24h >= 0 ? 'text-[#3EBD8C]' : 'text-[#E06565]'}`}>
                       {p.price_change_24h >= 0 ? <CaretUp size={12} weight="fill" /> : <CaretDown size={12} weight="fill" />}
                       {formatPct(p.price_change_24h)}
                     </span>
                   </td>
                   <td className="text-right">
-                    <span className={`font-mono text-[13px] tabular-nums inline-flex items-center gap-0.5 ${p.price_change_7d >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                    <span className={`font-mono text-[13px] tabular-nums inline-flex items-center gap-0.5 ${p.price_change_7d >= 0 ? 'text-[#3EBD8C]' : 'text-[#E06565]'}`}>
                       {p.price_change_7d >= 0 ? <CaretUp size={12} weight="fill" /> : <CaretDown size={12} weight="fill" />}
                       {formatPct(p.price_change_7d)}
                     </span>
@@ -240,7 +240,7 @@ function WalletDNA() {
     <div className="rounded-xl border bg-card p-5">
       <div className="flex items-center justify-between mb-4">
         <span className="text-[11px] uppercase tracking-[1.5px] font-semibold text-muted-foreground">WALLET DNA<PreviewBadge /></span>
-        <span className="px-3 py-1 rounded-full text-[11px] font-semibold text-white" style={{ background: 'linear-gradient(135deg, #1A6FB5, #25BFDF)' }}>
+        <span className="px-3 py-1 rounded-full text-[11px] font-semibold text-white" style={{ background: 'linear-gradient(135deg, #2C5F8A, #5B4F8A)' }}>
           Apex Predator
         </span>
       </div>
@@ -249,7 +249,7 @@ function WalletDNA() {
           <RadarChart data={dnaData}>
             <PolarGrid stroke="var(--border)" gridType="polygon" />
             <PolarAngleAxis dataKey="axis" tick={{ fontSize: 11, fill: 'var(--muted-foreground)' }} />
-            <Radar dataKey="value" stroke="#1DA1C4" fill="#1DA1C4" fillOpacity={0.2} strokeWidth={2} />
+            <Radar dataKey="value" stroke="#4A90C4" fill="#4A90C4" fillOpacity={0.2} strokeWidth={2} />
           </RadarChart>
         </ResponsiveContainer>
       </div>
@@ -270,8 +270,8 @@ function SmartMoneyFeed() {
       <div className="flex items-center gap-2 mb-4">
         <TrendUp size={14} className="text-muted-foreground" />
         <span className="text-[11px] uppercase tracking-[1.5px] font-semibold text-muted-foreground">SMART MONEY ACTIVITY<PreviewBadge /></span>
-        <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-        <span className="text-[11px] text-green-500">Live</span>
+        <span className="w-1.5 h-1.5 rounded-full bg-[#3EBD8C] animate-pulse" />
+        <span className="text-[11px] text-[#3EBD8C]">Live</span>
       </div>
       <table className="w-full">
         <thead>
@@ -284,17 +284,17 @@ function SmartMoneyFeed() {
         <tbody>
           {MOCK_SMART_MONEY.map(e => (
             <tr key={e.id} className="border-b border-[var(--border)] last:border-0">
-              <td className="py-3 font-mono text-[11px] text-muted-foreground whitespace-nowrap">{e.time}</td>
-              <td className="py-3">
+              <td className="py-2 font-mono text-[11px] text-muted-foreground whitespace-nowrap">{e.time}</td>
+              <td className="py-2">
                 <div className="flex items-center gap-2">
                   <span className="text-[13px] font-medium">{e.wallet_label}</span>
-                  <span className="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-[#1DA1C4]/10 text-[#1DA1C4]">{e.archetype}</span>
+                  <span className="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-[#4A90C4]/10 text-[#4A90C4]">{e.archetype}</span>
                 </div>
               </td>
-              <td className="py-3 text-[13px] text-muted-foreground">{e.action}</td>
-              <td className="py-3 text-[13px] font-semibold">{e.token}</td>
-              <td className="py-3 font-mono text-[13px] text-[#1DA1C4]">{e.amount}</td>
-              <td className="py-3 text-[12px] italic text-muted-foreground max-w-[300px] truncate">&ldquo;{e.pelican_commentary}&rdquo;</td>
+              <td className="py-2 text-[13px] text-muted-foreground">{e.action}</td>
+              <td className="py-2 text-[13px] font-semibold">{e.token}</td>
+              <td className="py-2 font-mono text-[13px] text-[#4A90C4]">{e.amount}</td>
+              <td className="py-2 text-[12px] italic text-muted-foreground max-w-[300px] truncate">&ldquo;{e.pelican_commentary}&rdquo;</td>
             </tr>
           ))}
         </tbody>
@@ -307,7 +307,7 @@ function SmartMoneyFeed() {
 
 function MacroRegimeStrip() {
   const signals = FA_TRAFFIC_LIGHT.signals
-  const signalColors = { green: '#22C55E', amber: '#F59E0B', red: '#EF4444' }
+  const signalColors = { green: '#3EBD8C', amber: '#D4A042', red: '#E06565' }
 
   return (
     <div className="rounded-xl border bg-card px-5 py-3">
@@ -326,7 +326,7 @@ function MacroRegimeStrip() {
           ))}
         </div>
         <div className="flex items-center gap-2">
-          <span className="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-amber-500/10 text-amber-500">
+          <span className="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-[#D4A042]/10 text-[#D4A042]">
             {FA_TRAFFIC_LIGHT.regime}
           </span>
           <span className="font-mono text-[11px] text-muted-foreground">{FA_TRAFFIC_LIGHT.updated}</span>
@@ -352,7 +352,7 @@ function PredictionMarketStrip() {
           <span className="text-[11px] uppercase tracking-[1.5px] font-semibold text-muted-foreground">PREDICTION MARKET SIGNALS</span>
           <span className="text-[10px] text-muted-foreground/60">via Polymarket</span>
         </div>
-        <Link href="/screener" className="text-[11px] text-[#1DA1C4] hover:underline font-medium">
+        <Link href="/screener" className="text-[11px] text-[#4A90C4] hover:underline font-medium">
           View all markets →
         </Link>
       </div>
@@ -363,7 +363,7 @@ function PredictionMarketStrip() {
               {m.question.length > 60 ? m.question.slice(0, 60) + '…' : m.question}
             </span>
             <div className="flex items-center justify-between mt-auto">
-              <span className={`font-mono text-sm font-semibold tabular-nums ${m.yesPrice >= 0.6 ? 'text-green-500' : m.yesPrice <= 0.4 ? 'text-red-500' : 'text-amber-500'}`}>
+              <span className={`font-mono text-sm font-semibold tabular-nums ${m.yesPrice >= 0.6 ? 'text-[#3EBD8C]' : m.yesPrice <= 0.4 ? 'text-[#E06565]' : 'text-[#D4A042]'}`}>
                 {(m.yesPrice * 100).toFixed(0)}%
               </span>
               <span className="font-mono text-[10px] text-muted-foreground tabular-nums">
@@ -373,9 +373,9 @@ function PredictionMarketStrip() {
           </div>
         ))}
       </div>
-      <div className="mt-3 px-3 py-2 rounded-lg bg-[#1DA1C4]/5 border border-[#1DA1C4]/10">
+      <div className="mt-3 px-3 py-2 rounded-lg bg-[#4A90C4]/5 border border-[#4A90C4]/10">
         <p className="text-[12px] text-muted-foreground leading-relaxed">
-          <span className="text-[#1DA1C4] font-semibold">Pelican:</span> Prediction markets are pricing in continued crypto strength with BTC upside bias. Fed rate cut odds declining — watch for macro headwinds if yields push higher.
+          <span className="text-[#4A90C4] font-semibold">Pelican:</span> Prediction markets are pricing in continued crypto strength with BTC upside bias. Fed rate cut odds declining — watch for macro headwinds if yields push higher.
         </p>
       </div>
     </div>
@@ -418,16 +418,114 @@ function TokenizationPulse() {
             <span className="text-[12px] text-muted-foreground">{s.label}</span>
             <div className="flex items-center gap-2">
               <span className="font-mono text-[13px] font-semibold tabular-nums">{s.value}</span>
-              <span className={`font-mono text-[11px] tabular-nums ${s.change >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+              <span className={`font-mono text-[11px] tabular-nums ${s.change >= 0 ? 'text-[#3EBD8C]' : 'text-[#E06565]'}`}>
                 {s.change >= 0 ? '+' : ''}{s.change.toFixed(1)}%
               </span>
             </div>
           </div>
         ))}
       </div>
-      <Link href="/screener?tab=tokenization" className="text-[#1DA1C4] text-[11px] font-medium mt-3 block hover:underline">
+      <Link href="/screener?tab=tokenization" className="text-[#4A90C4] text-[11px] font-medium mt-3 block hover:underline">
         Explore tokenized assets →
       </Link>
+    </div>
+  )
+}
+
+/* ─── Ask Pelican Hero ─────────────────────────────────────────── */
+
+const SUGGESTED_QUESTIONS = [
+  'What are smart money wallets buying?',
+  'Why is SOL outperforming?',
+  'Top tokens by net inflow today',
+  'Contrarian signals active now',
+]
+
+function AskPelicanHero({ onAsk }: { onAsk: (q: string) => void }) {
+  return (
+    <div style={{ textAlign: 'center', padding: '32px 0 24px' }}>
+      <h2
+        style={{
+          fontSize: 24,
+          fontWeight: 700,
+          color: 'var(--text-primary)',
+          letterSpacing: '-0.02em',
+          marginBottom: 16,
+        }}
+      >
+        What&apos;s Moving Today?
+      </h2>
+      <div
+        style={{ maxWidth: 560, margin: '0 auto', position: 'relative' }}
+      >
+        <button
+          onClick={() => onAsk('What are the key market moves today?')}
+          className="w-full flex items-center gap-3 cursor-pointer transition-all"
+          style={{
+            height: 44,
+            background: 'var(--bg-surface-2)',
+            border: '1px solid var(--border-default)',
+            borderRadius: 10,
+            padding: '0 12px 0 16px',
+          }}
+        >
+          <MagnifyingGlass size={16} style={{ color: 'var(--text-quaternary)', flexShrink: 0 }} />
+          <span style={{ flex: 1, textAlign: 'left', fontSize: 14, color: 'var(--text-quaternary)' }}>
+            Ask Pelican anything about the market...
+          </span>
+          <div
+            style={{
+              width: 30,
+              height: 30,
+              borderRadius: '50%',
+              background: 'linear-gradient(135deg, #2C5F8A, #5B4F8A)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+            }}
+          >
+            <ArrowRight size={14} weight="bold" style={{ color: '#E1E7EF' }} />
+          </div>
+        </button>
+      </div>
+      <div
+        style={{
+          display: 'flex',
+          gap: 8,
+          justifyContent: 'center',
+          flexWrap: 'wrap',
+          marginTop: 12,
+        }}
+      >
+        {SUGGESTED_QUESTIONS.map((q) => (
+          <button
+            key={q}
+            onClick={() => onAsk(q)}
+            className="cursor-pointer transition-all"
+            style={{
+              height: 30,
+              padding: '0 12px',
+              borderRadius: 6,
+              background: 'var(--bg-surface-2)',
+              border: '1px solid var(--border-default)',
+              fontSize: 12,
+              fontWeight: 400,
+              color: 'var(--text-secondary)',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = 'var(--border-strong)'
+              e.currentTarget.style.color = 'var(--text-primary)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = 'var(--border-default)'
+              e.currentTarget.style.color = 'var(--text-secondary)'
+            }}
+          >
+            {q}
+          </button>
+        ))}
+      </div>
     </div>
   )
 }
@@ -454,12 +552,15 @@ export default function DashboardPage() {
     <div className="p-6 max-w-[1400px] mx-auto space-y-4">
       {pricesError && <ApiError message="Live prices unavailable — showing cached data" onRetry={() => retryPrices()} compact />}
 
+      {/* Ask Pelican Hero */}
+      <AskPelicanHero onAsk={(q) => openWithPrompt(null, { visibleMessage: q, fullPrompt: `[MARKET QUESTION]\n${q}` }, null)} />
+
       {/* Row 1: 4 stat cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard title="PORTFOLIO VALUE" value={formatUSD(portfolioTotal)} subtitle={`${formatPnl(portfolioPnl)} (${formatPct(portfolioPnlPct)})`} subtitleColor={portfolioPnl >= 0 ? 'text-green-500' : 'text-red-500'} icon={<TrendUp size={16} />} />
-        <StatCard title="24H P&L" value={formatPnl(portfolioPnl)} valueColor={portfolioPnl >= 0 ? 'text-green-500' : 'text-red-500'} subtitle={formatPct(portfolioPnlPct)} subtitleColor={portfolioPnl >= 0 ? 'text-green-500' : 'text-red-500'} icon={portfolioPnl >= 0 ? <CaretUp size={16} /> : <CaretDown size={16} />} />
-        <StatCard title="AI ALERTS TODAY" value="7" subtitle="3 High Impact" subtitleColor="text-amber-500" icon={<Bell size={16} />} preview />
-        <StatCard title="WALLET HEALTH" value="82/100" subtitle="Strong" subtitleColor="text-green-500" icon={<Heart size={16} />} healthBar={82} preview />
+        <StatCard title="PORTFOLIO VALUE" value={formatUSD(portfolioTotal)} subtitle={`${formatPnl(portfolioPnl)} (${formatPct(portfolioPnlPct)})`} subtitleColor={portfolioPnl >= 0 ? 'text-[#3EBD8C]' : 'text-[#E06565]'} icon={<TrendUp size={16} />} />
+        <StatCard title="24H P&L" value={formatPnl(portfolioPnl)} valueColor={portfolioPnl >= 0 ? 'text-[#3EBD8C]' : 'text-[#E06565]'} subtitle={formatPct(portfolioPnlPct)} subtitleColor={portfolioPnl >= 0 ? 'text-[#3EBD8C]' : 'text-[#E06565]'} icon={portfolioPnl >= 0 ? <CaretUp size={16} /> : <CaretDown size={16} />} />
+        <StatCard title="AI ALERTS TODAY" value="7" subtitle="3 High Impact" subtitleColor="text-[#D4A042]" icon={<Bell size={16} />} preview />
+        <StatCard title="WALLET HEALTH" value="82/100" subtitle="Strong" subtitleColor="text-[#3EBD8C]" icon={<Heart size={16} />} healthBar={82} preview />
       </div>
       <DataFreshness source="CoinGecko" isLive={!!livePrices && !pricesError} />
       <MacroRegimeStrip />
@@ -485,11 +586,27 @@ export default function DashboardPage() {
       {/* Row 4: Smart Money Feed */}
       <SmartMoneyFeed />
 
+      {/* Row 5: Research + X Feed */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="rounded-xl border bg-card overflow-hidden">
+          <div className="px-4 py-3 border-b border-[var(--border-subtle)]">
+            <span className="text-[11px] uppercase tracking-[1.5px] font-semibold text-muted-foreground">RESEARCH FEED</span>
+          </div>
+          <ResearchFeed />
+        </div>
+        <div className="rounded-xl border bg-card overflow-hidden">
+          <div className="px-4 py-3 border-b border-[var(--border-subtle)]">
+            <span className="text-[11px] uppercase tracking-[1.5px] font-semibold text-muted-foreground">CRYPTO X</span>
+          </div>
+          <XFeed />
+        </div>
+      </div>
+
       {/* Ask Pelican FAB */}
       <div className="fixed bottom-6 right-6 z-50">
         <button onClick={() => openWithPrompt(null, { visibleMessage: 'Analyze my portfolio', fullPrompt: '[PORTFOLIO ANALYSIS]\nAnalyze my current crypto portfolio. Summarize positions, risk exposure, and any actionable insights.' }, null)}
           className="flex items-center gap-2 px-5 py-3 rounded-full text-white text-sm font-medium shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] cursor-pointer"
-          style={{ background: 'linear-gradient(135deg, #1A6FB5, #25BFDF)', boxShadow: '0 4px 20px rgba(29,161,196,0.3)' }}>
+          style={{ background: 'linear-gradient(135deg, #2C5F8A, #5B4F8A)', boxShadow: '0 4px 20px rgba(74,144,196,0.3)' }}>
           <ChatCircle size={18} weight="fill" />
           Ask Pelican
         </button>

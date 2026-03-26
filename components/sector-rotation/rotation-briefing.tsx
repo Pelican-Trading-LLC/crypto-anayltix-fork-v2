@@ -10,14 +10,14 @@ export function RotationBriefing() {
   return (
     <div className="rounded-xl border p-5 sticky top-6"
       style={{
-        background: 'linear-gradient(135deg, rgba(29,161,196,0.04) 0%, var(--card) 40%)',
-        borderColor: 'rgba(29,161,196,0.15)',
+        background: 'linear-gradient(135deg, rgba(74,144,196,0.04) 0%, var(--card) 40%)',
+        borderColor: 'rgba(74,144,196,0.15)',
       }}>
 
       {/* Header */}
       <div className="flex items-center gap-2 mb-4">
-        <Bird size={16} weight="fill" className="text-[#1DA1C4]" />
-        <span className="text-[12px] font-semibold text-[#1DA1C4] uppercase tracking-wider">PELICAN BRIEFING</span>
+        <Bird size={16} weight="fill" className="text-[#4A90C4]" />
+        <span className="text-[12px] font-semibold text-[#4A90C4] uppercase tracking-wider">PELICAN BRIEFING</span>
       </div>
 
       {/* Headline */}
@@ -31,10 +31,10 @@ export function RotationBriefing() {
         <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">CAPITAL FLOWS</span>
         {MOCK_ROTATION_BRIEFING.flows.map((f, i) => (
           <div key={i} className="flex items-center gap-2 text-[12px]">
-            <span className="text-red-500 font-medium">{f.from}</span>
+            <span className="text-[#E06565] font-medium">{f.from}</span>
             <ArrowRight size={12} className="text-muted-foreground" />
-            <span className="text-green-500 font-medium">{f.to}</span>
-            <span className="font-mono text-[11px] text-[#1DA1C4] ml-auto">{formatCompact(f.amount)}</span>
+            <span className="text-[#3EBD8C] font-medium">{f.to}</span>
+            <span className="font-mono text-[11px] text-[#4A90C4] ml-auto">{formatCompact(f.amount)}</span>
           </div>
         ))}
       </div>
@@ -56,7 +56,7 @@ export function RotationBriefing() {
           fullPrompt: `[SECTOR ROTATION]\nHeadline: ${MOCK_ROTATION_BRIEFING.headline}\nCapital Flows: ${MOCK_ROTATION_BRIEFING.flows.map(f => `${f.from} -> ${f.to} (${formatCompact(f.amount)})`).join(', ')}\n\nWhich crypto narrative should I position in this week? Give me specific tokens and entry levels.`,
         }, null)}
         className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-white text-[13px] font-medium transition-all hover:brightness-110 w-full cursor-pointer"
-        style={{ background: 'linear-gradient(135deg, #1A6FB5, #25BFDF)' }}>
+        style={{ background: 'linear-gradient(135deg, #2C5F8A, #5B4F8A)' }}>
         Ask Pelican: What to position in?
       </button>
     </div>

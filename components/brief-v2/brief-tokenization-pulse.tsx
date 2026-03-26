@@ -41,7 +41,7 @@ export function BriefTokenizationPulse() {
             <div className="text-[10px] text-muted-foreground">Treasuries</div>
           </div>
           <div className="text-center">
-            <div className="font-mono text-lg font-semibold tabular-nums text-green-500">+{summary.change30d}%</div>
+            <div className="font-mono text-lg font-semibold tabular-nums text-[#3EBD8C]">+{summary.change30d}%</div>
             <div className="text-[10px] text-muted-foreground">30D Growth</div>
           </div>
         </div>
@@ -61,10 +61,10 @@ export function BriefTokenizationPulse() {
                 <div className="flex items-center gap-3 flex-shrink-0">
                   <span className="font-mono text-[12px] tabular-nums">{formatCompact(asset.totalValue)}</span>
                   {asset.apy != null && (
-                    <span className="font-mono text-[11px] text-green-500 tabular-nums">{asset.apy}%</span>
+                    <span className="font-mono text-[11px] text-[#3EBD8C] tabular-nums">{asset.apy}%</span>
                   )}
                   {asset.change30d != null && (
-                    <span className={`font-mono text-[11px] tabular-nums ${asset.change30d >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                    <span className={`font-mono text-[11px] tabular-nums ${asset.change30d >= 0 ? 'text-[#3EBD8C]' : 'text-[#E06565]'}`}>
                       {asset.change30d >= 0 ? '+' : ''}{asset.change30d.toFixed(1)}%
                     </span>
                   )}
@@ -76,9 +76,9 @@ export function BriefTokenizationPulse() {
       )}
 
       {/* Pelican Synthesis */}
-      <div className="mt-4 px-3 py-2.5 rounded-lg bg-[#1DA1C4]/5 border border-[#1DA1C4]/10">
+      <div className="mt-4 px-3 py-2.5 rounded-lg bg-[#4A90C4]/5 border border-[#4A90C4]/10">
         <p className="text-[12px] text-muted-foreground leading-relaxed">
-          <span className="text-[#1DA1C4] font-semibold">Pelican:</span> Tokenized treasuries are the TradFi gateway drug. BlackRock BUIDL at $1.7B proves institutions want on-chain yield. This is structural — not a trade. The RWA sector is quietly building the infrastructure that bridges $300T in traditional assets to DeFi rails.
+          <span className="text-[#4A90C4] font-semibold">Pelican:</span> Tokenized treasuries are the TradFi gateway drug. BlackRock BUIDL at $1.7B proves institutions want on-chain yield. This is structural — not a trade. The RWA sector is quietly building the infrastructure that bridges $300T in traditional assets to DeFi rails.
         </p>
       </div>
     </div>

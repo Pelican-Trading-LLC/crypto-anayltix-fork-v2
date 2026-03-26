@@ -11,7 +11,7 @@ export function MarketOverviewCard({ onSelect }: { onSelect: (symbol: string) =>
   return (
     <div className="rounded-xl border bg-card p-5">
       <div className="flex items-center gap-2 mb-4">
-        <TrendUp size={14} weight="fill" className="text-[#1DA1C4]" />
+        <TrendUp size={14} weight="fill" className="text-[#4A90C4]" />
         <span className="text-[11px] uppercase tracking-[1.5px] font-semibold text-muted-foreground">MARKET OVERVIEW</span>
       </div>
       <div className="space-y-0">
@@ -39,7 +39,7 @@ export function MarketOverviewCard({ onSelect }: { onSelect: (symbol: string) =>
               </div>
               <div className="text-right shrink-0">
                 <div className="font-mono text-[13px] font-semibold tabular-nums">{formatUSD(d.price)}</div>
-                <div className={`inline-flex items-center gap-0.5 text-[11px] font-mono font-medium ${isUp ? 'text-green-500' : 'text-red-500'}`}>
+                <div className={`inline-flex items-center gap-0.5 text-[11px] font-mono font-medium ${isUp ? 'text-[#3EBD8C]' : 'text-[#E06565]'}`}>
                   {isUp ? <CaretUp size={10} weight="fill" /> : <CaretDown size={10} weight="fill" />}
                   {formatPct(d.price_change_24h)}
                 </div>
@@ -73,16 +73,16 @@ const TRENDING = [
 ]
 
 const HEAT_STYLES = {
-  high: 'bg-red-500/10 text-red-500',
-  medium: 'bg-amber-500/10 text-amber-500',
-  low: 'bg-green-500/10 text-green-500',
+  high: 'bg-[#E06565]/10 text-[#E06565]',
+  medium: 'bg-[#D4A042]/10 text-[#D4A042]',
+  low: 'bg-[#3EBD8C]/10 text-[#3EBD8C]',
 }
 
 export function TrendingCard({ onSelect }: { onSelect: (symbol: string) => void }) {
   return (
     <div className="rounded-xl border bg-card p-5">
       <div className="flex items-center gap-2 mb-4">
-        <Fire size={14} weight="fill" className="text-amber-500" />
+        <Fire size={14} weight="fill" className="text-[#D4A042]" />
         <span className="text-[11px] uppercase tracking-[1.5px] font-semibold text-muted-foreground">TRENDING ON PELICAN</span>
       </div>
       <div className="space-y-0">
@@ -130,8 +130,8 @@ const FUNDING_WATCH: FundingItem[] = [
 ]
 
 function getFundingColor(status: FundingItem['status']): string {
-  if (status === 'elevated') return '#EF4444'
-  if (status === 'negative') return '#22C55E'
+  if (status === 'elevated') return '#E06565'
+  if (status === 'negative') return '#3EBD8C'
   return '#6B7280'
 }
 
@@ -139,7 +139,7 @@ export function FundingRateCard({ onSelect }: { onSelect: (symbol: string) => vo
   return (
     <div className="rounded-xl border bg-card p-5">
       <div className="flex items-center gap-2 mb-4">
-        <CurrencyCircleDollar size={14} weight="fill" className="text-[#1DA1C4]" />
+        <CurrencyCircleDollar size={14} weight="fill" className="text-[#4A90C4]" />
         <span className="text-[11px] uppercase tracking-[1.5px] font-semibold text-muted-foreground">FUNDING RATE WATCH</span>
       </div>
       <p className="text-[11px] text-muted-foreground mb-3 leading-relaxed">

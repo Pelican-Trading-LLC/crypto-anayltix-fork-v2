@@ -100,7 +100,7 @@ export default function OnboardingPage() {
         {/* Progress dots */}
         <div className="flex justify-center gap-2 mb-8">
           {STEPS.map((_, i) => (
-            <div key={i} className={`w-2 h-2 rounded-full transition-all ${i === step ? 'bg-[#1DA1C4] scale-110' : i < step ? 'bg-[#1DA1C4]/50' : 'bg-muted'}`} />
+            <div key={i} className={`w-2 h-2 rounded-full transition-all ${i === step ? 'bg-[#4A90C4] scale-110' : i < step ? 'bg-[#4A90C4]/50' : 'bg-muted'}`} />
           ))}
         </div>
 
@@ -113,9 +113,9 @@ export default function OnboardingPage() {
             return (
               <button key={option} onClick={() => toggleSelection(option)}
                 className={`relative p-4 rounded-xl border text-left text-[13px] font-medium transition-all cursor-pointer hover:translate-y-[-1px] ${
-                  selected ? 'border-[#1DA1C4] bg-[#1DA1C4]/5 text-foreground' : 'border-[var(--border)] bg-card text-muted-foreground hover:border-[var(--ring)]'
+                  selected ? 'border-[#4A90C4] bg-[#4A90C4]/5 text-foreground' : 'border-[var(--border)] bg-card text-muted-foreground hover:border-[var(--ring)]'
                 }`}>
-                {selected && <Check size={14} weight="bold" className="absolute top-2 right-2 text-[#1DA1C4]" />}
+                {selected && <Check size={14} weight="bold" className="absolute top-2 right-2 text-[#4A90C4]" />}
                 {option}
               </button>
             )
@@ -126,7 +126,7 @@ export default function OnboardingPage() {
         <button onClick={() => step < 2 ? setStep(step + 1) : complete(false)}
           disabled={!canContinue || saving}
           className="w-full py-3 rounded-lg text-white text-sm font-medium disabled:opacity-30 transition-all hover:brightness-110 flex items-center justify-center gap-2 cursor-pointer"
-          style={{ background: 'linear-gradient(135deg, #1A6FB5, #25BFDF)' }}>
+          style={{ background: 'linear-gradient(135deg, #2C5F8A, #5B4F8A)' }}>
           {step === 2 ? <><Rocket size={16} /> Get Started</> : 'Continue'}
         </button>
 

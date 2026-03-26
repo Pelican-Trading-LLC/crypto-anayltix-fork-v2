@@ -45,7 +45,7 @@ export function StrategyShowcase() {
       {/* Header */}
       <ScrollReveal>
         <div className="text-center mb-12 md:mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#1DA1C4]/10 border border-[#1DA1C4]/20 text-[#1DA1C4] text-xs font-semibold tracking-wide uppercase mb-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#4A90C4]/10 border border-[#4A90C4]/20 text-[#4A90C4] text-xs font-semibold tracking-wide uppercase mb-6">
             <Lightning weight="fill" className="w-3.5 h-3.5" />
             Analyst Network
           </div>
@@ -69,7 +69,7 @@ export function StrategyShowcase() {
                 <div className="rounded-2xl bg-white border border-slate-200 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
                   <div className="p-6 flex flex-col h-full">
                     <Icon
-                      className="h-10 w-10 text-[#1DA1C4] mb-4"
+                      className="h-10 w-10 text-[#4A90C4] mb-4"
                       weight="duotone"
                     />
                     <h3 className="text-lg font-bold text-slate-900 mb-2.5">

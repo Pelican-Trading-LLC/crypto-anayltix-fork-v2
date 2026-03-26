@@ -47,7 +47,7 @@ const nextConfig = {
             key: 'Permissions-Policy',
             value: 'camera=(), microphone=(), geolocation=()'
           },
-          // CSP: pelican-trading-api.fly.dev is the CryptoAnalytix backend API on Fly.io
+          // CSP: pelican-trading-api.fly.dev is the TokenAnalytix backend API on Fly.io
           // 'unsafe-eval' is required by TradingView's charting SDK (eval() used internally).
           // Only /chat and /heatmap pages embed TradingView, but CSP applies globally here.
           // TODO post-launch: implement route-specific CSP via middleware to strip 'unsafe-eval'
@@ -66,7 +66,7 @@ export default withSentryConfig(nextConfig, {
   // For all available options, see:
   // https://www.npmjs.com/package/@sentry/webpack-plugin#options
 
-  org: "cryptoanalytix",
+  org: "tokenanalytix",
 
   project: "javascript-nextjs",
 

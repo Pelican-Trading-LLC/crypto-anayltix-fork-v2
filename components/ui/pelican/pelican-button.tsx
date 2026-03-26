@@ -12,7 +12,7 @@ const PelicanButton = forwardRef<HTMLButtonElement, PelicanButtonProps>(
       primary: 'bg-[var(--accent-primary)] text-white hover:bg-[var(--accent-hover)] shadow-md',
       secondary: 'bg-transparent border border-[var(--border-default)] text-[var(--text-primary)] hover:bg-[var(--bg-elevated)] hover:border-[var(--border-hover)]',
       ghost: 'bg-transparent text-[var(--text-secondary)] hover:bg-[var(--bg-elevated)] hover:text-[var(--text-primary)]',
-      danger: 'bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20',
+      danger: 'bg-[#E06565]/10 text-[#E06565] border border-[#E06565]/20 hover:bg-[#E06565]/20',
     };
 
     const sizes = {

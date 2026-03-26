@@ -464,7 +464,7 @@ export function TradingContextPanel({
                     </div>
                     <div className="text-right">
                       <div className="font-mono text-[12px] tabular-nums">{formatUSD(p.current_price)}</div>
-                      <div className={`font-mono text-[10px] tabular-nums ${p.price_change_24h >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                      <div className={`font-mono text-[10px] tabular-nums ${p.price_change_24h >= 0 ? 'text-[#3EBD8C]' : 'text-[#E06565]'}`}>
                         {formatPct(p.price_change_24h)}
                       </div>
                     </div>
@@ -515,7 +515,7 @@ export function TradingContextPanel({
                 {MOCK_MARKET.sectors.map(s => (
                   <div key={s.name} className="flex items-center justify-between py-2">
                     <span className="text-[13px]">{s.name}</span>
-                    <span className={`font-mono text-[12px] tabular-nums ${s.change >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                    <span className={`font-mono text-[12px] tabular-nums ${s.change >= 0 ? 'text-[#3EBD8C]' : 'text-[#E06565]'}`}>
                       {s.change >= 0 ? '+' : ''}{s.change}%
                     </span>
                   </div>

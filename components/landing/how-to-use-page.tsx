@@ -107,7 +107,7 @@ export function HowToUsePage() {
         <ScrollReveal>
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4">
-              Getting Started with Crypto Analytix
+              Getting Started with Token Analytix
             </h1>
             <p className="text-lg text-slate-500 max-w-2xl mx-auto">
               From signup to crypto fluency &mdash; five steps to navigate crypto markets with confidence.
@@ -130,7 +130,7 @@ export function HowToUsePage() {
                   }}
                   className="flex items-center gap-2.5 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-600 shadow-sm hover:shadow-md hover:border-slate-300 transition-all"
                 >
-                  <Icon weight="duotone" className="h-4 w-4 text-[#1DA1C4] shrink-0" />
+                  <Icon weight="duotone" className="h-4 w-4 text-[#4A90C4] shrink-0" />
                   {section.shortTitle}
                 </a>
               )
@@ -146,12 +146,12 @@ export function HowToUsePage() {
               <ScrollReveal key={section.id} delay={0.1}>
                 <div id={section.id} className="scroll-mt-24">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="flex items-center justify-center h-10 w-10 rounded-xl bg-[#1DA1C4]/10">
-                      <Icon weight="duotone" className="h-5 w-5 text-[#1DA1C4]" />
+                    <div className="flex items-center justify-center h-10 w-10 rounded-xl bg-[#4A90C4]/10">
+                      <Icon weight="duotone" className="h-5 w-5 text-[#4A90C4]" />
                     </div>
                     <div>
                       <h2 className="text-xl font-bold text-slate-900">
-                        <span className="text-[#1DA1C4] font-mono mr-2">{index + 1}.</span>
+                        <span className="text-[#4A90C4] font-mono mr-2">{index + 1}.</span>
                         {section.title}
                       </h2>
                       <p className="text-sm text-slate-400">
@@ -163,7 +163,7 @@ export function HowToUsePage() {
                   <div className="space-y-3 ml-[52px]">
                     {section.content.map((item, j) => (
                       <div key={j} className="flex items-start gap-3">
-                        <div className="w-1.5 h-1.5 rounded-full bg-[#1DA1C4] mt-2 shrink-0" />
+                        <div className="w-1.5 h-1.5 rounded-full bg-[#4A90C4] mt-2 shrink-0" />
                         <p className="text-sm text-slate-600 leading-relaxed">
                           {item}
                         </p>
@@ -172,7 +172,7 @@ export function HowToUsePage() {
                   </div>
 
                   {section.keyPoint && (
-                    <div className="ml-[52px] mt-4 rounded-lg border border-[#1DA1C4]/20 bg-[#1DA1C4]/5 px-4 py-3">
+                    <div className="ml-[52px] mt-4 rounded-lg border border-[#4A90C4]/20 bg-[#4A90C4]/5 px-4 py-3">
                       <p className="text-sm text-slate-700 leading-relaxed">
                         {section.keyPoint}
                       </p>
@@ -183,7 +183,7 @@ export function HowToUsePage() {
                     <div className="ml-[52px] mt-4">
                       <Link
                         href={section.cta.href}
-                        className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-[#1A6FB5] to-[#25BFDF] px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-colors"
+                        className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-[#2C5F8A] to-[#5BA3D9] px-4 py-2 text-sm font-medium text-white hover:opacity-90 transition-colors"
                       >
                         {section.cta.label}
                       </Link>

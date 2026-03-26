@@ -88,6 +88,7 @@ function FeaturesLayoutInner({ children }: { children: React.ReactNode }) {
           animate={{ width: panel.isOpen && !isMobile ? "70%" : "100%" }}
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
           className="min-w-0 flex-1 overflow-y-auto"
+          style={{ background: 'var(--bg-base)' }}
         >
           {children}
         </motion.main>

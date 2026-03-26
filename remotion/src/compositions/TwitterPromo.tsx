@@ -731,7 +731,7 @@ const Scene5: React.FC<{ frame: number; fps: number }> = ({ frame, fps }) => {
       >
         <div
           style={{
-            background: "linear-gradient(135deg, #1DA1C4 0%, #178BA8 100%)",
+            background: "linear-gradient(135deg, #4A90C4 0%, #2C5F8A 100%)",
             padding: "18px 48px",
             borderRadius: 8,
             boxShadow: `0 0 ${30 * glowIntensity}px rgba(168, 85, 247, 0.4)`,

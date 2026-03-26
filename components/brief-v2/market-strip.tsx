@@ -28,9 +28,9 @@ export function MarketStrip() {
             {m.suffix ? `${m.price}${m.suffix}` : m.price > 1000 ? `${m.price.toLocaleString()}` : `${m.price}`}
           </span>
           {m.label ? (
-            <span className="text-[10px] font-semibold text-amber-500">{m.label}</span>
+            <span className="text-[10px] font-semibold text-[#D4A042]">{m.label}</span>
           ) : m.change !== 0 ? (
-            <span className={`inline-flex items-center gap-0.5 font-mono text-[10px] font-semibold ${m.change >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+            <span className={`inline-flex items-center gap-0.5 font-mono text-[10px] font-semibold ${m.change >= 0 ? 'text-[#3EBD8C]' : 'text-[#E06565]'}`}>
               {m.change >= 0 ? <CaretUp size={8} weight="fill" /> : <CaretDown size={8} weight="fill" />}
               {m.change >= 0 ? '+' : ''}{m.change.toFixed(2)}%
             </span>
@@ -38,8 +38,8 @@ export function MarketStrip() {
         </div>
       ))}
       {stripError && (
-        <span className="flex items-center gap-1 text-[10px] text-amber-500 shrink-0">
-          <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+        <span className="flex items-center gap-1 text-[10px] text-[#D4A042] shrink-0">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#D4A042]" />
           offline
         </span>
       )}

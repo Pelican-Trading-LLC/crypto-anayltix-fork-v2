@@ -28,7 +28,7 @@ export default function NotFound() {
           color: "#ffffff",
           fontSize: 22,
           fontWeight: 700,
-          background: "linear-gradient(135deg, #1DA1C4, #178BA8)",
+          background: "linear-gradient(135deg, #2C5F8A, #5B4F8A)",
           marginBottom: "2rem",
         }}
       >
@@ -63,7 +63,7 @@ export default function NotFound() {
       <Link
         href="/chat"
         style={{
-          backgroundColor: "#1DA1C4",
+          backgroundColor: "#4A90C4",
           color: "#ffffff",
           padding: "0.625rem 1.5rem",
           borderRadius: "0.5rem",
@@ -73,10 +73,10 @@ export default function NotFound() {
           transition: "background-color 0.15s ease",
         }}
         onMouseEnter={(e) =>
-          ((e.target as HTMLElement).style.backgroundColor = "#25BFDF")
+          ((e.target as HTMLElement).style.backgroundColor = "#5BA3D9")
         }
         onMouseLeave={(e) =>
-          ((e.target as HTMLElement).style.backgroundColor = "#1DA1C4")
+          ((e.target as HTMLElement).style.backgroundColor = "#4A90C4")
         }
       >
         Back to Pelican

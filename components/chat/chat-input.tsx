@@ -302,7 +302,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
 
             {characterCount >= 3500 && (
               <div
-                className="flex-shrink-0 w-2 h-2 rounded-full bg-amber-500"
+                className="flex-shrink-0 w-2 h-2 rounded-full bg-[#D4A042]"
                 title={`${characterCount} characters`}
               />
             )}

@@ -20,14 +20,14 @@ export function MorningRead() {
       <ul className="space-y-2 mb-3">
         {FA_PODCAST.key_points.map((p, i) => (
           <li key={i} className="flex gap-2 text-[13px] text-muted-foreground leading-relaxed">
-            <span className="text-amber-500 flex-shrink-0">&bull;</span>
+            <span className="text-[#D4A042] flex-shrink-0">&bull;</span>
             {p}
           </li>
         ))}
       </ul>
-      <div className="rounded-lg p-2.5" style={{ background: 'linear-gradient(135deg, rgba(29,161,196,0.04) 0%, var(--card) 40%)', border: '1px solid rgba(29,161,196,0.10)' }}>
-        <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-[1.5px] font-semibold text-[#1DA1C4] mb-1">
-          <Bird size={12} weight="fill" className="text-[#1DA1C4]" />
+      <div className="rounded-lg p-2.5" style={{ background: 'linear-gradient(135deg, rgba(74,144,196,0.04) 0%, var(--card) 40%)', border: '1px solid rgba(74,144,196,0.10)' }}>
+        <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-[1.5px] font-semibold text-[#4A90C4] mb-1">
+          <Bird size={12} weight="fill" className="text-[#4A90C4]" />
           PELICAN TRANSLATION
         </div>
         <p className="text-[13px] text-muted-foreground leading-relaxed">{FA_PODCAST.pelican_translation}</p>

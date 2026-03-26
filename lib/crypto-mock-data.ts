@@ -1,5 +1,5 @@
 // ══════════════════════════════════════════════════════════════
-// CRYPTO ANALYTIX — Mock Data
+// TOKEN ANALYTIX — Mock Data
 // Single source of truth. Every component imports from here.
 // ══════════════════════════════════════════════════════════════
 
@@ -123,8 +123,8 @@ export const MOCK_CALENDAR = [
 ]
 
 export const EVENT_COLORS: Record<string, string> = {
-  token_unlock: '#9945FF', governance: '#1DA1C4', fed_meeting: '#F59E0B',
-  earnings: '#2A5ADA', expiration: '#EF4444', halving: '#F7931A', upgrade: '#22C55E',
+  token_unlock: '#9945FF', governance: '#4A90C4', fed_meeting: '#D4A042',
+  earnings: '#2A5ADA', expiration: '#E06565', halving: '#F7931A', upgrade: '#3EBD8C',
 }
 
 // ── Education ────────────────────────────────────────────────
@@ -403,10 +403,10 @@ export const MOCK_SECTORS: SectorData[] = [
 ]
 
 export const SECTOR_STATUS_CONFIG: Record<string, { color: string; glow: string; label: string }> = {
-  heating_up: { color: '#22C55E', glow: 'rgba(34,197,94,0.15)', label: 'Heating Up' },
-  stealth_accumulation: { color: '#1DA1C4', glow: 'rgba(29,161,196,0.12)', label: 'Stealth Accumulation' },
+  heating_up: { color: '#3EBD8C', glow: 'rgba(34,197,94,0.15)', label: 'Heating Up' },
+  stealth_accumulation: { color: '#4A90C4', glow: 'rgba(74,144,196,0.12)', label: 'Stealth Accumulation' },
   stable: { color: '#6B7280', glow: 'transparent', label: 'Stable / Chop' },
-  cooling_down: { color: '#EF4444', glow: 'rgba(239,68,68,0.12)', label: 'Cooling Down' },
+  cooling_down: { color: '#E06565', glow: 'rgba(239,68,68,0.12)', label: 'Cooling Down' },
 }
 
 export const MOCK_ROTATION_BRIEFING = {
@@ -525,9 +525,9 @@ export interface ProtocolEntry {
 export const PROTOCOL_CATEGORIES = ['All', 'Lending', 'DEX', 'LSD', 'Restaking', 'Yield/Deriv', 'Perp DEX', 'Stable/Yield', 'Bridge', 'L2', 'Oracle', 'Compute', 'NFT', 'Tokenized Assets'] as const
 
 export const CATEGORY_COLORS: Record<string, string> = {
-  Lending: '#1DA1C4', DEX: '#A78BFA', LSD: '#F59E0B', Restaking: '#22C55E',
-  'Yield/Deriv': '#EC4899', 'Perp DEX': '#EF4444', 'Stable/Yield': '#6366F1',
-  Bridge: '#F97316', L2: '#06B6D4', Oracle: '#8B5CF6', Compute: '#14B8A6', NFT: '#E879F9',
+  Lending: '#4A90C4', DEX: '#A78BFA', LSD: '#D4A042', Restaking: '#3EBD8C',
+  'Yield/Deriv': '#EC4899', 'Perp DEX': '#E06565', 'Stable/Yield': '#6366F1',
+  Bridge: '#F97316', L2: '#4A90C4', Oracle: '#8B5CF6', Compute: '#14B8A6', NFT: '#E879F9',
   'Tokenized Assets': '#14B8A6',
 }
 
@@ -572,9 +572,9 @@ export interface IntelAlert {
 }
 
 export const ALERT_CATEGORY_CONFIG: Record<AlertCategory, { label: string; color: string; icon: string }> = {
-  onchain_anomaly: { label: 'ON-CHAIN ANOMALY', color: '#22C55E', icon: 'eye' },
-  derivatives_warning: { label: 'DERIVATIVES WARNING', color: '#EF4444', icon: 'lightning' },
-  smart_money: { label: 'SMART MONEY', color: '#1DA1C4', icon: 'trend' },
+  onchain_anomaly: { label: 'ON-CHAIN ANOMALY', color: '#3EBD8C', icon: 'eye' },
+  derivatives_warning: { label: 'DERIVATIVES WARNING', color: '#E06565', icon: 'lightning' },
+  smart_money: { label: 'SMART MONEY', color: '#4A90C4', icon: 'trend' },
   unlock_vesting: { label: 'UNLOCK ALERT', color: '#A78BFA', icon: 'clock' },
   portfolio_relative: { label: 'PORTFOLIO', color: '#6366F1', icon: 'chart' },
   cross_asset: { label: 'CROSS-ASSET', color: '#EC4899', icon: 'arrows' },

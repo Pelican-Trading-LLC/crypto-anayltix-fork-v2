@@ -47,7 +47,7 @@ export class ChatErrorBoundary extends Component<Props, State> {
         <div className="flex flex-col items-center justify-center h-full p-8 bg-background">
           <div className="max-w-md text-center space-y-6">
             <div className="mx-auto w-16 h-16 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
-              <AlertTriangle className="w-8 h-8 text-red-600 dark:text-red-400" />
+              <AlertTriangle className="w-8 h-8 text-[#E06565] dark:text-[#E06565]" />
             </div>
             <div className="space-y-2">
               <h2 className="text-xl font-semibold text-foreground">Something went wrong</h2>
@@ -55,7 +55,7 @@ export class ChatErrorBoundary extends Component<Props, State> {
             </div>
             {process.env.NODE_ENV === 'development' && this.state.error && (
               <div className="text-left p-4 bg-muted rounded-lg overflow-auto max-h-32">
-                <code className="text-xs text-red-600">{this.state.error.message}</code>
+                <code className="text-xs text-[#E06565]">{this.state.error.message}</code>
               </div>
             )}
             <div className="flex gap-3 justify-center">

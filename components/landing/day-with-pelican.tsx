@@ -60,7 +60,7 @@ const timelineItems = [
 type DotColor = 'cyan' | 'slate'
 
 const dotColors: Record<DotColor, { border: string; bg: string }> = {
-  cyan: { border: 'border-[#1DA1C4]', bg: 'bg-[#1DA1C4]/20' },
+  cyan: { border: 'border-[#4A90C4]', bg: 'bg-[#4A90C4]/20' },
   slate: { border: 'border-slate-400', bg: 'bg-slate-400/20' },
 }
 
@@ -70,7 +70,7 @@ export function DayWithPelican() {
       <ScrollReveal>
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
-            A Day with Crypto Analytix
+            A Day with Token Analytix
           </h2>
           <p className="text-slate-500 text-lg max-w-xl mx-auto">
             From morning brief to evening review, every step is connected.
@@ -80,7 +80,7 @@ export function DayWithPelican() {
 
       <div className="relative max-w-2xl mx-auto">
         {/* Vertical line */}
-        <div className="absolute left-6 top-0 bottom-0 w-px bg-gradient-to-b from-[#1DA1C4]/50 via-[#1DA1C4]/20 to-transparent" />
+        <div className="absolute left-6 top-0 bottom-0 w-px bg-gradient-to-b from-[#4A90C4]/50 via-[#4A90C4]/20 to-transparent" />
 
         <div className="space-y-10">
           {timelineItems.map((item, i) => {

@@ -226,7 +226,7 @@ function CopyEmailButton({ email }: { email: string }) {
         className="ml-1 text-muted-foreground/40 hover:text-blue-400 transition-colors inline-flex items-center"
       >
         {copied ? (
-          <Check className="w-3 h-3 text-green-400" />
+          <Check className="w-3 h-3 text-[#3EBD8C]" />
         ) : (
           <Copy className="w-3 h-3" />
         )}
@@ -290,7 +290,7 @@ function AdminMessageRow({ msg, spacious }: { msg: ConvoMessage; spacious?: bool
               "text-[10px] px-1.5 py-0.5 rounded-full",
               msg.metadata.source === 'typed'
                 ? "bg-blue-500/10 text-blue-400"
-                : "bg-amber-500/10 text-amber-400"
+                : "bg-[#D4A042]/10 text-[#D4A042]"
             )}>
               {getSourceLabel((msg.metadata.source as MessageSource) || 'typed')}
             </span>

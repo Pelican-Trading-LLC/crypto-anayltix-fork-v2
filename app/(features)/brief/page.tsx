@@ -10,6 +10,8 @@ import { MorningRead } from '@/components/brief-v2/morning-read'
 import { FABlogPosts } from '@/components/brief-v2/fa-blog-posts'
 import { BriefPredictionMarkets } from '@/components/brief-v2/brief-prediction-markets'
 import { BriefTokenizationPulse } from '@/components/brief-v2/brief-tokenization-pulse'
+import { ResearchFeed } from '@/components/shared/research-feed'
+import { XFeed } from '@/components/shared/x-feed'
 
 export default function BriefPage() {
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
@@ -36,12 +38,28 @@ export default function BriefPage() {
           <FACESummary />
           <MorningRead />
           <FABlogPosts />
+
+          {/* Research Feed */}
+          <div className="rounded-xl border bg-card overflow-hidden">
+            <div className="px-4 py-3 border-b border-[var(--border-subtle)]">
+              <span className="text-[11px] uppercase tracking-[1.5px] font-semibold text-muted-foreground">RESEARCH FEED</span>
+            </div>
+            <ResearchFeed />
+          </div>
         </div>
 
-        {/* Right: Alerts + What I Missed (1/3) */}
+        {/* Right: Alerts + What I Missed + X Feed (1/3) */}
         <div className="lg:col-span-1 space-y-4">
           <BriefAlertsSidebar />
           <WhatIMissed />
+
+          {/* X Feed */}
+          <div className="rounded-xl border bg-card overflow-hidden">
+            <div className="px-4 py-3 border-b border-[var(--border-subtle)]">
+              <span className="text-[11px] uppercase tracking-[1.5px] font-semibold text-muted-foreground">CRYPTO X</span>
+            </div>
+            <XFeed />
+          </div>
         </div>
       </div>
     </div>

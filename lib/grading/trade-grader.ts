@@ -39,11 +39,11 @@ export function scoreToGrade(score: number): string {
 }
 
 export function gradeToColor(grade: string): string {
-  if (grade.startsWith('A')) return 'text-green-400'
+  if (grade.startsWith('A')) return 'text-[#3EBD8C]'
   if (grade.startsWith('B')) return 'text-blue-400'
   if (grade.startsWith('C')) return 'text-yellow-400'
   if (grade.startsWith('D')) return 'text-orange-400'
-  return 'text-red-400'
+  return 'text-[#E06565]'
 }
 
 export function gradeToRingColor(grade: string): string {

@@ -11,7 +11,7 @@ export function FinalCTA() {
         <ScrollReveal>
           <div className="relative text-center max-w-2xl mx-auto">
             <h2 className="text-3xl md:text-5xl font-bold mb-6">
-              <span className="bg-gradient-to-r from-[#1A6FB5] to-[#25BFDF] bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-[#2C5F8A] to-[#5BA3D9] bg-clip-text text-transparent">
                 Stop translating
                 <br />
                 crypto yourself.
@@ -25,7 +25,7 @@ export function FinalCTA() {
 
             <Link
               href="/auth/signup"
-              className="inline-block px-10 py-4 bg-gradient-to-r from-[#1A6FB5] to-[#25BFDF] hover:opacity-90 text-white font-semibold rounded-xl text-lg shadow-lg shadow-[#1DA1C4]/20 hover:shadow-[#1DA1C4]/30 transition-all duration-300 active:scale-[0.98]"
+              className="inline-block px-10 py-4 bg-gradient-to-r from-[#2C5F8A] to-[#5BA3D9] hover:opacity-90 text-white font-semibold rounded-xl text-lg shadow-lg shadow-[#4A90C4]/20 hover:shadow-[#4A90C4]/30 transition-all duration-300 active:scale-[0.98]"
             >
               Start for Free &rarr;
             </Link>

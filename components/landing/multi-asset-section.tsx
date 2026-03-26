@@ -55,9 +55,9 @@ export function MultiAssetSection() {
           const Icon = archetype.icon
           return (
             <ScrollReveal key={i} delay={i * 0.1}>
-              <div className="p-5 rounded-xl bg-white border border-slate-200 hover:border-[#1DA1C4]/20 transition-colors">
+              <div className="p-5 rounded-xl bg-white border border-slate-200 hover:border-[#4A90C4]/20 transition-colors">
                 <Icon
-                  className="h-7 w-7 text-[#1DA1C4] mb-3"
+                  className="h-7 w-7 text-[#4A90C4] mb-3"
                   weight="duotone"
                 />
                 <h3 className="text-base font-semibold text-slate-900 mb-1">

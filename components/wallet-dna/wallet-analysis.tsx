@@ -17,9 +17,9 @@ export function WalletAnalysis({ data }: Props) {
   const { openWithPrompt } = usePelicanPanelContext()
 
   const statusColors: Record<string, { bg: string; text: string }> = {
-    likely_qualified: { bg: 'bg-green-500/10', text: 'text-green-500' },
-    partially_qualified: { bg: 'bg-amber-500/10', text: 'text-amber-500' },
-    not_qualified: { bg: 'bg-red-500/10', text: 'text-red-500' },
+    likely_qualified: { bg: 'bg-[#3EBD8C]/10', text: 'text-[#3EBD8C]' },
+    partially_qualified: { bg: 'bg-[#D4A042]/10', text: 'text-[#D4A042]' },
+    not_qualified: { bg: 'bg-[#E06565]/10', text: 'text-[#E06565]' },
   }
 
   return (
@@ -28,13 +28,13 @@ export function WalletAnalysis({ data }: Props) {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Archetype Card */}
         <div className="rounded-xl border bg-card p-5"
-          style={{ background: 'linear-gradient(135deg, rgba(29,161,196,0.04) 0%, var(--card) 50%)' }}>
+          style={{ background: 'linear-gradient(135deg, rgba(74,144,196,0.04) 0%, var(--card) 50%)' }}>
           <div className="flex items-center justify-between mb-3">
             <span className="font-mono text-[11px] text-muted-foreground truncate">{data.address}</span>
-            {data.label && <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#1DA1C4]/10 text-[#1DA1C4]">{data.label}</span>}
+            {data.label && <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#4A90C4]/10 text-[#4A90C4]">{data.label}</span>}
           </div>
           <div className="flex items-center gap-3 mb-3">
-            <span className="px-3 py-1.5 rounded-full text-[13px] font-bold text-white" style={{ background: 'linear-gradient(135deg, #1A6FB5, #25BFDF)' }}>
+            <span className="px-3 py-1.5 rounded-full text-[13px] font-bold text-white" style={{ background: 'linear-gradient(135deg, #2C5F8A, #5B4F8A)' }}>
               {data.archetype}
             </span>
           </div>
@@ -62,7 +62,7 @@ export function WalletAnalysis({ data }: Props) {
             <RadarChart data={data.radar}>
               <PolarGrid stroke="var(--border)" gridType="polygon" />
               <PolarAngleAxis dataKey="axis" tick={{ fontSize: 12, fill: 'var(--muted-foreground)' }} />
-              <Radar dataKey="value" stroke="#1DA1C4" fill="#1DA1C4" fillOpacity={0.2} strokeWidth={2} />
+              <Radar dataKey="value" stroke="#4A90C4" fill="#4A90C4" fillOpacity={0.2} strokeWidth={2} />
             </RadarChart>
           </ResponsiveContainer>
         </div>
@@ -73,23 +73,23 @@ export function WalletAnalysis({ data }: Props) {
         {/* MEV Losses */}
         <div className="rounded-xl border bg-card p-5">
           <div className="flex items-center gap-2 mb-3">
-            <Shield size={14} weight="fill" className="text-red-500" />
+            <Shield size={14} weight="fill" className="text-[#E06565]" />
             <span className="text-[11px] uppercase tracking-[1.5px] font-semibold text-muted-foreground">MEV LOSSES (90d)</span>
           </div>
-          <div className="font-mono text-2xl font-bold text-red-500 mb-1">
+          <div className="font-mono text-2xl font-bold text-[#E06565] mb-1">
             -${data.mev_losses.total_90d.toLocaleString()}
           </div>
           <span className="text-[12px] text-muted-foreground">{data.mev_losses.incidents} sandwich attacks detected</span>
-          <div className="mt-3 p-2 rounded-lg bg-red-500/5 border border-red-500/10">
-            <span className="text-[10px] text-red-500 font-semibold uppercase">Worst Hit</span>
+          <div className="mt-3 p-2 rounded-lg bg-[#E06565]/5 border border-[#E06565]/10">
+            <span className="text-[10px] text-[#E06565] font-semibold uppercase">Worst Hit</span>
             <div className="text-[12px] font-mono mt-0.5">
               {data.mev_losses.worst_trade.token} — ${data.mev_losses.worst_trade.loss} lost on {data.mev_losses.worst_trade.date}
             </div>
           </div>
-          <div className="mt-3 p-2 rounded-lg bg-[#1DA1C4]/5 border border-[#1DA1C4]/10">
+          <div className="mt-3 p-2 rounded-lg bg-[#4A90C4]/5 border border-[#4A90C4]/10">
             <div className="flex items-center gap-1 mb-1">
-              <Bird size={10} className="text-[#1DA1C4]" />
-              <span className="text-[10px] text-[#1DA1C4] font-semibold uppercase">Pelican Recommendation</span>
+              <Bird size={10} className="text-[#4A90C4]" />
+              <span className="text-[10px] text-[#4A90C4] font-semibold uppercase">Pelican Recommendation</span>
             </div>
             <p className="text-[11px] text-muted-foreground leading-relaxed">{data.mev_losses.recommendation}</p>
           </div>
@@ -115,18 +115,18 @@ export function WalletAnalysis({ data }: Props) {
                   </div>
                   <div className="flex items-center gap-1 mb-1">
                     <div className="flex-1 h-1 rounded-full bg-muted overflow-hidden">
-                      <div className="h-full rounded-full bg-[#1DA1C4]" style={{ width: `${(doneCount / ad.checklist.length) * 100}%` }} />
+                      <div className="h-full rounded-full bg-[#4A90C4]" style={{ width: `${(doneCount / ad.checklist.length) * 100}%` }} />
                     </div>
                     <span className="text-[10px] text-muted-foreground font-mono">{doneCount}/{ad.checklist.length}</span>
                   </div>
                   {ad.checklist.map((c, ci) => (
                     <div key={ci} className="flex items-center gap-1.5 text-[11px]">
-                      {c.done ? <Check size={10} className="text-green-500" /> : <X size={10} className="text-red-500/50" />}
+                      {c.done ? <Check size={10} className="text-[#3EBD8C]" /> : <X size={10} className="text-[#E06565]/50" />}
                       <span className={c.done ? 'text-muted-foreground' : 'text-muted-foreground/50'}>{c.item}</span>
                     </div>
                   ))}
                   {ad.estimated_value && (
-                    <span className="text-[10px] font-mono text-[#1DA1C4] mt-1 block">Est. value: {ad.estimated_value}</span>
+                    <span className="text-[10px] font-mono text-[#4A90C4] mt-1 block">Est. value: {ad.estimated_value}</span>
                   )}
                 </div>
               )
@@ -137,7 +137,7 @@ export function WalletAnalysis({ data }: Props) {
         {/* Holdings */}
         <div className="rounded-xl border bg-card p-5">
           <div className="flex items-center gap-2 mb-3">
-            <Wallet size={14} weight="fill" className="text-[#1DA1C4]" />
+            <Wallet size={14} weight="fill" className="text-[#4A90C4]" />
             <span className="text-[11px] uppercase tracking-[1.5px] font-semibold text-muted-foreground">TOP HOLDINGS</span>
           </div>
           <div className="font-mono text-2xl font-bold mb-3">
@@ -167,17 +167,17 @@ export function WalletAnalysis({ data }: Props) {
 
       {/* Row 3: Pelican Deep Dive */}
       <div className="rounded-xl border p-5"
-        style={{ background: 'linear-gradient(135deg, rgba(29,161,196,0.04) 0%, var(--card) 40%)', borderColor: 'rgba(29,161,196,0.15)' }}>
+        style={{ background: 'linear-gradient(135deg, rgba(74,144,196,0.04) 0%, var(--card) 40%)', borderColor: 'rgba(74,144,196,0.15)' }}>
         <div className="flex items-center gap-2 mb-3">
-          <Bird size={16} weight="fill" className="text-[#1DA1C4]" />
-          <span className="text-[12px] font-semibold text-[#1DA1C4] uppercase tracking-wider">PELICAN DEEP DIVE</span>
+          <Bird size={16} weight="fill" className="text-[#4A90C4]" />
+          <span className="text-[12px] font-semibold text-[#4A90C4] uppercase tracking-wider">PELICAN DEEP DIVE</span>
         </div>
         <p className="text-[14px] leading-[1.75] text-foreground/90 mb-4">{data.pelican_narrative}</p>
         <button onClick={() => openWithPrompt(null, {
             visibleMessage: `Analyze wallet ${data.address}`,
             fullPrompt: `[WALLET ANALYSIS]\nAddress: ${data.address}\nArchetype: ${data.archetype}\nLabel: ${data.label || 'Unknown'}\nAvg Hold: ${data.avg_hold_days} days\nSharpe: ${data.sharpe_ratio}\nWin Rate: ${data.win_rate}%\nMEV Losses (90d): $${data.mev_losses.total_90d}\nChains Active: ${data.chains_active}\nTotal Transactions: ${data.total_transactions}\n\nAnalyze the wallet ${data.address} — what should I watch for and is this a wallet worth following?`,
           }, null)}
-          className="inline-flex items-center gap-2 text-[13px] text-[#1DA1C4] font-medium hover:underline cursor-pointer">
+          className="inline-flex items-center gap-2 text-[13px] text-[#4A90C4] font-medium hover:underline cursor-pointer">
           Ask Pelican about this wallet →
         </button>
       </div>

@@ -31,7 +31,7 @@ export default function KnowledgeBasePage() {
           <MagnifyingGlass size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <input type="text" value={search} onChange={e => setSearch(e.target.value)}
             placeholder="Search protocols or categories"
-            className="w-full pl-8 pr-4 py-2 rounded-lg border bg-card text-[12px] placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-[#1DA1C4]/40" />
+            className="w-full pl-8 pr-4 py-2 rounded-lg border bg-card text-[12px] placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-[#4A90C4]/40" />
         </div>
       </div>
 
@@ -40,7 +40,7 @@ export default function KnowledgeBasePage() {
         {PROTOCOL_CATEGORIES.map(cat => (
           <button key={cat} onClick={() => setCategory(cat)}
             className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition-colors cursor-pointer ${
-              category === cat ? 'bg-[#1DA1C4]/15 text-[#1DA1C4]' : 'text-muted-foreground hover:text-foreground hover:bg-accent/5'
+              category === cat ? 'bg-[#4A90C4]/15 text-[#4A90C4]' : 'text-muted-foreground hover:text-foreground hover:bg-accent/5'
             }`}>
             {cat}
           </button>
@@ -77,8 +77,8 @@ export default function KnowledgeBasePage() {
                   </span>
                 </td>
                 <td className="px-4 py-3 text-[12px] text-muted-foreground max-w-[220px]">{p.mechanics}</td>
-                <td className="px-4 py-3 text-[12px] text-amber-500 max-w-[200px]">{p.critical_risks}</td>
-                <td className="px-4 py-3 text-[12px] text-[#1DA1C4] max-w-[240px]">{p.data_quirks}</td>
+                <td className="px-4 py-3 text-[12px] text-[#D4A042] max-w-[200px]">{p.critical_risks}</td>
+                <td className="px-4 py-3 text-[12px] text-[#4A90C4] max-w-[240px]">{p.data_quirks}</td>
               </tr>
             ))}
           </tbody>
@@ -89,7 +89,7 @@ export default function KnowledgeBasePage() {
       <div className="flex items-center justify-between mt-4 text-[11px] text-muted-foreground">
         <span>{filtered.length} protocols indexed</span>
         <span className="flex items-center gap-1">
-          <Bird size={12} className="text-[#1DA1C4]" />
+          <Bird size={12} className="text-[#4A90C4]" />
           Pelican references this knowledge on every Token Intel query
         </span>
       </div>

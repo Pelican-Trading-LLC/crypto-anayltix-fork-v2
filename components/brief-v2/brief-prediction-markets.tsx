@@ -6,8 +6,8 @@ import { formatCompact } from '@/lib/crypto-mock-data'
 
 function MarketRow({ market }: { market: ParsedMarket }) {
   const pct = (market.yesPrice * 100).toFixed(0)
-  const color = market.yesPrice >= 0.6 ? 'text-green-500' : market.yesPrice <= 0.4 ? 'text-red-500' : 'text-amber-500'
-  const bgColor = market.yesPrice >= 0.6 ? 'bg-green-500/10' : market.yesPrice <= 0.4 ? 'bg-red-500/10' : 'bg-amber-500/10'
+  const color = market.yesPrice >= 0.6 ? 'text-[#3EBD8C]' : market.yesPrice <= 0.4 ? 'text-[#E06565]' : 'text-[#D4A042]'
+  const bgColor = market.yesPrice >= 0.6 ? 'bg-[#3EBD8C]/10' : market.yesPrice <= 0.4 ? 'bg-[#E06565]/10' : 'bg-[#D4A042]/10'
 
   return (
     <div className="flex items-center justify-between py-2 border-b border-[var(--border-subtle)] last:border-0">
@@ -74,9 +74,9 @@ export function BriefPredictionMarkets() {
       )}
 
       {/* Pelican Synthesis */}
-      <div className="mt-4 px-3 py-2.5 rounded-lg bg-[#1DA1C4]/5 border border-[#1DA1C4]/10">
+      <div className="mt-4 px-3 py-2.5 rounded-lg bg-[#4A90C4]/5 border border-[#4A90C4]/10">
         <p className="text-[12px] text-muted-foreground leading-relaxed">
-          <span className="text-[#1DA1C4] font-semibold">Pelican:</span> Prediction markets are the sharpest leading indicator for crypto. When Fed rate cut odds shift 10%+, BTC moves within 48 hours. Currently pricing in macro uncertainty — position sizing should be conservative until odds stabilize.
+          <span className="text-[#4A90C4] font-semibold">Pelican:</span> Prediction markets are the sharpest leading indicator for crypto. When Fed rate cut odds shift 10%+, BTC moves within 48 hours. Currently pricing in macro uncertainty — position sizing should be conservative until odds stabilize.
         </p>
       </div>
     </div>

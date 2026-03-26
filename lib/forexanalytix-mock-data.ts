@@ -16,8 +16,8 @@ export interface FAAnalyst {
 export const FA_ANALYSTS: FAAnalyst[] = [
   { id: 'blake', name: 'Blake Morrow', role: 'CEO & Head Analyst', methodology: 'Macro / Harmonic', color: '#2A5ADA', initials: 'BM', bio: '20+ years FX analysis. Former institutional trader. Specializes in macro-driven harmonic patterns.' },
   { id: 'grega', name: 'Grega Horvat', role: 'Senior Analyst', methodology: 'Elliott Wave', color: '#9945FF', initials: 'GH', bio: 'Elliott Wave specialist with 15+ years experience. Published author on wave theory.' },
-  { id: 'dale', name: 'Dale Pinkert', role: 'Sentiment Analyst', methodology: 'Sentiment / COT', color: '#22C55E', initials: 'DP', bio: 'Former FX desk trader. Specializes in COT data and sentiment positioning.' },
-  { id: 'joel', name: 'Joel Kruger', role: 'Technical Strategist', methodology: 'Institutional Flow', color: '#F59E0B', initials: 'JK', bio: 'Former currency strategist at major banks. Focuses on institutional order flow.' },
+  { id: 'dale', name: 'Dale Pinkert', role: 'Sentiment Analyst', methodology: 'Sentiment / COT', color: '#3EBD8C', initials: 'DP', bio: 'Former FX desk trader. Specializes in COT data and sentiment positioning.' },
+  { id: 'joel', name: 'Joel Kruger', role: 'Technical Strategist', methodology: 'Institutional Flow', color: '#D4A042', initials: 'JK', bio: 'Former currency strategist at major banks. Focuses on institutional order flow.' },
 ]
 
 // ── PiP Signals (Points in Play) ──────────────────────────────
@@ -61,7 +61,7 @@ export const FA_PIPS: FAPiP[] = [
     crypto_translation: 'Direct crypto PiP. If Wave 5 plays out, expect alt rotation to follow 7-10 days after BTC peaks.',
   },
   {
-    id: 'pip3', analyst_id: 'dale', analyst_name: 'Dale Pinkert', analyst_color: '#22C55E', analyst_initials: 'DP',
+    id: 'pip3', analyst_id: 'dale', analyst_name: 'Dale Pinkert', analyst_color: '#3EBD8C', analyst_initials: 'DP',
     asset: 'GBP/USD', asset_class: 'forex', direction: 'BEARISH', methodology: 'Sentiment',
     title: 'GBP/USD Crowded Long — Fade Setup',
     body: 'COT report shows asset managers net long GBP at 3-year highs. Retail sentiment 78% long. Extreme positioning historically precedes reversals.',
@@ -70,7 +70,7 @@ export const FA_PIPS: FAPiP[] = [
     crypto_translation: 'GBP weakness typically accompanies risk-off sentiment in European sessions. Watch for ETH/BTC underperformance during London hours.',
   },
   {
-    id: 'pip4', analyst_id: 'joel', analyst_name: 'Joel Kruger', analyst_color: '#F59E0B', analyst_initials: 'JK',
+    id: 'pip4', analyst_id: 'joel', analyst_name: 'Joel Kruger', analyst_color: '#D4A042', analyst_initials: 'JK',
     asset: 'USD/JPY', asset_class: 'forex', direction: 'BEARISH', methodology: 'Institutional Flow',
     title: 'USD/JPY Breakdown — BoJ Intervention Zone',
     body: 'Real money selling above 152. BoJ intervention risk elevated. Institutional flow data shows heavy hedging activity from Japanese corporates.',

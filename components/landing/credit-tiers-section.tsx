@@ -50,7 +50,7 @@ export function CreditTiersSection() {
             <ScrollReveal key={benefit.title} delay={i * 0.08}>
               <div className="rounded-xl border border-slate-200 bg-white p-6 text-center shadow-sm hover:shadow-md transition-shadow">
                 <Icon
-                  className="h-8 w-8 text-[#1DA1C4] mx-auto mb-4"
+                  className="h-8 w-8 text-[#4A90C4] mx-auto mb-4"
                   weight="duotone"
                 />
                 <h3 className="text-base font-semibold text-slate-900 mb-2">

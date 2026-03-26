@@ -9,12 +9,12 @@ export function PelicanSynthesisHero() {
   return (
     <div className="rounded-xl border p-6"
       style={{
-        background: 'linear-gradient(135deg, rgba(29,161,196,0.05) 0%, var(--card) 40%)',
-        borderColor: 'rgba(29,161,196,0.15)',
+        background: 'linear-gradient(135deg, rgba(74,144,196,0.05) 0%, var(--card) 40%)',
+        borderColor: 'rgba(74,144,196,0.15)',
       }}>
       <div className="flex items-center gap-2 mb-4">
-        <Bird size={18} weight="fill" className="text-[#1DA1C4]" />
-        <span className="text-[13px] font-semibold text-[#1DA1C4]">Pelican Synthesis</span>
+        <Bird size={18} weight="fill" className="text-[#4A90C4]" />
+        <span className="text-[13px] font-semibold text-[#4A90C4]">Pelican Synthesis</span>
       </div>
 
       {/* Macro Weather */}
@@ -32,12 +32,12 @@ export function PelicanSynthesisHero() {
       {/* THE PLAY — highlighted callout */}
       <div className="rounded-lg p-4"
         style={{
-          background: 'linear-gradient(135deg, rgba(29,161,196,0.08) 0%, rgba(29,161,196,0.02) 100%)',
-          borderLeft: '3px solid #1DA1C4',
+          background: 'linear-gradient(135deg, rgba(74,144,196,0.08) 0%, rgba(74,144,196,0.02) 100%)',
+          borderLeft: '3px solid #4A90C4',
         }}>
         <div className="flex items-center gap-1.5 mb-1.5">
-          <Lightning size={14} weight="fill" className="text-[#1DA1C4]" />
-          <span className="text-[11px] uppercase tracking-wider font-bold text-[#1DA1C4]">THE PLAY</span>
+          <Lightning size={14} weight="fill" className="text-[#4A90C4]" />
+          <span className="text-[11px] uppercase tracking-wider font-bold text-[#4A90C4]">THE PLAY</span>
         </div>
         <p className="text-[14px] font-medium leading-relaxed">{synth.the_play}</p>
       </div>

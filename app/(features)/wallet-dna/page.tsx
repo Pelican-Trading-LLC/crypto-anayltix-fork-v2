@@ -28,9 +28,9 @@ export default function WalletDNAPage() {
   return (
     <div className="p-6 max-w-[1200px] mx-auto">
       {/* Preview Mode Banner */}
-      <div className="mb-4 rounded-lg border border-amber-500/20 bg-amber-500/5 px-4 py-2.5 flex items-center gap-2">
-        <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-amber-500/10 text-amber-500">PREVIEW</span>
-        <span className="text-[12px] text-amber-500/80">Wallet DNA is running in preview mode with sample data. Live on-chain analysis coming soon.</span>
+      <div className="mb-4 rounded-lg border border-[#D4A042]/20 bg-[#D4A042]/5 px-4 py-2.5 flex items-center gap-2">
+        <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-[#D4A042]/10 text-[#D4A042]">PREVIEW</span>
+        <span className="text-[12px] text-[#D4A042]/80">Wallet DNA is running in preview mode with sample data. Live on-chain analysis coming soon.</span>
       </div>
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
@@ -43,11 +43,11 @@ export default function WalletDNAPage() {
           <input type="text" value={address} onChange={e => setAddress(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleAnalyze()}
             placeholder="0x... or ENS name"
-            className="w-full pl-9 pr-24 py-2.5 rounded-xl border bg-card text-[13px] font-mono placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-[#1DA1C4]/40" />
+            className="w-full pl-9 pr-24 py-2.5 rounded-xl border bg-card text-[13px] font-mono placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-[#4A90C4]/40" />
           <button onClick={() => handleAnalyze()}
             disabled={!address || loading}
             className="absolute right-1.5 top-1/2 -translate-y-1/2 px-4 py-1.5 rounded-lg text-[12px] font-medium text-white disabled:opacity-30 cursor-pointer transition-all hover:brightness-110"
-            style={{ background: 'linear-gradient(135deg, #1A6FB5, #25BFDF)' }}>
+            style={{ background: 'linear-gradient(135deg, #2C5F8A, #5B4F8A)' }}>
             {loading ? 'Analyzing...' : 'Analyze'}
           </button>
         </div>
@@ -56,7 +56,7 @@ export default function WalletDNAPage() {
       {/* Content */}
       {loading ? (
         <div className="flex flex-col items-center justify-center min-h-[50vh] gap-3">
-          <div className="w-8 h-8 border-2 border-[#1DA1C4] border-t-transparent rounded-full animate-spin" />
+          <div className="w-8 h-8 border-2 border-[#4A90C4] border-t-transparent rounded-full animate-spin" />
           <span className="text-[13px] text-muted-foreground">Analyzing wallet across 3 chains...</span>
           <div className="flex gap-3 mt-2">
             {['Scanning transactions', 'Classifying behavior', 'Checking MEV exposure', 'Scoring airdrops'].map((s) => (

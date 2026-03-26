@@ -149,13 +149,13 @@ export default function AdminHealthPage() {
         {/* Database */}
         <Card>
           <CardContent className="flex items-center gap-3 py-4">
-            <div className={`rounded-md p-2 ${isOnline ? 'bg-emerald-500/10' : 'bg-red-500/10'}`}>
-              <Database className={`size-4 ${isOnline ? 'text-emerald-500' : 'text-red-500'}`} />
+            <div className={`rounded-md p-2 ${isOnline ? 'bg-emerald-500/10' : 'bg-[#E06565]/10'}`}>
+              <Database className={`size-4 ${isOnline ? 'text-emerald-500' : 'text-[#E06565]'}`} />
             </div>
             <div>
               <p className="text-xs text-muted-foreground">Database</p>
               <div className="flex items-center gap-2">
-                <div className={`size-2 rounded-full ${isOnline ? 'bg-emerald-500' : 'bg-red-500'}`} />
+                <div className={`size-2 rounded-full ${isOnline ? 'bg-emerald-500' : 'bg-[#E06565]'}`} />
                 <span className="text-sm font-medium">{isOnline ? 'Online' : 'Unknown'}</span>
               </div>
               <p className="text-xs text-muted-foreground mt-0.5 font-mono tabular-nums">

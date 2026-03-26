@@ -61,7 +61,7 @@ export default function HelpChat({ logoUrl = '/ca-logo.svg' }: HelpChatProps) {
       if (data.error) {
         setMessages(prev => [...prev, { 
           type: 'bot', 
-          content: 'Sorry, something went wrong. Please try again or email support@cryptoanalytix.com for help.' 
+          content: 'Sorry, something went wrong. Please try again or email support@tokenanalytix.com for help.' 
         }]);
       } else {
         setMessages(prev => [...prev, { type: 'bot', content: data.reply }]);
@@ -69,7 +69,7 @@ export default function HelpChat({ logoUrl = '/ca-logo.svg' }: HelpChatProps) {
     } catch {
       setMessages(prev => [...prev, { 
         type: 'bot', 
-        content: 'Sorry, I couldn\'t connect. Please try again or email support@cryptoanalytix.com for help.' 
+        content: 'Sorry, I couldn\'t connect. Please try again or email support@tokenanalytix.com for help.' 
       }]);
     } finally {
       setIsLoading(false);
@@ -77,7 +77,7 @@ export default function HelpChat({ logoUrl = '/ca-logo.svg' }: HelpChatProps) {
   };
 
   const handleContactSupport = () => {
-    window.location.href = 'mailto:support@cryptoanalytix.com';
+    window.location.href = 'mailto:support@tokenanalytix.com';
   };
 
   const formatMessage = (content: string) => {
@@ -88,8 +88,8 @@ export default function HelpChat({ logoUrl = '/ca-logo.svg' }: HelpChatProps) {
       .join('<br />');
     // Convert email addresses to clickable links
     html = html.replace(
-      /support@cryptoanalytix\.ai/g,
-      '<a href="mailto:support@cryptoanalytix.com" style="color: var(--primary); text-decoration: underline;">support@cryptoanalytix.com</a>'
+      /support@tokenanalytix\.ai/g,
+      '<a href="mailto:support@tokenanalytix.com" style="color: var(--primary); text-decoration: underline;">support@tokenanalytix.com</a>'
     );
     return html;
   };
@@ -168,7 +168,7 @@ export default function HelpChat({ logoUrl = '/ca-logo.svg' }: HelpChatProps) {
           >
             <Image
               src={logoUrl}
-              alt="Crypto Analytix"
+              alt="Token Analytix"
               width={32}
               height={32}
               style={{ objectFit: 'contain' }}
@@ -180,7 +180,7 @@ export default function HelpChat({ logoUrl = '/ca-logo.svg' }: HelpChatProps) {
                 letterSpacing: '0.05em',
                 color: 'var(--foreground)'
               }}>
-                Crypto Analytix Help
+                Token Analytix Help
               </div>
               <div style={{ 
                 fontFamily: "'Geist Mono', monospace",
@@ -227,7 +227,7 @@ export default function HelpChat({ logoUrl = '/ca-logo.svg' }: HelpChatProps) {
                   color: 'var(--muted-foreground)',
                   lineHeight: '1.5'
                 }}>
-                  Ask me anything about Crypto Analytix—features, pricing, data coverage, or how it works.
+                  Ask me anything about Token Analytix—features, pricing, data coverage, or how it works.
                 </div>
               </div>
             )}
@@ -314,7 +314,7 @@ export default function HelpChat({ logoUrl = '/ca-logo.svg' }: HelpChatProps) {
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Ask about Crypto Analytix..."
+                placeholder="Ask about Token Analytix..."
                 disabled={isLoading}
                 onContextMenu={(e) => e.stopPropagation()}
                 onKeyDown={(e) => {

@@ -57,7 +57,7 @@ export function ErrorMessage({ message, onRetry, variant = "message" }: ErrorMes
     >
       <div className="flex-shrink-0">
         <div className="h-9 w-9 bg-red-100 rounded-full flex items-center justify-center">
-          <AlertTriangle className="w-4 h-4 text-red-600" />
+          <AlertTriangle className="w-4 h-4 text-[#E06565]" />
         </div>
       </div>
 

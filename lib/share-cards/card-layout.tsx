@@ -6,8 +6,8 @@ export const CARD_COLORS = {
   bg: "#0a0a0f",
   cardBg: "#13131a",
   border: "#1e1e2e",
-  purple: "#1DA1C4",
-  purpleLight: "#25BFDF",
+  purple: "#4A90C4",
+  purpleLight: "#5BA3D9",
   cyan: "#22d3ee",
   green: "#22c55e",
   red: "#ef4444",
@@ -126,7 +126,7 @@ export function CardLayout({
                 letterSpacing: "0.05em",
               }}
             >
-              cryptoanalytix.com
+              tokenanalytix.com
             </span>
           </div>
         )}

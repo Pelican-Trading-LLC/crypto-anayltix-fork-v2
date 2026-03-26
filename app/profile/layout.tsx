@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Profile | Crypto Analytix',
+  title: 'Profile | Token Analytix',
   robots: { index: false, follow: false },
 }
 

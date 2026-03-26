@@ -119,7 +119,7 @@ const Sidebar: React.FC<{ opacity: number }> = ({ opacity }) => {
           style={{
             width: "100%",
             height: 40,
-            background: "linear-gradient(to right, #1DA1C4, #178BA8, #1DA1C4)",
+            background: "linear-gradient(to right, #4A90C4, #2C5F8A, #4A90C4)",
             border: "none",
             borderRadius: 8,
             color: "white",

@@ -74,13 +74,13 @@ function planColor(plan: string) {
     case 'pro':
       return 'bg-blue-500/10 text-blue-400 border-blue-500/20'
     case 'power':
-      return 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+      return 'bg-[#D4A042]/10 text-[#D4A042] border-[#D4A042]/20'
     case 'founder':
       return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
     case 'starter':
-      return 'bg-green-500/10 text-green-400 border-green-500/20'
+      return 'bg-[#3EBD8C]/10 text-[#3EBD8C] border-[#3EBD8C]/20'
     case 'past_due':
-      return 'bg-red-500/10 text-red-400 border-red-500/20'
+      return 'bg-[#E06565]/10 text-[#E06565] border-[#E06565]/20'
     default:
       return ''
   }

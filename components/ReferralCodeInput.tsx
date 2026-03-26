@@ -103,15 +103,15 @@ export function ReferralCodeInput({ onReferralReady }: ReferralCodeInputProps) {
             <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
           )}
           {validationState === "valid" && (
-            <CheckCircle2 className="h-4 w-4 text-green-500" />
+            <CheckCircle2 className="h-4 w-4 text-[#3EBD8C]" />
           )}
           {validationState === "invalid" && (
-            <XCircle className="h-4 w-4 text-red-500" />
+            <XCircle className="h-4 w-4 text-[#E06565]" />
           )}
         </div>
       </div>
       {validationState === "valid" && validatedInfo && (
-        <p className="text-xs text-green-600 ml-1">
+        <p className="text-xs text-[#3EBD8C] ml-1">
           {validatedInfo.type === "affiliate" && validatedInfo.affiliate_name
             ? `Code from ${validatedInfo.affiliate_name}`
             : "Valid referral code"}

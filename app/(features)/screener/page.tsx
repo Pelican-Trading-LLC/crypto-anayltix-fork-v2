@@ -33,7 +33,7 @@ function AllTab() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3">
           {markets.map(m => {
             const pct = (m.yesPrice * 100).toFixed(0)
-            const color = m.yesPrice >= 0.6 ? 'text-green-500' : m.yesPrice <= 0.4 ? 'text-red-500' : 'text-amber-500'
+            const color = m.yesPrice >= 0.6 ? 'text-[#3EBD8C]' : m.yesPrice <= 0.4 ? 'text-[#E06565]' : 'text-[#D4A042]'
             return (
               <div key={m.id} className="rounded-xl border bg-card p-3">
                 <div className="text-[11px] text-muted-foreground line-clamp-2 mb-2">{m.question}</div>
@@ -61,30 +61,30 @@ function AllTab() {
             </thead>
             <tbody>
               {assets.map(asset => (
-                <tr key={asset.id} className="border-b border-[var(--border)] last:border-0 hover:bg-accent/5 transition-colors">
-                  <td className="px-4 py-3 text-[13px] font-medium">{asset.name}</td>
-                  <td className="px-4 py-3 text-[12px] text-muted-foreground">{asset.platform}</td>
-                  <td className="px-4 py-3 font-mono text-[13px] tabular-nums text-right">{formatCompact(asset.totalValue)}</td>
-                  <td className="px-4 py-3 font-mono text-[13px] tabular-nums text-right">
-                    {asset.apy !== null ? <span className="text-green-500">{asset.apy}%</span> : <span className="text-muted-foreground">---</span>}
+                <tr key={asset.id} className="group border-b border-[var(--border)] last:border-0 hover:bg-accent/5 transition-colors">
+                  <td className="px-4 py-2 text-[13px] font-medium">{asset.name}</td>
+                  <td className="px-4 py-2 text-[12px] text-muted-foreground">{asset.platform}</td>
+                  <td className="px-4 py-2 font-mono text-[13px] tabular-nums text-right">{formatCompact(asset.totalValue)}</td>
+                  <td className="px-4 py-2 font-mono text-[13px] tabular-nums text-right">
+                    {asset.apy !== null ? <span className="text-[#3EBD8C]">{asset.apy}%</span> : <span className="text-muted-foreground">---</span>}
                   </td>
-                  <td className="px-4 py-3 font-mono text-[12px] tabular-nums text-right">
+                  <td className="px-4 py-2 font-mono text-[12px] tabular-nums text-right">
                     {asset.change30d != null ? (
-                      <span className={asset.change30d >= 0 ? 'text-green-500' : 'text-red-500'}>
+                      <span className={asset.change30d >= 0 ? 'text-[#3EBD8C]' : 'text-[#E06565]'}>
                         {asset.change30d >= 0 ? '+' : ''}{asset.change30d.toFixed(1)}%
                       </span>
                     ) : (
                       <span className="text-muted-foreground">---</span>
                     )}
                   </td>
-                  <td className="px-4 py-3 text-[11px] text-muted-foreground truncate max-w-[200px]">{asset.underlying}</td>
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-2 text-[11px] text-muted-foreground truncate max-w-[200px]">{asset.underlying}</td>
+                  <td className="px-4 py-2">
                     <button
                       onClick={() => openWithPrompt(null, {
                         visibleMessage: `Analyze ${asset.name}`,
                         fullPrompt: `[RWA ANALYSIS]\nAnalyze ${asset.name} — a tokenized ${asset.underlying} on ${asset.platform}. Total value: $${asset.totalValue.toLocaleString()}. APY: ${asset.apy ?? 'N/A'}%. 30D change: ${asset.change30d}%.`
                       }, null)}
-                      className="flex items-center gap-1 text-[11px] text-[#1DA1C4] hover:underline font-medium cursor-pointer whitespace-nowrap"
+                      className="flex items-center gap-1 text-[11px] text-[#4A90C4] hover:underline font-medium cursor-pointer whitespace-nowrap opacity-40 group-hover:opacity-90 transition-opacity"
                     >
                       <ChatCircle size={12} weight="fill" />
                       Ask
@@ -108,7 +108,7 @@ export default function MarketsIntelligencePage() {
       {/* Header */}
       <div className="mb-6">
         <div className="flex items-center gap-3 mb-1">
-          <Scales size={24} className="text-[#1DA1C4]" />
+          <Scales size={24} className="text-[#4A90C4]" />
           <h1 className="text-xl font-semibold">Markets Intelligence</h1>
         </div>
         <p className="text-sm text-muted-foreground">Prediction markets, tokenized assets, and macro intelligence in one view.</p>
@@ -124,7 +124,7 @@ export default function MarketsIntelligencePage() {
               onClick={() => setActiveTab(i)}
               className={`flex items-center gap-2 px-4 py-2.5 text-[13px] font-medium transition-colors relative ${
                 i === activeTab
-                  ? 'text-[#1DA1C4]'
+                  ? 'text-[#4A90C4]'
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >
@@ -133,7 +133,7 @@ export default function MarketsIntelligencePage() {
               {i === activeTab && (
                 <motion.div
                   layoutId="tab-indicator"
-                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#1DA1C4] rounded-full"
+                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#4A90C4] rounded-full"
                 />
               )}
             </button>

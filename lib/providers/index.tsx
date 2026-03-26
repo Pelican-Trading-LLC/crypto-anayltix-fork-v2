@@ -16,7 +16,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       defaultTheme="dark"
       enableSystem={false}
       disableTransitionOnChange={true}
-      storageKey="crypto-analytix-theme"
+      storageKey="token-analytix-theme"
     >
       <TranslationProvider>
         <SWRProvider>

@@ -23,27 +23,27 @@ export function usePanelLayout() {
   const handleSidebarToggle = useCallback(() => {
     setSidebarCollapsed((prev) => {
       const next = !prev
-      localStorage.setItem("crypto_analytix_sidebar_collapsed", String(next))
+      localStorage.setItem("token_analytix_sidebar_collapsed", String(next))
       return next
     })
   }, [])
 
   const handleSidebarWidthChange = useCallback((newWidth: number) => {
     setSidebarWidth(newWidth)
-    localStorage.setItem("crypto_analytix_sidebar_width", String(newWidth))
+    localStorage.setItem("token_analytix_sidebar_width", String(newWidth))
   }, [])
 
   const handleTradingPanelToggle = useCallback(() => {
     setTradingPanelCollapsed((prev) => {
       const next = !prev
-      localStorage.setItem("crypto_analytix_panel_collapsed", String(next))
+      localStorage.setItem("token_analytix_panel_collapsed", String(next))
       return next
     })
   }, [])
 
   const expandTradingPanel = useCallback(() => {
     setTradingPanelCollapsed(false)
-    localStorage.setItem("crypto_analytix_panel_collapsed", "false")
+    localStorage.setItem("token_analytix_panel_collapsed", "false")
   }, [])
 
   const handleResizeStart = useCallback((e: ReactMouseEvent) => {
@@ -76,7 +76,7 @@ export function usePanelLayout() {
       document.removeEventListener("mousemove", onMouseMove)
       document.removeEventListener("mouseup", onMouseUp)
       setPanelWidth((width) => {
-        localStorage.setItem("crypto_analytix_panel_width", String(width))
+        localStorage.setItem("token_analytix_panel_width", String(width))
         return width
       })
     }
@@ -88,13 +88,13 @@ export function usePanelLayout() {
   useEffect(() => {
     setMounted(true)
 
-    const savedSidebar = localStorage.getItem("crypto_analytix_sidebar_collapsed")
+    const savedSidebar = localStorage.getItem("token_analytix_sidebar_collapsed")
     if (savedSidebar === "true") setSidebarCollapsed(true)
 
-    const savedPanel = localStorage.getItem("crypto_analytix_panel_collapsed")
+    const savedPanel = localStorage.getItem("token_analytix_panel_collapsed")
     if (savedPanel === "true") setTradingPanelCollapsed(true)
 
-    const savedPanelWidth = localStorage.getItem("crypto_analytix_panel_width")
+    const savedPanelWidth = localStorage.getItem("token_analytix_panel_width")
     if (savedPanelWidth) {
       const width = Number.parseInt(savedPanelWidth, 10)
       if (!Number.isNaN(width) && width >= PANEL_MIN && width <= PANEL_MAX) {
@@ -102,7 +102,7 @@ export function usePanelLayout() {
       }
     }
 
-    const savedSidebarWidth = localStorage.getItem("crypto_analytix_sidebar_width")
+    const savedSidebarWidth = localStorage.getItem("token_analytix_sidebar_width")
     if (savedSidebarWidth) {
       const width = Number.parseInt(savedSidebarWidth, 10)
       if (!Number.isNaN(width) && width >= SIDEBAR_MIN && width <= SIDEBAR_MAX) {

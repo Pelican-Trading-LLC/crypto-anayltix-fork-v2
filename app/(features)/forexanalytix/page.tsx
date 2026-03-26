@@ -5,7 +5,7 @@ import { FA_ANALYSTS, FA_PIPS, FA_TRAFFIC_LIGHT, FA_FACE_SUMMARY, FA_PODCAST, FA
 import { PiPCard } from '@/components/forexanalytix/pip-card'
 import { FABadge, FAPoweredBy } from '@/components/forexanalytix/fa-badge'
 
-const signalColors = { green: '#22C55E', amber: '#F59E0B', red: '#EF4444' }
+const signalColors = { green: '#3EBD8C', amber: '#D4A042', red: '#E06565' }
 
 export default function ForexAnalytixPage() {
   const activePiPs = FA_PIPS.filter(p => p.status === 'active')
@@ -13,11 +13,11 @@ export default function ForexAnalytixPage() {
   return (
     <div className="p-6 max-w-[1200px] mx-auto space-y-6">
       {/* Hero Header */}
-      <div className="rounded-xl border bg-card p-6" style={{ background: 'linear-gradient(135deg, rgba(29,161,196,0.04) 0%, var(--card) 60%)' }}>
+      <div className="rounded-xl border bg-card p-6" style={{ background: 'linear-gradient(135deg, rgba(74,144,196,0.04) 0%, var(--card) 60%)' }}>
         <div className="flex items-center justify-between">
           <div>
             <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 rounded-lg flex items-center justify-center text-white text-sm font-bold" style={{ background: 'linear-gradient(135deg, #1DA1C4, #178BA8)' }}>FA</div>
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center text-white text-sm font-bold" style={{ background: 'linear-gradient(135deg, #2C5F8A, #5B4F8A)' }}>FA</div>
               <div>
                 <h1 className="text-xl font-semibold">ForexAnalytix</h1>
                 <p className="text-[12px] text-muted-foreground">Institutional-grade FX analysis, translated for crypto</p>
@@ -26,7 +26,7 @@ export default function ForexAnalytixPage() {
           </div>
           <div className="flex gap-4 text-center">
             <div>
-              <div className="font-mono text-2xl font-semibold tabular-nums text-[#1DA1C4]">{activePiPs.length}</div>
+              <div className="font-mono text-2xl font-semibold tabular-nums text-[#4A90C4]">{activePiPs.length}</div>
               <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Active PiPs</div>
             </div>
             <div>
@@ -34,7 +34,7 @@ export default function ForexAnalytixPage() {
               <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Analysts</div>
             </div>
             <div>
-              <div className="font-mono text-2xl font-semibold tabular-nums text-amber-500">{FA_TRAFFIC_LIGHT.regime_score}/10</div>
+              <div className="font-mono text-2xl font-semibold tabular-nums text-[#D4A042]">{FA_TRAFFIC_LIGHT.regime_score}/10</div>
               <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Risk Score</div>
             </div>
           </div>
@@ -49,7 +49,7 @@ export default function ForexAnalytixPage() {
             <FABadge />
           </div>
           <div className="flex items-center gap-2">
-            <span className="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-amber-500/10 text-amber-500">{FA_TRAFFIC_LIGHT.regime}</span>
+            <span className="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-[#D4A042]/10 text-[#D4A042]">{FA_TRAFFIC_LIGHT.regime}</span>
             <span className="font-mono text-[11px] text-muted-foreground">{FA_TRAFFIC_LIGHT.updated}</span>
           </div>
         </div>
@@ -65,9 +65,9 @@ export default function ForexAnalytixPage() {
             </div>
           ))}
         </div>
-        <div className="rounded-lg p-2.5" style={{ background: 'linear-gradient(135deg, rgba(29,161,196,0.04) 0%, var(--card) 40%)', border: '1px solid rgba(29,161,196,0.10)' }}>
-          <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-[1.5px] font-semibold text-[#1DA1C4] mb-1">
-            <Bird size={12} weight="fill" className="text-[#1DA1C4]" />
+        <div className="rounded-lg p-2.5" style={{ background: 'linear-gradient(135deg, rgba(74,144,196,0.04) 0%, var(--card) 40%)', border: '1px solid rgba(74,144,196,0.10)' }}>
+          <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-[1.5px] font-semibold text-[#4A90C4] mb-1">
+            <Bird size={12} weight="fill" className="text-[#4A90C4]" />
             PELICAN TRANSLATION
           </div>
           <p className="text-[13px] text-muted-foreground leading-relaxed">{FA_TRAFFIC_LIGHT.pelican_translation}</p>
@@ -79,7 +79,7 @@ export default function ForexAnalytixPage() {
         <div className="flex items-center gap-2 mb-3">
           <span className="text-[11px] uppercase tracking-[1.5px] font-semibold text-muted-foreground">ACTIVE PIPS</span>
           <FABadge />
-          <span className="font-mono text-[11px] text-[#1DA1C4]">{activePiPs.length} active</span>
+          <span className="font-mono text-[11px] text-[#4A90C4]">{activePiPs.length} active</span>
         </div>
         <div className="space-y-3">
           {activePiPs.map(pip => (
@@ -101,7 +101,7 @@ export default function ForexAnalytixPage() {
           <ul className="space-y-2 mb-3">
             {FA_FACE_SUMMARY.key_takeaways.map((t, i) => (
               <li key={i} className="flex gap-2 text-[13px] text-muted-foreground leading-relaxed">
-                <span className="text-[#1DA1C4] font-semibold flex-shrink-0">{i + 1}.</span>
+                <span className="text-[#4A90C4] font-semibold flex-shrink-0">{i + 1}.</span>
                 {t}
               </li>
             ))}
@@ -120,7 +120,7 @@ export default function ForexAnalytixPage() {
           <ul className="space-y-2 mb-3">
             {FA_PODCAST.key_points.map((p, i) => (
               <li key={i} className="flex gap-2 text-[13px] text-muted-foreground leading-relaxed">
-                <span className="text-amber-500 flex-shrink-0">&bull;</span>
+                <span className="text-[#D4A042] flex-shrink-0">&bull;</span>
                 {p}
               </li>
             ))}
@@ -142,7 +142,7 @@ export default function ForexAnalytixPage() {
                 <span className="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-muted text-muted-foreground">{post.category}</span>
                 <span className="font-mono text-[10px] text-muted-foreground">{post.read_time}</span>
               </div>
-              <h4 className="text-[13px] font-semibold group-hover:text-[#1DA1C4] transition-colors mb-1">{post.title}</h4>
+              <h4 className="text-[13px] font-semibold group-hover:text-[#4A90C4] transition-colors mb-1">{post.title}</h4>
               <p className="text-[12px] text-muted-foreground line-clamp-2">{post.excerpt}</p>
               <p className="text-[11px] text-muted-foreground mt-1">by {post.author} &middot; {post.timestamp}</p>
             </div>

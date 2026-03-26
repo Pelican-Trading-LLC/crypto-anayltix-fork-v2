@@ -95,7 +95,7 @@ export function TokenSearch({ onSelect, currentSymbol }: Props) {
           onChange={e => { setQuery(e.target.value); setOpen(true) }}
           onFocus={() => setOpen(true)}
           placeholder="Search ticker (e.g. BTC, SOL, AAVE)"
-          className="w-full pl-9 pr-4 py-2.5 rounded-xl border bg-card text-[13px] placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-[#1DA1C4]/40 transition-all"
+          className="w-full pl-9 pr-4 py-2.5 rounded-xl border bg-card text-[13px] placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-[#4A90C4]/40 transition-all"
         />
         {searching && (
           <CircleNotch size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground animate-spin" />
@@ -109,7 +109,7 @@ export function TokenSearch({ onSelect, currentSymbol }: Props) {
           {localResults.map(t => (
             <button key={t.symbol} onClick={() => handleSelect(t.symbol)}
               className={`w-full flex items-center gap-3 px-4 py-2.5 text-left hover:bg-accent/5 transition-colors cursor-pointer ${
-                currentSymbol === t.symbol ? 'bg-[#1DA1C4]/5' : ''
+                currentSymbol === t.symbol ? 'bg-[#4A90C4]/5' : ''
               }`}>
               <div className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold text-white"
                 style={{ backgroundColor: ASSET_COLORS[t.symbol] || '#666' }}>
@@ -119,7 +119,7 @@ export function TokenSearch({ onSelect, currentSymbol }: Props) {
                 <span className="text-[13px] font-medium">{t.symbol}</span>
                 <span className="text-[11px] text-muted-foreground ml-2">{t.name}</span>
               </div>
-              <span className="text-[9px] px-1.5 py-0.5 rounded bg-green-500/10 text-green-500 font-semibold">Live</span>
+              <span className="text-[9px] px-1.5 py-0.5 rounded bg-[#3EBD8C]/10 text-[#3EBD8C] font-semibold">Live</span>
             </button>
           ))}
           {apiResults.length > 0 && (
@@ -128,7 +128,7 @@ export function TokenSearch({ onSelect, currentSymbol }: Props) {
               {apiResults.map(t => (
                 <button key={t.symbol} onClick={() => handleSelect(t.symbol)}
                   className={`w-full flex items-center gap-3 px-4 py-2.5 text-left hover:bg-accent/5 transition-colors cursor-pointer ${
-                    currentSymbol === t.symbol ? 'bg-[#1DA1C4]/5' : ''
+                    currentSymbol === t.symbol ? 'bg-[#4A90C4]/5' : ''
                   }`}>
                   <div className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold text-white bg-[#444]">
                     {t.symbol[0]}
@@ -137,7 +137,7 @@ export function TokenSearch({ onSelect, currentSymbol }: Props) {
                     <span className="text-[13px] font-medium">{t.symbol}</span>
                     <span className="text-[11px] text-muted-foreground ml-2">{t.name}</span>
                   </div>
-                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-500 font-semibold">Limited</span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-[#D4A042]/10 text-[#D4A042] font-semibold">Limited</span>
                 </button>
               ))}
             </>

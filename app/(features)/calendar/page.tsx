@@ -6,8 +6,8 @@ import { Bird } from '@phosphor-icons/react'
 import { usePelicanPanelContext } from '@/providers/pelican-panel-provider'
 
 const IMPACT_COLORS: Record<string, string> = {
-  high: '#EF4444',
-  medium: '#F59E0B',
+  high: '#E06565',
+  medium: '#D4A042',
   low: '#6B7280',
 }
 
@@ -129,7 +129,7 @@ export default function CalendarPage() {
                     <span
                       className={`text-[13px] font-mono tabular-nums ${
                         isToday
-                          ? 'text-[var(--accent-primary,#1DA1C4)] font-semibold'
+                          ? 'text-[var(--accent-primary,#4A90C4)] font-semibold'
                           : 'text-[var(--text-secondary)]'
                       }`}
                     >
@@ -279,7 +279,7 @@ export default function CalendarPage() {
                     visibleMessage: `Tell me about ${event.title}`,
                     fullPrompt: `[CALENDAR EVENT]\nEvent: ${event.title}\nType: ${event.type}\nDate: ${event.date}\nAsset: ${event.asset}\nImpact: ${event.impact}\nDescription: ${event.description}\n\nTell me about this event and how it might impact ${event.asset} and the broader crypto market.`,
                   }, 'calendar')}
-                  className="inline-flex items-center gap-1.5 text-[12px] font-medium text-[var(--accent-primary,#1DA1C4)] hover:text-[var(--accent-hover,#25BFDF)] transition-colors cursor-pointer"
+                  className="inline-flex items-center gap-1.5 text-[12px] font-medium text-[var(--accent-primary,#4A90C4)] hover:text-[var(--accent-hover,#5BA3D9)] transition-colors cursor-pointer"
                 >
                   <Bird size={16} weight="bold" />
                   Ask Pelican about this event

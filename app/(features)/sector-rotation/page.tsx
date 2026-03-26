@@ -53,7 +53,7 @@ export default function SectorRotationPage() {
                   disabled
                     ? 'opacity-50 cursor-not-allowed text-muted-foreground'
                     : timeframe === tf
-                      ? 'bg-[#1DA1C4]/15 text-[#1DA1C4] cursor-pointer'
+                      ? 'bg-[#4A90C4]/15 text-[#4A90C4] cursor-pointer'
                       : 'text-muted-foreground hover:text-foreground cursor-pointer'
                 }`}>
                 {tf}

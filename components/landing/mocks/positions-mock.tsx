@@ -13,7 +13,7 @@ const positions = [
     pnlPct: '+5.1%',
     positive: true,
     session: '24/7',
-    sessionColor: 'bg-[#1DA1C4]/10 text-[#1DA1C4] border-[#1DA1C4]/20',
+    sessionColor: 'bg-[#4A90C4]/10 text-[#4A90C4] border-[#4A90C4]/20',
   },
   {
     ticker: 'ETH',
@@ -25,7 +25,7 @@ const positions = [
     pnlPct: '+5.7%',
     positive: true,
     session: '24/7',
-    sessionColor: 'bg-[#1DA1C4]/10 text-[#1DA1C4] border-[#1DA1C4]/20',
+    sessionColor: 'bg-[#4A90C4]/10 text-[#4A90C4] border-[#4A90C4]/20',
   },
   {
     ticker: 'SOL',
@@ -37,7 +37,7 @@ const positions = [
     pnlPct: '-2.46%',
     positive: false,
     session: '24/7',
-    sessionColor: 'bg-[#1DA1C4]/10 text-[#1DA1C4] border-[#1DA1C4]/20',
+    sessionColor: 'bg-[#4A90C4]/10 text-[#4A90C4] border-[#4A90C4]/20',
   },
 ]
 
@@ -71,7 +71,7 @@ export function PositionsMock() {
                   'text-[10px] px-1.5 py-0.5 rounded font-medium',
                   pos.direction === 'Long'
                     ? 'bg-emerald-500/10 text-emerald-600'
-                    : 'bg-red-500/10 text-red-600'
+                    : 'bg-[#E06565]/10 text-[#E06565]'
                 )}>
                   {pos.direction}
                 </span>
@@ -100,13 +100,13 @@ export function PositionsMock() {
               <div className="text-right">
                 <p className={cn(
                   'text-sm font-mono tabular-nums font-semibold',
-                  pos.positive ? 'text-emerald-600' : 'text-red-600'
+                  pos.positive ? 'text-emerald-600' : 'text-[#E06565]'
                 )}>
                   {pos.pnl}
                 </p>
                 <p className={cn(
                   'text-[10px] font-mono tabular-nums',
-                  pos.positive ? 'text-emerald-600/60' : 'text-red-600/60'
+                  pos.positive ? 'text-emerald-600/60' : 'text-[#E06565]/60'
                 )}>
                   {pos.pnlPct}
                 </p>

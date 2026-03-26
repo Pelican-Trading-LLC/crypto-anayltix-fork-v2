@@ -165,14 +165,14 @@ function AdminStatCard({
             )}
             {hasNegativeDelta && (
               <>
-                <ArrowDownRight className="size-3 text-red-500" />
-                <span className="text-xs font-mono tabular-nums text-red-500">
+                <ArrowDownRight className="size-3 text-[#E06565]" />
+                <span className="text-xs font-mono tabular-nums text-[#E06565]">
                   {delta!.toLocaleString()}
                 </span>
               </>
             )}
             {deltaPercent !== undefined && deltaPercent !== 0 && (
-              <span className={`text-xs font-mono tabular-nums ${hasPositiveDelta ? 'text-emerald-500/70' : 'text-red-500/70'}`}>
+              <span className={`text-xs font-mono tabular-nums ${hasPositiveDelta ? 'text-emerald-500/70' : 'text-[#E06565]/70'}`}>
                 ({deltaPercent > 0 ? '+' : ''}{deltaPercent}%)
               </span>
             )}
@@ -417,8 +417,8 @@ export default function AdminDashboardPage() {
                   <AreaChart data={signupChartData}>
                     <defs>
                       <linearGradient id="signupGradient" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#1DA1C4" stopOpacity={0.3} />
-                        <stop offset="100%" stopColor="#1DA1C4" stopOpacity={0} />
+                        <stop offset="0%" stopColor="#4A90C4" stopOpacity={0.3} />
+                        <stop offset="100%" stopColor="#4A90C4" stopOpacity={0} />
                       </linearGradient>
                       <linearGradient id="activeGradient" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.3} />
@@ -443,7 +443,7 @@ export default function AdminDashboardPage() {
                     <Area
                       type="monotone"
                       dataKey="signups"
-                      stroke="#1DA1C4"
+                      stroke="#4A90C4"
                       fill="url(#signupGradient)"
                       strokeWidth={2}
                       dot={false}
@@ -461,7 +461,7 @@ export default function AdminDashboardPage() {
               </div>
               <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
                 <span className="flex items-center gap-1.5">
-                  <span className="size-2 rounded-full bg-[#1DA1C4]" />
+                  <span className="size-2 rounded-full bg-[#4A90C4]" />
                   Signups
                 </span>
                 <span className="flex items-center gap-1.5">
@@ -506,7 +506,7 @@ export default function AdminDashboardPage() {
                     />
                     <Bar
                       dataKey="messages"
-                      fill="#1DA1C4"
+                      fill="#4A90C4"
                       radius={[3, 3, 0, 0]}
                       maxBarSize={24}
                     />
@@ -515,7 +515,7 @@ export default function AdminDashboardPage() {
               </div>
               <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
                 <span className="flex items-center gap-1.5">
-                  <span className="size-2 rounded-full bg-[#1DA1C4]" />
+                  <span className="size-2 rounded-full bg-[#4A90C4]" />
                   Messages
                 </span>
                 <span className="flex items-center gap-1.5">
@@ -606,7 +606,7 @@ export default function AdminDashboardPage() {
                                   variant="outline"
                                   className={`text-[9px] px-1 py-0 shrink-0 ${
                                     conv.tag.owner === 'team'
-                                      ? 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+                                      ? 'bg-[#D4A042]/10 text-[#D4A042] border-[#D4A042]/20'
                                       : 'bg-blue-500/10 text-blue-400 border-blue-500/20'
                                   }`}
                                 >
@@ -686,7 +686,7 @@ export default function AdminDashboardPage() {
               <div className="space-y-3">
                 {stats.alerts.zeroCreditUsers > 0 && (
                   <div className="flex items-start gap-3 text-sm">
-                    <AlertTriangle className="size-4 mt-0.5 text-amber-500 shrink-0" />
+                    <AlertTriangle className="size-4 mt-0.5 text-[#D4A042] shrink-0" />
                     <div>
                       <p className="font-medium">
                         <span className="font-mono tabular-nums">{stats.alerts.zeroCreditUsers}</span> users at zero credits
@@ -699,7 +699,7 @@ export default function AdminDashboardPage() {
                 )}
                 {stats.alerts.nearLimitUsers > 0 && (
                   <div className="flex items-start gap-3 text-sm">
-                    <Zap className="size-4 mt-0.5 text-amber-500 shrink-0" />
+                    <Zap className="size-4 mt-0.5 text-[#D4A042] shrink-0" />
                     <div>
                       <p className="font-medium">
                         <span className="font-mono tabular-nums">{stats.alerts.nearLimitUsers}</span> users near credit limit

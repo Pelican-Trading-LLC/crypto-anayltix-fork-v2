@@ -5,9 +5,9 @@ import { FAPiP } from '@/lib/forexanalytix-mock-data'
 import { FABadge } from './fa-badge'
 
 const ASSET_CLASS_COLORS: Record<string, string> = {
-  forex: '#F59E0B',
+  forex: '#D4A042',
   crypto: '#9945FF',
-  commodity: '#22C55E',
+  commodity: '#3EBD8C',
   index: '#2A5ADA',
 }
 
@@ -44,8 +44,8 @@ export function PiPCard({ pip }: { pip: FAPiP }) {
         <span
           className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold ${
             pip.direction === 'BULLISH'
-              ? 'bg-green-500/10 text-green-500'
-              : 'bg-red-500/10 text-red-500'
+              ? 'bg-[#3EBD8C]/10 text-[#3EBD8C]'
+              : 'bg-[#E06565]/10 text-[#E06565]'
           }`}
         >
           {pip.direction === 'BULLISH' ? <TrendUp size={12} weight="bold" /> : <TrendDown size={12} weight="bold" />}
@@ -60,10 +60,10 @@ export function PiPCard({ pip }: { pip: FAPiP }) {
         <span
           className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${
             pip.status === 'active'
-              ? 'bg-green-500/10 text-green-500'
+              ? 'bg-[#3EBD8C]/10 text-[#3EBD8C]'
               : pip.status === 'hit_target'
-                ? 'bg-[#1DA1C4]/10 text-[#1DA1C4]'
-                : 'bg-red-500/10 text-red-500'
+                ? 'bg-[#4A90C4]/10 text-[#4A90C4]'
+                : 'bg-[#E06565]/10 text-[#E06565]'
           }`}
         >
           {pip.status === 'active' ? 'Active' : pip.status === 'hit_target' ? 'Target Hit' : 'Stopped Out'}
@@ -91,7 +91,7 @@ export function PiPCard({ pip }: { pip: FAPiP }) {
             className="h-full rounded-full"
             style={{
               width: `${pip.confidence}%`,
-              background: 'linear-gradient(90deg, #1A6FB5, #25BFDF)',
+              background: 'linear-gradient(90deg, #2C5F8A, #5BA3D9)',
             }}
           />
         </div>
@@ -103,12 +103,12 @@ export function PiPCard({ pip }: { pip: FAPiP }) {
         <div
           className="rounded-lg p-2.5"
           style={{
-            background: 'linear-gradient(135deg, rgba(29,161,196,0.04) 0%, var(--card) 40%)',
-            border: '1px solid rgba(29,161,196,0.10)',
+            background: 'linear-gradient(135deg, rgba(74,144,196,0.04) 0%, var(--card) 40%)',
+            border: '1px solid rgba(74,144,196,0.10)',
           }}
         >
-          <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-[1.5px] font-semibold text-[#1DA1C4] mb-1">
-            <Bird size={12} weight="fill" className="text-[#1DA1C4]" />
+          <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-[1.5px] font-semibold text-[#4A90C4] mb-1">
+            <Bird size={12} weight="fill" className="text-[#4A90C4]" />
             PELICAN CRYPTO TRANSLATION
           </div>
           <p className="text-[13px] text-muted-foreground leading-relaxed">

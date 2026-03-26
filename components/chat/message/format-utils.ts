@@ -228,7 +228,7 @@ export function applyTickerLinks(
           const re = new RegExp(`\\b(${escaped})\\b`, "g")
           return part.replace(
             re,
-            `<span class="ticker-link text-amber-400 hover:text-amber-300 underline decoration-amber-400/40 hover:decoration-amber-300 cursor-pointer font-medium" data-economic-term="${term}">$1</span>`
+            `<span class="ticker-link text-[#D4A042] hover:text-amber-300 underline decoration-amber-400/40 hover:decoration-amber-300 cursor-pointer font-medium" data-economic-term="${term}">$1</span>`
           )
         })
         .join("")

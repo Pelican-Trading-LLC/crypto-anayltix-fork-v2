@@ -81,7 +81,7 @@ const TOOLTIP_STYLE = {
 }
 
 const PIE_COLORS = [
-  '#3b82f6', '#1DA1C4', '#f59e0b', '#22c55e', '#ef4444',
+  '#3b82f6', '#4A90C4', '#f59e0b', '#22c55e', '#ef4444',
   '#06b6d4', '#ec4899', '#84cc16', '#f97316', '#6366f1',
 ]
 
@@ -101,7 +101,7 @@ function reasonBadge(reason: string): { label: string; className: string } {
     case 'user_correction':
       return { label: 'User Correction', className: 'bg-orange-500/15 text-orange-400 border-orange-500/20' }
     case 'fallback_used':
-      return { label: 'Fallback Used', className: 'bg-red-500/15 text-red-400 border-red-500/20' }
+      return { label: 'Fallback Used', className: 'bg-[#E06565]/15 text-[#E06565] border-[#E06565]/20' }
     case 'overconfident':
       return { label: 'Overconfident', className: 'bg-yellow-500/15 text-yellow-400 border-yellow-500/20' }
     default:
@@ -313,7 +313,7 @@ export default function AdminContentPage() {
                 <XAxis type="number" tick={AXIS_TICK} />
                 <YAxis dataKey="ticker" type="category" tick={AXIS_TICK} width={60} />
                 <Tooltip {...TOOLTIP_STYLE} />
-                <Bar dataKey="count" name="Mentions" fill="#1DA1C4" radius={[0, 4, 4, 0]} />
+                <Bar dataKey="count" name="Mentions" fill="#4A90C4" radius={[0, 4, 4, 0]} />
               </BarChart>
             </ResponsiveContainer>
           )}

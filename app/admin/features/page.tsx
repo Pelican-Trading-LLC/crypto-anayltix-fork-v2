@@ -103,7 +103,7 @@ function SkeletonTable() {
 function intensityClass(pct: number): string {
   if (pct >= 70) return 'bg-emerald-500/30 text-emerald-400'
   if (pct >= 40) return 'bg-blue-500/25 text-blue-400'
-  if (pct >= 15) return 'bg-amber-500/20 text-amber-400'
+  if (pct >= 15) return 'bg-[#D4A042]/20 text-[#D4A042]'
   return 'bg-muted text-muted-foreground'
 }
 

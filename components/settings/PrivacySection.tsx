@@ -74,7 +74,7 @@ export function PrivacySection({ user }: PrivacySectionProps) {
             <Button
               variant="outline"
               onClick={handleLogout}
-              className="w-full border-red-500/30 text-red-400 hover:bg-red-500/10 hover:text-red-300"
+              className="w-full border-[#E06565]/30 text-[#E06565] hover:bg-[#E06565]/10 hover:text-red-300"
             >
               <LogOut className="h-4 w-4 mr-2" />
               Log Out

@@ -27,9 +27,9 @@ export function LandingFooter() {
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2 mb-3">
-              <div className="w-6 h-6 rounded-[6px] flex items-center justify-center text-white text-[8px] font-bold flex-shrink-0" style={{ background: 'linear-gradient(135deg, #1DA1C4, #178BA8)' }}>CA</div>
+              <div className="w-6 h-6 rounded-[6px] flex items-center justify-center text-white text-[8px] font-bold flex-shrink-0" style={{ background: 'linear-gradient(135deg, #2C5F8A, #5B4F8A)' }}>CA</div>
               <span className="text-sm font-semibold text-slate-900">
-                Crypto Analytix
+                Token Analytix
               </span>
             </div>
             <p className="text-xs text-slate-400 leading-relaxed mb-3">
@@ -106,7 +106,7 @@ export function LandingFooter() {
               </li>
               <li>
                 <a
-                  href="mailto:support@cryptoanalytix.com"
+                  href="mailto:support@tokenanalytix.com"
                   className="text-sm text-slate-400 hover:text-slate-600 transition-colors"
                 >
                   Support
@@ -119,7 +119,7 @@ export function LandingFooter() {
         {/* Bottom bar */}
         <div className="pt-8 border-t border-slate-200 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-xs text-slate-400">
-            &copy; {new Date().getFullYear()} Crypto Analytix. All rights reserved.
+            &copy; {new Date().getFullYear()} Token Analytix. All rights reserved.
           </p>
           <p className="text-xs text-slate-300">
             Not financial advice. Trading involves risk. Pelican is an AI model — it can make mistakes. Please double-check responses.

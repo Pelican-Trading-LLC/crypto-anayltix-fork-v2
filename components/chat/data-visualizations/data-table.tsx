@@ -44,8 +44,8 @@ function getCellClass(value: unknown, type?: string, isFirstColumn?: boolean): s
     const num = parseFloat(cleaned)
     if (!isNaN(num)) {
       const color = num >= 0
-        ? "text-green-600 dark:text-green-400 font-semibold"
-        : "text-red-600 dark:text-red-400 font-semibold"
+        ? "text-[#3EBD8C] dark:text-[#3EBD8C] font-semibold"
+        : "text-[#E06565] dark:text-[#E06565] font-semibold"
       return `${base} ${color} ${sticky}`.trim()
     }
   }
@@ -57,7 +57,7 @@ function getCellClass(value: unknown, type?: string, isFirstColumn?: boolean): s
 
     if (isCurrency) {
       if (isNegative) {
-        return `${base} text-red-600 dark:text-red-400 font-semibold font-mono ${sticky}`.trim()
+        return `${base} text-[#E06565] dark:text-[#E06565] font-semibold font-mono ${sticky}`.trim()
       }
       return `${base} text-cyan-600 dark:text-cyan-400 font-semibold font-mono ${sticky}`.trim()
     }
@@ -66,10 +66,10 @@ function getCellClass(value: unknown, type?: string, isFirstColumn?: boolean): s
     const num = parseFloat(strValue.replace(/[,$%+]/g, ''))
     if (!isNaN(num)) {
       if (strValue.startsWith('-') || strValue.startsWith('(')) {
-        return `${base} text-red-600 dark:text-red-400 font-semibold ${sticky}`.trim()
+        return `${base} text-[#E06565] dark:text-[#E06565] font-semibold ${sticky}`.trim()
       }
       if (strValue.startsWith('+')) {
-        return `${base} text-green-600 dark:text-green-400 font-semibold ${sticky}`.trim()
+        return `${base} text-[#3EBD8C] dark:text-[#3EBD8C] font-semibold ${sticky}`.trim()
       }
     }
   }
@@ -211,9 +211,9 @@ export function DataTable({ data, columns, title = "Market Data", query, summary
                       return (
                         <td key={col.key} className="px-3 sm:px-4 py-3 text-center text-base sm:text-lg">
                           {isPositive ? (
-                            <span className="text-green-600 dark:text-green-400">✓</span>
+                            <span className="text-[#3EBD8C] dark:text-[#3EBD8C]">✓</span>
                           ) : (
-                            <span className="text-red-600 dark:text-red-400">✗</span>
+                            <span className="text-[#E06565] dark:text-[#E06565]">✗</span>
                           )}
                         </td>
                       )

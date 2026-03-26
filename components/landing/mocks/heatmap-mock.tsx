@@ -6,14 +6,14 @@ function getTileColor(pct: number) {
   if (pct > 1.5) return 'bg-emerald-500/40 border-emerald-500/30'
   if (pct > 0.5) return 'bg-emerald-500/25 border-emerald-500/20'
   if (pct > 0) return 'bg-emerald-500/10 border-emerald-500/10'
-  if (pct > -0.5) return 'bg-red-500/10 border-red-500/10'
-  if (pct > -1) return 'bg-red-500/25 border-red-500/20'
-  return 'bg-red-500/40 border-red-500/30'
+  if (pct > -0.5) return 'bg-[#E06565]/10 border-[#E06565]/10'
+  if (pct > -1) return 'bg-[#E06565]/25 border-[#E06565]/20'
+  return 'bg-[#E06565]/40 border-[#E06565]/30'
 }
 
 function getTextColor(pct: number) {
   if (pct > 0) return 'text-emerald-600'
-  if (pct < 0) return 'text-red-600'
+  if (pct < 0) return 'text-[#E06565]'
   return 'text-slate-400'
 }
 
@@ -32,7 +32,7 @@ export function HeatmapMock() {
               className={cn(
                 'text-[10px] font-medium px-2.5 py-1 rounded-md transition-colors',
                 tab === 'Layer 1'
-                  ? 'bg-[#1DA1C4]/10 text-[#1DA1C4]'
+                  ? 'bg-[#4A90C4]/10 text-[#4A90C4]'
                   : 'text-slate-400 hover:text-slate-600'
               )}
             >

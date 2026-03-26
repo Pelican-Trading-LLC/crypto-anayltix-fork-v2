@@ -108,7 +108,7 @@ export function PlatformShowcase() {
                 className={cn(
                   'flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all duration-200 flex-shrink-0',
                   isActive
-                    ? 'bg-[#1DA1C4]/15 text-[#1DA1C4]'
+                    ? 'bg-[#4A90C4]/15 text-[#4A90C4]'
                     : 'text-slate-400 hover:text-slate-600 hover:bg-slate-100'
                 )}
               >
@@ -147,7 +147,7 @@ export function PlatformShowcase() {
               <ul className="space-y-3">
                 {feature.highlights.map((highlight, i) => (
                   <li key={i} className="flex items-start gap-3">
-                    <div className="w-1.5 h-1.5 rounded-full bg-[#1DA1C4] mt-2 flex-shrink-0" />
+                    <div className="w-1.5 h-1.5 rounded-full bg-[#4A90C4] mt-2 flex-shrink-0" />
                     <span className="text-sm text-slate-600 leading-relaxed">
                       {highlight}
                     </span>

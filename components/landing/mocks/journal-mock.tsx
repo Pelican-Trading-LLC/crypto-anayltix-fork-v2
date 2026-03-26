@@ -53,8 +53,8 @@ export function JournalMock() {
             {/* Area fill */}
             <defs>
               <linearGradient id="equityGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#1DA1C4" stopOpacity="0.2" />
-                <stop offset="100%" stopColor="#1DA1C4" stopOpacity="0" />
+                <stop offset="0%" stopColor="#4A90C4" stopOpacity="0.2" />
+                <stop offset="100%" stopColor="#4A90C4" stopOpacity="0" />
               </linearGradient>
             </defs>
             <path
@@ -65,7 +65,7 @@ export function JournalMock() {
             <path
               d="M0,50 L20,48 L40,42 L60,44 L80,38 L100,35 L120,40 L140,32 L160,28 L180,30 L200,22 L220,18 L240,20 L260,14 L280,10 L300,8"
               fill="none"
-              stroke="#1DA1C4"
+              stroke="#4A90C4"
               strokeWidth="1.5"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -88,7 +88,7 @@ export function JournalMock() {
                     'text-[10px] px-1.5 py-0.5 rounded font-medium',
                     trade.direction === 'Long'
                       ? 'bg-emerald-500/10 text-emerald-600'
-                      : 'bg-red-500/10 text-red-600'
+                      : 'bg-[#E06565]/10 text-[#E06565]'
                   )}>
                     {trade.direction}
                   </span>
@@ -96,13 +96,13 @@ export function JournalMock() {
                 <div className="flex items-center gap-3">
                   <span className={cn(
                     'text-xs font-mono tabular-nums font-medium',
-                    trade.positive ? 'text-emerald-600' : 'text-red-600'
+                    trade.positive ? 'text-emerald-600' : 'text-[#E06565]'
                   )}>
                     {trade.pnl}
                   </span>
                   <span className={cn(
                     'text-[10px] font-mono tabular-nums',
-                    trade.positive ? 'text-emerald-600/60' : 'text-red-600/60'
+                    trade.positive ? 'text-emerald-600/60' : 'text-[#E06565]/60'
                   )}>
                     {trade.r}
                   </span>

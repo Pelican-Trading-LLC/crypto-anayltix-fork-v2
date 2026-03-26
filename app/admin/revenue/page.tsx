@@ -65,7 +65,7 @@ interface RevenueData {
 const PLAN_COLORS: Record<string, string> = {
   starter: '#3b82f6',
   base: '#3b82f6',
-  pro: '#1DA1C4',
+  pro: '#4A90C4',
   power: '#f59e0b',
   founder: '#22c55e',
   trial: '#6b7280',
@@ -100,7 +100,7 @@ function formatRelativeTime(iso: string) {
 function riskBadgeVariant(reason: string): { label: string; className: string } {
   switch (reason) {
     case 'inactive_14d':
-      return { label: 'Inactive 14d+', className: 'bg-red-500/15 text-red-400 border-red-500/20' }
+      return { label: 'Inactive 14d+', className: 'bg-[#E06565]/15 text-[#E06565] border-[#E06565]/20' }
     case 'credit_depleted':
       return { label: 'Credit Depleted', className: 'bg-orange-500/15 text-orange-400 border-orange-500/20' }
     case 'low_utilization':
@@ -281,8 +281,8 @@ export default function AdminRevenuePage() {
         </Card>
         <Card>
           <CardContent className="flex items-center gap-3 py-4">
-            <div className="rounded-md bg-amber-500/10 p-2">
-              <UserCheck className="size-4 text-amber-500" />
+            <div className="rounded-md bg-[#D4A042]/10 p-2">
+              <UserCheck className="size-4 text-[#D4A042]" />
             </div>
             <div>
               <p className="text-xs text-muted-foreground">Paid Users</p>
@@ -349,7 +349,7 @@ export default function AdminRevenuePage() {
                       ? 'bg-emerald-500'
                       : p.utilization > 30
                         ? 'bg-yellow-500'
-                        : 'bg-red-500'
+                        : 'bg-[#E06565]'
                   return (
                     <TableRow key={p.plan}>
                       <TableCell className="capitalize font-medium">{p.plan}</TableCell>

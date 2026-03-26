@@ -91,7 +91,7 @@ function renderFormattedContent(content: string): string {
 
 function ownerBadge(owner: string) {
   if (owner === 'team') {
-    return <Badge variant="outline" className="text-[10px] bg-amber-500/10 text-amber-400 border-amber-500/20">TEAM</Badge>
+    return <Badge variant="outline" className="text-[10px] bg-[#D4A042]/10 text-[#D4A042] border-[#D4A042]/20">TEAM</Badge>
   }
   return <Badge variant="outline" className="text-[10px] bg-blue-500/10 text-blue-400 border-blue-500/20">USER</Badge>
 }
@@ -134,7 +134,7 @@ function CopyButton({ label, text, icon }: { label: string; text: string; icon?:
       className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md border border-border bg-background hover:bg-muted transition-colors"
     >
       {copied ? (
-        <Check className="size-3 text-green-400" />
+        <Check className="size-3 text-[#3EBD8C]" />
       ) : (
         icon ?? <Copy className="size-3" />
       )}
@@ -231,7 +231,7 @@ export default function ConversationFullPage() {
           <ArrowLeft className="size-4" />
           Back
         </button>
-        <p className="text-sm text-red-400">{error || 'Conversation not found'}</p>
+        <p className="text-sm text-[#E06565]">{error || 'Conversation not found'}</p>
       </div>
     )
   }

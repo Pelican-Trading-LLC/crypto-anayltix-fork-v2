@@ -25,7 +25,7 @@ export function WelcomeScreen({ onQuickStart, disabled }: WelcomeScreenProps) {
     <div className="flex-1 flex items-center justify-center p-4 pb-8 sm:p-8 bg-transparent">
       <div className="max-w-2xl mx-auto text-center space-y-6 px-2">
         <div className="mx-auto w-16 h-16 sm:w-20 sm:h-20 rounded-[18px] flex items-center justify-center text-white text-2xl sm:text-3xl font-bold opacity-90"
-          style={{ background: 'linear-gradient(135deg, #1DA1C4, #178BA8)' }}>
+          style={{ background: 'linear-gradient(135deg, #2C5F8A, #5B4F8A)' }}>
           CA
         </div>
 

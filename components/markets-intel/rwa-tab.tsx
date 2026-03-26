@@ -39,7 +39,7 @@ export function RWATab() {
             <div key={s.label} className="rounded-xl border bg-card p-3 text-center">
               <div className="font-mono text-base font-semibold tabular-nums">{s.value}</div>
               <div className="text-[10px] text-muted-foreground mt-0.5">{s.label}</div>
-              <div className={`font-mono text-[11px] tabular-nums mt-1 ${s.change >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+              <div className={`font-mono text-[11px] tabular-nums mt-1 ${s.change >= 0 ? 'text-[#3EBD8C]' : 'text-[#E06565]'}`}>
                 {s.change >= 0 ? '+' : ''}{s.change.toFixed(1)}%
               </div>
             </div>
@@ -91,31 +91,31 @@ export function RWATab() {
             </thead>
             <tbody>
               {assets.map((asset: RWAAsset) => (
-                <tr key={asset.id} className="border-b border-[var(--border)] last:border-0 hover:bg-accent/5 transition-colors">
-                  <td className="px-4 py-3 text-[13px] font-medium">{asset.name}</td>
-                  <td className="px-4 py-3 text-[12px] text-muted-foreground">{asset.platform}</td>
-                  <td className="px-4 py-3 text-[12px] text-muted-foreground">{asset.network}</td>
-                  <td className="px-4 py-3 font-mono text-[13px] tabular-nums text-right">{formatCompact(asset.totalValue)}</td>
-                  <td className="px-4 py-3 font-mono text-[13px] tabular-nums text-right">
-                    {asset.apy !== null ? <span className="text-green-500">{asset.apy}%</span> : <span className="text-muted-foreground">---</span>}
+                <tr key={asset.id} className="group border-b border-[var(--border)] last:border-0 hover:bg-accent/5 transition-colors">
+                  <td className="px-4 py-2 text-[13px] font-medium">{asset.name}</td>
+                  <td className="px-4 py-2 text-[12px] text-muted-foreground">{asset.platform}</td>
+                  <td className="px-4 py-2 text-[12px] text-muted-foreground">{asset.network}</td>
+                  <td className="px-4 py-2 font-mono text-[13px] tabular-nums text-right">{formatCompact(asset.totalValue)}</td>
+                  <td className="px-4 py-2 font-mono text-[13px] tabular-nums text-right">
+                    {asset.apy !== null ? <span className="text-[#3EBD8C]">{asset.apy}%</span> : <span className="text-muted-foreground">---</span>}
                   </td>
-                  <td className="px-4 py-3 font-mono text-[12px] tabular-nums text-right">
+                  <td className="px-4 py-2 font-mono text-[12px] tabular-nums text-right">
                     {asset.change30d != null ? (
-                      <span className={asset.change30d >= 0 ? 'text-green-500' : 'text-red-500'}>
+                      <span className={asset.change30d >= 0 ? 'text-[#3EBD8C]' : 'text-[#E06565]'}>
                         {asset.change30d >= 0 ? '+' : ''}{asset.change30d.toFixed(1)}%
                       </span>
                     ) : (
                       <span className="text-muted-foreground">---</span>
                     )}
                   </td>
-                  <td className="px-4 py-3 text-[11px] text-muted-foreground max-w-[200px] truncate">{asset.underlying}</td>
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-2 text-[11px] text-muted-foreground max-w-[200px] truncate">{asset.underlying}</td>
+                  <td className="px-4 py-2">
                     <button
                       onClick={() => openWithPrompt(null, {
                         visibleMessage: `Analyze ${asset.name}`,
                         fullPrompt: `[RWA ANALYSIS]\nAnalyze this tokenized real-world asset:\nName: ${asset.name}\nPlatform: ${asset.platform}\nNetwork: ${asset.network}\nTotal Value: $${asset.totalValue.toLocaleString()}\nAPY: ${asset.apy ?? 'N/A'}%\n30D Change: ${asset.change30d}%\nUnderlying: ${asset.underlying}\n\nProvide:\n1. Risk assessment of the underlying asset and platform\n2. Yield comparison vs traditional alternatives\n3. Smart money activity in this token\n4. Whether this represents genuine tokenization adoption or hype`
                       }, null)}
-                      className="flex items-center gap-1 text-[11px] text-[#1DA1C4] hover:underline font-medium cursor-pointer whitespace-nowrap"
+                      className="flex items-center gap-1 text-[11px] text-[#4A90C4] hover:underline font-medium cursor-pointer whitespace-nowrap opacity-40 group-hover:opacity-90 transition-opacity"
                     >
                       <ChatCircle size={12} weight="fill" />
                       Ask

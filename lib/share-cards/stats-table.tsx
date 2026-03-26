@@ -200,7 +200,7 @@ export function StatsTableCard({ period, rows }: StatsTableProps) {
               letterSpacing: "0.08em",
             }}
           >
-            cryptoanalytix.com
+            tokenanalytix.com
           </span>
         </div>
       </div>

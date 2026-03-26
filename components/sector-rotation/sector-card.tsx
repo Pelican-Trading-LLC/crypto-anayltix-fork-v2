@@ -57,7 +57,7 @@ export function SectorCard({ sector, onTokenClick }: Props) {
         </div>
         <div className="text-right">
           <span className="text-[10px] uppercase tracking-wider text-muted-foreground block">SMART MONEY</span>
-          <span className={`font-mono text-[13px] font-medium ${sector.smart_money_flow >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+          <span className={`font-mono text-[13px] font-medium ${sector.smart_money_flow >= 0 ? 'text-[#3EBD8C]' : 'text-[#E06565]'}`}>
             {sector.smart_money_flow >= 0 ? '+' : ''}{formatCompact(Math.abs(sector.smart_money_flow))}
           </span>
         </div>
@@ -67,7 +67,7 @@ export function SectorCard({ sector, onTokenClick }: Props) {
       <div className="flex gap-1.5 flex-wrap">
         {sector.top_tokens.map(t => (
           <button key={t.symbol} onClick={() => onTokenClick(t.symbol)}
-            className="px-2 py-0.5 rounded-md border border-[var(--border)] text-[11px] font-mono font-medium hover:border-[#1DA1C4]/40 hover:text-[#1DA1C4] transition-colors cursor-pointer">
+            className="px-2 py-0.5 rounded-md border border-[var(--border)] text-[11px] font-mono font-medium hover:border-[#4A90C4]/40 hover:text-[#4A90C4] transition-colors cursor-pointer">
             ${t.symbol}
           </button>
         ))}

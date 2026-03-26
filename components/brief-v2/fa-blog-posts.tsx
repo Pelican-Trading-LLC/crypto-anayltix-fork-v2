@@ -22,7 +22,7 @@ export function FABlogPosts() {
               <span className="font-mono text-[10px] text-muted-foreground">{post.timestamp}</span>
               <span className="font-mono text-[10px] text-muted-foreground">&middot; {post.read_time}</span>
             </div>
-            <h4 className="text-[13px] font-semibold group-hover:text-[#1DA1C4] transition-colors">{post.title}</h4>
+            <h4 className="text-[13px] font-semibold group-hover:text-[#4A90C4] transition-colors">{post.title}</h4>
             <p className="text-[12px] text-muted-foreground mt-0.5">by {post.author}</p>
           </div>
         ))}

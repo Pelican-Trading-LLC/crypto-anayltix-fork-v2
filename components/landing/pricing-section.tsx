@@ -78,12 +78,12 @@ export function PricingSection() {
               className={cn(
                 'relative rounded-2xl p-8 flex flex-col h-full transition-all duration-300',
                 plan.highlighted
-                  ? 'bg-[#1DA1C4]/5 border-2 border-[#1DA1C4] shadow-md'
+                  ? 'bg-[#4A90C4]/5 border-2 border-[#4A90C4] shadow-md'
                   : 'bg-white border border-slate-200 shadow-sm'
               )}
             >
               {plan.highlighted && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-gradient-to-r from-[#1A6FB5] to-[#25BFDF] text-white text-xs font-semibold rounded-full">
+                <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-gradient-to-r from-[#2C5F8A] to-[#5BA3D9] text-white text-xs font-semibold rounded-full">
                   Most Popular
                 </span>
               )}
@@ -107,7 +107,7 @@ export function PricingSection() {
                   <li key={feature} className="flex items-start gap-2.5">
                     <Check
                       weight="bold"
-                      className="h-4 w-4 text-[#1DA1C4] mt-0.5 shrink-0"
+                      className="h-4 w-4 text-[#4A90C4] mt-0.5 shrink-0"
                     />
                     <span className="text-sm text-slate-500">{feature}</span>
                   </li>
@@ -119,7 +119,7 @@ export function PricingSection() {
                 className={cn(
                   'block w-full text-center py-3 rounded-xl font-semibold text-sm transition-all duration-200 active:scale-[0.98]',
                   plan.highlighted
-                    ? 'bg-gradient-to-r from-[#1A6FB5] to-[#25BFDF] hover:opacity-90 text-white shadow-lg'
+                    ? 'bg-gradient-to-r from-[#2C5F8A] to-[#5BA3D9] hover:opacity-90 text-white shadow-lg'
                     : 'bg-slate-100 hover:bg-slate-200 text-slate-900 border border-slate-200'
                 )}
               >

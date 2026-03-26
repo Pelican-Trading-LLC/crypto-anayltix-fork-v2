@@ -19,12 +19,12 @@ export function PriceActionCard({ data }: Props) {
     [data.sparkline_7d]
   )
   const isUp = data.price_change_7d >= 0
-  const gradientColor = isUp ? '#22C55E' : '#EF4444'
+  const gradientColor = isUp ? '#3EBD8C' : '#E06565'
 
   return (
     <div className="rounded-xl border bg-card p-5">
       <div className="flex items-center gap-2 mb-4">
-        <Lightning size={14} weight="fill" className="text-[#1DA1C4]" />
+        <Lightning size={14} weight="fill" className="text-[#4A90C4]" />
         <span className="text-[11px] uppercase tracking-[1.5px] font-semibold text-muted-foreground">PRICE ACTION</span>
       </div>
 
@@ -39,7 +39,7 @@ export function PriceActionCard({ data }: Props) {
           { label: '30d', value: data.price_change_30d },
         ].map(p => (
           <span key={p.label} className={`inline-flex items-center gap-0.5 px-2 py-0.5 rounded-md text-[11px] font-mono font-semibold ${
-            p.value >= 0 ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'
+            p.value >= 0 ? 'bg-[#3EBD8C]/10 text-[#3EBD8C]' : 'bg-[#E06565]/10 text-[#E06565]'
           }`}>
             {p.value >= 0 ? <CaretUp size={10} weight="fill" /> : <CaretDown size={10} weight="fill" />}
             {p.label} {formatPct(p.value)}
@@ -88,12 +88,12 @@ export function PriceActionCard({ data }: Props) {
 export function DerivativesCard({ data }: Props) {
   // Funding rate gauge position: map -0.1 to +0.1 range to 0-100%
   const fundingPct = Math.min(100, Math.max(0, ((data.funding_rate + 0.05) / 0.1) * 100))
-  const fundingColor = data.funding_rate > 0.01 ? '#EF4444' : data.funding_rate < -0.01 ? '#22C55E' : '#F59E0B'
+  const fundingColor = data.funding_rate > 0.01 ? '#E06565' : data.funding_rate < -0.01 ? '#3EBD8C' : '#D4A042'
 
   return (
     <div className="rounded-xl border bg-card p-5">
       <div className="flex items-center gap-2 mb-4">
-        <Lightning size={14} weight="fill" className="text-amber-500" />
+        <Lightning size={14} weight="fill" className="text-[#D4A042]" />
         <span className="text-[11px] uppercase tracking-[1.5px] font-semibold text-muted-foreground">DERIVATIVES</span>
       </div>
 
@@ -104,7 +104,7 @@ export function DerivativesCard({ data }: Props) {
           <span>Neutral</span>
           <span>Longs Pay</span>
         </div>
-        <div className="relative h-2 rounded-full overflow-hidden" style={{ background: 'linear-gradient(90deg, #22C55E, #F59E0B 50%, #EF4444)' }}>
+        <div className="relative h-2 rounded-full overflow-hidden" style={{ background: 'linear-gradient(90deg, #3EBD8C, #D4A042 50%, #E06565)' }}>
           <div className="absolute top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-white border-2 shadow-md"
             style={{ left: `calc(${fundingPct}% - 6px)`, borderColor: fundingColor }} />
         </div>
@@ -128,7 +128,7 @@ export function DerivativesCard({ data }: Props) {
             <span className="font-mono text-[12px] tabular-nums font-medium">
               {m.value}
               {m.change !== null && (
-                <span className={`ml-1.5 ${m.change >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                <span className={`ml-1.5 ${m.change >= 0 ? 'text-[#3EBD8C]' : 'text-[#E06565]'}`}>
                   {m.change >= 0 ? '+' : ''}{m.change.toFixed(1)}%
                 </span>
               )}
@@ -140,12 +140,12 @@ export function DerivativesCard({ data }: Props) {
         <div className="pt-2">
           <span className="text-[10px] uppercase tracking-wider text-muted-foreground">24h Liquidations</span>
           <div className="flex h-2 rounded-full overflow-hidden mt-1.5">
-            <div className="bg-red-500 h-full" style={{ width: `${(data.liquidations_24h.longs / (data.liquidations_24h.longs + data.liquidations_24h.shorts)) * 100}%` }} />
-            <div className="bg-green-500 h-full flex-1" />
+            <div className="bg-[#E06565] h-full" style={{ width: `${(data.liquidations_24h.longs / (data.liquidations_24h.longs + data.liquidations_24h.shorts)) * 100}%` }} />
+            <div className="bg-[#3EBD8C] h-full flex-1" />
           </div>
           <div className="flex justify-between mt-1 text-[10px] font-mono">
-            <span className="text-red-500">Longs: {formatCompact(data.liquidations_24h.longs)}</span>
-            <span className="text-green-500">Shorts: {formatCompact(data.liquidations_24h.shorts)}</span>
+            <span className="text-[#E06565]">Longs: {formatCompact(data.liquidations_24h.longs)}</span>
+            <span className="text-[#3EBD8C]">Shorts: {formatCompact(data.liquidations_24h.shorts)}</span>
           </div>
         </div>
       </div>
@@ -154,13 +154,13 @@ export function DerivativesCard({ data }: Props) {
 }
 
 export function OnChainRiskCard({ data }: Props) {
-  const riskColor = data.risk_score <= 3 ? '#22C55E' : data.risk_score <= 6 ? '#F59E0B' : '#EF4444'
+  const riskColor = data.risk_score <= 3 ? '#3EBD8C' : data.risk_score <= 6 ? '#D4A042' : '#E06565'
 
   return (
     <div className="rounded-xl border bg-card p-5">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <Shield size={14} weight="fill" className="text-[#1DA1C4]" />
+          <Shield size={14} weight="fill" className="text-[#4A90C4]" />
           <span className="text-[11px] uppercase tracking-[1.5px] font-semibold text-muted-foreground">ON-CHAIN &amp; RISK</span>
         </div>
         {/* Risk Score Badge */}
@@ -178,7 +178,7 @@ export function OnChainRiskCard({ data }: Props) {
         <div className="flex h-3 rounded-full overflow-hidden bg-muted">
           <div className="rounded-full" style={{
             width: `${data.top_10_holders_pct}%`,
-            background: data.top_10_holders_pct > 50 ? '#EF4444' : data.top_10_holders_pct > 30 ? '#F59E0B' : '#22C55E'
+            background: data.top_10_holders_pct > 50 ? '#E06565' : data.top_10_holders_pct > 30 ? '#D4A042' : '#3EBD8C'
           }} />
         </div>
       </div>
@@ -186,9 +186,9 @@ export function OnChainRiskCard({ data }: Props) {
       {/* Metrics */}
       <div className="space-y-2">
         {[
-          { label: 'Smart Money (7d)', value: `${data.smart_money_flow_7d >= 0 ? '+' : ''}${formatCompact(Math.abs(data.smart_money_flow_7d))}`, color: data.smart_money_flow_7d >= 0 ? 'text-green-500' : 'text-red-500' },
-          { label: 'Exchange Netflow (7d)', value: `${data.exchange_netflow_7d >= 0 ? '+' : ''}${formatCompact(Math.abs(data.exchange_netflow_7d))}`, color: data.exchange_netflow_7d <= 0 ? 'text-green-500' : 'text-red-500' },
-          { label: 'Active Addresses (7d)', value: `${(data.active_addresses_7d / 1000).toFixed(0)}K`, color: data.active_addresses_change >= 0 ? 'text-green-500' : 'text-red-500', change: data.active_addresses_change },
+          { label: 'Smart Money (7d)', value: `${data.smart_money_flow_7d >= 0 ? '+' : ''}${formatCompact(Math.abs(data.smart_money_flow_7d))}`, color: data.smart_money_flow_7d >= 0 ? 'text-[#3EBD8C]' : 'text-[#E06565]' },
+          { label: 'Exchange Netflow (7d)', value: `${data.exchange_netflow_7d >= 0 ? '+' : ''}${formatCompact(Math.abs(data.exchange_netflow_7d))}`, color: data.exchange_netflow_7d <= 0 ? 'text-[#3EBD8C]' : 'text-[#E06565]' },
+          { label: 'Active Addresses (7d)', value: `${(data.active_addresses_7d / 1000).toFixed(0)}K`, color: data.active_addresses_change >= 0 ? 'text-[#3EBD8C]' : 'text-[#E06565]', change: data.active_addresses_change },
           { label: 'Holders', value: data.holder_count.toLocaleString(), color: '' },
         ].map(m => (
           <div key={m.label} className="flex justify-between py-1.5 border-b border-[var(--border)]">
@@ -204,7 +204,7 @@ export function OnChainRiskCard({ data }: Props) {
             <span className="text-[12px] text-muted-foreground">TVL</span>
             <span className="font-mono text-[12px] tabular-nums font-medium">
               {formatCompact(data.tvl)}
-              <span className={`text-[10px] ml-1 ${(data.tvl_change_30d || 0) >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+              <span className={`text-[10px] ml-1 ${(data.tvl_change_30d || 0) >= 0 ? 'text-[#3EBD8C]' : 'text-[#E06565]'}`}>
                 ({(data.tvl_change_30d || 0) >= 0 ? '+' : ''}{data.tvl_change_30d}%)
               </span>
             </span>
@@ -214,12 +214,12 @@ export function OnChainRiskCard({ data }: Props) {
 
       {/* Next Unlock */}
       {data.next_unlock && (
-        <div className="mt-4 p-3 rounded-lg bg-amber-500/5 border border-amber-500/15">
+        <div className="mt-4 p-3 rounded-lg bg-[#D4A042]/5 border border-[#D4A042]/15">
           <div className="flex items-center gap-1.5 mb-1">
-            <Clock size={12} className="text-amber-500" />
-            <span className="text-[10px] uppercase tracking-wider font-semibold text-amber-500">UNLOCK ALERT</span>
+            <Clock size={12} className="text-[#D4A042]" />
+            <span className="text-[10px] uppercase tracking-wider font-semibold text-[#D4A042]">UNLOCK ALERT</span>
           </div>
-          <span className="text-[12px] font-mono font-medium text-amber-500">
+          <span className="text-[12px] font-mono font-medium text-[#D4A042]">
             {data.next_unlock.days} days — {data.next_unlock.pct_supply}% of supply
           </span>
           <span className="text-[11px] text-muted-foreground block mt-0.5">Recipient: {data.next_unlock.recipient}</span>
@@ -232,7 +232,7 @@ export function OnChainRiskCard({ data }: Props) {
           <span className="text-[10px] uppercase tracking-wider text-muted-foreground">RISK FLAGS</span>
           {data.risk_factors.map((f, i) => (
             <div key={i} className="flex items-start gap-2">
-              <Warning size={12} className="text-amber-500 mt-0.5 shrink-0" />
+              <Warning size={12} className="text-[#D4A042] mt-0.5 shrink-0" />
               <span className="text-[11px] text-muted-foreground leading-relaxed">{f}</span>
             </div>
           ))}

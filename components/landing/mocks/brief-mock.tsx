@@ -9,7 +9,7 @@ export function BriefMock() {
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200">
         <div className="flex items-center gap-2">
-          <Sun weight="fill" className="w-4 h-4 text-amber-400" />
+          <Sun weight="fill" className="w-4 h-4 text-[#D4A042]" />
           <span className="text-sm font-medium text-slate-900">Pelican Brief</span>
           <span className="text-[10px] text-slate-400 font-mono">&mdash; Mar 8, 2026</span>
         </div>
@@ -24,8 +24,8 @@ export function BriefMock() {
         {/* Market Overnight */}
         <div>
           <div className="flex items-center gap-1.5 mb-1.5">
-            <TrendUp weight="bold" className="w-3.5 h-3.5 text-[#1DA1C4]" />
-            <p className="text-[10px] font-medium uppercase tracking-wider text-[#1DA1C4]">Market Overnight</p>
+            <TrendUp weight="bold" className="w-3.5 h-3.5 text-[#4A90C4]" />
+            <p className="text-[10px] font-medium uppercase tracking-wider text-[#4A90C4]">Market Overnight</p>
           </div>
           <div className="bg-slate-50 rounded-lg border border-slate-200 px-3 py-2 space-y-1">
             <div className="flex items-center justify-between">
@@ -46,7 +46,7 @@ export function BriefMock() {
               <span className="text-xs text-slate-500">SOL</span>
               <div className="flex items-center gap-2">
                 <span className="text-xs font-mono tabular-nums text-slate-900">$138.50</span>
-                <span className="text-xs font-mono tabular-nums text-red-600">-1.4%</span>
+                <span className="text-xs font-mono tabular-nums text-[#E06565]">-1.4%</span>
               </div>
             </div>
           </div>
@@ -55,8 +55,8 @@ export function BriefMock() {
         {/* Your Positions */}
         <div>
           <div className="flex items-center gap-1.5 mb-1.5">
-            <Crosshair weight="bold" className="w-3.5 h-3.5 text-[#1DA1C4]" />
-            <p className="text-[10px] font-medium uppercase tracking-wider text-[#1DA1C4]">Your Positions</p>
+            <Crosshair weight="bold" className="w-3.5 h-3.5 text-[#4A90C4]" />
+            <p className="text-[10px] font-medium uppercase tracking-wider text-[#4A90C4]">Your Positions</p>
           </div>
           <div className="bg-slate-50 rounded-lg border border-slate-200 px-3 py-2 space-y-1.5">
             <div className="flex items-center justify-between">
@@ -71,7 +71,7 @@ export function BriefMock() {
                 <span className="text-xs font-medium text-slate-900">SOL</span>
                 <span className="text-[10px] text-slate-300">Long 48</span>
               </div>
-              <span className="text-xs font-mono tabular-nums text-red-600">-$168.00</span>
+              <span className="text-xs font-mono tabular-nums text-[#E06565]">-$168.00</span>
             </div>
           </div>
         </div>
@@ -79,8 +79,8 @@ export function BriefMock() {
         {/* Today's Focus */}
         <div>
           <div className="flex items-center gap-1.5 mb-1.5">
-            <Sun weight="bold" className="w-3.5 h-3.5 text-[#1DA1C4]" />
-            <p className="text-[10px] font-medium uppercase tracking-wider text-[#1DA1C4]">Today&apos;s Focus</p>
+            <Sun weight="bold" className="w-3.5 h-3.5 text-[#4A90C4]" />
+            <p className="text-[10px] font-medium uppercase tracking-wider text-[#4A90C4]">Today&apos;s Focus</p>
           </div>
           <div className="bg-slate-50 rounded-lg border border-slate-200 px-3 py-2 space-y-1">
             <div className="flex items-center gap-2">
@@ -88,7 +88,7 @@ export function BriefMock() {
               <span className="text-xs text-slate-600">BTC options expiry Friday &mdash; $4.2B notional</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-1 h-1 rounded-full bg-[#1DA1C4]" />
+              <div className="w-1 h-1 rounded-full bg-[#4A90C4]" />
               <span className="text-xs text-slate-600">SOL funding elevated &mdash; review carry costs</span>
             </div>
           </div>

@@ -805,7 +805,7 @@ export function ConversationSidebar({
                             e.stopPropagation()
                             deleteInsight(insight.id)
                           }}
-                          className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded hover:bg-red-500/20"
+                          className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded hover:bg-[#E06565]/20"
                           style={{ color: 'var(--text-muted)' }}
                         >
                           <Trash size={12} />

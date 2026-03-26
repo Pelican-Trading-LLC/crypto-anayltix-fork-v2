@@ -11,7 +11,7 @@ export function ConversionFunnel({ data }: { data: FunnelData }) {
   const max = Math.max(data.total_signups, 1)
   const steps = [
     { label: 'Total Signups', value: data.total_signups, color: 'bg-blue-500' },
-    { label: 'Active Trial', value: data.active_trial, color: 'bg-amber-500' },
+    { label: 'Active Trial', value: data.active_trial, color: 'bg-[#D4A042]' },
     { label: 'Converted Paid', value: data.converted_paid, color: 'bg-emerald-500' },
   ]
 

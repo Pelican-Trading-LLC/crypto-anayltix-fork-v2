@@ -10,7 +10,7 @@ export function BriefAlertsSidebar() {
   return (
     <div className="rounded-xl border bg-card p-4">
       <div className="flex items-center gap-2 mb-4">
-        <Bell size={14} weight="fill" className="text-amber-500" />
+        <Bell size={14} weight="fill" className="text-[#D4A042]" />
         <span className="text-[12px] font-semibold">Intelligence Alerts</span>
       </div>
       <div className="space-y-3">
@@ -27,7 +27,7 @@ export function BriefAlertsSidebar() {
           )
         })}
       </div>
-      <Link href="/alerts" className="block text-center text-[12px] text-[#1DA1C4] font-medium mt-3 hover:underline">
+      <Link href="/alerts" className="block text-center text-[12px] text-[#4A90C4] font-medium mt-3 hover:underline">
         View all alerts →
       </Link>
     </div>

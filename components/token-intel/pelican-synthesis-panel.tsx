@@ -11,10 +11,10 @@ interface Props {
 }
 
 const VERDICT_STYLES: Record<string, { bg: string; text: string; border: string }> = {
-  BULLISH: { bg: 'bg-green-500/10', text: 'text-green-500', border: 'border-green-500/20' },
-  BEARISH: { bg: 'bg-red-500/10', text: 'text-red-500', border: 'border-red-500/20' },
+  BULLISH: { bg: 'bg-[#3EBD8C]/10', text: 'text-[#3EBD8C]', border: 'border-[#3EBD8C]/20' },
+  BEARISH: { bg: 'bg-[#E06565]/10', text: 'text-[#E06565]', border: 'border-[#E06565]/20' },
   NEUTRAL: { bg: 'bg-gray-500/10', text: 'text-gray-400', border: 'border-gray-500/20' },
-  CAUTION: { bg: 'bg-amber-500/10', text: 'text-amber-500', border: 'border-amber-500/20' },
+  CAUTION: { bg: 'bg-[#D4A042]/10', text: 'text-[#D4A042]', border: 'border-[#D4A042]/20' },
 }
 
 export function PelicanSynthesisPanel({ data, loading, noDataSymbol }: Props) {
@@ -23,8 +23,8 @@ export function PelicanSynthesisPanel({ data, loading, noDataSymbol }: Props) {
   if (loading) {
     return (
       <div className="rounded-xl border p-6 h-full flex flex-col items-center justify-center gap-3"
-        style={{ background: 'rgba(29,161,196,0.03)', borderColor: 'rgba(29,161,196,0.15)' }}>
-        <CircleNotch size={24} className="text-[#1DA1C4] animate-spin" />
+        style={{ background: 'rgba(74,144,196,0.03)', borderColor: 'rgba(74,144,196,0.15)' }}>
+        <CircleNotch size={24} className="text-[#4A90C4] animate-spin" />
         <span className="text-[13px] text-muted-foreground">Pelican is analyzing...</span>
         <div className="flex gap-2 mt-2">
           {['Checking price action', 'Scanning derivatives', 'Reading on-chain', 'Synthesizing'].map((s, i) => (
@@ -39,7 +39,7 @@ export function PelicanSynthesisPanel({ data, loading, noDataSymbol }: Props) {
     return (
       <div className="rounded-xl border p-6 h-full flex flex-col items-center justify-center"
         style={{ background: 'rgba(239,68,68,0.02)', borderColor: 'rgba(239,68,68,0.1)' }}>
-        <WarningCircle size={48} weight="thin" className="text-amber-500/40 mb-3" />
+        <WarningCircle size={48} weight="thin" className="text-[#D4A042]/40 mb-3" />
         <span className="text-[14px] text-muted-foreground mb-1">No analysis available for {noDataSymbol}</span>
         <span className="text-[12px] text-muted-foreground/60 mb-4">Data sources did not return results for this token.</span>
         <button
@@ -52,7 +52,7 @@ export function PelicanSynthesisPanel({ data, loading, noDataSymbol }: Props) {
             null
           )}
           className="flex items-center gap-2 px-4 py-2 rounded-lg text-white text-[13px] font-medium transition-all hover:brightness-110 cursor-pointer"
-          style={{ background: 'linear-gradient(135deg, #1A6FB5, #25BFDF)', boxShadow: '0 2px 8px rgba(29,161,196,0.2)' }}
+          style={{ background: 'linear-gradient(135deg, #2C5F8A, #5B4F8A)', boxShadow: '0 2px 8px rgba(74,144,196,0.2)' }}
         >
           <Bird size={14} weight="fill" />
           Ask Pelican about {noDataSymbol}
@@ -64,8 +64,8 @@ export function PelicanSynthesisPanel({ data, loading, noDataSymbol }: Props) {
   if (!data) {
     return (
       <div className="rounded-xl border p-6 h-full flex flex-col items-center justify-center"
-        style={{ background: 'rgba(29,161,196,0.02)', borderColor: 'rgba(29,161,196,0.1)' }}>
-        <Bird size={48} weight="thin" className="text-[#1DA1C4]/30 mb-3" />
+        style={{ background: 'rgba(74,144,196,0.02)', borderColor: 'rgba(74,144,196,0.1)' }}>
+        <Bird size={48} weight="thin" className="text-[#4A90C4]/30 mb-3" />
         <span className="text-[14px] text-muted-foreground mb-1">Search a ticker to generate analysis</span>
         <span className="text-[12px] text-muted-foreground/60">Try BTC, ETH, SOL, AAVE, or WIF</span>
       </div>
@@ -78,15 +78,15 @@ export function PelicanSynthesisPanel({ data, loading, noDataSymbol }: Props) {
   return (
     <div className="rounded-xl border p-5 h-full flex flex-col"
       style={{
-        background: 'linear-gradient(135deg, rgba(29,161,196,0.04) 0%, var(--card) 40%)',
-        borderColor: 'rgba(29,161,196,0.15)',
+        background: 'linear-gradient(135deg, rgba(74,144,196,0.04) 0%, var(--card) 40%)',
+        borderColor: 'rgba(74,144,196,0.15)',
       }}>
 
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <Bird size={18} weight="fill" className="text-[#1DA1C4]" />
-          <span className="text-[13px] font-semibold text-[#1DA1C4]">Pelican Synthesis</span>
+          <Bird size={18} weight="fill" className="text-[#4A90C4]" />
+          <span className="text-[13px] font-semibold text-[#4A90C4]">Pelican Synthesis</span>
         </div>
         <span className="font-mono text-[11px] text-muted-foreground">{data.pelican_checked_at}</span>
       </div>
@@ -99,9 +99,9 @@ export function PelicanSynthesisPanel({ data, loading, noDataSymbol }: Props) {
         </span>
         <div className="flex items-center gap-1.5 ml-auto">
           <div className="w-16 h-1.5 rounded-full bg-muted overflow-hidden">
-            <div className="h-full rounded-full" style={{ width: `${data.pelican_confidence}%`, background: 'linear-gradient(90deg, #1A6FB5, #25BFDF)' }} />
+            <div className="h-full rounded-full" style={{ width: `${data.pelican_confidence}%`, background: 'linear-gradient(90deg, #2C5F8A, #5BA3D9)' }} />
           </div>
-          <span className="font-mono text-[11px] text-[#1DA1C4] font-semibold tabular-nums">{data.pelican_confidence}%</span>
+          <span className="font-mono text-[11px] text-[#4A90C4] font-semibold tabular-nums">{data.pelican_confidence}%</span>
         </div>
       </div>
 
@@ -120,7 +120,7 @@ export function PelicanSynthesisPanel({ data, loading, noDataSymbol }: Props) {
         <div className="mt-2 pl-3 space-y-1">
           {data.pelican_sources.map((s, i) => (
             <div key={i} className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-              <Check size={10} className="text-green-500" />
+              <Check size={10} className="text-[#3EBD8C]" />
               {s}
             </div>
           ))}
@@ -138,7 +138,7 @@ export function PelicanSynthesisPanel({ data, loading, noDataSymbol }: Props) {
           null
         )}
         className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-white text-[13px] font-medium transition-all hover:brightness-110 cursor-pointer"
-        style={{ background: 'linear-gradient(135deg, #1A6FB5, #25BFDF)', boxShadow: '0 2px 8px rgba(29,161,196,0.2)' }}
+        style={{ background: 'linear-gradient(135deg, #2C5F8A, #5B4F8A)', boxShadow: '0 2px 8px rgba(74,144,196,0.2)' }}
       >
         Ask Pelican for trade setup <ArrowRight size={14} />
       </button>
