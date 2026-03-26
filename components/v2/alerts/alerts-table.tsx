@@ -10,7 +10,7 @@ const FILTERS = ['All', 'Armed', 'Triggered', 'Price', 'On-Chain', 'Technical', 
 const TYPE_COLORS: Record<V2Alert['type'], string> = {
   Price: 'var(--v2-amber)',
   'On-Chain': 'var(--v2-cyan)',
-  Technical: 'var(--v2-blue)',
+  Technical: '#60A5FA',
   Prediction: 'var(--v2-violet)',
   Convergence: 'var(--v2-green)',
 }
@@ -25,7 +25,7 @@ const columns: Column<V2Alert>[] = [
   {
     key: 'token',
     header: 'Token',
-    width: '70px',
+    width: '68px',
     render: (item) => (
       <span className="v2-mono" style={{ fontWeight: 600, color: 'var(--v2-text-primary)' }}>
         {item.token}
@@ -35,20 +35,21 @@ const columns: Column<V2Alert>[] = [
   {
     key: 'type',
     header: 'Type',
-    width: '90px',
+    width: '100px',
     render: (item) => {
       const color = TYPE_COLORS[item.type]
       return (
         <span
           style={{
-            display: 'inline-block',
-            padding: '2px 8px',
+            display: 'inline-flex',
+            alignItems: 'center',
+            height: '20px',
+            padding: '0 6px',
             borderRadius: '4px',
             fontSize: '11px',
             fontWeight: 600,
             color,
-            background: `${color}18`,
-            border: `1px solid ${color}30`,
+            background: `color-mix(in srgb, ${color} 12%, transparent)`,
           }}
         >
           {item.type}
@@ -60,7 +61,15 @@ const columns: Column<V2Alert>[] = [
     key: 'condition',
     header: 'Condition',
     render: (item) => (
-      <span style={{ fontSize: '12px', color: 'var(--v2-text-secondary)' }}>
+      <span
+        className="v2-sans"
+        style={{
+          fontSize: '12px',
+          color: 'var(--v2-text-secondary)',
+          whiteSpace: 'normal',
+          lineHeight: 1.4,
+        }}
+      >
         {item.condition}
       </span>
     ),
@@ -68,7 +77,7 @@ const columns: Column<V2Alert>[] = [
   {
     key: 'status',
     header: 'Status',
-    width: '80px',
+    width: '88px',
     render: (item) => {
       if (item.status === 'Triggered') {
         return (
@@ -78,7 +87,7 @@ const columns: Column<V2Alert>[] = [
         )
       }
       return (
-        <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--v2-amber)' }}>
+        <span style={{ fontSize: '12px', fontWeight: 500, color: 'var(--v2-amber)' }}>
           Armed
         </span>
       )
@@ -87,7 +96,7 @@ const columns: Column<V2Alert>[] = [
   {
     key: 'severity',
     header: 'Severity',
-    width: '70px',
+    width: '72px',
     render: (item) => (
       <span style={{ fontSize: '12px', fontWeight: 600, color: SEVERITY_COLORS[item.severity] }}>
         {item.severity}
@@ -97,7 +106,7 @@ const columns: Column<V2Alert>[] = [
   {
     key: 'created',
     header: 'Created',
-    width: '70px',
+    width: '80px',
     render: (item) => (
       <span className="v2-mono" style={{ fontSize: '12px', color: 'var(--v2-text-tertiary)' }}>
         {item.created}
@@ -111,11 +120,9 @@ export function AlertsTable() {
 
   const filtered = useMemo(() => {
     if (activeFilter === 'All') return V2_ALERTS
-    // Status filters
     if (activeFilter === 'Armed' || activeFilter === 'Triggered') {
       return V2_ALERTS.filter((a) => a.status === activeFilter)
     }
-    // Type filters
     return V2_ALERTS.filter((a) => a.type === activeFilter)
   }, [activeFilter])
 
@@ -137,17 +144,9 @@ export function AlertsTable() {
         columns={columns}
         data={filtered}
         rowClassName={(item) =>
-          item.status === 'Triggered' ? 'v2-alert-triggered-row' : ''
+          item.status === 'Triggered' ? 'v2-row-triggered' : ''
         }
       />
-
-      {/* Inline style for triggered row */}
-      <style jsx global>{`
-        .v2-alert-triggered-row {
-          border-left: 2px solid var(--v2-green) !important;
-          background: rgba(34, 197, 94, 0.03) !important;
-        }
-      `}</style>
     </div>
   )
 }

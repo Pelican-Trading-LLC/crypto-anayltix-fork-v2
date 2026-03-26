@@ -30,7 +30,10 @@ export default function AlertsPage() {
           marginBottom: '20px',
         }}
       >
-        <span style={{ fontSize: '16px', fontWeight: 700, color: 'var(--v2-text-primary)' }}>
+        <span
+          className="v2-sans"
+          style={{ fontSize: '18px', fontWeight: 600, color: 'var(--v2-text-primary)' }}
+        >
           Smart Alerts
         </span>
         <button
@@ -39,7 +42,7 @@ export default function AlertsPage() {
           style={{
             height: '36px',
             padding: '0 14px',
-            background: 'var(--v2-cyan)',
+            background: 'var(--v2-cyan-muted)',
             color: '#fff',
             fontSize: '12px',
             fontWeight: 600,
