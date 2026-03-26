@@ -1,6 +1,6 @@
 "use client"
 
-import React from 'react'
+import React, { useState } from 'react'
 import { AnalyzeButton } from '@/components/v2/analyze-button'
 import { useAnalyze } from '@/components/v2/pelican-analyze-panel'
 import { ProbabilityChart } from './probability-chart'
@@ -11,35 +11,42 @@ interface PredictionCardProps {
 }
 
 function probColor(p: number): string {
-  if (p > 70) return 'var(--v2-green, #22c55e)'
-  if (p < 30) return 'var(--v2-red, #ef4444)'
-  return 'var(--v2-amber, #f59e0b)'
+  if (p > 65) return 'var(--v2-green, #22c55e)'
+  if (p < 35) return 'var(--v2-red, #ef4444)'
+  return 'var(--v2-text-primary, #e8e8ed)'
 }
 
 export function PredictionCard({ card }: PredictionCardProps) {
   const analyze = useAnalyze()
+  const [hovered, setHovered] = useState(false)
 
   return (
     <div
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       style={{
-        background: 'var(--v2-bg-elevated)',
-        border: '1px solid var(--v2-border)',
+        background: 'var(--v2-bg-surface-2, #141825)',
+        border: `1px solid ${hovered ? 'var(--v2-border-strong, rgba(255,255,255,0.15))' : 'var(--v2-border-default, rgba(255,255,255,0.08))'}`,
         borderRadius: '10px',
-        padding: '16px',
+        padding: '18px',
+        transition: 'border-color 200ms ease, box-shadow 200ms ease',
+        boxShadow: hovered ? '0 4px 16px rgba(0,0,0,0.2)' : 'none',
       }}
     >
-      {/* Top: logo + question */}
+      {/* Top: icon + question */}
       <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', marginBottom: '14px' }}>
         <div
           style={{
-            width: 36,
-            height: 36,
+            width: 28,
+            height: 28,
             borderRadius: '50%',
-            background: 'var(--v2-bg-hover)',
+            background: 'var(--v2-bg-surface-3, #1a1f2e)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: '16px',
+            fontSize: '12px',
+            fontWeight: 600,
+            color: 'var(--v2-text-secondary, #9898a6)',
             flexShrink: 0,
           }}
         >
@@ -48,9 +55,9 @@ export function PredictionCard({ card }: PredictionCardProps) {
         <p
           style={{
             fontSize: '14px',
-            fontWeight: 700,
-            color: 'var(--v2-text-primary)',
-            lineHeight: 1.35,
+            fontWeight: 600,
+            color: 'var(--v2-text-primary, #e8e8ed)',
+            lineHeight: 1.3,
             margin: 0,
           }}
         >
@@ -59,7 +66,7 @@ export function PredictionCard({ card }: PredictionCardProps) {
       </div>
 
       {/* Price level rows */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '14px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '12px' }}>
         {card.priceLevels.map((level, i) => (
           <div
             key={i}
@@ -74,7 +81,7 @@ export function PredictionCard({ card }: PredictionCardProps) {
               className="v2-mono"
               style={{
                 fontSize: '13px',
-                color: 'var(--v2-text-secondary)',
+                color: 'var(--v2-text-primary, #e8e8ed)',
                 minWidth: '70px',
               }}
             >
@@ -96,15 +103,16 @@ export function PredictionCard({ card }: PredictionCardProps) {
               <button
                 type="button"
                 style={{
-                  padding: '2px 8px',
-                  fontSize: '11px',
+                  height: '22px',
+                  padding: '0 8px',
+                  fontSize: '10px',
                   fontWeight: 600,
-                  borderRadius: '9999px',
-                  border: '1px solid var(--v2-green-dim, rgba(34,197,94,0.3))',
-                  background: 'var(--v2-green-dim, rgba(34,197,94,0.1))',
+                  borderRadius: '4px',
+                  border: '1px solid var(--v2-green, #22c55e)',
+                  background: 'transparent',
                   color: 'var(--v2-green, #22c55e)',
                   cursor: 'pointer',
-                  lineHeight: '18px',
+                  lineHeight: 1,
                 }}
               >
                 Yes
@@ -112,15 +120,16 @@ export function PredictionCard({ card }: PredictionCardProps) {
               <button
                 type="button"
                 style={{
-                  padding: '2px 8px',
-                  fontSize: '11px',
+                  height: '22px',
+                  padding: '0 8px',
+                  fontSize: '10px',
                   fontWeight: 600,
-                  borderRadius: '9999px',
-                  border: '1px solid var(--v2-red-dim, rgba(239,68,68,0.3))',
-                  background: 'var(--v2-red-dim, rgba(239,68,68,0.1))',
+                  borderRadius: '4px',
+                  border: '1px solid var(--v2-red, #ef4444)',
+                  background: 'transparent',
                   color: 'var(--v2-red, #ef4444)',
                   cursor: 'pointer',
-                  lineHeight: '18px',
+                  lineHeight: 1,
                 }}
               >
                 No
@@ -131,8 +140,8 @@ export function PredictionCard({ card }: PredictionCardProps) {
       </div>
 
       {/* Probability chart */}
-      <div style={{ marginBottom: '12px' }}>
-        <ProbabilityChart data={card.probabilityHistory} />
+      <div style={{ margin: '12px 0' }}>
+        <ProbabilityChart data={card.probabilityHistory} id={card.id} />
       </div>
 
       {/* Footer */}
@@ -142,7 +151,7 @@ export function PredictionCard({ card }: PredictionCardProps) {
           alignItems: 'center',
           justifyContent: 'space-between',
           fontSize: '11px',
-          color: 'var(--v2-text-tertiary)',
+          color: 'var(--v2-text-quaternary, rgba(255,255,255,0.25))',
         }}
       >
         <div style={{ display: 'flex', gap: '12px' }}>

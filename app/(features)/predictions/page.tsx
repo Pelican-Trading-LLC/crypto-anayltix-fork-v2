@@ -23,6 +23,7 @@ export default function PredictionsPage() {
   const [search, setSearch] = useState('')
   const [activeCategory, setActiveCategory] = useState<Category>('All')
   const [activeTicker, setActiveTicker] = useState<string | null>(null)
+  const [searchFocused, setSearchFocused] = useState(false)
 
   const filtered = useMemo(() => {
     let cards = V2_PREDICTION_CARDS
@@ -60,7 +61,7 @@ export default function PredictionsPage() {
   return (
     <div
       style={{
-        background: 'var(--v2-bg-base)',
+        background: 'var(--v2-bg-base, #0a0e17)',
         padding: '24px',
         minHeight: '100vh',
       }}
@@ -77,9 +78,9 @@ export default function PredictionsPage() {
         >
           <h1
             style={{
-              fontSize: '16px',
-              fontWeight: 700,
-              color: 'var(--v2-text-primary)',
+              fontSize: '18px',
+              fontWeight: 600,
+              color: 'var(--v2-text-primary, #e8e8ed)',
               margin: 0,
             }}
           >
@@ -93,7 +94,7 @@ export default function PredictionsPage() {
               borderRadius: '9999px',
               background: 'var(--v2-violet-dim, rgba(139,92,246,0.15))',
               color: 'var(--v2-violet, #8b5cf6)',
-              fontSize: '11px',
+              fontSize: '10px',
               fontWeight: 600,
               lineHeight: '18px',
             }}
@@ -107,19 +108,22 @@ export default function PredictionsPage() {
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
+          onFocus={() => setSearchFocused(true)}
+          onBlur={() => setSearchFocused(false)}
           placeholder="Search a Polymarket question or paste URL..."
           style={{
             width: '100%',
             height: '44px',
             padding: '0 14px',
             fontSize: '13px',
-            color: 'var(--v2-text-primary)',
-            background: 'var(--v2-bg-elevated)',
-            border: '1px solid var(--v2-border)',
-            borderRadius: '6px',
+            color: 'var(--v2-text-primary, #e8e8ed)',
+            background: 'var(--v2-bg-surface-2, #141825)',
+            border: `1px solid ${searchFocused ? 'var(--v2-cyan-muted, rgba(6,182,212,0.3))' : 'var(--v2-border-default, rgba(255,255,255,0.08))'}`,
+            borderRadius: '8px',
             outline: 'none',
             marginBottom: '16px',
             boxSizing: 'border-box',
+            transition: 'border-color 150ms ease',
           }}
         />
 
@@ -156,38 +160,14 @@ export default function PredictionsPage() {
           }}
         >
           {TICKER_TABS.map((ticker) => (
-            <button
+            <FilterPill
               key={ticker}
-              type="button"
+              label={ticker}
+              active={activeTicker === ticker}
               onClick={() =>
                 setActiveTicker(activeTicker === ticker ? null : ticker)
               }
-              style={{
-                padding: '4px 12px',
-                borderRadius: '9999px',
-                border: `1px solid ${
-                  activeTicker === ticker
-                    ? 'var(--v2-cyan-dim, rgba(6,182,212,0.4))'
-                    : 'var(--v2-border)'
-                }`,
-                background:
-                  activeTicker === ticker
-                    ? 'var(--v2-cyan-dim, rgba(6,182,212,0.12))'
-                    : 'transparent',
-                color:
-                  activeTicker === ticker
-                    ? 'var(--v2-cyan, #06B6D4)'
-                    : 'var(--v2-text-secondary)',
-                fontSize: '11px',
-                fontWeight: 600,
-                cursor: 'pointer',
-                whiteSpace: 'nowrap',
-                lineHeight: '18px',
-                flexShrink: 0,
-              }}
-            >
-              {ticker}
-            </button>
+            />
           ))}
         </div>
 
@@ -209,7 +189,7 @@ export default function PredictionsPage() {
                 textAlign: 'center',
                 padding: '48px 0',
                 fontSize: '13px',
-                color: 'var(--v2-text-tertiary)',
+                color: 'var(--v2-text-tertiary, rgba(255,255,255,0.35))',
               }}
             >
               No predictions match your filters
