@@ -2,6 +2,10 @@ import type React from "react"
 import type { Metadata } from "next"
 import { GeistSans } from "geist/font/sans"
 import { GeistMono } from "geist/font/mono"
+import { DM_Sans, JetBrains_Mono } from "next/font/google"
+
+const dmSans = DM_Sans({ subsets: ['latin'], variable: '--font-dm-sans' })
+const jetbrainsMono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-jetbrains-mono' })
 import { Analytics } from "@vercel/analytics/next"
 import { Providers } from "@/lib/providers"
 import { Suspense } from "react"
@@ -52,7 +56,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`${GeistSans.className} antialiased bg-background ${GeistSans.variable} ${GeistMono.variable}`}>
+      <body className={`${GeistSans.className} antialiased bg-background ${GeistSans.variable} ${GeistMono.variable} ${dmSans.variable} ${jetbrainsMono.variable}`}>
         <ReferralCapture />
         <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded">Skip to main content</a>
         <SentryErrorBoundary>
