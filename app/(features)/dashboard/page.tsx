@@ -32,9 +32,10 @@ export default function DashboardPage() {
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <span
+            className="v2-sans"
             style={{
-              fontSize: '16px',
-              fontWeight: 700,
+              fontSize: '18px',
+              fontWeight: 600,
               color: 'var(--v2-text-primary)',
             }}
           >
@@ -49,19 +50,9 @@ export default function DashboardPage() {
               fontSize: '10px',
               fontWeight: 600,
               color: 'var(--v2-green)',
-              border: '1px solid rgba(34,197,94,0.3)',
-              borderRadius: '9999px',
-              padding: '2px 8px',
             }}
           >
-            <span
-              style={{
-                width: '5px',
-                height: '5px',
-                borderRadius: '50%',
-                background: 'var(--v2-green)',
-              }}
-            />
+            <span className="v2-pulse-dot" />
             LIVE
           </span>
         </div>
@@ -85,6 +76,7 @@ export default function DashboardPage() {
           <button
             key={tab}
             type="button"
+            className="v2-sans"
             onClick={() => setActiveTab(tab)}
             style={{
               background: 'none',
@@ -92,7 +84,7 @@ export default function DashboardPage() {
               borderBottom: activeTab === tab ? '2px solid var(--v2-cyan)' : '2px solid transparent',
               padding: '8px 0',
               fontSize: '13px',
-              fontWeight: activeTab === tab ? 600 : 400,
+              fontWeight: activeTab === tab ? 500 : 400,
               color: activeTab === tab ? 'var(--v2-cyan)' : 'var(--v2-text-secondary)',
               cursor: 'pointer',
               transition: 'color 0.15s, border-color 0.15s',
@@ -119,7 +111,7 @@ export default function DashboardPage() {
           <FilterPill label="Perps" />
           <FilterPill label="All Caps &#9662;" />
           <FilterPill label="Sectors &#9662;" />
-          <FilterPill label="Any Token Age(D)" />
+          <FilterPill label="Token Age(D)" />
           <FilterPill label="+ Filter" />
           <FilterPill label="&#128302; Smart Money" />
         </div>

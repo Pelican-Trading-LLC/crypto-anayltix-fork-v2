@@ -6,23 +6,10 @@ import { DataTable, Column } from '@/components/v2/data-table'
 import { FlowBar } from '@/components/v2/flow-bar'
 import { AnalyzeButton } from '@/components/v2/analyze-button'
 import { useAnalyze } from '@/components/v2/pelican-analyze-panel'
-import { V2_TOKENS, V2Token, formatCompact } from '@/lib/crypto-mock-data'
+import { formatPrice, formatDollarCompact, formatPercent } from '@/lib/format'
+import { V2_TOKENS, V2Token } from '@/lib/crypto-mock-data'
 
 const PAGE_SIZE = 10
-
-function formatPrice(price: number): string {
-  if (price >= 1) return `$${price.toFixed(2)}`
-  // count leading zeros after decimal
-  const str = price.toFixed(10)
-  const decimals = str.split('.')[1] || ''
-  let leadingZeros = 0
-  for (const c of decimals) {
-    if (c === '0') leadingZeros++
-    else break
-  }
-  const sigFigs = Math.max(leadingZeros + 3, 4)
-  return `$${price.toFixed(sigFigs)}`
-}
 
 export function TokenTable() {
   const analyze = useAnalyze()
@@ -30,6 +17,8 @@ export function TokenTable() {
 
   const maxVolume = useMemo(() => Math.max(...V2_TOKENS.map(t => Math.abs(t.volume))), [])
   const maxInflow = useMemo(() => Math.max(...V2_TOKENS.map(t => Math.abs(t.inflows))), [])
+  const maxOutflow = useMemo(() => Math.max(...V2_TOKENS.map(t => Math.abs(t.outflows))), [])
+  const maxNetFlow = useMemo(() => Math.max(...V2_TOKENS.map(t => Math.abs(t.netFlows))), [])
 
   const totalPages = Math.ceil(V2_TOKENS.length / PAGE_SIZE)
   const pagedData = V2_TOKENS.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE)
@@ -38,19 +27,22 @@ export function TokenTable() {
     {
       key: 'chain',
       header: 'Chain',
-      width: '50px',
+      width: '48px',
       render: () => (
         <span
+          className="v2-mono"
           style={{
             display: 'inline-flex',
             alignItems: 'center',
             justifyContent: 'center',
+            height: '20px',
+            padding: '0 6px',
+            borderRadius: '4px',
             fontSize: '10px',
             fontWeight: 600,
-            color: '#9945FF',
-            background: 'rgba(153,69,255,0.12)',
-            borderRadius: '3px',
-            padding: '2px 6px',
+            color: 'var(--v2-text-tertiary)',
+            background: 'rgba(255,255,255,0.04)',
+            border: '1px solid rgba(255,255,255,0.06)',
           }}
         >
           SOL
@@ -60,20 +52,51 @@ export function TokenTable() {
     {
       key: 'name',
       header: 'Token',
-      width: '140px',
+      width: '160px',
       render: (token) => (
-        <span style={{ fontWeight: 600, color: 'var(--v2-text-primary)' }}>
-          {token.emoji} {token.name}
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+          <span
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '20px',
+              height: '20px',
+              borderRadius: '50%',
+              background: 'var(--v2-bg-surface-3)',
+              fontSize: '12px',
+              flexShrink: 0,
+            }}
+          >
+            {token.emoji}
+          </span>
+          <span>
+            <span
+              className="v2-sans"
+              style={{ fontSize: '12.5px', fontWeight: 600, color: 'var(--v2-text-primary)' }}
+            >
+              {token.name}
+            </span>
+            <span
+              className="v2-sans"
+              style={{ fontSize: '11px', color: 'var(--v2-text-tertiary)', marginLeft: '4px' }}
+            >
+              ({token.ticker})
+            </span>
+          </span>
         </span>
       ),
     },
     {
       key: 'price',
       header: 'Price',
-      width: '90px',
+      width: '100px',
       align: 'right',
       render: (token) => (
-        <span className="v2-mono" style={{ color: 'var(--v2-text-primary)' }}>
+        <span
+          className="v2-mono"
+          style={{ fontSize: '12.5px', fontWeight: 500, color: 'var(--v2-text-primary)' }}
+        >
           {formatPrice(token.price)}
         </span>
       ),
@@ -81,19 +104,27 @@ export function TokenTable() {
     {
       key: 'change24h',
       header: 'Chg 24h',
-      width: '80px',
+      width: '88px',
       align: 'right',
       render: (token) => {
         if (token.change24h === null) {
-          return <span className="v2-mono" style={{ color: 'var(--v2-text-secondary)' }}>N/A</span>
+          return (
+            <span className="v2-mono" style={{ fontSize: '12px', color: 'var(--v2-text-tertiary)' }}>
+              —
+            </span>
+          )
         }
         const positive = token.change24h >= 0
         return (
           <span
             className="v2-mono"
-            style={{ color: positive ? 'var(--v2-green)' : 'var(--v2-red)' }}
+            style={{
+              fontSize: '12px',
+              fontWeight: 600,
+              color: positive ? 'var(--v2-green)' : 'var(--v2-red)',
+            }}
           >
-            {positive ? '+' : ''}{token.change24h.toFixed(2)}%
+            {formatPercent(token.change24h)}
           </span>
         )
       },
@@ -101,7 +132,7 @@ export function TokenTable() {
     {
       key: 'analyze',
       header: '',
-      width: '60px',
+      width: '72px',
       align: 'center',
       render: (token) => (
         <AnalyzeButton onClick={() => analyze('token', token as unknown as Record<string, unknown>)} />
@@ -110,21 +141,27 @@ export function TokenTable() {
     {
       key: 'mcap',
       header: 'MCap',
-      width: '90px',
+      width: '88px',
       align: 'right',
       render: (token) => (
-        <span className="v2-mono" style={{ color: 'var(--v2-text-secondary)' }}>
-          ${formatCompact(token.mcap)}
+        <span
+          className="v2-mono"
+          style={{ fontSize: '12px', fontWeight: 400, color: 'var(--v2-text-secondary)' }}
+        >
+          {formatDollarCompact(token.mcap)}
         </span>
       ),
     },
     {
       key: 'traders',
       header: 'Traders',
-      width: '70px',
+      width: '68px',
       align: 'right',
       render: (token) => (
-        <span className="v2-mono" style={{ color: 'var(--v2-text-secondary)' }}>
+        <span
+          className="v2-mono"
+          style={{ fontSize: '11.5px', fontWeight: 400, color: 'var(--v2-text-tertiary)' }}
+        >
           {token.traders.toLocaleString()}
         </span>
       ),
@@ -132,12 +169,15 @@ export function TokenTable() {
     {
       key: 'volume',
       header: 'Volumes',
-      width: '100px',
+      width: '130px',
       align: 'right',
       render: (token) => (
-        <span style={{ display: 'inline-flex', alignItems: 'center' }}>
-          <span className="v2-mono" style={{ color: 'var(--v2-text-primary)' }}>
-            ${formatCompact(token.volume)}
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', justifyContent: 'flex-end' }}>
+          <span
+            className="v2-mono"
+            style={{ fontSize: '12px', fontWeight: 400, color: 'var(--v2-text-primary)' }}
+          >
+            {formatDollarCompact(token.volume)}
           </span>
           <FlowBar value={token.volume} maxAbsolute={maxVolume} />
         </span>
@@ -149,20 +189,26 @@ export function TokenTable() {
       width: '100px',
       align: 'right',
       render: (token) => (
-        <span className="v2-mono" style={{ color: 'var(--v2-text-secondary)' }}>
-          ${formatCompact(token.liquidity)}
+        <span
+          className="v2-mono"
+          style={{ fontSize: '12px', fontWeight: 400, color: 'var(--v2-text-secondary)' }}
+        >
+          {formatDollarCompact(token.liquidity)}
         </span>
       ),
     },
     {
       key: 'inflows',
       header: 'Inflows',
-      width: '100px',
+      width: '130px',
       align: 'right',
       render: (token) => (
-        <span style={{ display: 'inline-flex', alignItems: 'center' }}>
-          <span className="v2-mono" style={{ color: 'var(--v2-green)' }}>
-            ${formatCompact(token.inflows)}
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', justifyContent: 'flex-end' }}>
+          <span
+            className="v2-mono"
+            style={{ fontSize: '12px', fontWeight: 400, color: 'var(--v2-green)' }}
+          >
+            {formatDollarCompact(token.inflows)}
           </span>
           <FlowBar value={token.inflows} maxAbsolute={maxInflow} />
         </span>
@@ -171,30 +217,44 @@ export function TokenTable() {
     {
       key: 'outflows',
       header: 'Outflows',
-      width: '100px',
+      width: '130px',
       align: 'right',
       render: (token) => (
-        <span className="v2-mono" style={{ color: token.outflows === 0 ? 'var(--v2-text-secondary)' : 'var(--v2-red)' }}>
-          ${formatCompact(token.outflows)}
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', justifyContent: 'flex-end' }}>
+          <span
+            className="v2-mono"
+            style={{
+              fontSize: '12px',
+              fontWeight: 400,
+              color: token.outflows === 0 ? 'var(--v2-text-quaternary)' : 'var(--v2-red)',
+            }}
+          >
+            {formatDollarCompact(token.outflows)}
+          </span>
+          <FlowBar value={-token.outflows} maxAbsolute={maxOutflow} />
         </span>
       ),
     },
     {
       key: 'netFlows',
       header: 'Net Flows',
-      width: '100px',
+      width: '130px',
       align: 'right',
       render: (token) => {
         const positive = token.netFlows >= 0
         return (
-          <span
-            className="v2-mono"
-            style={{
-              color: positive ? 'var(--v2-green)' : 'var(--v2-red)',
-              fontWeight: 600,
-            }}
-          >
-            {positive ? '+' : '-'}${formatCompact(Math.abs(token.netFlows))}
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', justifyContent: 'flex-end' }}>
+            <span
+              className="v2-mono"
+              style={{
+                fontSize: '12px',
+                fontWeight: 600,
+                color: positive ? 'var(--v2-green)' : 'var(--v2-red)',
+              }}
+            >
+              {formatDollarCompact(token.netFlows)}
+            </span>
+            <FlowBar value={token.netFlows} maxAbsolute={maxNetFlow} />
           </span>
         )
       },
@@ -237,7 +297,7 @@ export function TokenTable() {
         </button>
         <span
           className="v2-mono"
-          style={{ fontSize: '11px', color: 'var(--v2-text-secondary)' }}
+          style={{ fontSize: '12px', color: 'var(--v2-text-tertiary)' }}
         >
           {page + 1} / {totalPages}
         </span>

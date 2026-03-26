@@ -7,7 +7,8 @@ import { FilterPill } from '@/components/v2/filter-pill'
 import { TimeToggle } from '@/components/v2/time-toggle'
 import { AnalyzeButton } from '@/components/v2/analyze-button'
 import { useAnalyze } from '@/components/v2/pelican-analyze-panel'
-import { V2_WALLETS, V2Wallet, formatCompact } from '@/lib/crypto-mock-data'
+import { formatDollarCompact, formatPercentCompact } from '@/lib/format'
+import { V2_WALLETS, V2Wallet } from '@/lib/crypto-mock-data'
 
 export function ProfitableWallets() {
   const analyze = useAnalyze()
@@ -19,7 +20,7 @@ export function ProfitableWallets() {
     let data = V2_WALLETS
     if (showTradesFilter) data = data.filter((w) => w.trades >= 5)
     if (showTokensFilter) data = data.filter((w) => w.tokensTraded.length >= 5)
-    return data.slice(0, 10)
+    return data.slice(0, 8)
   }, [showTradesFilter, showTokensFilter])
 
   const maxPnl = useMemo(() => Math.max(...filtered.map((w) => Math.abs(w.realizedPnl)), 1), [filtered])
@@ -29,16 +30,21 @@ export function ProfitableWallets() {
     {
       key: 'label',
       header: 'Name',
-      width: '200px',
+      width: '240px',
       render: (wallet) => (
-        <span style={{ color: 'var(--v2-text-primary)' }}>
-          <span style={{ marginRight: '6px' }}>{wallet.emoji}</span>
-          <span style={{ fontWeight: 600 }}>{wallet.label}</span>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+          <span style={{ fontSize: '14px' }}>{wallet.emoji}</span>
+          <span
+            className="v2-sans"
+            style={{ fontSize: '12px', fontWeight: 500, color: 'var(--v2-text-secondary)' }}
+          >
+            {wallet.label}
+          </span>
           <span
             className="v2-mono"
-            style={{ marginLeft: '8px', fontSize: '11px', color: 'var(--v2-text-tertiary)' }}
+            style={{ fontSize: '11px', color: 'var(--v2-text-quaternary)' }}
           >
-            {wallet.address}
+            [{wallet.address}]
           </span>
         </span>
       ),
@@ -46,12 +52,15 @@ export function ProfitableWallets() {
     {
       key: 'realizedPnl',
       header: 'Realized PnL',
-      width: '160px',
+      width: '140px',
       align: 'right',
       render: (wallet) => (
-        <span style={{ display: 'inline-flex', alignItems: 'center' }}>
-          <span className="v2-mono" style={{ color: 'var(--v2-green)' }}>
-            +${formatCompact(wallet.realizedPnl)}
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', justifyContent: 'flex-end' }}>
+          <span
+            className="v2-mono"
+            style={{ fontSize: '12px', fontWeight: 500, color: 'var(--v2-text-primary)' }}
+          >
+            {formatDollarCompact(wallet.realizedPnl)}
           </span>
           <FlowBar value={wallet.realizedPnl} maxAbsolute={maxPnl} />
         </span>
@@ -60,12 +69,15 @@ export function ProfitableWallets() {
     {
       key: 'roi',
       header: 'ROI',
-      width: '140px',
+      width: '100px',
       align: 'right',
       render: (wallet) => (
-        <span style={{ display: 'inline-flex', alignItems: 'center' }}>
-          <span className="v2-mono" style={{ color: 'var(--v2-green)' }}>
-            +{wallet.roi}%
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', justifyContent: 'flex-end' }}>
+          <span
+            className="v2-mono"
+            style={{ fontSize: '12px', fontWeight: 500, color: wallet.roi >= 0 ? 'var(--v2-green)' : 'var(--v2-red)' }}
+          >
+            {formatPercentCompact(wallet.roi)}
           </span>
           <FlowBar value={wallet.roi} maxAbsolute={maxRoi} />
         </span>
@@ -76,16 +88,24 @@ export function ProfitableWallets() {
       header: 'Win Rate',
       width: '80px',
       align: 'right',
-      render: (wallet) => (
-        <span className="v2-mono" style={{ color: 'var(--v2-green)' }}>
-          {wallet.winRate}%
-        </span>
-      ),
+      render: (wallet) => {
+        let color = 'var(--v2-text-primary)'
+        if (wallet.winRate >= 70) color = 'var(--v2-green)'
+        else if (wallet.winRate < 50) color = 'var(--v2-red)'
+        return (
+          <span
+            className="v2-mono"
+            style={{ fontSize: '12px', fontWeight: 600, color }}
+          >
+            {wallet.winRate}%
+          </span>
+        )
+      },
     },
     {
       key: 'analyze',
       header: '',
-      width: '60px',
+      width: '72px',
       align: 'center',
       render: (wallet) => (
         <AnalyzeButton onClick={() => analyze('wallet', wallet as unknown as Record<string, unknown>)} />
@@ -104,7 +124,10 @@ export function ProfitableWallets() {
           marginBottom: '12px',
         }}
       >
-        <span style={{ fontSize: '14px', fontWeight: 700, color: 'var(--v2-text-primary)' }}>
+        <span
+          className="v2-sans"
+          style={{ fontSize: '14px', fontWeight: 600, color: 'var(--v2-text-primary)' }}
+        >
           Most Profitable Addresses
         </span>
         <TimeToggle
@@ -146,6 +169,7 @@ export function ProfitableWallets() {
               setShowTradesFilter(true)
               setShowTokensFilter(true)
             }}
+            className="v2-sans"
             style={{
               background: 'none',
               border: 'none',
