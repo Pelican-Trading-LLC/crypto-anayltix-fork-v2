@@ -19,7 +19,20 @@ export default function AnalysisHubPage() {
         minHeight: '100%',
       }}
     >
-      {/* Tab bar */}
+      {/* Page title */}
+      <h1
+        className="v2-sans"
+        style={{
+          fontSize: '18px',
+          fontWeight: 600,
+          color: 'var(--v2-text-primary)',
+          margin: '0 0 16px 0',
+        }}
+      >
+        Analysis Hub
+      </h1>
+
+      {/* Sub-tab bar */}
       <div
         style={{
           display: 'flex',
@@ -33,11 +46,12 @@ export default function AnalysisHubPage() {
             key={tab}
             type="button"
             onClick={() => setActiveTab(tab)}
+            className="v2-sans"
             style={{
               padding: '8px 16px',
               background: 'none',
               border: 'none',
-              borderBottom: activeTab === tab ? '2px solid #06B6D4' : '2px solid transparent',
+              borderBottom: activeTab === tab ? '2px solid #22D3EE' : '2px solid transparent',
               color: activeTab === tab ? 'var(--v2-text-primary)' : 'var(--v2-text-secondary)',
               fontSize: '13px',
               fontWeight: 500,

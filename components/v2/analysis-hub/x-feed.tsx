@@ -17,20 +17,27 @@ export function XFeed() {
         >
           {/* Handle, verified badge, time */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginBottom: '6px' }}>
-            <span style={{ fontSize: '13px', fontWeight: 700, color: '#06B6D4' }}>
+            <span
+              className="v2-sans"
+              style={{ fontSize: '12px', fontWeight: 700, color: 'var(--v2-cyan)' }}
+            >
               {post.handle}
             </span>
             {post.verified && (
-              <SealCheck size={14} weight="fill" color="#3b82f6" />
+              <SealCheck size={14} weight="fill" color="#60A5FA" />
             )}
-            <span style={{ fontSize: '11px', color: 'var(--v2-text-tertiary)' }}>&middot;</span>
-            <span className="v2-mono" style={{ fontSize: '11px', color: 'var(--v2-text-tertiary)' }}>
+            <span style={{ fontSize: '11px', color: 'var(--v2-text-quaternary)' }}>&middot;</span>
+            <span
+              className="v2-mono"
+              style={{ fontSize: '11px', color: 'var(--v2-text-quaternary)' }}
+            >
               {post.timeAgo}
             </span>
           </div>
 
           {/* Tweet text */}
           <div
+            className="v2-sans"
             style={{
               fontSize: '12.5px',
               color: 'var(--v2-text-secondary)',

@@ -6,39 +6,51 @@ interface PatternSVGProps {
   pattern: string
 }
 
-const MAIN = '#06B6D4'
-const MUTED = '#484F58'
+const CYAN = '#22D3EE'
+const TERTIARY = '#4A5568'
 const LABEL = '#8B949E'
+const GREEN = '#34D399'
+const RED = '#F87171'
+const VIOLET = '#A78BFA'
 
 export function PatternSVG({ pattern }: PatternSVGProps) {
   return (
-    <svg
-      viewBox="0 0 300 120"
-      style={{ width: '100%', height: '120px', display: 'block' }}
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
+    <div
+      style={{
+        background: 'var(--v2-bg-surface-2)',
+        borderRadius: '6px',
+        padding: '12px',
+        border: '1px solid var(--v2-border)',
+      }}
     >
-      {pattern === 'Bull Flag' && <BullFlag />}
-      {pattern === 'Head & Shoulders' && <HeadAndShoulders />}
-      {pattern === 'Cup & Handle' && <CupAndHandle />}
-      {pattern === 'Elliott Wave' && <ElliottWave />}
-      {pattern === 'Bat Pattern' && <BatPattern />}
-      {pattern === 'Falling Wedge' && <FallingWedge />}
-    </svg>
+      <svg
+        viewBox="0 0 300 100"
+        style={{ width: '100%', height: '100px', display: 'block' }}
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        {pattern === 'Bull Flag' && <BullFlag />}
+        {pattern === 'Head & Shoulders' && <HeadAndShoulders />}
+        {pattern === 'Cup & Handle' && <CupAndHandle />}
+        {pattern === 'Elliott Wave' && <ElliottWave />}
+        {pattern === 'Bat Pattern' && <BatPattern />}
+        {pattern === 'Falling Wedge' && <FallingWedge />}
+      </svg>
+    </div>
   )
 }
 
 function BullFlag() {
   return (
     <>
-      {/* Rising pole */}
-      <polyline points="30,100 80,40 120,30" stroke={MAIN} strokeWidth={2} fill="none" />
-      {/* Small downward channel (flag) */}
-      <polyline points="120,30 160,45 200,40" stroke={MUTED} strokeWidth={1.5} strokeDasharray="4 3" fill="none" />
-      <polyline points="120,40 160,55 200,50" stroke={MUTED} strokeWidth={1.5} strokeDasharray="4 3" fill="none" />
-      {/* Breakout arrow */}
-      <polyline points="200,40 250,15" stroke={MAIN} strokeWidth={2} fill="none" />
-      <polygon points="250,15 240,22 244,12" fill={MAIN} />
+      {/* Rising pole — cyan main line */}
+      <polyline points="25,85 70,35 110,25" stroke={CYAN} strokeWidth={2} fill="none" />
+      {/* Descending channel (flag) — dashed tertiary */}
+      <polyline points="110,25 145,38 180,34" stroke={TERTIARY} strokeWidth={1.5} strokeDasharray="4 4" fill="none" />
+      <polyline points="110,35 145,48 180,44" stroke={TERTIARY} strokeWidth={1.5} strokeDasharray="4 4" fill="none" />
+      {/* Breakout arrow — green */}
+      <polyline points="180,34 240,10" stroke={GREEN} strokeWidth={2} fill="none" />
+      <polygon points="240,10 231,18 234,8" fill={GREEN} />
     </>
   )
 }
@@ -46,19 +58,22 @@ function BullFlag() {
 function HeadAndShoulders() {
   return (
     <>
-      {/* Three peaks */}
+      {/* Three peaks — tertiary */}
       <polyline
-        points="30,80 70,45 110,75 150,20 190,75 230,45 270,80"
-        stroke={MAIN}
-        strokeWidth={2}
+        points="25,70 60,38 95,65 150,12 205,65 240,38 275,70"
+        stroke={TERTIARY}
+        strokeWidth={1.5}
         fill="none"
       />
-      {/* Neckline */}
-      <line x1="30" y1="80" x2="270" y2="80" stroke={MUTED} strokeWidth={1.5} strokeDasharray="5 3" />
+      {/* Neckline — dashed tertiary */}
+      <line x1="25" y1="70" x2="275" y2="70" stroke={TERTIARY} strokeWidth={1.5} strokeDasharray="4 4" />
       {/* Labels */}
-      <text x="70" y="40" fill={LABEL} fontSize="9" textAnchor="middle">LS</text>
-      <text x="150" y="14" fill={LABEL} fontSize="9" textAnchor="middle">H</text>
-      <text x="230" y="40" fill={LABEL} fontSize="9" textAnchor="middle">RS</text>
+      <text x="60" y="33" fill={LABEL} fontSize="10" textAnchor="middle">LS</text>
+      <text x="150" y="8" fill={LABEL} fontSize="10" textAnchor="middle">H</text>
+      <text x="240" y="33" fill={LABEL} fontSize="10" textAnchor="middle">RS</text>
+      {/* Breakdown arrow — red */}
+      <polyline points="240,70 265,90" stroke={RED} strokeWidth={2} fill="none" />
+      <polygon points="265,90 256,86 262,80" fill={RED} />
     </>
   )
 }
@@ -66,23 +81,23 @@ function HeadAndShoulders() {
 function CupAndHandle() {
   return (
     <>
-      {/* U-shape cup */}
+      {/* U-curve cup — cyan */}
       <path
-        d="M 30,30 C 30,100 160,100 190,30"
-        stroke={MAIN}
+        d="M 25,25 C 25,90 160,90 185,25"
+        stroke={CYAN}
         strokeWidth={2}
         fill="none"
       />
-      {/* Handle dip */}
+      {/* Small handle dip — cyan */}
       <path
-        d="M 190,30 C 200,28 215,50 235,35"
-        stroke={MAIN}
+        d="M 185,25 C 195,23 210,45 228,30"
+        stroke={CYAN}
         strokeWidth={2}
         fill="none"
       />
-      {/* Breakout */}
-      <polyline points="235,35 270,15" stroke={MAIN} strokeWidth={1.5} strokeDasharray="4 3" />
-      <polygon points="270,15 262,22 265,12" fill={MAIN} />
+      {/* Breakout arrow — green */}
+      <polyline points="228,30 265,10" stroke={GREEN} strokeWidth={2} fill="none" />
+      <polygon points="265,10 257,18 260,8" fill={GREEN} />
     </>
   )
 }
@@ -90,19 +105,19 @@ function CupAndHandle() {
 function ElliottWave() {
   return (
     <>
-      {/* 5-wave impulse */}
+      {/* 5-wave impulse — cyan */}
       <polyline
-        points="20,95 65,40 95,70 155,15 195,55 260,10"
-        stroke={MAIN}
+        points="18,82 58,35 85,58 145,10 180,45 250,5"
+        stroke={CYAN}
         strokeWidth={2}
         fill="none"
       />
-      {/* Wave labels */}
-      <text x="65" y="34" fill={LABEL} fontSize="10" textAnchor="middle">1</text>
-      <text x="95" y="82" fill={LABEL} fontSize="10" textAnchor="middle">2</text>
-      <text x="155" y="10" fill={LABEL} fontSize="10" textAnchor="middle">3</text>
-      <text x="195" y="67" fill={LABEL} fontSize="10" textAnchor="middle">4</text>
-      <text x="260" y="8" fill={LABEL} fontSize="10" textAnchor="middle">5</text>
+      {/* Wave number labels — secondary text */}
+      <text x="58" y="30" fill={LABEL} fontSize="10" textAnchor="middle">1</text>
+      <text x="85" y="70" fill={LABEL} fontSize="10" textAnchor="middle">2</text>
+      <text x="145" y="7" fill={LABEL} fontSize="10" textAnchor="middle">3</text>
+      <text x="180" y="57" fill={LABEL} fontSize="10" textAnchor="middle">4</text>
+      <text x="250" y="4" fill={LABEL} fontSize="10" textAnchor="middle">5</text>
     </>
   )
 }
@@ -110,21 +125,21 @@ function ElliottWave() {
 function BatPattern() {
   return (
     <>
-      {/* XABCD harmonic */}
+      {/* XABCD harmonic — violet */}
       <polyline
-        points="25,90 80,25 130,65 175,20 250,80"
-        stroke={MAIN}
+        points="22,78 72,18 120,55 165,14 245,70"
+        stroke={VIOLET}
         strokeWidth={2}
         fill="none"
       />
-      {/* XA retrace line */}
-      <line x1="25" y1="90" x2="175" y2="20" stroke={MUTED} strokeWidth={1} strokeDasharray="4 3" />
-      {/* Labels */}
-      <text x="25" y="104" fill={LABEL} fontSize="10" textAnchor="middle">X</text>
-      <text x="80" y="19" fill={LABEL} fontSize="10" textAnchor="middle">A</text>
-      <text x="130" y="78" fill={LABEL} fontSize="10" textAnchor="middle">B</text>
-      <text x="175" y="14" fill={LABEL} fontSize="10" textAnchor="middle">C</text>
-      <text x="250" y="94" fill={LABEL} fontSize="10" textAnchor="middle">D</text>
+      {/* XA retrace dashed */}
+      <line x1="22" y1="78" x2="165" y2="14" stroke={TERTIARY} strokeWidth={1} strokeDasharray="4 4" />
+      {/* Letter labels */}
+      <text x="22" y="90" fill={LABEL} fontSize="10" textAnchor="middle">X</text>
+      <text x="72" y="13" fill={LABEL} fontSize="10" textAnchor="middle">A</text>
+      <text x="120" y="67" fill={LABEL} fontSize="10" textAnchor="middle">B</text>
+      <text x="165" y="10" fill={LABEL} fontSize="10" textAnchor="middle">C</text>
+      <text x="245" y="82" fill={LABEL} fontSize="10" textAnchor="middle">D</text>
     </>
   )
 }
@@ -132,20 +147,19 @@ function BatPattern() {
 function FallingWedge() {
   return (
     <>
-      {/* Upper trendline */}
-      <line x1="30" y1="20" x2="200" y2="50" stroke={MAIN} strokeWidth={1.5} strokeDasharray="5 3" />
-      {/* Lower trendline */}
-      <line x1="30" y1="30" x2="200" y2="55" stroke={MAIN} strokeWidth={1.5} strokeDasharray="5 3" />
-      {/* Price action inside wedge */}
+      {/* Converging downward dashed lines — tertiary */}
+      <line x1="25" y1="15" x2="190" y2="45" stroke={TERTIARY} strokeWidth={1.5} strokeDasharray="4 4" />
+      <line x1="25" y1="30" x2="190" y2="50" stroke={TERTIARY} strokeWidth={1.5} strokeDasharray="4 4" />
+      {/* Price action inside wedge — cyan */}
       <polyline
-        points="35,22 60,28 80,24 110,35 130,30 160,42 185,38 200,52"
-        stroke={MUTED}
-        strokeWidth={1.5}
+        points="30,18 55,28 75,20 105,32 125,27 155,40 178,36 190,48"
+        stroke={CYAN}
+        strokeWidth={2}
         fill="none"
       />
-      {/* Breakout arrow */}
-      <polyline points="200,50 255,20" stroke={MAIN} strokeWidth={2} fill="none" />
-      <polygon points="255,20 247,28 250,17" fill={MAIN} />
+      {/* Breakout arrow — green */}
+      <polyline points="190,45 250,15" stroke={GREEN} strokeWidth={2} fill="none" />
+      <polygon points="250,15 242,23 245,13" fill={GREEN} />
     </>
   )
 }

@@ -65,7 +65,10 @@ export function AnalystSetups() {
           <SetupCard key={i} setup={setup} onAnalyze={() => analyze('setup', setup as unknown as Record<string, unknown>)} />
         ))}
         {filtered.length === 0 && (
-          <div style={{ padding: '24px', textAlign: 'center', color: 'var(--v2-text-tertiary)', fontSize: '13px' }}>
+          <div
+            className="v2-sans"
+            style={{ padding: '24px', textAlign: 'center', color: 'var(--v2-text-tertiary)', fontSize: '13px' }}
+          >
             No setups match the selected filters.
           </div>
         )}
@@ -80,24 +83,24 @@ function SetupCard({ setup, onAnalyze }: { setup: V2AnalystSetup; onAnalyze: () 
   return (
     <div
       style={{
-        padding: '14px 0',
+        padding: '16px 0',
         borderBottom: '1px solid var(--v2-border)',
       }}
     >
       {/* Top row: avatar, analyst, token badge, pattern badge, direction */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', flexWrap: 'wrap' }}>
-        {/* Avatar */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+        {/* Avatar — 32px circle */}
         <div
           style={{
-            width: '36px',
-            height: '36px',
+            width: '32px',
+            height: '32px',
             borderRadius: '50%',
             background: setup.avatarColor,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             color: '#fff',
-            fontSize: '13px',
+            fontSize: '12px',
             fontWeight: 700,
             flexShrink: 0,
           }}
@@ -106,19 +109,25 @@ function SetupCard({ setup, onAnalyze }: { setup: V2AnalystSetup; onAnalyze: () 
         </div>
 
         {/* Analyst name */}
-        <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--v2-text-primary)' }}>
+        <span
+          className="v2-sans"
+          style={{ fontSize: '13px', fontWeight: 600, color: 'var(--v2-text-primary)' }}
+        >
           {setup.analyst}
         </span>
 
         {/* Token badge */}
         <span
+          className="v2-mono"
           style={{
-            padding: '2px 8px',
+            height: '20px',
+            display: 'inline-flex',
+            alignItems: 'center',
+            padding: '0 6px',
             borderRadius: '4px',
-            background: 'rgba(6,182,212,0.15)',
-            color: '#06B6D4',
-            fontSize: '11px',
-            fontWeight: 600,
+            background: 'rgba(255,255,255,0.04)',
+            color: 'var(--v2-text-tertiary)',
+            fontSize: '10px',
           }}
         >
           {setup.token}
@@ -126,55 +135,73 @@ function SetupCard({ setup, onAnalyze }: { setup: V2AnalystSetup; onAnalyze: () 
 
         {/* Pattern badge */}
         <span
+          className="v2-sans"
           style={{
-            padding: '2px 8px',
+            height: '20px',
+            display: 'inline-flex',
+            alignItems: 'center',
+            padding: '0 6px',
             borderRadius: '4px',
-            background: 'var(--v2-bg-elevated)',
-            color: 'var(--v2-text-secondary)',
-            fontSize: '11px',
-            fontWeight: 500,
-            border: '1px solid var(--v2-border)',
+            background: 'rgba(255,255,255,0.04)',
+            color: 'var(--v2-text-tertiary)',
+            fontSize: '10px',
           }}
         >
           {setup.pattern}
         </span>
 
         {/* Direction */}
-        <span style={{ fontSize: '12px', fontWeight: 600, color: dirColor }}>
+        <span
+          className="v2-sans"
+          style={{ fontSize: '12px', fontWeight: 600, color: dirColor }}
+        >
           {setup.direction}
         </span>
       </div>
 
       {/* Description */}
       <div
+        className="v2-sans"
         style={{
-          fontSize: '12px',
+          fontSize: '12.5px',
           color: 'var(--v2-text-secondary)',
           lineHeight: 1.5,
-          marginBottom: '10px',
+          marginTop: '6px',
         }}
       >
         {setup.description}
       </div>
 
       {/* Pattern SVG */}
-      <div style={{ marginBottom: '10px' }}>
+      <div style={{ margin: '12px 0' }}>
         <PatternSVG pattern={setup.pattern} />
       </div>
 
       {/* Bottom row: Entry, Target, Stop, TF, Analyze */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
-        <span style={{ fontSize: '12px', color: 'var(--v2-text-secondary)' }}>
-          Entry: <span className="v2-mono" style={{ color: 'var(--v2-text-primary)' }}>{formatPrice(setup.entry)}</span>
+        <span className="v2-sans" style={{ fontSize: '12px', color: 'var(--v2-text-secondary)' }}>
+          Entry:{' '}
+          <span className="v2-mono" style={{ color: 'var(--v2-text-primary)' }}>
+            {formatPrice(setup.entry)}
+          </span>
         </span>
-        <span style={{ fontSize: '12px', color: 'var(--v2-text-secondary)' }}>
-          Target: <span className="v2-mono" style={{ color: 'var(--v2-green)' }}>{formatPrice(setup.target)}</span>
+        <span className="v2-sans" style={{ fontSize: '12px', color: 'var(--v2-text-secondary)' }}>
+          Target:{' '}
+          <span className="v2-mono" style={{ color: 'var(--v2-green)' }}>
+            {formatPrice(setup.target)}
+          </span>
         </span>
-        <span style={{ fontSize: '12px', color: 'var(--v2-text-secondary)' }}>
-          Stop: <span className="v2-mono" style={{ color: 'var(--v2-red)' }}>{formatPrice(setup.stop)}</span>
+        <span className="v2-sans" style={{ fontSize: '12px', color: 'var(--v2-text-secondary)' }}>
+          Stop:{' '}
+          <span className="v2-mono" style={{ color: 'var(--v2-red)' }}>
+            {formatPrice(setup.stop)}
+          </span>
         </span>
-        <span style={{ fontSize: '12px', color: 'var(--v2-text-secondary)' }}>
-          TF: <span className="v2-mono" style={{ color: 'var(--v2-text-primary)' }}>{setup.timeframe}</span>
+        <span className="v2-sans" style={{ fontSize: '12px', color: 'var(--v2-text-secondary)' }}>
+          TF:{' '}
+          <span className="v2-mono" style={{ color: 'var(--v2-text-tertiary)' }}>
+            {setup.timeframe}
+          </span>
         </span>
         <div style={{ marginLeft: 'auto' }}>
           <AnalyzeButton onClick={onAnalyze} />
