@@ -31,7 +31,7 @@ export default function SmartMoneyPage() {
       >
         <span
           className="v2-sans"
-          style={{ fontSize: '16px', fontWeight: 700, color: 'var(--v2-text-primary)' }}
+          style={{ fontSize: '18px', fontWeight: 600, color: 'var(--v2-text-primary)' }}
         >
           Smart Money
         </span>

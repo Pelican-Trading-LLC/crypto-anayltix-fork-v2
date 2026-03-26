@@ -6,7 +6,8 @@ import { FlowBar } from '@/components/v2/flow-bar'
 import { AnalyzeButton } from '@/components/v2/analyze-button'
 import { useAnalyze } from '@/components/v2/pelican-analyze-panel'
 import { ScatterPlot } from './scatter-plot'
-import { V2_WALLETS, formatCompact } from '@/lib/crypto-mock-data'
+import { V2_WALLETS } from '@/lib/crypto-mock-data'
+import { formatDollarCompact, formatPercentCompact } from '@/lib/format'
 import type { V2Wallet } from '@/lib/crypto-mock-data'
 
 export function Leaderboard() {
@@ -17,18 +18,24 @@ export function Leaderboard() {
     {
       key: 'name',
       header: 'Name',
-      width: undefined,
+      width: '220px',
       render: (w) => (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span>{w.emoji}</span>
-          <span style={{ fontWeight: 600, color: 'var(--v2-text-primary)', fontSize: '13px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <span style={{ fontSize: '14px' }}>{w.emoji}</span>
+          <span
+            style={{
+              fontWeight: 500,
+              color: 'var(--v2-text-secondary)',
+              fontSize: '12px',
+            }}
+          >
             {w.label}
           </span>
           <span
             className="v2-mono"
-            style={{ fontSize: '11px', color: 'var(--v2-text-tertiary)' }}
+            style={{ fontSize: '11px', color: 'var(--v2-text-quaternary)' }}
           >
-            {w.address}
+            [{w.address}]
           </span>
         </div>
       ),
@@ -36,14 +43,14 @@ export function Leaderboard() {
     {
       key: 'totalPnl',
       header: 'Total PnL',
-      width: '120px',
+      width: '140px',
       align: 'right',
       render: (w) => (
-        <span style={{ display: 'inline-flex', alignItems: 'center' }}>
-          <span className="v2-mono" style={{ color: 'var(--v2-green)', fontSize: '13px' }}>
-            ${formatCompact(w.totalPnl)}
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+          <span className="v2-mono" style={{ color: 'var(--v2-text-primary)', fontSize: '13px' }}>
+            {formatDollarCompact(w.totalPnl)}
           </span>
-          <FlowBar value={w.totalPnl} maxAbsolute={maxPnl} />
+          <FlowBar value={w.totalPnl} maxAbsolute={maxPnl} width={48} />
         </span>
       ),
     },
@@ -53,8 +60,8 @@ export function Leaderboard() {
       width: '100px',
       align: 'right',
       render: (w) => (
-        <span className="v2-mono" style={{ fontSize: '13px', color: 'var(--v2-text-primary)' }}>
-          ${formatCompact(w.realizedPnl)}
+        <span className="v2-mono" style={{ fontSize: '13px', color: 'var(--v2-text-secondary)' }}>
+          {formatDollarCompact(w.realizedPnl)}
         </span>
       ),
     },
@@ -64,8 +71,8 @@ export function Leaderboard() {
       width: '80px',
       align: 'right',
       render: (w) => (
-        <span className="v2-mono" style={{ fontSize: '13px', color: 'var(--v2-text-primary)' }}>
-          {w.roi}%
+        <span className="v2-mono" style={{ fontSize: '13px', color: 'var(--v2-text-secondary)' }}>
+          {formatPercentCompact(w.roi)}
         </span>
       ),
     },
@@ -74,16 +81,21 @@ export function Leaderboard() {
       header: 'Win Rate',
       width: '80px',
       align: 'right',
-      render: (w) => (
-        <span className="v2-mono" style={{ fontSize: '13px', color: 'var(--v2-green)' }}>
-          {w.winRate}%
-        </span>
-      ),
+      render: (w) => {
+        let color = 'var(--v2-text-primary)'
+        if (w.winRate >= 70) color = 'var(--v2-green)'
+        else if (w.winRate < 50) color = 'var(--v2-red)'
+        return (
+          <span className="v2-mono" style={{ fontSize: '13px', fontWeight: 600, color }}>
+            {w.winRate}%
+          </span>
+        )
+      },
     },
     {
       key: 'trades',
       header: '# Trades',
-      width: '60px',
+      width: '64px',
       align: 'right',
       render: (w) => (
         <span className="v2-mono" style={{ fontSize: '13px', color: 'var(--v2-text-tertiary)' }}>
@@ -94,24 +106,27 @@ export function Leaderboard() {
     {
       key: 'tokensTraded',
       header: 'Tokens Traded',
-      width: '120px',
-      render: (w) => {
-        const first3 = w.tokensTraded.slice(0, 3).join(', ')
-        const extra = w.tokensTraded.length > 3 ? ` & ${w.tokensTraded.length - 3} more` : ''
-        return (
-          <span style={{ fontSize: '12px', color: 'var(--v2-text-secondary)' }}>
-            {first3}
-            {extra && (
-              <span style={{ color: 'var(--v2-text-tertiary)' }}>{extra}</span>
-            )}
-          </span>
-        )
-      },
+      width: '180px',
+      align: 'right',
+      render: (w) => (
+        <span
+          style={{
+            fontSize: '11px',
+            color: 'var(--v2-text-tertiary)',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+            display: 'block',
+          }}
+        >
+          {w.tokensTraded.join(', ')}
+        </span>
+      ),
     },
     {
       key: 'analyze',
       header: '',
-      width: '50px',
+      width: '72px',
       align: 'center',
       render: (w) => (
         <AnalyzeButton onClick={() => analyze('wallet', w as unknown as Record<string, unknown>)} />
@@ -122,8 +137,7 @@ export function Leaderboard() {
   return (
     <div>
       <ScatterPlot wallets={V2_WALLETS} />
-      <div style={{ height: '20px' }} />
-      <DataTable columns={columns} data={V2_WALLETS} />
+      <DataTable columns={columns} data={V2_WALLETS.slice(0, 12)} />
     </div>
   )
 }

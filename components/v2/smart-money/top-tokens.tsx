@@ -8,9 +8,11 @@ import { FilterPill } from '@/components/v2/filter-pill'
 import {
   V2_TOP_TOKENS_TRADING,
   V2_TOP_TOKENS_HOLDING,
-  formatCompact,
 } from '@/lib/crypto-mock-data'
+import { formatDollarCompact, formatPercent } from '@/lib/format'
 import type { V2TopTokenTrading, V2TopTokenHolding } from '@/lib/crypto-mock-data'
+
+/* ── Shared sub-components ────────────────────────────────────── */
 
 function SolBadge() {
   return (
@@ -22,8 +24,8 @@ function SolBadge() {
         borderRadius: '3px',
         fontSize: '10px',
         fontWeight: 600,
-        background: 'rgba(153, 69, 255, 0.15)',
-        color: '#9945FF',
+        background: 'rgba(255,255,255,0.06)',
+        color: 'var(--v2-text-tertiary)',
       }}
     >
       SOL
@@ -68,11 +70,43 @@ function ToggleSwitch({
   )
 }
 
+function LiveBadge() {
+  return (
+    <span
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '4px',
+        padding: '2px 8px',
+        borderRadius: '3px',
+        fontSize: '10px',
+        fontWeight: 700,
+        background: 'rgba(34, 197, 94, 0.15)',
+        color: 'var(--v2-green)',
+        letterSpacing: '0.5px',
+      }}
+    >
+      <span
+        style={{
+          width: '5px',
+          height: '5px',
+          borderRadius: '50%',
+          background: 'var(--v2-green)',
+          display: 'inline-block',
+        }}
+      />
+      LIVE
+    </span>
+  )
+}
+
+/* ── Main Component ───────────────────────────────────────────── */
+
 export function TopTokens() {
   const [excludeStable, setExcludeStable] = useState(false)
   const [excludeL1L2, setExcludeL1L2] = useState(false)
 
-  // Trading section
+  // ── Trading section maxes ──
   const maxFlow24h = Math.max(...V2_TOP_TOKENS_TRADING.map((t) => Math.abs(t.flows24h)))
   const maxFlow7d = Math.max(...V2_TOP_TOKENS_TRADING.map((t) => Math.abs(t.flows7d)))
   const maxFlow30d = Math.max(...V2_TOP_TOKENS_TRADING.map((t) => Math.abs(t.flows30d)))
@@ -81,13 +115,13 @@ export function TopTokens() {
     {
       key: 'chain',
       header: 'Chain',
-      width: '50px',
+      width: '48px',
       render: () => <SolBadge />,
     },
     {
       key: 'token',
       header: 'Token',
-      width: '140px',
+      width: '160px',
       render: (t) => (
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
           <span>{t.emoji}</span>
@@ -100,12 +134,12 @@ export function TopTokens() {
     {
       key: 'flows24h',
       header: '24H Flows',
-      width: '120px',
+      width: '140px',
       align: 'right',
       render: (t) => (
-        <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
           <span className="v2-mono" style={{ fontSize: '13px', color: 'var(--v2-green)' }}>
-            ${formatCompact(t.flows24h)}
+            {formatDollarCompact(t.flows24h)}
           </span>
           <FlowBar value={t.flows24h} maxAbsolute={maxFlow24h} />
         </span>
@@ -114,10 +148,10 @@ export function TopTokens() {
     {
       key: 'flows7d',
       header: '7D Flows',
-      width: '120px',
+      width: '140px',
       align: 'right',
       render: (t) => (
-        <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
           <span
             className="v2-mono"
             style={{
@@ -125,7 +159,7 @@ export function TopTokens() {
               color: t.flows7d >= 0 ? 'var(--v2-green)' : 'var(--v2-red)',
             }}
           >
-            {t.flows7d < 0 ? '-' : ''}${formatCompact(Math.abs(t.flows7d))}
+            {formatDollarCompact(t.flows7d)}
           </span>
           <FlowBar value={t.flows7d} maxAbsolute={maxFlow7d} />
         </span>
@@ -134,10 +168,10 @@ export function TopTokens() {
     {
       key: 'flows30d',
       header: '30D Flows',
-      width: '120px',
+      width: '140px',
       align: 'right',
       render: (t) => (
-        <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
           <span
             className="v2-mono"
             style={{
@@ -145,7 +179,7 @@ export function TopTokens() {
               color: t.flows30d >= 0 ? 'var(--v2-green)' : 'var(--v2-red)',
             }}
           >
-            {t.flows30d < 0 ? '-' : ''}${formatCompact(Math.abs(t.flows30d))}
+            {formatDollarCompact(t.flows30d)}
           </span>
           <FlowBar value={t.flows30d} maxAbsolute={maxFlow30d} />
         </span>
@@ -154,52 +188,52 @@ export function TopTokens() {
     {
       key: 'traders',
       header: 'Traders',
-      width: '70px',
+      width: '68px',
       align: 'right',
       render: (t) => (
-        <span className="v2-mono" style={{ fontSize: '13px', color: 'var(--v2-text-primary)' }}>
-          {formatCompact(t.traders)}
+        <span className="v2-mono" style={{ fontSize: '13px', color: 'var(--v2-text-tertiary)' }}>
+          {t.traders.toLocaleString()}
         </span>
       ),
     },
     {
       key: 'tokenAgeDays',
-      header: 'Token Age (D)',
+      header: 'Token Age',
       width: '80px',
       align: 'right',
       render: (t) => (
-        <span className="v2-mono" style={{ fontSize: '13px', color: 'var(--v2-text-primary)' }}>
-          {t.tokenAgeDays}
+        <span className="v2-mono" style={{ fontSize: '13px', color: 'var(--v2-text-tertiary)' }}>
+          {t.tokenAgeDays}d
         </span>
       ),
     },
     {
       key: 'mcap',
       header: 'Market Cap',
-      width: '90px',
+      width: '100px',
       align: 'right',
       render: (t) => (
-        <span className="v2-mono" style={{ fontSize: '13px', color: 'var(--v2-text-primary)' }}>
-          ${formatCompact(t.mcap)}
+        <span className="v2-mono" style={{ fontSize: '13px', color: 'var(--v2-text-secondary)' }}>
+          {formatDollarCompact(t.mcap)}
         </span>
       ),
     },
   ]
 
-  // Holding section
+  // ── Holding section ──
   const maxBalance = Math.max(...V2_TOP_TOKENS_HOLDING.map((t) => t.balance))
 
   const holdingColumns: Column<V2TopTokenHolding>[] = [
     {
       key: 'chain',
       header: 'Chain',
-      width: '50px',
+      width: '48px',
       render: () => <SolBadge />,
     },
     {
       key: 'token',
       header: 'Token',
-      width: '140px',
+      width: '160px',
       render: (t) => (
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
           <span>{t.emoji}</span>
@@ -212,12 +246,12 @@ export function TopTokens() {
     {
       key: 'balance',
       header: 'Balance',
-      width: '120px',
+      width: '140px',
       align: 'right',
       render: (t) => (
-        <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
           <span className="v2-mono" style={{ fontSize: '13px', color: 'var(--v2-text-primary)' }}>
-            ${formatCompact(t.balance)}
+            {formatDollarCompact(t.balance)}
           </span>
           <FlowBar value={t.balance} maxAbsolute={maxBalance} />
         </span>
@@ -225,7 +259,7 @@ export function TopTokens() {
     },
     {
       key: 'balanceChange24h',
-      header: 'Balance Change (24H)',
+      header: 'Balance Change 24H',
       width: '100px',
       align: 'right',
       render: (t) => (
@@ -241,8 +275,7 @@ export function TopTokens() {
                   : 'var(--v2-red)',
           }}
         >
-          {t.balanceChange24h > 0 ? '+' : ''}
-          {t.balanceChange24h}%
+          {formatPercent(t.balanceChange24h)}
         </span>
       ),
     },
@@ -252,7 +285,7 @@ export function TopTokens() {
       width: '100px',
       align: 'right',
       render: (t) => (
-        <span className="v2-mono" style={{ fontSize: '13px', color: 'var(--v2-text-tertiary)' }}>
+        <span className="v2-mono" style={{ fontSize: '13px', color: 'var(--v2-text-secondary)' }}>
           {t.shareOfHoldings}%
         </span>
       ),
@@ -260,22 +293,22 @@ export function TopTokens() {
     {
       key: 'holders',
       header: 'Holders',
-      width: '70px',
+      width: '68px',
       align: 'right',
       render: (t) => (
-        <span className="v2-mono" style={{ fontSize: '13px', color: 'var(--v2-text-primary)' }}>
-          {formatCompact(t.holders)}
+        <span className="v2-mono" style={{ fontSize: '13px', color: 'var(--v2-text-tertiary)' }}>
+          {t.holders.toLocaleString()}
         </span>
       ),
     },
     {
       key: 'mcap',
       header: 'Market Cap',
-      width: '90px',
+      width: '100px',
       align: 'right',
       render: (t) => (
-        <span className="v2-mono" style={{ fontSize: '13px', color: 'var(--v2-text-primary)' }}>
-          ${formatCompact(t.mcap)}
+        <span className="v2-mono" style={{ fontSize: '13px', color: 'var(--v2-text-secondary)' }}>
+          {formatDollarCompact(t.mcap)}
         </span>
       ),
     },
@@ -296,25 +329,11 @@ export function TopTokens() {
         >
           <span
             className="v2-sans"
-            style={{ fontSize: '14px', fontWeight: 700, color: 'var(--v2-text-primary)' }}
+            style={{ fontSize: '14px', fontWeight: 600, color: 'var(--v2-text-primary)' }}
           >
             What Are Smart Money Trading?
           </span>
-          <span
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              padding: '2px 8px',
-              borderRadius: '3px',
-              fontSize: '10px',
-              fontWeight: 700,
-              background: 'rgba(34, 197, 94, 0.15)',
-              color: 'var(--v2-green)',
-              letterSpacing: '0.5px',
-            }}
-          >
-            LIVE
-          </span>
+          <LiveBadge />
           <Info size={14} weight="regular" style={{ color: 'var(--v2-text-tertiary)' }} />
           <FilterPill label="+ Filter" />
         </div>
@@ -330,7 +349,7 @@ export function TopTokens() {
           }}
         >
           <FilterPill label="All Caps &#9662;" />
-          <FilterPill label="0-100K Token Age(D)" />
+          <FilterPill label="Token Age(D)" />
           <FilterPill label="Sectors &#9662;" />
           <FilterPill label="&#128302; Label &#9662;" />
         </div>
@@ -371,25 +390,11 @@ export function TopTokens() {
         >
           <span
             className="v2-sans"
-            style={{ fontSize: '14px', fontWeight: 700, color: 'var(--v2-text-primary)' }}
+            style={{ fontSize: '14px', fontWeight: 600, color: 'var(--v2-text-primary)' }}
           >
             What Are Smart Money Holding?
           </span>
-          <span
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              padding: '2px 8px',
-              borderRadius: '3px',
-              fontSize: '10px',
-              fontWeight: 700,
-              background: 'rgba(34, 197, 94, 0.15)',
-              color: 'var(--v2-green)',
-              letterSpacing: '0.5px',
-            }}
-          >
-            LIVE
-          </span>
+          <LiveBadge />
           <Info size={14} weight="regular" style={{ color: 'var(--v2-text-tertiary)' }} />
           <FilterPill label="+ Filter" />
         </div>

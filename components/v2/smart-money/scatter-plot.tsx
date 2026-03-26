@@ -4,170 +4,181 @@ import React, { useState } from 'react'
 import { FilterPill } from '@/components/v2/filter-pill'
 import { TimeToggle } from '@/components/v2/time-toggle'
 import type { V2Wallet } from '@/lib/crypto-mock-data'
-import { formatCompact } from '@/lib/crypto-mock-data'
 
 interface ScatterPlotProps {
   wallets: V2Wallet[]
 }
 
+const Y_LABELS = ['0%', '100%', '200%', '300%', '400%', '500%']
+const X_LABELS = ['$0', '$20K', '$40K', '$60K', '$80K', '$100K', '$120K']
+
 export function ScatterPlot({ wallets }: ScatterPlotProps) {
   const [timeRange, setTimeRange] = useState('30D')
 
-  const padding = { top: 20, right: 20, bottom: 32, left: 48 }
-  const width = 600
-  const height = 200
-
-  const chartW = width - padding.left - padding.right
-  const chartH = height - padding.top - padding.bottom
-
-  const maxPnl = Math.max(...wallets.map((w) => w.realizedPnl))
-  const maxRoi = Math.max(...wallets.map((w) => w.roi))
-
-  // Generate grid ticks
-  const xTicks = [0, maxPnl * 0.25, maxPnl * 0.5, maxPnl * 0.75, maxPnl]
-  const yTicks = [0, maxRoi * 0.25, maxRoi * 0.5, maxRoi * 0.75, maxRoi]
-
-  function xPos(val: number) {
-    return padding.left + (val / maxPnl) * chartW
-  }
-  function yPos(val: number) {
-    return padding.top + chartH - (val / maxRoi) * chartH
-  }
+  const maxPnl = 120000
+  const maxRoi = 500
 
   return (
-    <div>
+    <div
+      style={{
+        background: 'var(--v2-bg-surface-2)',
+        border: '1px solid var(--v2-border)',
+        borderRadius: '8px',
+        marginBottom: '20px',
+      }}
+    >
       {/* Header */}
       <div
         style={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          marginBottom: '12px',
+          padding: '14px 16px 0 16px',
         }}
       >
-        <span
-          className="v2-sans"
-          style={{ fontSize: '14px', fontWeight: 700, color: 'var(--v2-text-primary)' }}
-        >
-          Who Are The Best Smart Money Traders?
-        </span>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span
+            className="v2-sans"
+            style={{ fontSize: '14px', fontWeight: 600, color: 'var(--v2-text-primary)' }}
+          >
+            Who Are The Best Smart Money Traders?
+          </span>
           <FilterPill label="Label" />
           <FilterPill label="+ Filter" />
-          <TimeToggle
-            options={['7D', '30D', '90D', '180D']}
-            value={timeRange}
-            onChange={setTimeRange}
-          />
         </div>
+        <TimeToggle
+          options={['7D', '30D', '90D', '180D']}
+          value={timeRange}
+          onChange={setTimeRange}
+        />
       </div>
 
-      {/* Chart */}
+      {/* Chart wrapper with padding for labels */}
       <div
         style={{
-          height: '200px',
-          background: 'var(--v2-bg-elevated)',
-          border: '1px solid var(--v2-border)',
-          borderRadius: '6px',
-          padding: '16px',
+          position: 'relative',
+          height: '220px',
+          padding: '24px 32px 40px 56px',
         }}
       >
-        <svg
-          viewBox={`0 0 ${width} ${height}`}
-          width="100%"
-          height="100%"
-          style={{ overflow: 'visible' }}
+        {/* Y-axis labels */}
+        {Y_LABELS.map((label, i) => {
+          const fraction = i / (Y_LABELS.length - 1)
+          // Chart inner height = 220 - 24 (top pad) - 40 (bottom pad) = 156px
+          // Top of chart area = 24px; bottom-most label at 24 + 156 = 180px
+          const topPx = 24 + (1 - fraction) * 156
+          return (
+            <span
+              key={`y-${i}`}
+              className="v2-mono"
+              style={{
+                position: 'absolute',
+                left: '8px',
+                top: `${topPx}px`,
+                transform: 'translateY(-50%)',
+                fontSize: '10px',
+                color: 'var(--v2-text-quaternary)',
+                pointerEvents: 'none',
+              }}
+            >
+              {label}
+            </span>
+          )
+        })}
+
+        {/* X-axis labels — positioned below chart area */}
+        {X_LABELS.map((label, i) => {
+          const fraction = i / (X_LABELS.length - 1)
+          return (
+            <span
+              key={`x-${i}`}
+              className="v2-mono"
+              style={{
+                position: 'absolute',
+                bottom: '10px',
+                left: `calc(56px + ${fraction} * (100% - 56px - 32px))`,
+                transform: 'translateX(-50%)',
+                fontSize: '10px',
+                color: 'var(--v2-text-quaternary)',
+                pointerEvents: 'none',
+              }}
+            >
+              {label}
+            </span>
+          )
+        })}
+
+        {/* Inner plot area */}
+        <div
+          style={{
+            position: 'relative',
+            width: '100%',
+            height: '100%',
+            overflow: 'hidden',
+          }}
         >
-          {/* Grid lines */}
-          {xTicks.map((t, i) => (
-            <line
-              key={`xg-${i}`}
-              x1={xPos(t)}
-              y1={padding.top}
-              x2={xPos(t)}
-              y2={padding.top + chartH}
-              stroke="rgba(255,255,255,0.06)"
-              strokeWidth={1}
-            />
-          ))}
-          {yTicks.map((t, i) => (
-            <line
-              key={`yg-${i}`}
-              x1={padding.left}
-              y1={yPos(t)}
-              x2={padding.left + chartW}
-              y2={yPos(t)}
-              stroke="rgba(255,255,255,0.06)"
-              strokeWidth={1}
-            />
-          ))}
+          {/* Horizontal grid lines */}
+          {Y_LABELS.map((_, i) => {
+            const pct = (1 - i / (Y_LABELS.length - 1)) * 100
+            return (
+              <div
+                key={`hg-${i}`}
+                style={{
+                  position: 'absolute',
+                  left: 0,
+                  right: 0,
+                  top: `${pct}%`,
+                  height: '1px',
+                  background: 'rgba(255,255,255,0.03)',
+                  pointerEvents: 'none',
+                }}
+              />
+            )
+          })}
 
-          {/* X-axis labels */}
-          {xTicks.map((t, i) => (
-            <text
-              key={`xl-${i}`}
-              x={xPos(t)}
-              y={height - 2}
-              textAnchor="middle"
-              fill="var(--v2-text-tertiary)"
-              fontSize="10"
-              fontFamily="var(--font-geist-mono), monospace"
-            >
-              ${formatCompact(t)}
-            </text>
-          ))}
+          {/* Vertical grid lines */}
+          {X_LABELS.map((_, i) => {
+            const pct = (i / (X_LABELS.length - 1)) * 100
+            return (
+              <div
+                key={`vg-${i}`}
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  bottom: 0,
+                  left: `${pct}%`,
+                  width: '1px',
+                  background: 'rgba(255,255,255,0.03)',
+                  pointerEvents: 'none',
+                }}
+              />
+            )
+          })}
 
-          {/* Y-axis labels */}
-          {yTicks.map((t, i) => (
-            <text
-              key={`yl-${i}`}
-              x={padding.left - 6}
-              y={yPos(t) + 3}
-              textAnchor="end"
-              fill="var(--v2-text-tertiary)"
-              fontSize="10"
-              fontFamily="var(--font-geist-mono), monospace"
-            >
-              {Math.round(t)}%
-            </text>
-          ))}
-
-          {/* Axis labels */}
-          <text
-            x={padding.left + chartW / 2}
-            y={height + 8}
-            textAnchor="middle"
-            fill="var(--v2-text-tertiary)"
-            fontSize="10"
-            fontFamily="var(--font-geist-mono), monospace"
-          >
-            Realized PnL
-          </text>
-          <text
-            x={8}
-            y={padding.top + chartH / 2}
-            textAnchor="middle"
-            fill="var(--v2-text-tertiary)"
-            fontSize="10"
-            fontFamily="var(--font-geist-mono), monospace"
-            transform={`rotate(-90, 8, ${padding.top + chartH / 2})`}
-          >
-            ROI %
-          </text>
-
-          {/* Dots */}
-          {wallets.map((w, i) => (
-            <circle
-              key={i}
-              cx={xPos(w.realizedPnl)}
-              cy={yPos(w.roi)}
-              r={4}
-              fill="transparent"
-              stroke="#06B6D4"
-              strokeWidth={1.5}
-            />
-          ))}
-        </svg>
+          {/* Scatter dots */}
+          {wallets.map((w, i) => {
+            const leftPct = Math.min((w.realizedPnl / maxPnl) * 100, 100)
+            const topPct = Math.max((1 - w.roi / maxRoi) * 100, 0)
+            return (
+              <div
+                key={i}
+                title={`${w.label} -- PnL: $${w.realizedPnl.toLocaleString()} / ROI: ${w.roi}%`}
+                style={{
+                  position: 'absolute',
+                  left: `${leftPct}%`,
+                  top: `${topPct}%`,
+                  transform: 'translate(-50%, -50%)',
+                  width: '10px',
+                  height: '10px',
+                  borderRadius: '50%',
+                  border: '2px solid #22D3EE',
+                  background: 'transparent',
+                  cursor: 'pointer',
+                }}
+              />
+            )
+          })}
+        </div>
       </div>
     </div>
   )
