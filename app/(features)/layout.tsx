@@ -20,8 +20,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import dynamicImport from 'next/dynamic'
-import { TopNav } from '@/components/navigation/top-nav'
-import AppSidebar from '@/components/navigation/app-sidebar'
+import V2Sidebar from '@/components/v2/v2-sidebar'
 import { PelicanPanelProvider, usePelicanPanelContext } from '@/providers/pelican-panel-provider'
 import { motion, AnimatePresence } from 'framer-motion'
 import { TickerSearch } from '@/components/command-k/ticker-search'
@@ -50,9 +49,8 @@ function FeaturesLayoutInner({ children }: { children: React.ReactNode }) {
   usePageTracking()
   const [mobilePanelOpen, setMobilePanelOpen] = useState(false)
 
-  // Clear panel messages when navigating between pages
+  // V2: Panel persists across tab changes. Only close mobile sheet.
   useEffect(() => {
-    panel.clearMessages()
     setMobilePanelOpen(false)
   }, [pathname]) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -72,13 +70,9 @@ function FeaturesLayoutInner({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex h-screen">
-      <AppSidebar />
+      <V2Sidebar />
       <PelicanContainer className="flex flex-1 min-w-0 flex-col">
         <TickerSearch open={commandK.isOpen} onClose={commandK.close} />
-
-        <div className="relative z-[var(--z-sticky)]">
-          <TopNav />
-        </div>
 
         <div className="relative z-10 flex flex-1 overflow-hidden">
           <motion.main
