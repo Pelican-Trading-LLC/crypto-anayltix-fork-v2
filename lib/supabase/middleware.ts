@@ -22,7 +22,7 @@ const PUBLIC_PATHS = [
 /** Marketing and landing pages that don't require login */
 const PUBLIC_PREFIXES = ["/pricing", "/privacy", "/terms", "/faq", "/how-to-use", "/guide", "/strategies", "/api/health", "/api/help-chat", "/api/stripe/webhook", "/api/strategies", "/api/share-card",
   // DEV ONLY — bypass auth for preview
-  "/dashboard", "/brief", "/screener", "/smart-money", "/token-intel", "/signals", "/alerts", "/wallet-dna", "/sector-rotation", "/chat", "/forexanalytix", "/calendar", "/learn", "/knowledge-base", "/community", "/settings",
+  "/dashboard", "/brief", "/screener", "/smart-money", "/token-intel", "/signals", "/alerts", "/wallet-dna", "/sector-rotation", "/chat", "/forexanalytix", "/calendar", "/learn", "/knowledge-base", "/community", "/settings", "/positions",
 ];
 
 function isPublicPath(pathname: string): boolean {

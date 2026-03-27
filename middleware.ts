@@ -33,7 +33,7 @@ async function getLocale(req: NextRequest): Promise<string> {
 }
 
 // DEV ONLY — feature routes that bypass auth entirely
-const DEV_BYPASS = ["/dashboard", "/brief", "/screener", "/smart-money", "/token-intel", "/signals", "/alerts", "/wallet-dna", "/sector-rotation", "/chat", "/forexanalytix", "/calendar", "/learn", "/knowledge-base", "/community", "/settings"];
+const DEV_BYPASS = ["/dashboard", "/brief", "/screener", "/smart-money", "/token-intel", "/signals", "/alerts", "/wallet-dna", "/sector-rotation", "/chat", "/forexanalytix", "/calendar", "/learn", "/knowledge-base", "/community", "/settings", "/positions"];
 
 export async function middleware(request: NextRequest) {
   // CRITICAL: Stripe webhook must bypass ALL middleware (no auth, no redirects)

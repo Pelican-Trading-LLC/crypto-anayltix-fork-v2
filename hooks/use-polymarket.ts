@@ -1,42 +1,41 @@
 'use client'
 
 import useSWR from 'swr'
-import type { PolymarketEvent } from '@/lib/api/polymarket'
-import { safeParseEvents } from '@/lib/api/polymarket'
+import { fetchMarkets, searchMarkets, fetchPriceHistory, fetchMarketById, type PolymarketMarket, type PriceHistoryPoint } from '@/lib/polymarket'
 
-const fetcher = (url: string) =>
-  fetch(url)
-    .then(r => (r.ok ? r.json() : []))
-    .catch(() => [])
-
-export function usePolymarketEvents(tag?: string, limit = 10) {
-  const params = new URLSearchParams()
-  if (tag) params.set('tag', tag)
-  params.set('limit', String(limit))
-
-  return useSWR<PolymarketEvent[]>(
-    `/api/polymarket/events?${params}`,
-    fetcher,
-    { refreshInterval: 300_000, dedupingInterval: 60_000, fallbackData: [] }
+export function usePolymarkets(params?: { tag?: string; limit?: number }) {
+  const { tag, limit = 30 } = params || {}
+  const { data, error, isLoading, mutate } = useSWR<PolymarketMarket[]>(
+    ['polymarket-markets', tag, limit],
+    () => fetchMarkets({ limit, tag: tag || undefined }),
+    { refreshInterval: 60_000, revalidateOnFocus: true, keepPreviousData: true }
   )
+  return { markets: data || [], error, isLoading, refresh: mutate }
 }
 
 export function usePolymarketSearch(query: string) {
-  return useSWR<PolymarketEvent[]>(
-    query ? `/api/polymarket/search?q=${encodeURIComponent(query)}` : null,
-    fetcher,
-    { refreshInterval: 300_000, dedupingInterval: 60_000, fallbackData: [] }
+  const { data, error, isLoading } = useSWR(
+    query.length >= 2 ? ['polymarket-search', query] : null,
+    () => searchMarkets(query),
+    { refreshInterval: 0, revalidateOnFocus: false, dedupingInterval: 2000 }
   )
+  return { results: data || [], error, isLoading }
 }
 
-export function useCryptoMarkets(limit = 5) {
-  const { data, ...rest } = usePolymarketEvents('crypto', limit)
-  const markets = safeParseEvents(data).slice(0, limit)
-  return { data: markets, ...rest }
+export function usePriceHistory(tokenId: string | null, interval = '1m') {
+  const { data, error, isLoading } = useSWR<PriceHistoryPoint[]>(
+    tokenId ? ['polymarket-history', tokenId, interval] : null,
+    () => fetchPriceHistory(tokenId!, interval),
+    { refreshInterval: 300_000, revalidateOnFocus: false }
+  )
+  return { history: data || [], error, isLoading }
 }
 
-export function useFedRateMarkets(limit = 5) {
-  const { data, ...rest } = usePolymarketEvents('fed-funds-rate', limit)
-  const markets = safeParseEvents(data).slice(0, limit)
-  return { data: markets, ...rest }
+export function usePolymarketDetail(conditionId: string | null) {
+  const { data, error, isLoading } = useSWR(
+    conditionId ? ['polymarket-detail', conditionId] : null,
+    () => fetchMarketById(conditionId!),
+    { refreshInterval: 30_000, revalidateOnFocus: true }
+  )
+  return { market: data, error, isLoading }
 }

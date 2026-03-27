@@ -1,13 +1,14 @@
 'use client'
 
-import { useCryptoMarkets, useFedRateMarkets } from '@/hooks/use-polymarket'
-import type { ParsedMarket } from '@/lib/api/polymarket'
-import { formatCompact } from '@/lib/crypto-mock-data'
+import { usePolymarkets } from '@/hooks/use-polymarket'
+import { categorizeMarket, formatVolume, type PolymarketMarket } from '@/lib/polymarket'
 
-function MarketRow({ market }: { market: ParsedMarket }) {
-  const pct = (market.yesPrice * 100).toFixed(0)
-  const color = market.yesPrice >= 0.6 ? 'text-[#3EBD8C]' : market.yesPrice <= 0.4 ? 'text-[#E06565]' : 'text-[#D4A042]'
-  const bgColor = market.yesPrice >= 0.6 ? 'bg-[#3EBD8C]/10' : market.yesPrice <= 0.4 ? 'bg-[#E06565]/10' : 'bg-[#D4A042]/10'
+function MarketRow({ market }: { market: PolymarketMarket }) {
+  const prices = market._parsedPrices || []
+  const prob = prices[0] ? prices[0] * 100 : 50
+  const pct = prob.toFixed(0)
+  const color = prob >= 60 ? 'text-[#3EBD8C]' : prob <= 40 ? 'text-[#E06565]' : 'text-[#D4A042]'
+  const bgColor = prob >= 60 ? 'bg-[#3EBD8C]/10' : prob <= 40 ? 'bg-[#E06565]/10' : 'bg-[#D4A042]/10'
 
   return (
     <div className="flex items-center justify-between py-2 border-b border-[var(--border-subtle)] last:border-0">
@@ -17,7 +18,7 @@ function MarketRow({ market }: { market: ParsedMarket }) {
           {pct}%
         </span>
         <span className="font-mono text-[10px] text-muted-foreground tabular-nums w-16 text-right">
-          {formatCompact(market.volume)}
+          {formatVolume(market.volume24hr || market.volume || 0)}
         </span>
       </div>
     </div>
@@ -25,10 +26,12 @@ function MarketRow({ market }: { market: ParsedMarket }) {
 }
 
 export function BriefPredictionMarkets() {
-  const { data: fedMarkets, isLoading: fedLoading } = useFedRateMarkets(4)
-  const { data: cryptoMarkets, isLoading: cryptoLoading } = useCryptoMarkets(4)
+  const { markets, isLoading: marketsLoading } = usePolymarkets({ limit: 12 })
 
-  const isLoading = fedLoading && cryptoLoading
+  const fedMarkets = markets.filter(m => categorizeMarket(m) === 'macro').slice(0, 4)
+  const cryptoMarkets = markets.filter(m => categorizeMarket(m) === 'crypto').slice(0, 4)
+
+  const isLoading = marketsLoading
   const isEmpty = !fedMarkets.length && !cryptoMarkets.length
 
   if (isLoading) {

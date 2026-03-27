@@ -1,0 +1,133 @@
+// Polymarket Gamma API client — no auth required
+
+const isBrowser = typeof window !== 'undefined'
+const BASE = isBrowser ? '/api/polymarket' : 'https://gamma-api.polymarket.com'
+
+export interface PolymarketMarket {
+  id: string
+  question: string
+  description: string
+  conditionId: string
+  slug: string
+  image: string
+  icon: string
+  active: boolean
+  closed: boolean
+  archived: boolean
+  outcomes: string
+  outcomePrices: string
+  clobTokenIds: string
+  volume: number
+  volume24hr: number
+  liquidity: number
+  endDate: string
+  tags: { label: string; slug: string }[]
+  createdAt: string
+  updatedAt: string
+  _parsedOutcomes?: string[]
+  _parsedPrices?: number[]
+  _parsedTokenIds?: string[]
+}
+
+export interface PriceHistoryPoint {
+  t: number
+  p: number
+}
+
+// ── API ──────────────────────────────────────────────────────
+
+export async function fetchMarkets(params?: {
+  limit?: number; offset?: number; order?: string; ascending?: boolean
+  active?: boolean; closed?: boolean; tag?: string
+}): Promise<PolymarketMarket[]> {
+  const { limit = 30, offset = 0, order = 'volume24hr', ascending = false, active = true, closed = false, tag } = params || {}
+  try {
+    const sp = new URLSearchParams({ limit: String(limit), offset: String(offset), order, ascending: String(ascending), active: String(active), closed: String(closed) })
+    if (tag) sp.set('tag', tag)
+    const url = isBrowser ? `${BASE}/markets?${sp}` : `${BASE}/markets?${sp}`
+    const res = await fetch(url)
+    if (!res.ok) throw new Error(`Gamma ${res.status}`)
+    const markets: PolymarketMarket[] = await res.json()
+    return markets.map(parseMarket)
+  } catch (err) {
+    console.error('[Polymarket] fetchMarkets:', err)
+    return []
+  }
+}
+
+export async function searchMarkets(query: string, limit = 20): Promise<PolymarketMarket[]> {
+  if (!query.trim()) return []
+  try {
+    // Try events endpoint with title search
+    const sp = new URLSearchParams({ title: query, active: 'true', limit: String(limit), order: 'volume24hr', ascending: 'false' })
+    const url = isBrowser ? `${BASE}/events?${sp}` : `https://gamma-api.polymarket.com/events?${sp}`
+    const res = await fetch(url)
+    if (!res.ok) throw new Error(`Search ${res.status}`)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const events: any[] = await res.json()
+    const markets: PolymarketMarket[] = []
+    for (const ev of events) {
+      if (ev.markets) markets.push(...ev.markets.map(parseMarket))
+    }
+    if (markets.length > 0) return markets.slice(0, limit)
+  } catch { /* fallback below */ }
+  // Fallback: client-side filter
+  const all = await fetchMarkets({ limit: 100 })
+  const q = query.toLowerCase()
+  return all.filter(m => m.question.toLowerCase().includes(q) || (m.description || '').toLowerCase().includes(q)).slice(0, limit)
+}
+
+export async function fetchPriceHistory(tokenId: string, interval = '1m', fidelity = 100): Promise<PriceHistoryPoint[]> {
+  if (!tokenId) return []
+  try {
+    const sp = new URLSearchParams({ market: tokenId, interval, fidelity: String(fidelity) })
+    const url = isBrowser ? `${BASE}/prices-history?${sp}` : `https://gamma-api.polymarket.com/prices-history?${sp}`
+    const res = await fetch(url)
+    if (!res.ok) return []
+    const data = await res.json()
+    if (data.history && Array.isArray(data.history)) return data.history
+    if (Array.isArray(data)) return data
+    return []
+  } catch { return [] }
+}
+
+export async function fetchMarketById(conditionId: string): Promise<PolymarketMarket | null> {
+  try {
+    const url = isBrowser ? `${BASE}/markets/${conditionId}` : `https://gamma-api.polymarket.com/markets/${conditionId}`
+    const res = await fetch(url)
+    if (!res.ok) return null
+    return parseMarket(await res.json())
+  } catch { return null }
+}
+
+// ── Helpers ──────────────────────────────────────────────────
+
+function parseMarket(m: PolymarketMarket): PolymarketMarket {
+  try { m._parsedOutcomes = typeof m.outcomes === 'string' ? JSON.parse(m.outcomes) : m.outcomes || ['Yes', 'No'] } catch { m._parsedOutcomes = ['Yes', 'No'] }
+  try { m._parsedPrices = typeof m.outcomePrices === 'string' ? JSON.parse(m.outcomePrices).map(Number) : [] } catch { m._parsedPrices = [] }
+  try { m._parsedTokenIds = typeof m.clobTokenIds === 'string' ? JSON.parse(m.clobTokenIds) : [] } catch { m._parsedTokenIds = [] }
+  return m
+}
+
+export function formatVolume(vol: number): string {
+  if (!vol) return '$0'
+  if (vol >= 1e6) return `$${(vol / 1e6).toFixed(1)}M`
+  if (vol >= 1e3) return `$${(vol / 1e3).toFixed(0)}K`
+  return `$${vol.toFixed(0)}`
+}
+
+export function getPolymarketUrl(m: PolymarketMarket): string {
+  return `https://polymarket.com/event/${m.slug || m.conditionId}`
+}
+
+export function categorizeMarket(m: PolymarketMarket): string {
+  const q = m.question.toLowerCase()
+  const tags = (m.tags || []).map(t => t.label.toLowerCase())
+  if (tags.some(t => ['crypto', 'bitcoin', 'ethereum'].includes(t)) || /btc|bitcoin|ethereum|crypto|sol\b|eth\b/.test(q)) return 'crypto'
+  if (tags.some(t => ['fed', 'rates', 'inflation', 'economy'].includes(t)) || /\bfed\b|rate|inflation|gdp|cpi/.test(q)) return 'macro'
+  if (/stock|aapl|nvda|tsla|s&p|nasdaq|earnings/.test(q)) return 'stocks'
+  if (/sec\b|etf|regulat|approve/.test(q)) return 'regulatory'
+  if (/trump|elect|war|tariff|geopolit/.test(q) || tags.some(t => ['politics', 'election'].includes(t))) return 'geopolitical'
+  if (tags.some(t => ['sports', 'nfl', 'nba'].includes(t)) || /nfl|nba|super bowl|world cup/.test(q)) return 'sports'
+  return 'other'
+}
