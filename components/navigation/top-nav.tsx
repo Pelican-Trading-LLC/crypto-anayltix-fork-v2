@@ -28,6 +28,7 @@ const routeTitles: Record<string, string> = {
   '/brief': 'DAILY BRIEF',
   '/morning': 'DAILY BRIEF',
   '/smart-money': 'SMART MONEY',
+  '/positions': 'POSITIONS',
   '/token-intel': 'TOKEN INTEL',
   '/sector-rotation': 'SECTOR ROTATION',
   '/wallet-dna': 'WALLET DNA',

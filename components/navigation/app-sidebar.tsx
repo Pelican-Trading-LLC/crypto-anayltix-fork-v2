@@ -14,6 +14,7 @@ import {
   CaretRight,
   CaretLeft,
   Pulse,
+  Briefcase,
 } from '@phosphor-icons/react'
 import type { Icon as PhosphorIcon } from '@phosphor-icons/react'
 import { useAuth } from '@/lib/providers/auth-provider'
@@ -47,6 +48,7 @@ const NAV_SECTIONS: NavSection[] = [
       { label: 'Analysis Hub', href: '/forexanalytix', icon: Pulse },
       { label: 'Predictions', href: '/screener', icon: ArrowsClockwise },
       { label: 'Smart Alerts', href: '/alerts', icon: Bell, badge: '3' },
+      { label: 'Positions', href: '/positions', icon: Briefcase },
       { label: 'Smart Money', href: '/smart-money', icon: TrendUp },
     ],
   },
