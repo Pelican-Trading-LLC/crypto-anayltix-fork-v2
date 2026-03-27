@@ -9,6 +9,7 @@ import { MOCK_X_FEED, type XPost } from '@/lib/crypto-mock-data'
 
 const CATS = ['all', 'contrarian', 'crypto', 'macro', 'regulatory', 'geopolitical', 'sports', 'other'] as const
 const WL_KEY = 'ta-poly-wl'
+const mono: React.CSSProperties = { fontFamily: 'var(--font-mono)', fontVariantNumeric: 'tabular-nums' }
 
 /* ════════════════════════════════════════════════════════════ */
 /* PAGE                                                        */
@@ -38,13 +39,13 @@ export default function PredictionsPage() {
   const signals = useMemo(() => detectContrarianSignals(markets), [markets])
   const sigMap = useMemo(() => new Map(signals.map(s => [s.market.conditionId || s.market.id, s])), [signals])
 
-  // Filter out resolved markets (price = 0 or 1 exactly)
   const activeMarkets = useMemo(() => {
     const src = dq.length >= 2 ? sr : markets
     return src.filter(m => {
       const p = m._parsedPrices || []
       // Skip fully resolved (0/1 or 1/0)
-      if (p.length >= 2 && ((p[0]! >= 0.99 && p[1]! <= 0.01) || (p[0]! <= 0.01 && p[1]! >= 0.99))) return false
+      const p0 = p[0] ?? 0.5, p1 = p[1] ?? 0.5
+      if (p.length >= 2 && ((p0 >= 0.99 && p1 <= 0.01) || (p0 <= 0.01 && p1 >= 0.99))) return false
       return true
     })
   }, [markets, sr, dq])
@@ -56,8 +57,6 @@ export default function PredictionsPage() {
     else if (cat !== 'all') src = src.filter(m => categorizeMarket(m) === cat)
     return src
   }, [activeMarkets, cat, wlOnly, wl, signals])
-
-  const mono: React.CSSProperties = { fontFamily: 'var(--font-mono)', fontVariantNumeric: 'tabular-nums' }
 
   return (
     <div style={{ padding: '20px 24px', background: 'var(--bg-base)', minHeight: '100vh' }}>
@@ -153,7 +152,7 @@ function Card({ m, sig, wl, onWl, onSel, onSim }: { m: PolymarketMarket; sig?: C
   const outcomes = m._parsedOutcomes || ['Yes', 'No']
   const prices = m._parsedPrices || []
   const prob = prices[0] ? prices[0] * 100 : 50
-  const mono: React.CSSProperties = { fontFamily: 'var(--font-mono)', fontVariantNumeric: 'tabular-nums' }
+
 
   return (
     <div onClick={onSel} style={{
@@ -222,7 +221,7 @@ function Detail({ m, onClose }: { m: PolymarketMarket; onClose: () => void }) {
   const { history, isLoading: cl } = usePriceHistory(tid, iv)
   const oc = m._parsedOutcomes || ['Yes', 'No']
   const pr = m._parsedPrices || []
-  const mono: React.CSSProperties = { fontFamily: 'var(--font-mono)', fontVariantNumeric: 'tabular-nums' }
+
 
   return (
     <>
@@ -392,7 +391,7 @@ function Simulator({ pos, setPos, open, setOpen }: { pos: SimPos[]; setPos: (p: 
   const ti = pos.reduce((s, p) => s + p.amt, 0)
   const mp = pos.reduce((s, p) => { const c = p.side === 'yes' ? p.prob : (1 - p.prob); return s + (c > 0 ? p.amt / c : 0) }, 0)
   const mr = ti > 0 ? ((mp - ti) / ti) * 100 : 0
-  const mono: React.CSSProperties = { fontFamily: 'var(--font-mono)', fontVariantNumeric: 'tabular-nums' }
+
 
   return (
     <div style={{ marginTop: 28, marginBottom: 20 }}>

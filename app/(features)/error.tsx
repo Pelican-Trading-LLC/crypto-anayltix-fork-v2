@@ -26,6 +26,11 @@ export default function FeatureError({
         <p className="text-[var(--text-secondary)] text-sm max-w-md">
           We hit an unexpected error. Try again, or head back to chat.
         </p>
+        <pre className="text-xs text-red-400 bg-red-950/20 p-3 rounded-lg max-w-lg overflow-auto mt-2">
+          {error.message}
+          {'\n'}
+          {error.stack?.slice(0, 500)}
+        </pre>
       </div>
       <div className="flex gap-3">
         <button
