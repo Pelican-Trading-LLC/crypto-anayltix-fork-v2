@@ -425,7 +425,7 @@ export function ChatContainer({
           {isLoading && messages.length > 0 && (messages[messages.length - 1]?.role === 'user' || (messages[messages.length - 1]?.role === 'assistant' && !messages[messages.length - 1]?.content)) && (
             <div className="flex items-center gap-3 py-4 px-4 sm:px-8 max-w-3xl mx-auto">
               <Image
-                src="/ca-logo.svg"
+                src="/images/pelican-logo.png"
                 alt="Pelican AI"
                 width={32}
                 height={32}

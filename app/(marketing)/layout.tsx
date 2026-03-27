@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   description:
     'The AI trading platform that learns how you trade. Real-time market analysis, trade journaling, AI coaching, and institutional-grade intelligence for stocks, forex, crypto, and futures.',
   icons: {
-    icon: '/ca-logo.svg',
+    icon: '/images/pelican-logo.png',
   },
   openGraph: {
     title: 'Token Analytix — Your AI-Powered Trading Edge',

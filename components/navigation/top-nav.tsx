@@ -34,7 +34,7 @@ const routeTitles: Record<string, string> = {
   '/knowledge-base': 'KNOWLEDGE BASE',
   '/community': 'COMMUNITY',
   '/screener': 'TOKEN SCREENER',
-  '/alerts': 'AI ALERTS',
+  '/alerts': 'SMART ALERTS',
 }
 
 function getPageTitle(pathname: string): string {
@@ -60,21 +60,8 @@ export function TopNav({ className }: TopNavProps) {
       className
     )}>
       <div className="flex items-center justify-between h-14 px-4">
-        {/* Left: Logo */}
-        <div className="flex items-center gap-3 flex-shrink-0">
-          <Link
-            href="/brief"
-            className="flex items-center gap-2 sm:gap-3 group transition-opacity hover:opacity-80"
-          >
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-[10px] flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
-              style={{ background: 'linear-gradient(135deg, #2C5F8A, #5B4F8A)' }}>
-              CA
-            </div>
-            <span className="hidden sm:inline text-base font-bold text-[var(--text-primary)] tracking-tight">
-              Token Analytix
-            </span>
-          </Link>
-        </div>
+        {/* Left: spacer for symmetry */}
+        <div className="flex items-center gap-3 flex-shrink-0" />
 
         {/* Center: Page Title */}
         {pageTitle && (

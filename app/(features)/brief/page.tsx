@@ -17,7 +17,7 @@ export default function BriefPage() {
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
 
   return (
-    <div className="p-6 max-w-[1200px] mx-auto">
+    <div className="p-6 w-full">
       {/* Header */}
       <div className="mb-2">
         <h1 className="text-xl font-semibold">Daily Brief</h1>

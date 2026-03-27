@@ -25,6 +25,7 @@ import AppSidebar from '@/components/navigation/app-sidebar'
 import { PelicanPanelProvider, usePelicanPanelContext } from '@/providers/pelican-panel-provider'
 import { motion, AnimatePresence } from 'framer-motion'
 import { TickerSearch } from '@/components/command-k/ticker-search'
+import { PortfolioStrip } from '@/components/shared/portfolio-strip'
 import { useCommandK } from '@/hooks/use-command-k'
 import { PelicanContainer } from '@/components/ui/pelican-container'
 import { usePageTracking } from '@/hooks/use-page-tracking'
@@ -71,7 +72,9 @@ function FeaturesLayoutInner({ children }: { children: React.ReactNode }) {
   }, [mobilePanelOpen, isMobile])
 
   return (
-    <div className="flex h-screen">
+    <>
+      <PortfolioStrip />
+      <div className="flex h-screen" style={{ marginTop: 32 }}>
       <AppSidebar />
       <PelicanContainer className="flex flex-1 min-w-0 flex-col">
         <TickerSearch open={commandK.isOpen} onClose={commandK.close} />
@@ -138,6 +141,7 @@ function FeaturesLayoutInner({ children }: { children: React.ReactNode }) {
       </Sheet>
       </PelicanContainer>
     </div>
+    </>
   )
 }
 

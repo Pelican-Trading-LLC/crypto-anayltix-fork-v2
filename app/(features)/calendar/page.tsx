@@ -51,7 +51,7 @@ export default function CalendarPage() {
   const rows = Math.ceil(totalCells / 7)
 
   return (
-    <div className="p-6 max-w-[1200px] mx-auto">
+    <div className="p-6 w-full">
       <div className="mb-6">
         <h1 className="text-xl font-semibold">
           Crypto Calendar

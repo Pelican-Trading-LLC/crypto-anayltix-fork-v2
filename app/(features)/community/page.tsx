@@ -4,7 +4,7 @@ import { ArrowSquareOut, ChatCircle, ShareNetwork } from '@phosphor-icons/react'
 
 export default function CommunityPage() {
   return (
-    <div className="p-6 max-w-[1200px] mx-auto text-center">
+    <div className="p-6 w-full text-center">
       <ChatCircle size={48} weight="thin" className="mx-auto mb-4 text-[#4A90C4]" />
       <h1 className="text-xl font-semibold mb-2">Community</h1>
       <p className="text-sm text-muted-foreground mb-8 leading-relaxed">

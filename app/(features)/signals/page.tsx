@@ -36,7 +36,7 @@ export default function SignalsPage() {
     [] // FA PiPs handled separately below
 
   return (
-    <div className="p-6 max-w-[1200px] mx-auto">
+    <div className="p-6 w-full">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <h1 className="text-xl font-semibold">Signals</h1>

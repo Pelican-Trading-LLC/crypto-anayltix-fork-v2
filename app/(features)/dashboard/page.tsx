@@ -1,616 +1,709 @@
 'use client'
 
-import { useMemo } from 'react'
-import { ChatCircle, CaretUp, CaretDown, TrendUp, Bell, Heart, MagnifyingGlass, ArrowRight } from '@phosphor-icons/react'
-import { MOCK_POSITIONS, MOCK_SMART_MONEY, ASSET_COLORS, formatUSD, formatPnl, formatPct, formatCompact } from '@/lib/crypto-mock-data'
-import { TokenIcon } from '@/components/shared/token-icon'
-import { ResearchFeed } from '@/components/shared/research-feed'
-import { XFeed } from '@/components/shared/x-feed'
-import { useLivePrices, useLiveGlobalData } from '@/hooks/use-crypto-data'
-import { mergePositions } from '@/lib/use-live-or-mock'
-import { ApiError } from '@/components/ui/api-error'
-import { DataFreshness } from '@/components/ui/data-freshness'
-import { FA_TRAFFIC_LIGHT } from '@/lib/forexanalytix-mock-data'
-import { FABadge } from '@/components/forexanalytix/fa-badge'
-import { usePelicanPanelContext } from '@/providers/pelican-panel-provider'
-import { useCryptoMarkets, useFedRateMarkets } from '@/hooks/use-polymarket'
-import { useRWAData } from '@/hooks/use-rwa'
-import Link from 'next/link'
-import dynamic from 'next/dynamic'
+import React, { useState, useMemo } from 'react'
+import { MagnifyingGlass, SquaresFour, Table as TableIcon } from '@phosphor-icons/react'
+import { TokenIcon, ChainBadge, FlowBar, FilterPill, TimeToggle, InsightsButton, Sparkline } from '@/components/shared'
+import { formatPrice, formatCompact, formatPercent, formatInteger } from '@/lib/format'
+import { MOCK_TOKENS, MOCK_WALLETS, CALENDAR_EVENTS } from '@/lib/crypto-mock-data'
+import type { MockToken, MockWallet } from '@/lib/crypto-mock-data'
 
-const AreaChart = dynamic(() => import('recharts').then(m => m.AreaChart), { ssr: false })
-const Area = dynamic(() => import('recharts').then(m => m.Area), { ssr: false })
-const XAxis = dynamic(() => import('recharts').then(m => m.XAxis), { ssr: false })
-const YAxis = dynamic(() => import('recharts').then(m => m.YAxis), { ssr: false })
-const Tooltip = dynamic(() => import('recharts').then(m => m.Tooltip), { ssr: false })
-const ResponsiveContainer = dynamic(() => import('recharts').then(m => m.ResponsiveContainer), { ssr: false })
-const RadarChart = dynamic(() => import('recharts').then(m => m.RadarChart), { ssr: false })
-const PolarGrid = dynamic(() => import('recharts').then(m => m.PolarGrid), { ssr: false })
-const PolarAngleAxis = dynamic(() => import('recharts').then(m => m.PolarAngleAxis), { ssr: false })
-const Radar = dynamic(() => import('recharts').then(m => m.Radar), { ssr: false })
+/* ─── Types ─────────────────────────────────────────────────── */
 
-/* ─── Stat Card ─────────────────────────────────────────────────── */
+type SortColumn =
+  | 'symbol' | 'price' | 'change24h' | 'marketCap' | 'traders'
+  | 'volume' | 'liquidity' | 'inflows' | 'outflows' | 'netFlows'
+type SortDir = 'asc' | 'desc'
+type Tab = 'default' | 'watchlist'
+type ViewMode = 'table' | 'heatmap'
 
-function StatCard({ title, value, valueColor, subtitle, subtitleColor, icon, healthBar, preview }: {
-  title: string; value: string; valueColor?: string; subtitle: string; subtitleColor: string; icon: React.ReactNode; healthBar?: number; preview?: boolean
+/* ─── Sort Indicator ────────────────────────────────────────── */
+
+function SortIndicator({ column, sortColumn, sortDirection }: {
+  column: SortColumn
+  sortColumn: SortColumn
+  sortDirection: SortDir
 }) {
+  const isActive = column === sortColumn
   return (
-    <div className="rounded-xl border bg-card p-5 relative overflow-hidden">
-      <div className="flex items-center justify-between mb-3">
-        <span className="text-[11px] uppercase tracking-[1.5px] font-semibold text-muted-foreground">{title}{preview && <PreviewBadge />}</span>
-        <span className="text-muted-foreground">{icon}</span>
-      </div>
-      <div className={`font-mono text-2xl font-semibold tabular-nums ${valueColor || ''}`}>{value}</div>
-      <div className={`font-mono text-xs tabular-nums mt-1 ${subtitleColor}`}>{subtitle}</div>
-      {healthBar !== undefined && (
-        <div className="mt-3 h-1.5 rounded-full bg-muted overflow-hidden">
-          <div className="h-full rounded-full bg-[#4A90C4] transition-all" style={{ width: `${healthBar}%` }} />
-        </div>
-      )}
-    </div>
+    <span className="inline-flex flex-col leading-none ml-1 -mb-px select-none" style={{ fontSize: 8, lineHeight: '8px' }}>
+      <span style={{ color: isActive && sortDirection === 'asc' ? 'var(--text-primary)' : 'var(--text-quaternary)' }}>&#9650;</span>
+      <span style={{ color: isActive && sortDirection === 'desc' ? 'var(--text-primary)' : 'var(--text-quaternary)' }}>&#9660;</span>
+    </span>
   )
 }
 
-/* ─── Portfolio Chart ───────────────────────────────────────────── */
+/* ─── Suggested Pill ────────────────────────────────────────── */
 
-const PreviewBadge = () => (
-  <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-[#D4A042]/10 text-[#D4A042] ml-2">PREVIEW</span>
-)
+function SuggestedPill({ text }: { text: string }) {
+  return (
+    <button
+      style={{
+        height: 32,
+        padding: '0 14px',
+        fontSize: 12,
+        borderRadius: 20,
+        background: 'rgba(255,255,255,0.03)',
+        border: '1px solid var(--border-subtle)',
+        color: 'var(--text-tertiary)',
+        cursor: 'pointer',
+        transition: 'all 120ms',
+        fontFamily: 'var(--font-sans)',
+      }}
+      onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--accent-primary-muted)'; e.currentTarget.style.color = 'var(--accent-primary)'; e.currentTarget.style.background = 'var(--accent-primary-bg)' }}
+      onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border-subtle)'; e.currentTarget.style.color = 'var(--text-tertiary)'; e.currentTarget.style.background = 'rgba(255,255,255,0.03)' }}
+    >
+      {text}
+    </button>
+  )
+}
 
-function PortfolioChart({ positions }: { positions: typeof MOCK_POSITIONS }) {
-  // Static placeholder data — no live portfolio data connected yet
-  const data = useMemo(() => {
-    const base = 65942
-    const result: { date: string; value: number }[] = []
-    let prev = base * 0.94
-    for (let i = 29; i >= 0; i--) {
-      const d = new Date(); d.setDate(d.getDate() - i)
-      // Deterministic curve based on day index (no Math.random)
-      prev += (((i * 7 + 3) % 13) / 13 - 0.44) * base * 0.012
-      result.push({ date: d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }), value: Math.round(prev * 100) / 100 })
+/* ─── Dashboard Page ────────────────────────────────────────── */
+
+export default function DashboardPage() {
+  const [activeTab, setActiveTab] = useState<Tab>('default')
+  const [timeRange, setTimeRange] = useState('24h')
+  const [walletTimeRange, setWalletTimeRange] = useState('30D')
+  const [sortColumn, setSortColumn] = useState<SortColumn>('volume')
+  const [sortDirection, setSortDirection] = useState<SortDir>('desc')
+  const [viewMode, setViewMode] = useState<ViewMode>('table')
+  const [draggedCol, setDraggedCol] = useState<SortColumn | null>(null)
+
+  /* Column order for drag-to-reorder */
+  const DATA_COLS: SortColumn[] = ['price', 'change24h', 'marketCap', 'traders', 'volume', 'liquidity', 'inflows', 'outflows', 'netFlows']
+  const [columnOrder, setColumnOrder] = useState<SortColumn[]>(() => {
+    if (typeof window !== 'undefined') {
+      try { const s = localStorage.getItem('ta-col-order'); if (s) return JSON.parse(s) } catch {}
     }
-    return result
-  }, [])
+    return DATA_COLS
+  })
+
+  const handleColDrop = (targetCol: SortColumn) => {
+    if (draggedCol && draggedCol !== targetCol) {
+      const newOrder = [...columnOrder]
+      const fromIdx = newOrder.indexOf(draggedCol)
+      const toIdx = newOrder.indexOf(targetCol)
+      if (fromIdx !== -1 && toIdx !== -1) {
+        newOrder.splice(fromIdx, 1)
+        newOrder.splice(toIdx, 0, draggedCol)
+        setColumnOrder(newOrder)
+        if (typeof window !== 'undefined') localStorage.setItem('ta-col-order', JSON.stringify(newOrder))
+      }
+    }
+    setDraggedCol(null)
+  }
+
+  const dragProps = (col: SortColumn) => ({
+    draggable: true,
+    onDragStart: () => setDraggedCol(col),
+    onDragOver: (e: React.DragEvent) => e.preventDefault(),
+    onDrop: () => handleColDrop(col),
+    onDragEnd: () => setDraggedCol(null),
+  })
+
+  /* Fallback safely if mock data not available */
+  const tokens: MockToken[] = MOCK_TOKENS ?? []
+  const wallets: MockWallet[] = MOCK_WALLETS ?? []
+
+  /* Sorted tokens */
+  const sortedTokens = useMemo(() => {
+    const copy = [...tokens]
+    copy.sort((a, b) => {
+      let aVal: number | string = 0
+      let bVal: number | string = 0
+      switch (sortColumn) {
+        case 'symbol': aVal = a.symbol; bVal = b.symbol; break
+        case 'price': aVal = a.price; bVal = b.price; break
+        case 'change24h': aVal = a.change24h; bVal = b.change24h; break
+        case 'marketCap': aVal = a.marketCap; bVal = b.marketCap; break
+        case 'traders': aVal = a.traders; bVal = b.traders; break
+        case 'volume': aVal = a.volume; bVal = b.volume; break
+        case 'liquidity': aVal = a.liquidity; bVal = b.liquidity; break
+        case 'inflows': aVal = a.inflows; bVal = b.inflows; break
+        case 'outflows': aVal = a.outflows; bVal = b.outflows; break
+        case 'netFlows': aVal = a.netFlows; bVal = b.netFlows; break
+      }
+      if (typeof aVal === 'string' && typeof bVal === 'string') {
+        return sortDirection === 'asc' ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal)
+      }
+      return sortDirection === 'asc' ? (aVal as number) - (bVal as number) : (bVal as number) - (aVal as number)
+    })
+    return copy
+  }, [tokens, sortColumn, sortDirection])
+
+  /* Column maximums for FlowBars */
+  const maxVolume = useMemo(() => Math.max(...tokens.map(t => Math.abs(t.volume)), 1), [tokens])
+  const maxInflows = useMemo(() => Math.max(...tokens.map(t => Math.abs(t.inflows)), 1), [tokens])
+  const maxOutflows = useMemo(() => Math.max(...tokens.map(t => Math.abs(t.outflows)), 1), [tokens])
+  const maxNetFlows = useMemo(() => Math.max(...tokens.map(t => Math.abs(t.netFlows)), 1), [tokens])
+
+  /* Wallet FlowBar maxes */
+  const maxWalletPnl = useMemo(() => Math.max(...wallets.map(w => Math.abs(w.realizedPnl)), 1), [wallets])
+  const maxWalletRoi = useMemo(() => Math.max(...wallets.map(w => Math.abs(w.roi)), 1), [wallets])
+
+  const handleSort = (col: SortColumn) => {
+    if (sortColumn === col) {
+      setSortDirection(d => d === 'asc' ? 'desc' : 'asc')
+    } else {
+      setSortColumn(col)
+      setSortDirection('desc')
+    }
+  }
+
+  const thStyle: React.CSSProperties = {
+    fontSize: 11,
+    fontWeight: 500,
+    textTransform: 'uppercase',
+    letterSpacing: '0.05em',
+    color: 'var(--text-tertiary)',
+    whiteSpace: 'nowrap',
+    cursor: 'grab',
+    userSelect: 'none',
+    padding: '0 8px',
+  }
+
+  /* Column config for drag-reorder */
+  const COL_CFG: Record<SortColumn, { label: string; width: number; align: 'left' | 'right' | 'center' }> = {
+    symbol: { label: 'Token', width: 160, align: 'left' },
+    price: { label: 'Price', width: 96, align: 'right' },
+    change24h: { label: 'Chg 24h', width: 88, align: 'right' },
+    marketCap: { label: 'MCap', width: 88, align: 'right' },
+    traders: { label: 'Traders', width: 68, align: 'right' },
+    volume: { label: 'Volume', width: 130, align: 'right' },
+    liquidity: { label: 'Liquidity', width: 100, align: 'right' },
+    inflows: { label: 'Inflows', width: 130, align: 'right' },
+    outflows: { label: 'Outflows', width: 130, align: 'right' },
+    netFlows: { label: 'Net Flows', width: 130, align: 'right' },
+  }
+
+  const renderDataCell = (col: SortColumn, token: MockToken) => {
+    const mono: React.CSSProperties = { fontFamily: 'var(--font-mono)', fontSize: 12, fontVariantNumeric: 'tabular-nums' }
+    switch (col) {
+      case 'price': return <span style={{ ...mono, color: 'var(--text-primary)' }}>{formatPrice(token.price)}</span>
+      case 'change24h': return <span style={{ ...mono, color: token.change24h >= 0 ? 'var(--data-positive)' : 'var(--data-negative)' }}>{formatPercent(token.change24h)}</span>
+      case 'marketCap': return <span style={{ ...mono, color: 'var(--text-secondary)' }}>{formatCompact(token.marketCap)}</span>
+      case 'traders': return <span style={{ ...mono, color: 'var(--text-tertiary)' }}>{formatInteger(token.traders)}</span>
+      case 'volume': return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 6 }}><span style={{ ...mono, color: 'var(--text-primary)' }}>{formatCompact(token.volume)}</span><FlowBar value={token.volume} max={maxVolume} /></div>
+      case 'liquidity': return <span style={{ ...mono, color: 'var(--text-secondary)' }}>{formatCompact(token.liquidity)}</span>
+      case 'inflows': return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 6 }}><span style={{ ...mono, color: 'var(--text-primary)' }}>{formatCompact(token.inflows)}</span><FlowBar value={token.inflows} max={maxInflows} /></div>
+      case 'outflows': return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 6 }}><span style={{ ...mono, color: 'var(--text-primary)' }}>{formatCompact(token.outflows)}</span><FlowBar value={-token.outflows} max={maxOutflows} /></div>
+      case 'netFlows': return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 6 }}><span style={{ ...mono, color: token.netFlows >= 0 ? 'var(--data-positive)' : 'var(--data-negative)' }}>{formatCompact(token.netFlows)}</span><FlowBar value={token.netFlows} max={maxNetFlows} /></div>
+      default: return null
+    }
+  }
 
   return (
-    <div className="rounded-xl border bg-card p-5">
-      <div className="flex items-center justify-between mb-4">
-        <span className="text-[11px] uppercase tracking-[1.5px] font-semibold text-muted-foreground flex items-center gap-2">
-          <TrendUp size={14} /> PORTFOLIO PERFORMANCE<PreviewBadge />
-        </span>
-        <div className="flex gap-1">
-          {['24H', '7D', '30D', '90D', 'YTD', 'ALL'].map(period => (
-            <button key={period} className={`px-2.5 py-1 rounded-md text-[11px] font-medium ${period === '30D' ? 'bg-[#4A90C4]/15 text-[#4A90C4]' : 'text-muted-foreground hover:text-foreground'}`}>
-              {period}
+    <div style={{ background: 'var(--bg-base)', minHeight: '100vh' }}>
+
+      {/* ─── Hero Section ──────────────────────────────────────── */}
+      <section style={{ paddingTop: 40, paddingBottom: 28, textAlign: 'center' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
+          <img
+            src="/images/pelican-logo.png"
+            alt="Pelican AI"
+            width={100}
+            height={100}
+            style={{ objectFit: 'contain' }}
+          />
+        </div>
+        <h1
+          style={{
+            fontSize: 28,
+            fontWeight: 700,
+            color: 'var(--text-primary)',
+            letterSpacing: '-0.03em',
+            margin: 0,
+            lineHeight: 1.2,
+          }}
+        >
+          What&apos;s Moving Today?
+        </h1>
+
+        {/* Search bar */}
+        <div style={{ maxWidth: 620, margin: '20px auto 0' }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              height: 50,
+              background: 'var(--bg-surface-2)',
+              border: '1px solid var(--border-default)',
+              borderRadius: 12,
+              padding: '0 8px 0 18px',
+              gap: 10,
+              boxShadow: '0 2px 12px rgba(0,0,0,0.1)',
+              transition: 'border-color 150ms, box-shadow 150ms',
+            }}
+          >
+            <MagnifyingGlass size={18} style={{ color: 'var(--text-tertiary)', flexShrink: 0 }} />
+            <input
+              type="text"
+              placeholder="Ask Pelican anything about the market..."
+              style={{
+                flex: 1,
+                background: 'transparent',
+                border: 'none',
+                outline: 'none',
+                fontSize: 14,
+                color: 'var(--text-primary)',
+                fontFamily: 'var(--font-sans)',
+              }}
+            />
+            <button
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: '50%',
+                background: 'var(--accent-primary)',
+                border: 'none',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                flexShrink: 0,
+                boxShadow: '0 2px 8px rgba(74,144,196,0.3)',
+              }}
+            >
+              <img src="/images/pelican-logo.png" alt="Pelican" width={22} height={22} style={{ objectFit: 'contain', filter: 'brightness(10)' }} />
+            </button>
+          </div>
+        </div>
+
+        {/* Suggested pills */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 8, marginTop: 14 }}>
+          <SuggestedPill text="What are smart money wallets buying?" />
+          <SuggestedPill text="Why is SOL outperforming?" />
+          <SuggestedPill text="Top tokens by net inflow" />
+          <SuggestedPill text="Contrarian signals active" />
+        </div>
+      </section>
+
+      {/* ─── Token Screener ────────────────────────────────────── */}
+      <section style={{ padding: '0 24px 24px' }}>
+
+        {/* Screener Header */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <span style={{ fontSize: 18, fontWeight: 700, color: 'var(--text-primary)' }}>Token Screener</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+              <span className="live-dot" />
+              <span style={{ fontSize: 10, fontFamily: 'var(--font-mono)', color: 'var(--data-positive)', fontWeight: 600 }}>LIVE</span>
+            </div>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <span style={{ fontSize: 11, color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono)' }}>Last synced: 2s ago</span>
+            <TimeToggle options={['5m', '1h', '6h', '24h']} value={timeRange} onChange={setTimeRange} />
+          </div>
+        </div>
+
+        {/* Sub-tabs */}
+        <div style={{ display: 'flex', gap: 20, borderBottom: '1px solid var(--border-subtle)', marginBottom: 12 }}>
+          {(['default', 'watchlist'] as Tab[]).map(tab => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              style={{
+                padding: '8px 0',
+                fontSize: 13,
+                fontWeight: 500,
+                color: activeTab === tab ? 'var(--text-primary)' : 'var(--text-tertiary)',
+                background: 'none',
+                border: 'none',
+                borderBottom: activeTab === tab ? '2px solid var(--accent-primary)' : '2px solid transparent',
+                cursor: 'pointer',
+                marginBottom: -1,
+                fontFamily: 'var(--font-sans)',
+              }}
+            >
+              {tab === 'default' ? 'Default' : 'Watchlist'}
             </button>
           ))}
         </div>
-      </div>
-      <div className="h-[200px]">
-        <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={data}>
-            <defs>
-              <linearGradient id="portfolioGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#4A90C4" stopOpacity={0.3} />
-                <stop offset="100%" stopColor="#4A90C4" stopOpacity={0} />
-              </linearGradient>
-            </defs>
-            <XAxis dataKey="date" tick={{ fontSize: 11, fill: 'var(--muted-foreground)' }} axisLine={false} tickLine={false} interval="preserveStartEnd" />
-            <YAxis tick={{ fontSize: 11, fill: 'var(--muted-foreground)' }} axisLine={false} tickLine={false} tickFormatter={(v: number) => `${(v / 1000).toFixed(1)}K`} domain={['auto', 'auto']} />
-            <Tooltip contentStyle={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 8, fontSize: 12 }} formatter={(value) => [formatUSD(Number(value ?? 0)), 'Value']} />
-            <Area type="monotone" dataKey="value" stroke="#4A90C4" strokeWidth={2} fill="url(#portfolioGrad)" />
-          </AreaChart>
-        </ResponsiveContainer>
-      </div>
 
-      {/* Asset Allocation Bar */}
-      <div className="mt-4">
-        <span className="text-[10px] uppercase tracking-wider text-muted-foreground">ASSET ALLOCATION</span>
-        <div className="flex h-3 rounded-full overflow-hidden mt-2">
-          {positions.map(p => (
-            <div key={p.asset} style={{ width: `${p.allocation_pct}%`, backgroundColor: ASSET_COLORS[p.asset] }} />
-          ))}
-        </div>
-        <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2">
-          {positions.map(p => (
-            <span key={p.asset} className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-              <span className="w-2 h-2 rounded-full" style={{ backgroundColor: ASSET_COLORS[p.asset] }} />
-              {p.asset} {p.allocation_pct}%
-            </span>
-          ))}
-        </div>
-      </div>
-    </div>
-  )
-}
-
-/* ─── Market Pulse ──────────────────────────────────────────────── */
-
-function MarketPulse({ btcDominance, onAskPelican }: { btcDominance: number; onAskPelican: () => void }) {
-  return (
-    <div className="rounded-xl border bg-card p-5 h-full flex flex-col">
-      <div className="flex items-center justify-between mb-3">
-        <span className="text-[11px] uppercase tracking-[1.5px] font-semibold text-muted-foreground">PELICAN AI MARKET PULSE<PreviewBadge /></span>
-        <span className="font-mono text-[11px]">Confidence: <span className="text-[#4A90C4] font-semibold">94%</span></span>
-      </div>
-      <div className="flex-1 text-sm text-muted-foreground leading-relaxed space-y-3">
-        <p>Bitcoin dominance shows signs of exhaustion at {btcDominance.toFixed(1)}%. We observe significant rotation of smart money into Layer 2 infrastructure and AI-agent protocols. Volatility expected around Thursday&apos;s FOMC minutes.</p>
-        <p>Dormant whale movements of 14,200 BTC detected, suggesting potential sell pressure or OTC deals. Further monitoring required.</p>
-      </div>
-      <div className="flex gap-2 mt-4">
-        {['On-Chain', 'Macro', 'DeFi'].map((tab, i) => (
-          <button key={tab} className={`px-3 py-1.5 rounded-lg text-[11px] font-medium ${i === 0 ? 'bg-[#4A90C4]/15 text-[#4A90C4]' : 'text-muted-foreground hover:text-foreground'}`}>
-            {tab}
-          </button>
-        ))}
-      </div>
-      <button onClick={onAskPelican} className="text-[#4A90C4] text-sm font-medium mt-3 hover:underline cursor-pointer">
-        Read Full Analysis →
-      </button>
-    </div>
-  )
-}
-
-/* ─── Top Movers Table ──────────────────────────────────────────── */
-
-function TopMoversTable({ positions, loading }: { positions: typeof MOCK_POSITIONS; loading: boolean }) {
-  return (
-    <div className="rounded-xl border bg-card p-5">
-      <span className="text-[11px] uppercase tracking-[1.5px] font-semibold text-muted-foreground flex items-center gap-2 mb-4">
-        <TrendUp size={14} /> TOP MOVERS
-      </span>
-      {loading && !positions.length ? (
-        <div className="space-y-3 p-4">
-          {[1,2,3,4,5].map(i => (
-            <div key={i} className="flex items-center gap-4">
-              <div className="w-7 h-7 rounded-full shimmer" />
-              <div className="flex-1 h-4 rounded shimmer" />
-              <div className="w-20 h-4 rounded shimmer" />
+        {activeTab === 'default' ? (
+          <>
+            {/* Filter bar */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                <FilterPill label="Solana" active />
+                <FilterPill label="Spot" active variant="spot" />
+                <FilterPill label="Perps" />
+                <FilterPill label="All Caps &#9662;" />
+                <FilterPill label="Sectors &#9662;" />
+              </div>
+              <div style={{ display: 'flex', gap: 4 }}>
+                <button
+                  onClick={() => setViewMode('table')}
+                  style={{
+                    width: 28,
+                    height: 28,
+                    borderRadius: 5,
+                    border: '1px solid var(--border-default)',
+                    background: viewMode === 'table' ? 'var(--accent-primary-bg)' : 'transparent',
+                    color: viewMode === 'table' ? 'var(--accent-primary)' : 'var(--text-tertiary)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <TableIcon size={14} />
+                </button>
+                <button
+                  onClick={() => setViewMode('heatmap')}
+                  style={{
+                    width: 28,
+                    height: 28,
+                    borderRadius: 5,
+                    border: '1px solid var(--border-default)',
+                    background: viewMode === 'heatmap' ? 'var(--accent-primary-bg)' : 'transparent',
+                    color: viewMode === 'heatmap' ? 'var(--accent-primary)' : 'var(--text-tertiary)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <SquaresFour size={14} />
+                </button>
+              </div>
             </div>
-          ))}
+
+            {viewMode === 'heatmap' ? (
+              /* ─── Heatmap View ─────────────────────────────── */
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(6, 1fr)',
+                gridAutoRows: '80px',
+                gap: 4,
+                padding: '16px 0',
+              }}>
+                {sortedTokens.map((token, i) => {
+                  const isLarge = i < 3
+                  const isMedium = i >= 3 && i < 8
+                  const change = token.change24h
+                  const getHeatColor = (c: number) => {
+                    if (c > 20) return 'rgba(62,189,140,0.5)'
+                    if (c > 5) return 'rgba(62,189,140,0.3)'
+                    if (c > 0) return 'rgba(62,189,140,0.12)'
+                    if (c > -5) return 'rgba(224,101,101,0.12)'
+                    if (c > -20) return 'rgba(224,101,101,0.3)'
+                    return 'rgba(224,101,101,0.5)'
+                  }
+                  return (
+                    <div
+                      key={token.symbol}
+                      style={{
+                        gridColumn: isLarge ? 'span 2' : 'span 1',
+                        gridRow: isLarge ? 'span 2' : isMedium ? 'span 2' : 'span 1',
+                        background: getHeatColor(change),
+                        border: '1px solid var(--border-subtle)',
+                        borderRadius: 6,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: 'pointer',
+                        transition: 'filter 150ms',
+                      }}
+                      onMouseEnter={(e) => { e.currentTarget.style.filter = 'brightness(1.2)' }}
+                      onMouseLeave={(e) => { e.currentTarget.style.filter = 'brightness(1)' }}
+                    >
+                      <span style={{ fontSize: isLarge ? 16 : isMedium ? 14 : 12, fontWeight: 700, color: 'white' }}>{token.symbol}</span>
+                      <span style={{ fontSize: isLarge ? 14 : 11, fontWeight: 600, color: 'rgba(255,255,255,0.85)', fontFamily: 'var(--font-mono)', marginTop: 2 }}>
+                        {change >= 0 ? '+' : ''}{change.toFixed(1)}%
+                      </span>
+                      {(isLarge || isMedium) && (
+                        <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', fontFamily: 'var(--font-mono)', marginTop: 4 }}>
+                          {formatCompact(token.marketCap)}
+                        </span>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+            ) : (
+            /* ─── Token Screener Table ─────────────────────── */
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', minWidth: 1300, borderCollapse: 'collapse' }}>
+                <thead>
+                  <tr
+                    style={{
+                      height: 34,
+                      background: 'var(--bg-surface-2)',
+                      position: 'sticky',
+                      top: 0,
+                      zIndex: 10,
+                      borderBottom: '1px solid var(--border-default)',
+                    }}
+                  >
+                    {/* Fixed columns */}
+                    <th style={{ ...thStyle, width: 48, textAlign: 'center', cursor: 'default' }}>Chain</th>
+                    <th style={{ ...thStyle, width: 160, textAlign: 'left' }} onClick={() => handleSort('symbol')}>
+                      Token <SortIndicator column="symbol" sortColumn={sortColumn} sortDirection={sortDirection} />
+                    </th>
+                    {/* Dynamic data columns — drag to reorder */}
+                    {columnOrder.filter(c => c !== 'symbol').map(col => {
+                      const cfg = COL_CFG[col]
+                      if (!cfg) return null
+                      return (
+                        <React.Fragment key={col}>
+                          {col === 'change24h' && <th style={{ ...thStyle, width: 68, textAlign: 'center', cursor: 'default' }}>7D</th>}
+                          <th
+                            {...dragProps(col)}
+                            style={{ ...thStyle, width: cfg.width, textAlign: cfg.align, opacity: draggedCol === col ? 0.4 : 1 }}
+                            onClick={() => handleSort(col)}
+                          >
+                            {cfg.label} <SortIndicator column={col} sortColumn={sortColumn} sortDirection={sortDirection} />
+                          </th>
+                        </React.Fragment>
+                      )
+                    })}
+                    {/* Pelican insights — last column */}
+                    <th style={{ ...thStyle, width: 52, textAlign: 'center', cursor: 'default' }}>
+                      <img src="/images/pelican-logo.png" alt="Insights" width={22} height={22} style={{ objectFit: 'contain', opacity: 0.6, filter: 'brightness(1.3)' }} />
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sortedTokens.map(token => (
+                    <tr
+                      key={token.symbol}
+                      style={{
+                        height: 38,
+                        borderBottom: '1px solid var(--border-subtle)',
+                        cursor: 'pointer',
+                        transition: 'background 100ms',
+                      }}
+                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--bg-surface-3)' }}
+                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent' }}
+                    >
+                      {/* Fixed: Chain */}
+                      <td style={{ textAlign: 'center', padding: '0 8px' }}><ChainBadge chain={token.chain} /></td>
+                      {/* Fixed: Token */}
+                      <td style={{ padding: '0 8px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                          <TokenIcon symbol={token.symbol} size={22} />
+                          <span style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--text-primary)' }}>{token.symbol}</span>
+                        </div>
+                      </td>
+                      {/* Dynamic data columns */}
+                      {columnOrder.filter(c => c !== 'symbol').map(col => (
+                        <React.Fragment key={col}>
+                          {col === 'change24h' && (
+                            <td style={{ textAlign: 'center', padding: '0 8px' }}>
+                              <Sparkline data={token.sparkline7d} width={52} height={18} positive={token.change24h >= 0} />
+                            </td>
+                          )}
+                          <td style={{ textAlign: COL_CFG[col]?.align || 'right', padding: '0 8px' }}>
+                            {renderDataCell(col, token)}
+                          </td>
+                        </React.Fragment>
+                      ))}
+                      {/* Pelican insights — last column */}
+                      <td style={{ textAlign: 'center', padding: '0 8px' }}>
+                        <InsightsButton iconOnly context={{ symbol: token.symbol, name: token.name, price: token.price, change24h: token.change24h, volume: token.volume, netFlows: token.netFlows }} />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            )}
+          </>
+        ) : (
+          /* ─── Watchlist Tab ─────────────────────────────────── */
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '64px 24px', gap: 16 }}>
+            <span style={{ fontSize: 14, color: 'var(--text-tertiary)' }}>
+              Add tokens to your watchlist
+            </span>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                height: 38,
+                width: 320,
+                background: 'var(--bg-surface-2)',
+                border: '1px solid var(--border-default)',
+                borderRadius: 8,
+                padding: '0 12px',
+                gap: 8,
+              }}
+            >
+              <MagnifyingGlass size={14} style={{ color: 'var(--text-tertiary)', flexShrink: 0 }} />
+              <input
+                type="text"
+                placeholder="Search tokens..."
+                style={{
+                  flex: 1,
+                  background: 'transparent',
+                  border: 'none',
+                  outline: 'none',
+                  fontSize: 13,
+                  color: 'var(--text-primary)',
+                  fontFamily: 'var(--font-sans)',
+                }}
+              />
+            </div>
+          </div>
+        )}
+      </section>
+
+      {/* ─── Most Profitable Addresses ─────────────────────────── */}
+      <section style={{ padding: '0 24px 48px' }}>
+        {/* Header */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+          <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>Most Profitable Addresses</span>
+          <TimeToggle options={['7D', '30D', '90D', '180D']} value={walletTimeRange} onChange={setWalletTimeRange} />
         </div>
-      ) : (
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-[var(--border)]">
-              {['TOKEN', 'PRICE', '24H %', '7D %', 'VOLUME (24H)', 'PELICAN SIGNAL'].map(h => (
-                <th key={h} className={`pb-3 text-[10px] uppercase tracking-wider font-semibold text-muted-foreground ${h !== 'TOKEN' ? 'text-right' : 'text-left'}`}>{h}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {positions.map(p => {
-              const signalColors: Record<string, string> = {
-                'Accumulation Zone': 'bg-[#3EBD8C]/10 text-[#3EBD8C] border-[#3EBD8C]/20',
-                'Momentum Breakout': 'bg-[#4A90C4]/10 text-[#4A90C4] border-[#4A90C4]/20',
-                'Distribution': 'bg-[#E06565]/10 text-[#E06565] border-[#E06565]/20',
-                'Whale Alert': 'bg-[#D4A042]/10 text-[#D4A042] border-[#D4A042]/20',
-                'Smart Money Inflow': 'bg-pink-500/10 text-pink-500 border-pink-500/20',
-              }
-              return (
-                <tr key={p.asset} className="border-b border-[var(--border)] last:border-0 hover:bg-accent/5 cursor-pointer transition-colors"
-                  onClick={() => window.location.href = `/token-intel?ticker=${p.asset}`}>
-                  <td className="py-2">
-                    <div className="flex items-center gap-3">
-                      <TokenIcon symbol={p.asset} size={24} />
-                      <div>
-                        <div className="text-[12.5px] font-semibold">{p.name || p.asset}</div>
-                      </div>
+
+        {/* Wallet Table */}
+        <div style={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <thead>
+              <tr style={{ height: 34, background: 'var(--bg-surface-2)', borderBottom: '1px solid var(--border-default)' }}>
+                <th style={{ ...thStyle, textAlign: 'left', cursor: 'default' }}>Name</th>
+                <th style={{ ...thStyle, width: 180, textAlign: 'right', cursor: 'default' }}>Realized PnL</th>
+                <th style={{ ...thStyle, width: 150, textAlign: 'right', cursor: 'default' }}>ROI</th>
+                <th style={{ ...thStyle, width: 80, textAlign: 'right', cursor: 'default' }}>Win Rate</th>
+                <th style={{ ...thStyle, width: 72, textAlign: 'center', cursor: 'default' }}>Insights</th>
+              </tr>
+            </thead>
+            <tbody>
+              {wallets.slice(0, 8).map(wallet => (
+                <tr
+                  key={wallet.address}
+                  style={{
+                    height: 38,
+                    borderBottom: '1px solid var(--border-subtle)',
+                    cursor: 'pointer',
+                    transition: 'background 100ms',
+                  }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--bg-surface-3)' }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent' }}
+                >
+                  {/* Name */}
+                  <td style={{ padding: '0 8px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <span style={{ fontSize: 16 }}>{wallet.emoji}</span>
+                      <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)' }}>{wallet.label}</span>
+                      <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--text-tertiary)' }}>{wallet.address}</span>
                     </div>
                   </td>
-                  <td className="text-right font-mono text-[13px] tabular-nums">{formatUSD(p.current_price)}</td>
-                  <td className="text-right">
-                    <span className={`font-mono text-[13px] tabular-nums inline-flex items-center gap-0.5 ${p.price_change_24h >= 0 ? 'text-[#3EBD8C]' : 'text-[#E06565]'}`}>
-                      {p.price_change_24h >= 0 ? <CaretUp size={12} weight="fill" /> : <CaretDown size={12} weight="fill" />}
-                      {formatPct(p.price_change_24h)}
-                    </span>
+
+                  {/* Realized PnL */}
+                  <td style={{ textAlign: 'right', padding: '0 8px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 6 }}>
+                      <span style={{
+                        fontFamily: 'var(--font-mono)',
+                        fontSize: 12.5,
+                        fontVariantNumeric: 'tabular-nums',
+                        color: 'var(--data-positive)',
+                      }}>
+                        {formatCompact(wallet.realizedPnl)}
+                      </span>
+                      <FlowBar value={wallet.realizedPnl} max={maxWalletPnl} />
+                    </div>
                   </td>
-                  <td className="text-right">
-                    <span className={`font-mono text-[13px] tabular-nums inline-flex items-center gap-0.5 ${p.price_change_7d >= 0 ? 'text-[#3EBD8C]' : 'text-[#E06565]'}`}>
-                      {p.price_change_7d >= 0 ? <CaretUp size={12} weight="fill" /> : <CaretDown size={12} weight="fill" />}
-                      {formatPct(p.price_change_7d)}
-                    </span>
+
+                  {/* ROI */}
+                  <td style={{ textAlign: 'right', padding: '0 8px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 6 }}>
+                      <span style={{
+                        fontFamily: 'var(--font-mono)',
+                        fontSize: 12.5,
+                        fontVariantNumeric: 'tabular-nums',
+                        color: 'var(--data-positive)',
+                      }}>
+                        {formatPercent(wallet.roi)}
+                      </span>
+                      <FlowBar value={wallet.roi} max={maxWalletRoi} />
+                    </div>
                   </td>
-                  <td className="text-right font-mono text-[13px] tabular-nums text-muted-foreground">{formatCompact(p.volume_24h)}</td>
-                  <td className="text-right">
-                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border ${signalColors[p.pelican_signal] || ''}`}>
-                      {p.pelican_signal}
-                    </span>
+
+                  {/* Win Rate */}
+                  <td style={{
+                    textAlign: 'right',
+                    padding: '0 8px',
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: 12.5,
+                    fontVariantNumeric: 'tabular-nums',
+                    color: 'var(--text-primary)',
+                  }}>
+                    {wallet.winRate}%
+                  </td>
+
+                  {/* Insights */}
+                  <td style={{ textAlign: 'center', padding: '0 8px' }}>
+                    <InsightsButton context={{ symbol: wallet.label, name: wallet.label, extra: `Wallet ${wallet.address} — PnL: ${formatCompact(wallet.realizedPnl)}, ROI: ${formatPercent(wallet.roi)}, Win rate: ${wallet.winRate}%` }} />
                   </td>
                 </tr>
-              )
-            })}
-          </tbody>
-        </table>
-      )}
-    </div>
-  )
-}
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
 
-/* ─── Wallet DNA ────────────────────────────────────────────────── */
+      {/* ─── Upcoming Events ───────────────────────────────── */}
+      <section style={{ padding: '0 24px 48px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+          <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>Upcoming Events</span>
+        </div>
 
-function WalletDNA() {
-  const dnaData = [
-    { axis: 'Risk', value: 85 }, { axis: 'Yield', value: 62 },
-    { axis: 'Frequency', value: 78 }, { axis: 'Diversity', value: 45 },
-    { axis: 'Holding', value: 30 }, { axis: 'Activity', value: 90 },
-  ]
-
-  return (
-    <div className="rounded-xl border bg-card p-5">
-      <div className="flex items-center justify-between mb-4">
-        <span className="text-[11px] uppercase tracking-[1.5px] font-semibold text-muted-foreground">WALLET DNA<PreviewBadge /></span>
-        <span className="px-3 py-1 rounded-full text-[11px] font-semibold text-white" style={{ background: 'linear-gradient(135deg, #2C5F8A, #5B4F8A)' }}>
-          Apex Predator
-        </span>
-      </div>
-      <div className="h-[220px] flex items-center justify-center">
-        <ResponsiveContainer width="100%" height="100%">
-          <RadarChart data={dnaData}>
-            <PolarGrid stroke="var(--border)" gridType="polygon" />
-            <PolarAngleAxis dataKey="axis" tick={{ fontSize: 11, fill: 'var(--muted-foreground)' }} />
-            <Radar dataKey="value" stroke="#4A90C4" fill="#4A90C4" fillOpacity={0.2} strokeWidth={2} />
-          </RadarChart>
-        </ResponsiveContainer>
-      </div>
-      <div className="flex justify-between mt-2 text-[12px] font-mono text-muted-foreground">
-        <span>Avg Hold: <span className="text-foreground font-semibold">14.2 Days</span></span>
-        <span>Sharpe: <span className="text-foreground font-semibold">2.94</span></span>
-        <span>Win Rate: <span className="text-foreground font-semibold">78%</span></span>
-      </div>
-    </div>
-  )
-}
-
-/* ─── Smart Money Feed ──────────────────────────────────────────── */
-
-function SmartMoneyFeed() {
-  return (
-    <div className="rounded-xl border bg-card p-5">
-      <div className="flex items-center gap-2 mb-4">
-        <TrendUp size={14} className="text-muted-foreground" />
-        <span className="text-[11px] uppercase tracking-[1.5px] font-semibold text-muted-foreground">SMART MONEY ACTIVITY<PreviewBadge /></span>
-        <span className="w-1.5 h-1.5 rounded-full bg-[#3EBD8C] animate-pulse" />
-        <span className="text-[11px] text-[#3EBD8C]">Live</span>
-      </div>
-      <table className="w-full">
-        <thead>
-          <tr className="border-b border-[var(--border)]">
-            {['TIME', 'WALLET', 'ACTION', 'TOKEN', 'AMOUNT', 'PELICAN COMMENTARY'].map(h => (
-              <th key={h} className="pb-3 text-[10px] uppercase tracking-wider font-semibold text-muted-foreground text-left">{h}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {MOCK_SMART_MONEY.map(e => (
-            <tr key={e.id} className="border-b border-[var(--border)] last:border-0">
-              <td className="py-2 font-mono text-[11px] text-muted-foreground whitespace-nowrap">{e.time}</td>
-              <td className="py-2">
-                <div className="flex items-center gap-2">
-                  <span className="text-[13px] font-medium">{e.wallet_label}</span>
-                  <span className="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-[#4A90C4]/10 text-[#4A90C4]">{e.archetype}</span>
-                </div>
-              </td>
-              <td className="py-2 text-[13px] text-muted-foreground">{e.action}</td>
-              <td className="py-2 text-[13px] font-semibold">{e.token}</td>
-              <td className="py-2 font-mono text-[13px] text-[#4A90C4]">{e.amount}</td>
-              <td className="py-2 text-[12px] italic text-muted-foreground max-w-[300px] truncate">&ldquo;{e.pelican_commentary}&rdquo;</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  )
-}
-
-/* ─── Macro Regime Strip ───────────────────────────────────────── */
-
-function MacroRegimeStrip() {
-  const signals = FA_TRAFFIC_LIGHT.signals
-  const signalColors = { green: '#3EBD8C', amber: '#D4A042', red: '#E06565' }
-
-  return (
-    <div className="rounded-xl border bg-card px-5 py-3">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-6">
-          <div className="flex items-center gap-2">
-            <span className="text-[11px] uppercase tracking-[1.5px] font-semibold text-muted-foreground">MACRO REGIME</span>
-            <FABadge />
-          </div>
-          {signals.map(s => (
-            <div key={s.indicator} className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full" style={{ backgroundColor: signalColors[s.signal] }} />
-              <span className="text-[11px] font-medium text-muted-foreground">{s.indicator}</span>
-              <span className="font-mono text-[12px] tabular-nums font-semibold">{s.value}</span>
+        {CALENDAR_EVENTS.slice(0, 6).map((event, i) => (
+          <div key={i} style={{
+            display: 'flex', alignItems: 'center', gap: 16,
+            padding: '10px 0',
+            borderBottom: '1px solid var(--border-subtle)',
+          }}>
+            {/* Date */}
+            <div style={{ width: 48, flexShrink: 0, textAlign: 'center' }}>
+              <div style={{ fontSize: 14, fontWeight: 700, fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
+                {event.date.split('-')[2]}
+              </div>
+              <div style={{ fontSize: 9, fontWeight: 600, fontFamily: 'var(--font-mono)', color: 'var(--text-quaternary)', textTransform: 'uppercase' as const }}>
+                {event.dayOfWeek}
+              </div>
             </div>
-          ))}
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-[#D4A042]/10 text-[#D4A042]">
-            {FA_TRAFFIC_LIGHT.regime}
-          </span>
-          <span className="font-mono text-[11px] text-muted-foreground">{FA_TRAFFIC_LIGHT.updated}</span>
-        </div>
-      </div>
-    </div>
-  )
-}
 
-/* ─── Prediction Market Signals ─────────────────────────────── */
+            {/* Type badge */}
+            <div style={{ width: 100, flexShrink: 0 }}>
+              <span style={{
+                padding: '2px 8px', borderRadius: 4, fontSize: 10, fontWeight: 600,
+                fontFamily: 'var(--font-mono)', textTransform: 'capitalize' as const,
+                color: event.type === 'macro' ? 'var(--data-negative)' :
+                       event.type === 'crypto' ? 'var(--data-warning)' :
+                       event.type === 'prediction' ? 'var(--accent-violet)' :
+                       'var(--data-positive)',
+                background: event.type === 'macro' ? 'rgba(224,101,101,0.1)' :
+                            event.type === 'crypto' ? 'rgba(212,160,66,0.1)' :
+                            event.type === 'prediction' ? 'rgba(139,127,199,0.1)' :
+                            'rgba(62,189,140,0.1)',
+              }}>
+                {event.type}
+              </span>
+            </div>
 
-function PredictionMarketStrip() {
-  const { data: cryptoMarkets } = useCryptoMarkets(3)
-  const { data: fedMarkets } = useFedRateMarkets(3)
-  const allMarkets = [...fedMarkets, ...cryptoMarkets].slice(0, 6)
+            {/* Event details */}
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-primary)' }}>{event.title}</div>
+              <div style={{ fontSize: 11, color: 'var(--text-tertiary)', marginTop: 1, fontFamily: 'var(--font-mono)' }}>{event.time}</div>
+            </div>
 
-  if (!allMarkets.length) return null
-
-  return (
-    <div className="rounded-xl border bg-card px-5 py-3">
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-3">
-          <span className="text-[11px] uppercase tracking-[1.5px] font-semibold text-muted-foreground">PREDICTION MARKET SIGNALS</span>
-          <span className="text-[10px] text-muted-foreground/60">via Polymarket</span>
-        </div>
-        <Link href="/screener" className="text-[11px] text-[#4A90C4] hover:underline font-medium">
-          View all markets →
-        </Link>
-      </div>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-        {allMarkets.map(m => (
-          <div key={m.id} className="flex flex-col gap-1 p-2 rounded-lg bg-[var(--bg-elevated)] border border-[var(--border-subtle)]">
-            <span className="text-[11px] text-muted-foreground line-clamp-2 leading-tight min-h-[2.5em]">
-              {m.question.length > 60 ? m.question.slice(0, 60) + '…' : m.question}
+            {/* Impact */}
+            <span style={{
+              fontSize: 10, fontWeight: 600, fontFamily: 'var(--font-mono)',
+              color: event.impact === 'High' ? 'var(--data-negative)' : 'var(--data-warning)',
+            }}>
+              {event.impact}
             </span>
-            <div className="flex items-center justify-between mt-auto">
-              <span className={`font-mono text-sm font-semibold tabular-nums ${m.yesPrice >= 0.6 ? 'text-[#3EBD8C]' : m.yesPrice <= 0.4 ? 'text-[#E06565]' : 'text-[#D4A042]'}`}>
-                {(m.yesPrice * 100).toFixed(0)}%
-              </span>
-              <span className="font-mono text-[10px] text-muted-foreground tabular-nums">
-                {formatCompact(m.volume)}
-              </span>
+
+            {/* Pelican brief */}
+            <div style={{ width: 16, flexShrink: 0, display: 'flex', justifyContent: 'center' }}>
+              <img src="/images/pelican-logo.png" alt="" style={{ width: 20, height: 20, objectFit: 'contain', opacity: 0.5, cursor: 'pointer' }} title={event.pelicanBrief} />
             </div>
           </div>
         ))}
-      </div>
-      <div className="mt-3 px-3 py-2 rounded-lg bg-[#4A90C4]/5 border border-[#4A90C4]/10">
-        <p className="text-[12px] text-muted-foreground leading-relaxed">
-          <span className="text-[#4A90C4] font-semibold">Pelican:</span> Prediction markets are pricing in continued crypto strength with BTC upside bias. Fed rate cut odds declining — watch for macro headwinds if yields push higher.
-        </p>
-      </div>
-    </div>
-  )
-}
-
-/* ─── Tokenization Pulse ────────────────────────────────────── */
-
-function TokenizationPulse() {
-  const { data } = useRWAData()
-  const summary = data?.summary
-
-  if (!summary) {
-    return (
-      <div className="rounded-xl border bg-card p-5">
-        <span className="text-[11px] uppercase tracking-[1.5px] font-semibold text-muted-foreground">TOKENIZATION PULSE</span>
-        <div className="mt-4 space-y-3">
-          {[1,2,3,4].map(i => <div key={i} className="h-8 rounded shimmer" />)}
-        </div>
-      </div>
-    )
-  }
-
-  const stats = [
-    { label: 'Total Tokenized', value: formatCompact(summary.totalTokenized), change: summary.change30d },
-    { label: 'Treasuries', value: formatCompact(summary.treasuries), change: 12.4 },
-    { label: 'Private Credit', value: formatCompact(summary.privateCredit), change: 15.8 },
-    { label: 'Equities', value: formatCompact(summary.equities), change: 8.2 },
-  ]
-
-  return (
-    <div className="rounded-xl border bg-card p-5">
-      <div className="flex items-center justify-between mb-4">
-        <span className="text-[11px] uppercase tracking-[1.5px] font-semibold text-muted-foreground">TOKENIZATION PULSE</span>
-        <span className="text-[10px] text-muted-foreground/60">via rwa.xyz</span>
-      </div>
-      <div className="space-y-3">
-        {stats.map(s => (
-          <div key={s.label} className="flex items-center justify-between">
-            <span className="text-[12px] text-muted-foreground">{s.label}</span>
-            <div className="flex items-center gap-2">
-              <span className="font-mono text-[13px] font-semibold tabular-nums">{s.value}</span>
-              <span className={`font-mono text-[11px] tabular-nums ${s.change >= 0 ? 'text-[#3EBD8C]' : 'text-[#E06565]'}`}>
-                {s.change >= 0 ? '+' : ''}{s.change.toFixed(1)}%
-              </span>
-            </div>
-          </div>
-        ))}
-      </div>
-      <Link href="/screener?tab=tokenization" className="text-[#4A90C4] text-[11px] font-medium mt-3 block hover:underline">
-        Explore tokenized assets →
-      </Link>
-    </div>
-  )
-}
-
-/* ─── Ask Pelican Hero ─────────────────────────────────────────── */
-
-const SUGGESTED_QUESTIONS = [
-  'What are smart money wallets buying?',
-  'Why is SOL outperforming?',
-  'Top tokens by net inflow today',
-  'Contrarian signals active now',
-]
-
-function AskPelicanHero({ onAsk }: { onAsk: (q: string) => void }) {
-  return (
-    <div style={{ textAlign: 'center', padding: '32px 0 24px' }}>
-      <h2
-        style={{
-          fontSize: 24,
-          fontWeight: 700,
-          color: 'var(--text-primary)',
-          letterSpacing: '-0.02em',
-          marginBottom: 16,
-        }}
-      >
-        What&apos;s Moving Today?
-      </h2>
-      <div
-        style={{ maxWidth: 560, margin: '0 auto', position: 'relative' }}
-      >
-        <button
-          onClick={() => onAsk('What are the key market moves today?')}
-          className="w-full flex items-center gap-3 cursor-pointer transition-all"
-          style={{
-            height: 44,
-            background: 'var(--bg-surface-2)',
-            border: '1px solid var(--border-default)',
-            borderRadius: 10,
-            padding: '0 12px 0 16px',
-          }}
-        >
-          <MagnifyingGlass size={16} style={{ color: 'var(--text-quaternary)', flexShrink: 0 }} />
-          <span style={{ flex: 1, textAlign: 'left', fontSize: 14, color: 'var(--text-quaternary)' }}>
-            Ask Pelican anything about the market...
-          </span>
-          <div
-            style={{
-              width: 30,
-              height: 30,
-              borderRadius: '50%',
-              background: 'linear-gradient(135deg, #2C5F8A, #5B4F8A)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexShrink: 0,
-            }}
-          >
-            <ArrowRight size={14} weight="bold" style={{ color: '#E1E7EF' }} />
-          </div>
-        </button>
-      </div>
-      <div
-        style={{
-          display: 'flex',
-          gap: 8,
-          justifyContent: 'center',
-          flexWrap: 'wrap',
-          marginTop: 12,
-        }}
-      >
-        {SUGGESTED_QUESTIONS.map((q) => (
-          <button
-            key={q}
-            onClick={() => onAsk(q)}
-            className="cursor-pointer transition-all"
-            style={{
-              height: 30,
-              padding: '0 12px',
-              borderRadius: 6,
-              background: 'var(--bg-surface-2)',
-              border: '1px solid var(--border-default)',
-              fontSize: 12,
-              fontWeight: 400,
-              color: 'var(--text-secondary)',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = 'var(--border-strong)'
-              e.currentTarget.style.color = 'var(--text-primary)'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = 'var(--border-default)'
-              e.currentTarget.style.color = 'var(--text-secondary)'
-            }}
-          >
-            {q}
-          </button>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-/* ─── Dashboard Page ────────────────────────────────────────────── */
-
-export default function DashboardPage() {
-  const { openWithPrompt } = usePelicanPanelContext()
-  const positionSymbols = useMemo(() => MOCK_POSITIONS.map(p => p.asset), [])
-  const { data: livePrices, error: pricesError, isLoading: pricesLoading, mutate: retryPrices } = useLivePrices(positionSymbols)
-  const { data: globalData } = useLiveGlobalData()
-
-  // Merge live prices into mock positions
-  const positions = mergePositions(livePrices)
-
-  // Recalculate portfolio totals from merged positions
-  const portfolioTotal = positions.reduce((sum, p) => sum + (p.current_price * p.quantity), 0)
-  const portfolioPnl = positions.reduce((sum, p) => sum + p.unrealized_pnl, 0)
-  const portfolioPnlPct = portfolioTotal > 0 ? (portfolioPnl / (portfolioTotal - portfolioPnl)) * 100 : 0
-
-  const btcDom = globalData?.btc_dominance ?? 58.4
-
-  return (
-    <div className="p-6 max-w-[1400px] mx-auto space-y-4">
-      {pricesError && <ApiError message="Live prices unavailable — showing cached data" onRetry={() => retryPrices()} compact />}
-
-      {/* Ask Pelican Hero */}
-      <AskPelicanHero onAsk={(q) => openWithPrompt(null, { visibleMessage: q, fullPrompt: `[MARKET QUESTION]\n${q}` }, null)} />
-
-      {/* Row 1: 4 stat cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard title="PORTFOLIO VALUE" value={formatUSD(portfolioTotal)} subtitle={`${formatPnl(portfolioPnl)} (${formatPct(portfolioPnlPct)})`} subtitleColor={portfolioPnl >= 0 ? 'text-[#3EBD8C]' : 'text-[#E06565]'} icon={<TrendUp size={16} />} />
-        <StatCard title="24H P&L" value={formatPnl(portfolioPnl)} valueColor={portfolioPnl >= 0 ? 'text-[#3EBD8C]' : 'text-[#E06565]'} subtitle={formatPct(portfolioPnlPct)} subtitleColor={portfolioPnl >= 0 ? 'text-[#3EBD8C]' : 'text-[#E06565]'} icon={portfolioPnl >= 0 ? <CaretUp size={16} /> : <CaretDown size={16} />} />
-        <StatCard title="AI ALERTS TODAY" value="7" subtitle="3 High Impact" subtitleColor="text-[#D4A042]" icon={<Bell size={16} />} preview />
-        <StatCard title="WALLET HEALTH" value="82/100" subtitle="Strong" subtitleColor="text-[#3EBD8C]" icon={<Heart size={16} />} healthBar={82} preview />
-      </div>
-      <DataFreshness source="CoinGecko" isLive={!!livePrices && !pricesError} />
-      <MacroRegimeStrip />
-      <PredictionMarketStrip />
-
-      {/* Row 2: Chart + Market Pulse */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-        <div className="lg:col-span-3">
-          <PortfolioChart positions={positions} />
-        </div>
-        <div className="lg:col-span-1">
-          <MarketPulse btcDominance={btcDom} onAskPelican={() => openWithPrompt(null, { visibleMessage: 'Give me a full crypto market analysis', fullPrompt: '[MARKET ANALYSIS]\nGive me a comprehensive crypto market analysis covering BTC dominance, sector rotation, smart money flows, and upcoming catalysts.' }, null)} />
-        </div>
-      </div>
-
-      {/* Row 3: Top Movers + Wallet DNA + Tokenization */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <TopMoversTable positions={positions} loading={pricesLoading && !livePrices} />
-        <WalletDNA />
-        <TokenizationPulse />
-      </div>
-
-      {/* Row 4: Smart Money Feed */}
-      <SmartMoneyFeed />
-
-      {/* Row 5: Research + X Feed */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div className="rounded-xl border bg-card overflow-hidden">
-          <div className="px-4 py-3 border-b border-[var(--border-subtle)]">
-            <span className="text-[11px] uppercase tracking-[1.5px] font-semibold text-muted-foreground">RESEARCH FEED</span>
-          </div>
-          <ResearchFeed />
-        </div>
-        <div className="rounded-xl border bg-card overflow-hidden">
-          <div className="px-4 py-3 border-b border-[var(--border-subtle)]">
-            <span className="text-[11px] uppercase tracking-[1.5px] font-semibold text-muted-foreground">CRYPTO X</span>
-          </div>
-          <XFeed />
-        </div>
-      </div>
-
-      {/* Ask Pelican FAB */}
-      <div className="fixed bottom-6 right-6 z-50">
-        <button onClick={() => openWithPrompt(null, { visibleMessage: 'Analyze my portfolio', fullPrompt: '[PORTFOLIO ANALYSIS]\nAnalyze my current crypto portfolio. Summarize positions, risk exposure, and any actionable insights.' }, null)}
-          className="flex items-center gap-2 px-5 py-3 rounded-full text-white text-sm font-medium shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] cursor-pointer"
-          style={{ background: 'linear-gradient(135deg, #2C5F8A, #5B4F8A)', boxShadow: '0 4px 20px rgba(74,144,196,0.3)' }}>
-          <ChatCircle size={18} weight="fill" />
-          Ask Pelican
-        </button>
-      </div>
+      </section>
     </div>
   )
 }

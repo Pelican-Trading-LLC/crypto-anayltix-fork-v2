@@ -1,31 +1,31 @@
-'use client'
+"use client"
 
-export function ChainBadge({ chain }: { chain: string }) {
+import React from 'react'
+
+interface ChainBadgeProps {
+  chain: string
+}
+
+export function ChainBadge({ chain }: ChainBadgeProps) {
   return (
-    <div
+    <span
       style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
         width: 24,
         height: 18,
         borderRadius: 3,
         background: 'rgba(255,255,255,0.04)',
-        border: '1px solid rgba(255,255,255,0.06)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexShrink: 0,
+        border: '1px solid var(--border-subtle)',
+        fontSize: 8,
+        fontFamily: 'var(--font-mono)',
+        fontWeight: 700,
+        color: 'var(--text-quaternary)',
+        lineHeight: 1,
       }}
     >
-      <span
-        style={{
-          fontSize: 8,
-          fontWeight: 700,
-          fontFamily: 'var(--font-mono)',
-          color: 'var(--text-quaternary)',
-          letterSpacing: '0.02em',
-        }}
-      >
-        {chain.slice(0, 3).toUpperCase()}
-      </span>
-    </div>
+      {chain}
+    </span>
   )
 }

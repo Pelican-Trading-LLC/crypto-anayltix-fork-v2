@@ -7,22 +7,13 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   SquaresFour,
   MagnifyingGlass,
-  Lightning,
-  CalendarBlank,
   TrendUp,
   ArrowsClockwise,
-  Fingerprint,
-  ChatCircle,
   Bell,
-  GraduationCap,
-  Users,
   GearSix,
   CaretRight,
   CaretLeft,
-  BookOpenText,
-  Bird,
   Pulse,
-  Scales,
 } from '@phosphor-icons/react'
 import type { Icon as PhosphorIcon } from '@phosphor-icons/react'
 import { useAuth } from '@/lib/providers/auth-provider'
@@ -50,48 +41,13 @@ interface NavSection {
 
 const NAV_SECTIONS: NavSection[] = [
   {
-    title: '', // No label for top section
-    items: [
-      { label: 'Daily Brief', href: '/brief', icon: Bird },
-    ],
-  },
-  {
-    title: 'FOREXANALYTIX',
-    items: [
-      { label: 'ForexAnalytix', href: '/forexanalytix', icon: Pulse, badge: '5 PiPs', accentTint: true },
-    ],
-  },
-  {
-    title: 'MARKETS',
+    title: '',
     items: [
       { label: 'Dashboard', href: '/dashboard', icon: SquaresFour },
-      { label: 'Token Intel', href: '/token-intel', icon: MagnifyingGlass },
-      { label: 'Markets Intel', href: '/screener', icon: Scales },
-      { label: 'Sector Rotation', href: '/sector-rotation', icon: ArrowsClockwise },
-    ],
-  },
-  {
-    title: 'INTELLIGENCE',
-    items: [
-      { label: 'Wallet DNA', href: '/wallet-dna', icon: Fingerprint },
+      { label: 'Analysis Hub', href: '/forexanalytix', icon: Pulse },
+      { label: 'Predictions', href: '/screener', icon: ArrowsClockwise },
+      { label: 'Smart Alerts', href: '/alerts', icon: Bell, badge: '3' },
       { label: 'Smart Money', href: '/smart-money', icon: TrendUp },
-      { label: 'Signals', href: '/signals', icon: Lightning },
-      { label: 'AI Alerts', href: '/alerts', icon: Bell, badge: '3' },
-    ],
-  },
-  {
-    title: 'PELICAN AI',
-    items: [
-      { label: 'Ask Pelican', href: '/chat', icon: ChatCircle, accentTint: true },
-    ],
-  },
-  {
-    title: 'LEARN & REFERENCE',
-    items: [
-      { label: 'Knowledge Base', href: '/knowledge-base', icon: BookOpenText },
-      { label: 'Calendar', href: '/calendar', icon: CalendarBlank },
-      { label: 'Learn', href: '/learn', icon: GraduationCap },
-      { label: 'Community', href: '/community', icon: Users },
     ],
   },
 ]
@@ -120,18 +76,7 @@ export default function AppSidebar() {
     >
       {/* Logo */}
       <div className="flex items-center gap-2.5 px-3 h-14 border-b border-[var(--border-subtle)] flex-shrink-0">
-        <div
-          className="flex items-center justify-center flex-shrink-0"
-          style={{
-            width: 28,
-            height: 28,
-            borderRadius: 6,
-            background: 'linear-gradient(135deg, #2C5F8A, #1E3A5F)',
-            border: '1px solid rgba(90, 130, 180, 0.2)',
-          }}
-        >
-          <span style={{ fontSize: 12, fontWeight: 800, color: '#5BA3D9', lineHeight: 1 }}>TA</span>
-        </div>
+        <img src="/images/token-analytix-logo.png" alt="Token Analytix" width={44} height={44} style={{ objectFit: 'contain' }} />
         <AnimatePresence>
           {!collapsed && (
             <motion.div
@@ -205,7 +150,15 @@ export default function AppSidebar() {
                       <>
                         <span className="flex-1 truncate">{item.label}</span>
                         {item.badge && (
-                          <span className="ml-auto px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#4A90C4]/15 text-[#4A90C4]">
+                          <span
+                            className="ml-auto flex items-center justify-center rounded-full font-mono font-bold text-white"
+                            style={{
+                              width: 16,
+                              height: 16,
+                              fontSize: 9,
+                              background: 'var(--data-negative)',
+                            }}
+                          >
                             {item.badge}
                           </span>
                         )}
@@ -219,7 +172,21 @@ export default function AppSidebar() {
         ))}
       </nav>
 
-      {/* Spacer is handled by flex-1 on nav */}
+      {/* Command K shortcut */}
+      {!collapsed && (
+        <div style={{ textAlign: 'center', marginTop: 8 }}>
+          <span style={{ background: 'var(--bg-surface-3)', border: '1px solid var(--border-subtle)', borderRadius: 4, padding: '2px 6px', fontSize: 10, fontFamily: 'var(--font-mono)', color: 'var(--text-quaternary)' }}>&#x2318;K</span>
+        </div>
+      )}
+
+      {/* Connection status */}
+      <div className="px-3 py-1.5 border-t border-[var(--border-subtle)] flex items-center gap-1.5">
+        <span className="live-dot" style={{ width: 6, height: 6 }} />
+        <span style={{ fontSize: 10, color: 'var(--text-tertiary)' }}>Market Open</span>
+        {!collapsed && (
+          <span style={{ fontSize: 10, fontFamily: 'var(--font-mono)', color: 'var(--text-quaternary)', marginLeft: 'auto' }}>Synced 2s ago</span>
+        )}
+      </div>
 
       {/* User section */}
       <div className="p-3 border-t border-[var(--border-subtle)] flex-shrink-0">

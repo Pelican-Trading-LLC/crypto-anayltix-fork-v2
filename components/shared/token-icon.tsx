@@ -1,49 +1,23 @@
-'use client'
+"use client"
 
-const TOKEN_COLORS: Record<string, { hue: number; letters: string }> = {
-  'FAF': { hue: 30, letters: 'FA' },
-  'PUNCH': { hue: 340, letters: 'PC' },
-  'WOJAK': { hue: 120, letters: 'WJ' },
-  'KNIFE': { hue: 0, letters: 'KN' },
-  'CAPTCHA': { hue: 160, letters: 'CA' },
-  'VNUT': { hue: 270, letters: 'VN' },
-  'NOHAT': { hue: 200, letters: 'NH' },
-  'VDOR': { hue: 50, letters: 'VD' },
-  'CATFU': { hue: 15, letters: 'CF' },
-  'PIGEON': { hue: 220, letters: 'PG' },
-  'JUP': { hue: 180, letters: 'JP' },
-  'PTOKEN': { hue: 290, letters: 'PT' },
-  'UNTIL': { hue: 80, letters: 'UN' },
-  'CHUD': { hue: 310, letters: 'CH' },
-  'MS2': { hue: 140, letters: 'MS' },
-  'SPAWN': { hue: 260, letters: 'SP' },
-  'LAYOFF': { hue: 350, letters: 'LO' },
-  'SAMBA': { hue: 40, letters: 'SA' },
-  'BTC': { hue: 35, letters: 'BT' },
-  'ETH': { hue: 230, letters: 'ET' },
-  'SOL': { hue: 280, letters: 'SL' },
-  'AAPL': { hue: 0, letters: 'AP' },
-  'NVDA': { hue: 120, letters: 'NV' },
-  'ONDO': { hue: 200, letters: 'ON' },
-  'AVAX': { hue: 0, letters: 'AV' },
-  'LINK': { hue: 220, letters: 'LK' },
-  'DOT': { hue: 330, letters: 'DT' },
-  'MATIC': { hue: 270, letters: 'MA' },
-  'ADA': { hue: 215, letters: 'AD' },
-  'DOGE': { hue: 45, letters: 'DG' },
-  'XRP': { hue: 210, letters: 'XR' },
-  'BNB': { hue: 42, letters: 'BN' },
-  'AAVE': { hue: 290, letters: 'AV' },
-  'ARB': { hue: 210, letters: 'AR' },
-  'OP': { hue: 0, letters: 'OP' },
+import React from 'react'
+
+const TOKEN_HUES: Record<string, number> = {
+  FAF: 30, PUNCH: 340, WOJAK: 120, CAPTCHA: 160, VNUT: 270,
+  NOHAT: 200, VDOR: 50, CATFU: 15, PIGEON: 220, JUP: 180,
+  PTOKEN: 290, UNTIL: 80, CHUD: 310, MS2: 140, SPAWN: 260,
+  LAYOFF: 350, SAMBA: 40, BTC: 35, ETH: 230, SOL: 280,
+  AAPL: 0, NVDA: 120, ONDO: 200, PENGU: 210, META: 220,
+  RENDER: 160, PUMP: 340, FARTCOIN: 60, MPLX: 270,
+  KNIFE: 10, GOLD: 45, DXY: 190,
 }
 
-function getTokenStyle(symbol: string) {
-  const mapped = TOKEN_COLORS[symbol.toUpperCase()]
-  if (mapped) return mapped
+function hashHue(symbol: string): number {
   let hash = 0
-  for (let i = 0; i < symbol.length; i++) hash = symbol.charCodeAt(i) + ((hash << 5) - hash)
-  return { hue: Math.abs(hash) % 360, letters: symbol.slice(0, 2).toUpperCase() }
+  for (let i = 0; i < symbol.length; i++) {
+    hash = symbol.charCodeAt(i) + ((hash << 5) - hash)
+  }
+  return Math.abs(hash) % 360
 }
 
 interface TokenIconProps {
@@ -52,7 +26,10 @@ interface TokenIconProps {
 }
 
 export function TokenIcon({ symbol, size = 22 }: TokenIconProps) {
-  const { hue, letters } = getTokenStyle(symbol)
+  const hue = TOKEN_HUES[symbol.toUpperCase()] ?? hashHue(symbol)
+  const letters = symbol.slice(0, 2).toUpperCase()
+  const fontSize = size * 0.4
+
   return (
     <div
       style={{
@@ -69,11 +46,11 @@ export function TokenIcon({ symbol, size = 22 }: TokenIconProps) {
     >
       <span
         style={{
-          fontSize: size * 0.4,
+          fontSize,
           fontWeight: 700,
           color: `hsl(${hue}, 45%, 65%)`,
-          letterSpacing: '-0.02em',
           lineHeight: 1,
+          fontFamily: 'var(--font-sans)',
         }}
       >
         {letters}

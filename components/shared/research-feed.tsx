@@ -158,7 +158,7 @@ export function ResearchFeed() {
               }}
             >
               {/* Left: Logo */}
-              <SourceLogo source={article.source} size={28} />
+              <SourceLogo source={article.source} />
 
               {/* Center: Meta + Title */}
               <div style={{ flex: 1, minWidth: 0 }}>

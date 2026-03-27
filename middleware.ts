@@ -32,10 +32,17 @@ async function getLocale(req: NextRequest): Promise<string> {
   return 'en';
 }
 
+// DEV ONLY — feature routes that bypass auth entirely
+const DEV_BYPASS = ["/dashboard", "/brief", "/screener", "/smart-money", "/token-intel", "/signals", "/alerts", "/wallet-dna", "/sector-rotation", "/chat", "/forexanalytix", "/calendar", "/learn", "/knowledge-base", "/community", "/settings"];
+
 export async function middleware(request: NextRequest) {
   // CRITICAL: Stripe webhook must bypass ALL middleware (no auth, no redirects)
-  // Webhooks need raw request body and cannot have any interference
   if (request.nextUrl.pathname === '/api/stripe/webhook') {
+    return NextResponse.next()
+  }
+
+  // DEV ONLY — skip auth entirely for feature routes
+  if (DEV_BYPASS.some(p => request.nextUrl.pathname === p || request.nextUrl.pathname.startsWith(p + '/'))) {
     return NextResponse.next()
   }
 

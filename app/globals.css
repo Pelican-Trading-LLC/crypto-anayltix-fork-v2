@@ -232,17 +232,17 @@
      Steel blue institutional palette derived from logo
      ═══════════════════════════════════════════════════ */
 
-  /* Backgrounds — Navy-tinted, NOT pure black */
-  --bg-base: #0A0F1A;
-  --bg-surface: #131C2E;
-  --bg-elevated: #192438;
-  --bg-overlay: rgba(0, 0, 0, 0.6);
-  --bg-sidebar: #0E1525;
-  --bg-input: #131C2E;
-  --bg-surface-1: #0E1525;
-  --bg-surface-2: #131C2E;
-  --bg-surface-3: #192438;
-  --bg-surface-4: #1F2D44;
+  /* Backgrounds — Deep midnight navy */
+  --bg-base: #060a11;
+  --bg-surface: #0c1119;
+  --bg-elevated: #121a27;
+  --bg-overlay: rgba(0, 0, 0, 0.65);
+  --bg-sidebar: #080d14;
+  --bg-input: #0c1119;
+  --bg-surface-1: #080d14;
+  --bg-surface-2: #0c1119;
+  --bg-surface-3: #121a27;
+  --bg-surface-4: #182231;
   --surface-hover: rgba(90, 130, 180, 0.06);
   --surface-active: rgba(74, 144, 196, 0.12);
   --surface-code-block: #131C2E;
@@ -1009,4 +1009,110 @@
     background-color: #93c5fd;
     animation: thinking-bounce 1.2s ease-in-out infinite;
   }
+}
+
+/* ═══════════════════════════════════════════
+   TOKEN ANALYTIX — Animations & Utilities
+   ═══════════════════════════════════════════ */
+
+/* Live pulse dot */
+.live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--data-positive);
+  display: inline-block;
+  margin-right: 4px;
+  position: relative;
+}
+
+.live-dot::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  background: var(--data-positive);
+  opacity: 0;
+  animation: livePulse 3s ease-in-out infinite;
+}
+
+@keyframes livePulse {
+  0%, 100% { opacity: 0; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(1.8); }
+}
+
+/* Cell flash animations for live data updates */
+@keyframes cellFlashGreen {
+  0% { background: rgba(62, 189, 140, 0.15); }
+  100% { background: transparent; }
+}
+
+@keyframes cellFlashRed {
+  0% { background: rgba(224, 101, 101, 0.15); }
+  100% { background: transparent; }
+}
+
+.cell-flash-positive {
+  animation: cellFlashGreen 800ms ease-out;
+}
+
+.cell-flash-negative {
+  animation: cellFlashRed 800ms ease-out;
+}
+
+/* Toast slide-in animation */
+@keyframes slideInFromRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; transform: translateX(20px); }
+}
+
+/* Context menu animation */
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Connection status slow pulse */
+.connection-dot::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0;
+  animation: connectionPulse 5s ease-in-out infinite;
+}
+
+@keyframes connectionPulse {
+  0%, 100% { opacity: 0; transform: scale(1); }
+  50% { opacity: 0.2; transform: scale(1.6); }
+}
+
+/* Global numeric rendering */
+.font-mono, [class*="font-mono"] {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Scrollbar styling for dark theme */
+.dark ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 3px;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
 }

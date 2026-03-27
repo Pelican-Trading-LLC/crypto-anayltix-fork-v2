@@ -14,7 +14,7 @@ interface HelpChatProps {
   logoUrl?: string;
 }
 
-export default function HelpChat({ logoUrl = '/ca-logo.svg' }: HelpChatProps) {
+export default function HelpChat({ logoUrl = '/images/pelican-logo.png' }: HelpChatProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');

@@ -82,11 +82,11 @@ function PanelMessage({ message, isStreaming = false, isAutoPrompt = false }: Pa
       <div className="flex gap-3 items-start">
         <div className="flex-shrink-0 mt-1">
           <Image
-            src="/ca-logo.svg"
+            src="/images/pelican-logo.png"
             alt="Pelican AI"
-            width={24}
-            height={24}
-            className="w-6 h-6 object-contain"
+            width={32}
+            height={32}
+            className="w-8 h-8 object-contain"
           />
         </div>
         <div className="flex-1 min-w-0 max-w-[90%] select-text">
@@ -195,16 +195,16 @@ function PelicanChatPanelInternal({
       <div className="md:hidden fixed inset-0 z-50 flex flex-col bg-[var(--bg-surface)]">
         {/* Header — pinned top */}
         <div className="shrink-0 border-b border-[var(--border-subtle)] px-4 py-3 flex items-center justify-between bg-[var(--bg-elevated)]">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <Image
-              src="/ca-logo.svg"
+              src="/images/pelican-logo.png"
               alt="Pelican AI"
-              width={24}
-              height={24}
-              className="w-6 h-6 object-contain"
+              width={36}
+              height={36}
+              className="w-9 h-9 object-contain"
             />
             <div className="flex flex-col">
-              <span className="text-sm font-semibold text-[var(--text-primary)]">Pelican AI</span>
+              <span className="text-[15px] font-bold text-[var(--text-primary)]">Pelican AI</span>
               {ticker && (
                 <span className="text-xs text-[var(--text-muted)] font-mono">{ticker}</span>
               )}
@@ -262,7 +262,7 @@ function PelicanChatPanelInternal({
               onKeyDown={handleKeyDown}
               placeholder="Ask Pelican anything..."
               disabled={isStreaming}
-              className="flex-1 bg-white/[0.06] border border-[var(--border-subtle)] rounded-lg px-3 py-2 text-sm leading-relaxed text-[var(--text-primary)] resize-none focus:outline-none focus:ring-1 focus:ring-[var(--accent-primary)] disabled:opacity-50 min-h-[40px] max-h-[120px]"
+              className="flex-1 bg-white/[0.04] border border-[var(--border-default)] rounded-xl px-4 py-2.5 text-sm leading-relaxed text-[var(--text-primary)] resize-none focus:outline-none focus:border-[var(--accent-primary)] focus:shadow-[0_0_0_1px_var(--accent-primary-muted)] disabled:opacity-50 min-h-[42px] max-h-[120px] transition-all"
               rows={1}
             />
             <IconTooltip label={isStreaming ? "Generating..." : "Send message"} side="top" kbd={isStreaming ? undefined : "↵"}>
@@ -270,7 +270,7 @@ function PelicanChatPanelInternal({
                 onClick={handleSend}
                 disabled={!inputValue.trim() || isStreaming}
                 size="icon"
-                className="h-10 w-10 bg-[var(--accent-primary)] hover:bg-[var(--accent-hover)] disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
+                className="h-10 w-10 rounded-xl bg-[var(--accent-primary)] hover:bg-[var(--accent-hover)] disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0 shadow-[0_2px_8px_rgba(74,144,196,0.3)]"
               >
                 {isStreaming ? (
                   <SpinnerGap className="h-4 w-4 animate-spin" weight="bold" />
@@ -301,16 +301,16 @@ function PelicanChatPanelInternal({
       >
         {/* Header — pinned top */}
         <div className="shrink-0 border-b border-[var(--border-subtle)] px-4 py-3 flex items-center justify-between bg-[var(--bg-elevated)]">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <Image
-              src="/ca-logo.svg"
+              src="/images/pelican-logo.png"
               alt="Pelican AI"
-              width={24}
-              height={24}
-              className="w-6 h-6 object-contain"
+              width={36}
+              height={36}
+              className="w-9 h-9 object-contain"
             />
             <div className="flex flex-col">
-              <span className="text-sm font-semibold text-[var(--text-primary)]">Pelican AI</span>
+              <span className="text-[15px] font-bold text-[var(--text-primary)]">Pelican AI</span>
               {ticker && (
                 <span className="text-xs text-[var(--text-muted)] font-mono">{ticker}</span>
               )}
@@ -374,14 +374,17 @@ function PelicanChatPanelInternal({
           {messages.length === 0 && (
             <div className="flex flex-col items-center justify-center h-full text-center px-6">
               <Image
-                src="/ca-logo.svg"
+                src="/images/pelican-logo.png"
                 alt="Pelican AI"
-                width={48}
-                height={48}
-                className="w-12 h-12 object-contain opacity-40 mb-4"
+                width={72}
+                height={72}
+                className="w-[72px] h-[72px] object-contain opacity-30 mb-5"
               />
-              <p className="text-sm text-[var(--text-muted)]">
-                Ask Pelican anything about the markets
+              <p className="text-[15px] font-semibold text-[var(--text-muted)] mb-1">
+                Pelican AI
+              </p>
+              <p className="text-xs text-[var(--text-quaternary)]">
+                Ask anything about the markets, on-chain flows, or predictions
               </p>
             </div>
           )}
@@ -397,7 +400,7 @@ function PelicanChatPanelInternal({
               onKeyDown={handleKeyDown}
               placeholder="Ask Pelican anything..."
               disabled={isStreaming}
-              className="flex-1 bg-white/[0.06] border border-[var(--border-subtle)] rounded-lg px-3 py-2 text-sm leading-relaxed text-[var(--text-primary)] resize-none focus:outline-none focus:ring-1 focus:ring-[var(--accent-primary)] disabled:opacity-50 min-h-[40px] max-h-[120px]"
+              className="flex-1 bg-white/[0.04] border border-[var(--border-default)] rounded-xl px-4 py-2.5 text-sm leading-relaxed text-[var(--text-primary)] resize-none focus:outline-none focus:border-[var(--accent-primary)] focus:shadow-[0_0_0_1px_var(--accent-primary-muted)] disabled:opacity-50 min-h-[42px] max-h-[120px] transition-all"
               rows={1}
             />
             <IconTooltip label={isStreaming ? "Generating..." : "Send message"} side="top" kbd={isStreaming ? undefined : "↵"}>
@@ -405,7 +408,7 @@ function PelicanChatPanelInternal({
                 onClick={handleSend}
                 disabled={!inputValue.trim() || isStreaming}
                 size="icon"
-                className="h-10 w-10 bg-[var(--accent-primary)] hover:bg-[var(--accent-hover)] disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
+                className="h-10 w-10 rounded-xl bg-[var(--accent-primary)] hover:bg-[var(--accent-hover)] disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0 shadow-[0_2px_8px_rgba(74,144,196,0.3)]"
               >
                 {isStreaming ? (
                   <SpinnerGap className="h-4 w-4 animate-spin" weight="bold" />

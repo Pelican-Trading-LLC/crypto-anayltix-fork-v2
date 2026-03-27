@@ -57,7 +57,7 @@ export default function ForgotPasswordPage() {
           <div className="flex flex-col items-center text-center mb-8">
             <div className="w-12 h-12 mb-4 relative">
               <Image
-                src="/ca-logo.svg"
+                src="/images/pelican-logo.png"
                 alt="Token Analytix"
                 width={48}
                 height={48}

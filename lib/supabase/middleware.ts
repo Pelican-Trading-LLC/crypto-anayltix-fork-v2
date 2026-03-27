@@ -20,7 +20,10 @@ const PUBLIC_PATHS = [
 ];
 
 /** Marketing and landing pages that don't require login */
-const PUBLIC_PREFIXES = ["/pricing", "/privacy", "/terms", "/faq", "/how-to-use", "/guide", "/strategies", "/api/health", "/api/help-chat", "/api/stripe/webhook", "/api/strategies", "/api/share-card"];
+const PUBLIC_PREFIXES = ["/pricing", "/privacy", "/terms", "/faq", "/how-to-use", "/guide", "/strategies", "/api/health", "/api/help-chat", "/api/stripe/webhook", "/api/strategies", "/api/share-card",
+  // DEV ONLY — bypass auth for preview
+  "/dashboard", "/brief", "/screener", "/smart-money", "/token-intel", "/signals", "/alerts", "/wallet-dna", "/sector-rotation", "/chat", "/forexanalytix", "/calendar", "/learn", "/knowledge-base", "/community", "/settings",
+];
 
 function isPublicPath(pathname: string): boolean {
   if (pathname === "/") return true;
@@ -30,6 +33,11 @@ function isPublicPath(pathname: string): boolean {
 
 export const updateSession = async (request: NextRequest) => {
   const pathname = request.nextUrl.pathname;
+
+  // DEV: skip Supabase entirely for public paths (avoids timeout when no env vars)
+  if (isPublicPath(pathname)) {
+    return NextResponse.next({ request: { headers: request.headers } });
+  }
 
   try {
     let response = NextResponse.next({
