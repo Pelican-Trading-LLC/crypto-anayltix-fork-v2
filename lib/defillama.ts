@@ -1,6 +1,4 @@
-const LLAMA = 'https://api.llama.fi'
-const YIELDS = 'https://yields.llama.fi'
-const STABLES = 'https://stablecoins.llama.fi'
+// DeFiLlama API client — uses proxy routes to avoid CORS
 
 export interface DeFiProtocol {
   id: string; name: string; symbol: string; slug: string; logo: string
@@ -34,30 +32,56 @@ export interface Stablecoin {
   name: string; symbol: string; circulating: { peggedUSD: number }; price: number
 }
 
-// ── Fetchers ────────────────────────────────────────────────
+// ── Fetchers (via proxy) ────────────────────────────────────
 
 export async function fetchProtocols(): Promise<DeFiProtocol[]> {
-  try { const r = await fetch(`${LLAMA}/protocols`); if (!r.ok) throw r; return r.json() } catch { return [] }
+  try {
+    const res = await fetch('/api/defillama/protocols')
+    if (!res.ok) return []
+    return res.json()
+  } catch (err) { console.error('[DeFiLlama] protocols:', err); return [] }
 }
 
 export async function fetchChains(): Promise<ChainTvl[]> {
-  try { const r = await fetch(`${LLAMA}/v2/chains`); if (!r.ok) throw r; return r.json() } catch { return [] }
+  try {
+    const res = await fetch('/api/defillama/chains')
+    if (!res.ok) return []
+    return res.json()
+  } catch (err) { console.error('[DeFiLlama] chains:', err); return [] }
 }
 
 export async function fetchYieldPools(): Promise<YieldPool[]> {
-  try { const r = await fetch(`${YIELDS}/pools`); if (!r.ok) throw r; const d = await r.json(); return d.data || [] } catch { return [] }
+  try {
+    const res = await fetch('/api/defillama/yields')
+    if (!res.ok) return []
+    const d = await res.json()
+    return d.data || d || []
+  } catch (err) { console.error('[DeFiLlama] yields:', err); return [] }
 }
 
 export async function fetchDEXOverview(): Promise<{ protocols: DEXProtocol[]; total24h: number } | null> {
-  try { const r = await fetch(`${LLAMA}/overview/dexs`); if (!r.ok) throw r; return r.json() } catch { return null }
+  try {
+    const res = await fetch('/api/defillama/dexs')
+    if (!res.ok) return null
+    return res.json()
+  } catch (err) { console.error('[DeFiLlama] dexs:', err); return null }
 }
 
 export async function fetchFeesOverview(): Promise<{ protocols: FeesProtocol[] } | null> {
-  try { const r = await fetch(`${LLAMA}/overview/fees`); if (!r.ok) throw r; return r.json() } catch { return null }
+  try {
+    const res = await fetch('/api/defillama/fees')
+    if (!res.ok) return null
+    return res.json()
+  } catch (err) { console.error('[DeFiLlama] fees:', err); return null }
 }
 
 export async function fetchStablecoins(): Promise<Stablecoin[]> {
-  try { const r = await fetch(`${STABLES}/stablecoins?includePrices=true`); if (!r.ok) throw r; const d = await r.json(); return d.peggedAssets || [] } catch { return [] }
+  try {
+    const res = await fetch('/api/defillama/stablecoins')
+    if (!res.ok) return []
+    const d = await res.json()
+    return d.peggedAssets || d || []
+  } catch (err) { console.error('[DeFiLlama] stables:', err); return [] }
 }
 
 // ── Helpers ─────────────────────────────────────────────────
@@ -72,8 +96,9 @@ export function formatTvl(v: number | string | null | undefined): string {
 }
 
 export function formatChange(v: number | null | undefined): { text: string; color: string } {
-  if (v === null || v === undefined || isNaN(v)) return { text: '—', color: 'var(--text-quaternary)' }
-  return { text: (v >= 0 ? '+' : '') + v.toFixed(2) + '%', color: v >= 0 ? 'var(--data-positive)' : 'var(--data-negative)' }
+  if (v === null || v === undefined || isNaN(Number(v))) return { text: '—', color: 'var(--text-quaternary)' }
+  const n = Number(v)
+  return { text: (n >= 0 ? '+' : '') + n.toFixed(2) + '%', color: n >= 0 ? 'var(--data-positive)' : 'var(--data-negative)' }
 }
 
 export function normalizeCategory(c: string): string {
