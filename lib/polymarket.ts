@@ -71,8 +71,11 @@ export async function searchMarkets(query: string, limit = 20): Promise<Polymark
 export async function fetchPriceHistory(tokenId: string, interval = '1m', fidelity = 100): Promise<PriceHistoryPoint[]> {
   if (!tokenId) return []
   try {
+    // Price history is on clob.polymarket.com, NOT gamma-api
     const sp = new URLSearchParams({ market: tokenId, interval, fidelity: String(fidelity) })
-    const url = isBrowser ? `${BASE}/prices-history?${sp}` : `https://gamma-api.polymarket.com/prices-history?${sp}`
+    const url = isBrowser
+      ? `/api/polymarket/prices-history?${sp}`
+      : `https://clob.polymarket.com/prices-history?${sp}`
     const res = await fetch(url)
     if (!res.ok) return []
     const data = await res.json()
