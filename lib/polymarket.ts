@@ -42,7 +42,7 @@ export async function fetchMarkets(params?: {
 }): Promise<PolymarketMarket[]> {
   const { limit = 30, offset = 0, order = 'volume24hr', ascending = false, active = true, closed = false, tag } = params || {}
   try {
-    const sp = new URLSearchParams({ limit: String(limit), offset: String(offset), order, ascending: String(ascending), active: String(active), closed: String(closed) })
+    const sp = new URLSearchParams({ limit: String(limit), offset: String(offset), order, ascending: String(ascending), active: String(active), closed: String(closed), accepting_orders: 'true' })
     if (tag) sp.set('tag', tag)
     const url = isBrowser ? `${BASE}/markets?${sp}` : `${BASE}/markets?${sp}`
     const res = await fetch(url)
