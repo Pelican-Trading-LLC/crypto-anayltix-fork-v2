@@ -103,11 +103,12 @@ function parseMarket(m: PolymarketMarket): PolymarketMarket {
   return m
 }
 
-export function formatVolume(vol: number): string {
-  if (!vol) return '$0'
-  if (vol >= 1e6) return `$${(vol / 1e6).toFixed(1)}M`
-  if (vol >= 1e3) return `$${(vol / 1e3).toFixed(0)}K`
-  return `$${vol.toFixed(0)}`
+export function formatVolume(vol: number | string | undefined | null): string {
+  const n = Number(vol) || 0
+  if (n >= 1e6) return `$${(n / 1e6).toFixed(1)}M`
+  if (n >= 1e3) return `$${(n / 1e3).toFixed(0)}K`
+  if (n > 0) return `$${n.toFixed(0)}`
+  return '$0'
 }
 
 export function getPolymarketUrl(m: PolymarketMarket): string {
