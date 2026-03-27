@@ -1,27 +1,29 @@
 "use client"
 
 import React from 'react'
+import { useKrakenTickers } from '@/hooks/use-kraken'
+import { formatPrice, formatPercent } from '@/lib/format'
 
-const TICKER_ITEMS = [
-  { symbol: 'BTC', price: '$84,230.00', change: '+7.44%', positive: true },
-  { symbol: 'ETH', price: '$2,180.00', change: '-6.84%', positive: false },
-  { symbol: 'SOL', price: '$138.50', change: '-2.46%', positive: false },
-  { symbol: 'BNB', price: '$612.40', change: '+1.82%', positive: true },
-  { symbol: 'XRP', price: '$0.6284', change: '+3.21%', positive: true },
-  { symbol: 'ADA', price: '$0.4520', change: '-1.18%', positive: false },
-  { symbol: 'AVAX', price: '$34.80', change: '-1.97%', positive: false },
-  { symbol: 'DOT', price: '$7.42', change: '+0.86%', positive: true },
-  { symbol: 'LINK', price: '$16.85', change: '+18.66%', positive: true },
-  { symbol: 'MATIC', price: '$0.892', change: '-0.54%', positive: false },
-  { symbol: 'ONDO', price: '$1.34', change: '+6.80%', positive: true },
-  { symbol: 'JUP', price: '$0.892', change: '+12.40%', positive: true },
-  { symbol: 'RENDER', price: '$7.42', change: '+8.20%', positive: true },
+const TICKER_SYMBOLS = [
+  'BTC', 'ETH', 'SOL', 'XRP', 'ADA', 'AVAX', 'DOT', 'LINK',
+  'ONDO', 'JUP', 'RENDER', 'DOGE', 'PEPE', 'ARB', 'SUI', 'AAVE',
+]
+
+// Fallback for non-crypto assets
+const STATIC_TICKERS = [
   { symbol: 'DXY', price: '104.00', change: '-0.32%', positive: false },
   { symbol: 'SPX', price: '5,248.20', change: '+0.41%', positive: true },
   { symbol: 'GOLD', price: '$2,180.50', change: '+0.68%', positive: true },
 ]
 
-function TickerItem({ item }: { item: typeof TICKER_ITEMS[0] }) {
+interface TickerDisplay {
+  symbol: string
+  price: string
+  change: string
+  positive: boolean
+}
+
+function TickerItem({ item }: { item: TickerDisplay }) {
   return (
     <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap', padding: '0 20px' }}>
       <span style={{ color: 'var(--text-secondary)', fontWeight: 600, fontSize: 11 }}>{item.symbol}</span>
@@ -39,6 +41,25 @@ function TickerItem({ item }: { item: typeof TICKER_ITEMS[0] }) {
 }
 
 export function PortfolioStrip() {
+  const { tickers, tickerMap } = useKrakenTickers()
+
+  // Build display items from live data, falling back to mock
+  const liveItems: TickerDisplay[] = TICKER_SYMBOLS.map(sym => {
+    const t = tickerMap.get(sym)
+    if (t) {
+      return {
+        symbol: sym,
+        price: formatPrice(t.price),
+        change: formatPercent(t.change24h),
+        positive: t.change24h >= 0,
+      }
+    }
+    // Fallback — show loading placeholder
+    return { symbol: sym, price: '...', change: '', positive: true }
+  })
+
+  const allItems = [...liveItems, ...STATIC_TICKERS]
+
   return (
     <div
       style={{
@@ -73,27 +94,21 @@ export function PortfolioStrip() {
         <span style={{ color: 'var(--data-positive)', fontWeight: 600, fontSize: 10 }}>+$1,831.88 (+4.11%)</span>
       </div>
 
-      {/* Rolling ticker — Bloomberg style */}
-      <div style={{
-        flex: 1,
-        overflow: 'hidden',
-        position: 'relative',
-      }}>
+      {/* Rolling ticker */}
+      <div style={{ flex: 1, overflow: 'hidden', position: 'relative' }}>
         <div
           style={{
             display: 'inline-flex',
             alignItems: 'center',
-            animation: 'ticker-scroll 40s linear infinite',
+            animation: 'ticker-scroll 45s linear infinite',
             whiteSpace: 'nowrap',
           }}
         >
-          {/* Render twice for seamless loop */}
-          {TICKER_ITEMS.map((item, i) => <TickerItem key={`a-${i}`} item={item} />)}
-          {TICKER_ITEMS.map((item, i) => <TickerItem key={`b-${i}`} item={item} />)}
+          {allItems.map((item, i) => <TickerItem key={`a-${i}`} item={item} />)}
+          {allItems.map((item, i) => <TickerItem key={`b-${i}`} item={item} />)}
         </div>
       </div>
 
-      {/* CSS animation */}
       <style jsx>{`
         @keyframes ticker-scroll {
           0% { transform: translateX(0); }

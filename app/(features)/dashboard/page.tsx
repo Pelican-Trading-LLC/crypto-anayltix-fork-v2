@@ -6,6 +6,9 @@ import { TokenIcon, ChainBadge, FlowBar, FilterPill, TimeToggle, InsightsButton,
 import { formatPrice, formatCompact, formatPercent, formatInteger } from '@/lib/format'
 import { MOCK_TOKENS, MOCK_WALLETS, CALENDAR_EVENTS } from '@/lib/crypto-mock-data'
 import type { MockToken, MockWallet } from '@/lib/crypto-mock-data'
+import { useKrakenTickers } from '@/hooks/use-kraken'
+import { useLocalWatchlist } from '@/hooks/use-local-watchlist'
+import { mergeTokenData } from '@/lib/merge-data'
 
 /* ─── Types ─────────────────────────────────────────────────── */
 
@@ -57,6 +60,67 @@ function SuggestedPill({ text }: { text: string }) {
   )
 }
 
+/* ─── Watchlist Search ──────────────────────────────────────── */
+
+function WatchlistSearch({ onAdd, allTokens }: { onAdd: (s: string) => void; allTokens: { symbol: string; name: string }[] }) {
+  const [query, setQuery] = React.useState('')
+  const [open, setOpen] = React.useState(false)
+
+  const filtered = React.useMemo(() => {
+    if (!query) return allTokens.slice(0, 8)
+    return allTokens.filter(t =>
+      t.symbol.toLowerCase().includes(query.toLowerCase()) ||
+      t.name.toLowerCase().includes(query.toLowerCase())
+    ).slice(0, 10)
+  }, [query, allTokens])
+
+  return (
+    <div style={{ position: 'relative', maxWidth: 400 }}>
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: 8,
+        height: 38, padding: '0 12px',
+        background: 'var(--bg-surface-2)', border: '1px solid var(--border-default)',
+        borderRadius: open ? '8px 8px 0 0' : 8,
+      }}>
+        <MagnifyingGlass size={14} style={{ color: 'var(--text-tertiary)', flexShrink: 0 }} />
+        <input
+          value={query}
+          onChange={e => { setQuery(e.target.value); setOpen(true) }}
+          onFocus={() => setOpen(true)}
+          placeholder="Search and add tokens to watchlist..."
+          style={{ flex: 1, border: 'none', background: 'transparent', color: 'var(--text-primary)', fontSize: 12.5, fontFamily: 'var(--font-sans)', outline: 'none' }}
+        />
+      </div>
+      {open && (
+        <>
+          <div onClick={() => setOpen(false)} style={{ position: 'fixed', inset: 0, zIndex: 40 }} />
+          <div style={{
+            position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 41,
+            background: 'var(--bg-surface-2)', border: '1px solid var(--border-default)', borderTop: 'none',
+            borderRadius: '0 0 8px 8px', maxHeight: 280, overflowY: 'auto',
+            boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
+          }}>
+            {filtered.map(t => (
+              <div
+                key={t.symbol}
+                onClick={() => { onAdd(t.symbol); setQuery(''); setOpen(false) }}
+                style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 14px', cursor: 'pointer', transition: 'background 80ms' }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'var(--bg-surface-3)' }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'transparent' }}
+              >
+                <TokenIcon symbol={t.symbol} size={20} />
+                <span style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--text-primary)' }}>{t.symbol}</span>
+                <span style={{ fontSize: 11, color: 'var(--text-tertiary)' }}>{t.name}</span>
+                <span style={{ marginLeft: 'auto', fontSize: 10, color: 'var(--accent-primary)' }}>+ Add</span>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  )
+}
+
 /* ─── Dashboard Page ────────────────────────────────────────── */
 
 export default function DashboardPage() {
@@ -100,13 +164,25 @@ export default function DashboardPage() {
     onDragEnd: () => setDraggedCol(null),
   })
 
-  /* Fallback safely if mock data not available */
-  const tokens: MockToken[] = MOCK_TOKENS ?? []
+  /* Kraken live data + watchlist */
+  const { tickers, isLoading: krakenLoading } = useKrakenTickers()
+  const watchlist = useLocalWatchlist()
+
+  /* Merge live Kraken data with mock data */
+  const tokens = useMemo(() => mergeTokenData(tickers, MOCK_TOKENS ?? []), [tickers])
   const wallets: MockWallet[] = MOCK_WALLETS ?? []
+
+  /* Watchlist tokens — filter merged data to watchlisted symbols */
+  const watchlistTokens = useMemo(
+    () => tokens.filter(t => watchlist.symbols.includes(t.symbol)),
+    [tokens, watchlist.symbols]
+  )
+
+  const displayTokens = activeTab === 'default' ? tokens : watchlistTokens
 
   /* Sorted tokens */
   const sortedTokens = useMemo(() => {
-    const copy = [...tokens]
+    const copy = [...displayTokens]
     copy.sort((a, b) => {
       let aVal: number | string = 0
       let bVal: number | string = 0
@@ -131,10 +207,10 @@ export default function DashboardPage() {
   }, [tokens, sortColumn, sortDirection])
 
   /* Column maximums for FlowBars */
-  const maxVolume = useMemo(() => Math.max(...tokens.map(t => Math.abs(t.volume)), 1), [tokens])
-  const maxInflows = useMemo(() => Math.max(...tokens.map(t => Math.abs(t.inflows)), 1), [tokens])
-  const maxOutflows = useMemo(() => Math.max(...tokens.map(t => Math.abs(t.outflows)), 1), [tokens])
-  const maxNetFlows = useMemo(() => Math.max(...tokens.map(t => Math.abs(t.netFlows)), 1), [tokens])
+  const maxVolume = useMemo(() => Math.max(...displayTokens.map(t => Math.abs(t.volume)), 1), [displayTokens])
+  const maxInflows = useMemo(() => Math.max(...displayTokens.map(t => Math.abs(t.inflows)), 1), [displayTokens])
+  const maxOutflows = useMemo(() => Math.max(...displayTokens.map(t => Math.abs(t.outflows)), 1), [displayTokens])
+  const maxNetFlows = useMemo(() => Math.max(...displayTokens.map(t => Math.abs(t.netFlows)), 1), [displayTokens])
 
   /* Wallet FlowBar maxes */
   const maxWalletPnl = useMemo(() => Math.max(...wallets.map(w => Math.abs(w.realizedPnl)), 1), [wallets])
@@ -314,7 +390,7 @@ export default function DashboardPage() {
                 fontFamily: 'var(--font-sans)',
               }}
             >
-              {tab === 'default' ? 'Default' : 'Watchlist'}
+              {tab === 'default' ? 'Default' : `Watchlist${watchlist.count > 0 ? ` (${watchlist.count})` : ''}`}
             </button>
           ))}
         </div>
@@ -512,38 +588,83 @@ export default function DashboardPage() {
           </>
         ) : (
           /* ─── Watchlist Tab ─────────────────────────────────── */
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '64px 24px', gap: 16 }}>
-            <span style={{ fontSize: 14, color: 'var(--text-tertiary)' }}>
-              Add tokens to your watchlist
-            </span>
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                height: 38,
-                width: 320,
-                background: 'var(--bg-surface-2)',
-                border: '1px solid var(--border-default)',
-                borderRadius: 8,
-                padding: '0 12px',
-                gap: 8,
-              }}
-            >
-              <MagnifyingGlass size={14} style={{ color: 'var(--text-tertiary)', flexShrink: 0 }} />
-              <input
-                type="text"
-                placeholder="Search tokens..."
-                style={{
-                  flex: 1,
-                  background: 'transparent',
-                  border: 'none',
-                  outline: 'none',
-                  fontSize: 13,
-                  color: 'var(--text-primary)',
-                  fontFamily: 'var(--font-sans)',
-                }}
-              />
-            </div>
+          <div>
+            {/* Add to watchlist search */}
+            <WatchlistSearch onAdd={watchlist.addToWatchlist} allTokens={tokens} />
+
+            {watchlistTokens.length === 0 ? (
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '48px 24px', gap: 12 }}>
+                <span style={{ fontSize: 32, opacity: 0.3 }}>⭐</span>
+                <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-secondary)' }}>Your watchlist is empty</span>
+                <span style={{ fontSize: 12, color: 'var(--text-tertiary)', maxWidth: 300, textAlign: 'center' }}>
+                  Search for tokens above to add them. Your watchlist persists locally.
+                </span>
+              </div>
+            ) : (
+              <div style={{ overflowX: 'auto', marginTop: 12 }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                  <thead>
+                    <tr style={{ height: 34, background: 'var(--bg-surface-2)', borderBottom: '1px solid var(--border-default)' }}>
+                      <th style={{ ...thStyle, width: 160, textAlign: 'left' }}>Token</th>
+                      <th style={{ ...thStyle, width: 110, textAlign: 'right' }}>Price</th>
+                      <th style={{ ...thStyle, width: 90, textAlign: 'right' }}>24h Change</th>
+                      <th style={{ ...thStyle, width: 120, textAlign: 'right' }}>Volume</th>
+                      <th style={{ ...thStyle, width: 48, textAlign: 'center' }}>
+                        <img src="/images/pelican-logo.png" alt="" width={18} height={18} style={{ objectFit: 'contain', opacity: 0.5 }} />
+                      </th>
+                      <th style={{ ...thStyle, width: 40, textAlign: 'center', cursor: 'default' }}></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {watchlistTokens.map(token => (
+                      <tr
+                        key={token.symbol}
+                        style={{ height: 42, borderBottom: '1px solid var(--border-subtle)', transition: 'background 100ms' }}
+                        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--bg-surface-3)' }}
+                        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent' }}
+                      >
+                        <td style={{ padding: '0 8px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                            <TokenIcon symbol={token.symbol} size={22} />
+                            <div>
+                              <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)' }}>{token.symbol}</span>
+                              <span style={{ fontSize: 11, color: 'var(--text-tertiary)', marginLeft: 6 }}>{token.name}</span>
+                            </div>
+                          </div>
+                        </td>
+                        <td style={{ textAlign: 'right', padding: '0 8px', fontFamily: 'var(--font-mono)', fontSize: 13, color: 'var(--text-primary)' }}>
+                          {formatPrice(token.price)}
+                        </td>
+                        <td style={{ textAlign: 'right', padding: '0 8px', fontFamily: 'var(--font-mono)', fontSize: 13, color: token.change24h >= 0 ? 'var(--data-positive)' : 'var(--data-negative)' }}>
+                          {formatPercent(token.change24h)}
+                        </td>
+                        <td style={{ textAlign: 'right', padding: '0 8px', fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--text-secondary)' }}>
+                          {formatCompact(token.volume)}
+                        </td>
+                        <td style={{ textAlign: 'center', padding: '0 8px' }}>
+                          <InsightsButton iconOnly context={{ symbol: token.symbol, name: token.name, price: token.price, change24h: token.change24h, volume: token.volume }} />
+                        </td>
+                        <td style={{ textAlign: 'center', padding: '0 4px' }}>
+                          <button
+                            onClick={() => watchlist.removeFromWatchlist(token.symbol)}
+                            style={{ background: 'none', border: 'none', color: 'var(--text-quaternary)', cursor: 'pointer', fontSize: 16, padding: 2, transition: 'color 100ms' }}
+                            onMouseEnter={e => { e.currentTarget.style.color = 'var(--data-negative)' }}
+                            onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-quaternary)' }}
+                            title="Remove from watchlist"
+                          >×</button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            {krakenLoading && watchlistTokens.length === 0 && (
+              <div style={{ textAlign: 'center', padding: 16, color: 'var(--text-tertiary)', fontSize: 12, fontFamily: 'var(--font-mono)' }}>
+                Fetching live prices...
+              </div>
+            )}
           </div>
         )}
       </section>
