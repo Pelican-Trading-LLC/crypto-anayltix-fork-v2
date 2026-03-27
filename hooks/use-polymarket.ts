@@ -4,7 +4,7 @@ import useSWR from 'swr'
 import { fetchMarkets, searchMarkets, fetchPriceHistory, fetchMarketById, type PolymarketMarket, type PriceHistoryPoint } from '@/lib/polymarket'
 
 export function usePolymarkets(params?: { tag?: string; limit?: number }) {
-  const { tag, limit = 30 } = params || {}
+  const { tag, limit = 100 } = params || {}
   const { data, error, isLoading, mutate } = useSWR<PolymarketMarket[]>(
     ['polymarket-markets', tag, limit],
     () => fetchMarkets({ limit, tag: tag || undefined }),

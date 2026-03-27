@@ -57,10 +57,15 @@ export async function fetchMarkets(params?: {
 
 export async function searchMarkets(query: string, limit = 20): Promise<PolymarketMarket[]> {
   if (!query.trim()) return []
-  // Client-side search from cached markets — fast and reliable
-  const all = await fetchMarkets({ limit: 100 })
   const q = query.toLowerCase()
-  return all.filter(m => m.question.toLowerCase().includes(q) || (m.description || '').toLowerCase().includes(q)).slice(0, limit)
+
+  // Fetch a large set and filter — Gamma API doesn't have text search
+  const all = await fetchMarkets({ limit: 200 })
+  return all.filter(m =>
+    m.question.toLowerCase().includes(q) ||
+    (m.description || '').toLowerCase().includes(q) ||
+    (m.tags || []).some(t => t.label.toLowerCase().includes(q))
+  ).slice(0, limit)
 }
 
 export async function fetchPriceHistory(tokenId: string, interval = '1m', fidelity = 100): Promise<PriceHistoryPoint[]> {
