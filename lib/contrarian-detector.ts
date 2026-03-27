@@ -7,42 +7,43 @@ export interface ContrarianSignal {
   severity: 'strong' | 'moderate'
 }
 
+/**
+ * Much more selective contrarian detection.
+ * Only flags truly unusual situations, not every extreme-probability market.
+ */
 export function detectContrarianSignals(markets: PolymarketMarket[]): ContrarianSignal[] {
   const signals: ContrarianSignal[] = []
 
   for (const market of markets) {
     const prices = market._parsedPrices || []
     const prob = prices[0] ? prices[0] * 100 : 50
+    const vol24h = Number(market.volume24hr) || 0
 
-    if (prob > 90 || prob < 10) {
-      signals.push({
-        market, type: 'extreme_reversal',
-        description: prob > 90 ? `${prob.toFixed(0)}% confident — near-certainty. Watch for cracks.` : `Only ${prob.toFixed(0)}% — contrarian opportunity if you disagree.`,
-        severity: 'moderate',
-      })
-    }
-
-    if (prob < 25 && (market.volume24hr || 0) > 500000) {
+    // Only flag: low probability (10-25%) with VERY high volume (>$1M 24h)
+    // This means someone is betting big on an unlikely outcome
+    if (prob >= 10 && prob <= 25 && vol24h > 1000000) {
       signals.push({
         market, type: 'volume_divergence',
-        description: `Only ${prob.toFixed(0)}% but $${((market.volume24hr || 0) / 1000).toFixed(0)}K in 24h vol — someone betting on the unlikely outcome.`,
+        description: `${prob.toFixed(0)}% but $${(vol24h / 1e6).toFixed(1)}M in 24h volume`,
         severity: 'strong',
       })
     }
-    if (prob > 75 && (market.volume24hr || 0) > 500000) {
+
+    // Or: probability between 35-65% with very high volume — genuinely contested
+    if (prob >= 35 && prob <= 65 && vol24h > 2000000) {
       signals.push({
         market, type: 'volume_divergence',
-        description: `${prob.toFixed(0)}% consensus with $${((market.volume24hr || 0) / 1000).toFixed(0)}K volume — heavy activity despite consensus.`,
+        description: `Contested at ${prob.toFixed(0)}% with $${(vol24h / 1e6).toFixed(1)}M volume`,
         severity: 'moderate',
       })
     }
   }
 
+  // Deduplicate
   const best = new Map<string, ContrarianSignal>()
   for (const s of signals) {
     const id = s.market.conditionId || s.market.id
-    const existing = best.get(id)
-    if (!existing || s.severity === 'strong') best.set(id, s)
+    if (!best.has(id) || s.severity === 'strong') best.set(id, s)
   }
-  return Array.from(best.values()).sort((a, b) => a.severity === 'strong' && b.severity !== 'strong' ? -1 : b.severity === 'strong' && a.severity !== 'strong' ? 1 : 0)
+  return Array.from(best.values()).slice(0, 8) // Max 8 contrarian signals
 }

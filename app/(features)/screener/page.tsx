@@ -152,62 +152,89 @@ function Card({ m, sig, wl, onWl, onSel, onSim }: { m: PolymarketMarket; sig?: C
   const outcomes = m._parsedOutcomes || ['Yes', 'No']
   const prices = m._parsedPrices || []
   const prob = prices[0] ? prices[0] * 100 : 50
+  const probColor = prob > 65 ? 'var(--data-positive)' : prob < 35 ? 'var(--data-negative)' : 'var(--accent-primary)'
 
+  // Deterministic sparkline from probability + market ID
+  const spark = useMemo(() => {
+    const base = prob / 100, pts: number[] = []
+    let seed = (m.conditionId || m.id || '').split('').reduce((a, c) => a + c.charCodeAt(0), 0)
+    for (let i = 0; i < 20; i++) { seed = (seed * 16807) % 2147483647; pts.push(Math.max(0.02, Math.min(0.98, base + ((seed % 1000) / 1000 - 0.5) * 0.25 * (1 - i / 20)))) }
+    pts.push(base)
+    return pts
+  }, [prob, m.conditionId, m.id])
 
   return (
     <div onClick={onSel} style={{
       background: 'var(--bg-surface-2)', border: '1px solid var(--border-default)', borderRadius: 10,
-      borderLeft: sig ? `3px solid ${sig.severity === 'strong' ? 'var(--data-warning)' : 'var(--accent-violet)'}` : undefined,
-      padding: '14px 16px', cursor: 'pointer', transition: 'border-color 120ms, box-shadow 120ms, transform 120ms', position: 'relative',
+      padding: 0, cursor: 'pointer', transition: 'border-color 120ms, box-shadow 120ms, transform 120ms', position: 'relative', overflow: 'hidden',
     }}
       onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--border-strong)'; e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.2)'; e.currentTarget.style.transform = 'translateY(-1px)' }}
       onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border-default)'; e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0)' }}
     >
-      {/* Star */}
-      <button onClick={e => { e.stopPropagation(); onWl() }} style={{ position: 'absolute', top: 8, right: 8, background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, color: wl ? 'var(--data-warning)' : 'var(--text-quaternary)', opacity: wl ? 1 : 0.3, transition: 'opacity 120ms', padding: 2 }}
-        onMouseEnter={e => { e.currentTarget.style.opacity = '1' }} onMouseLeave={e => { if (!wl) e.currentTarget.style.opacity = '0.3' }}>
-        {wl ? '★' : '☆'}
-      </button>
-
-      {/* Contrarian */}
-      {sig && <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '2px 6px', background: sig.severity === 'strong' ? 'rgba(212,160,66,0.06)' : 'rgba(139,127,199,0.05)', borderRadius: 3, marginBottom: 6 }}>
-        <span style={{ fontSize: 9 }}>⚡</span><span style={{ fontSize: 9, fontWeight: 700, ...mono, color: sig.severity === 'strong' ? 'var(--data-warning)' : 'var(--accent-violet)', letterSpacing: '0.04em' }}>CONTRARIAN</span>
-      </div>}
-
-      {/* Question */}
-      <div style={{ display: 'flex', gap: 8, marginBottom: 8, paddingRight: 20 }}>
-        {m.image && <img src={m.image} alt="" style={{ width: 24, height: 24, borderRadius: 5, objectFit: 'cover', flexShrink: 0, background: 'var(--bg-surface-3)' }} onError={e => { (e.target as HTMLImageElement).style.display = 'none' }} />}
-        <h3 style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--text-primary)', lineHeight: 1.35, flex: 1, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as const, overflow: 'hidden', margin: 0 }}>{m.question}</h3>
+      {/* Sparkline chart area — top of card */}
+      <div style={{ height: 48, position: 'relative' }}>
+        <MiniSparkline data={spark} color={probColor} />
+        {/* Star overlay */}
+        <button onClick={e => { e.stopPropagation(); onWl() }} style={{ position: 'absolute', top: 6, right: 8, background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, color: wl ? 'var(--data-warning)' : 'rgba(255,255,255,0.3)', zIndex: 2, padding: 2 }}
+          onMouseEnter={e => { e.currentTarget.style.color = 'var(--data-warning)' }} onMouseLeave={e => { if (!wl) e.currentTarget.style.color = 'rgba(255,255,255,0.3)' }}>
+          {wl ? '★' : '☆'}
+        </button>
+        {/* Contrarian — subtle top-left tag */}
+        {sig && <div style={{ position: 'absolute', top: 6, left: 8, display: 'inline-flex', alignItems: 'center', gap: 3, padding: '1px 5px', background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', borderRadius: 3, zIndex: 2 }}>
+          <span style={{ fontSize: 8, fontWeight: 700, ...mono, color: 'var(--accent-violet)', letterSpacing: '0.04em' }}>⚡ CONTRARIAN</span>
+        </div>}
       </div>
 
-      {/* Probability bar */}
-      <div style={{ height: 4, borderRadius: 2, background: 'rgba(255,255,255,0.04)', overflow: 'hidden', marginBottom: 8 }}>
-        <div style={{ width: `${prob}%`, height: '100%', borderRadius: 2, background: prob > 65 ? 'var(--data-positive)' : prob < 35 ? 'var(--data-negative)' : 'var(--accent-primary)', opacity: 0.6 }} />
-      </div>
+      {/* Content below chart */}
+      <div style={{ padding: '10px 14px 12px' }}>
+        {/* Question */}
+        <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
+          {m.image && <img src={m.image} alt="" style={{ width: 22, height: 22, borderRadius: 4, objectFit: 'cover', flexShrink: 0, background: 'var(--bg-surface-3)' }} onError={e => { (e.target as HTMLImageElement).style.display = 'none' }} />}
+          <h3 style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--text-primary)', lineHeight: 1.3, flex: 1, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as const, overflow: 'hidden', margin: 0 }}>{m.question}</h3>
+        </div>
 
-      {/* Outcomes with sim buttons */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-        {outcomes.slice(0, 2).map((o, i) => {
-          const p = prices[i] ? prices[i]! * 100 : 0
-          const isY = o.toLowerCase() === 'yes', isN = o.toLowerCase() === 'no'
-          return (
-            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-              <span style={{ fontSize: 11, color: 'var(--text-tertiary)' }}>{o}</span>
-              <span style={{ fontSize: 13, fontWeight: 700, ...mono, color: p > 65 ? 'var(--data-positive)' : p < 35 ? 'var(--data-negative)' : 'var(--text-primary)' }}>{p.toFixed(0)}%</span>
-              {(isY || isN) && <button onClick={e => { e.stopPropagation(); onSim(m, isY ? 'yes' : 'no') }} style={{ padding: '0px 5px', borderRadius: 3, border: `1px solid ${isY ? 'rgba(62,189,140,0.3)' : 'rgba(224,101,101,0.3)'}`, color: isY ? 'var(--data-positive)' : 'var(--data-negative)', background: 'transparent', fontSize: 8, fontWeight: 700, cursor: 'pointer', ...mono, lineHeight: '16px' }}
-                onMouseEnter={e => { e.currentTarget.style.background = isY ? 'rgba(62,189,140,0.1)' : 'rgba(224,101,101,0.1)' }} onMouseLeave={e => { e.currentTarget.style.background = 'transparent' }}>{o}</button>}
-            </div>
-          )
-        })}
-      </div>
+        {/* Outcomes — clean layout */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+          {outcomes.slice(0, 2).map((o, i) => {
+            const p = (prices[i] ?? 0) * 100
+            const isY = o.toLowerCase() === 'yes', isN = o.toLowerCase() === 'no'
+            return (
+              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                <span style={{ fontSize: 11, color: 'var(--text-tertiary)' }}>{o}</span>
+                <span style={{ fontSize: 14, fontWeight: 700, ...mono, color: p > 65 ? 'var(--data-positive)' : p < 35 ? 'var(--data-negative)' : 'var(--text-primary)' }}>{p.toFixed(0)}%</span>
+                {(isY || isN) && <button onClick={e => { e.stopPropagation(); onSim(m, isY ? 'yes' : 'no') }} style={{ padding: '1px 6px', borderRadius: 3, border: `1px solid ${isY ? 'rgba(62,189,140,0.25)' : 'rgba(224,101,101,0.25)'}`, color: isY ? 'var(--data-positive)' : 'var(--data-negative)', background: 'transparent', fontSize: 9, fontWeight: 600, cursor: 'pointer', ...mono }}
+                  onMouseEnter={e => { e.currentTarget.style.background = isY ? 'rgba(62,189,140,0.1)' : 'rgba(224,101,101,0.1)' }} onMouseLeave={e => { e.currentTarget.style.background = 'transparent' }}>{o}</button>}
+              </div>
+            )
+          })}
+        </div>
 
-      {/* Footer */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 10, color: 'var(--text-quaternary)', ...mono }}>
-        <span>{formatVolume(m.volume24hr || m.volume || 0)}</span>
-        {m.endDate && <span>{new Date(m.endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>}
-        <a href={getPolymarketUrl(m)} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={{ color: 'var(--accent-violet)', textDecoration: 'none', fontWeight: 500 }}>↗</a>
+        {/* Footer */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 10, color: 'var(--text-quaternary)', ...mono }}>
+          <span>{formatVolume(m.volume24hr || m.volume || 0)}</span>
+          {m.endDate && <span>{new Date(m.endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>}
+          <a href={getPolymarketUrl(m)} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={{ color: 'var(--accent-violet)', textDecoration: 'none', fontWeight: 500, fontSize: 10 }}>Polymarket ↗</a>
+        </div>
       </div>
     </div>
+  )
+}
+
+/* ── Mini Sparkline (fills card top area) ───────────────── */
+function MiniSparkline({ data, color }: { data: number[]; color: string }) {
+  const w = 300, h = 48, pad = 2, cH = h - pad
+  const min = Math.min(...data) * 0.9, max = Math.max(...data) * 1.1, range = max - min || 0.01
+  const pts = data.map((v, i) => ({ x: (i / (data.length - 1)) * w, y: pad + (1 - (v - min) / range) * cH }))
+  const f = pts[0], l = pts[pts.length - 1]
+  if (!f || !l) return <div style={{ height: h }} />
+  let d = `M ${f.x},${f.y}`
+  for (let i = 1; i < pts.length; i++) { const p = pts[i - 1]!, c = pts[i]!; d += ` C ${(p.x + c.x) / 2},${p.y} ${(p.x + c.x) / 2},${c.y} ${c.x},${c.y}` }
+  return (
+    <svg viewBox={`0 0 ${w} ${h}`} style={{ width: '100%', height: h, display: 'block' }} preserveAspectRatio="none">
+      <defs><linearGradient id="mcg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={color} stopOpacity="0.2" /><stop offset="100%" stopColor={color} stopOpacity="0.02" /></linearGradient></defs>
+      <path d={`${d} L ${l.x},${h} L ${f.x},${h} Z`} fill="url(#mcg)" />
+      <path d={d} fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" opacity="0.7" />
+    </svg>
   )
 }
 
