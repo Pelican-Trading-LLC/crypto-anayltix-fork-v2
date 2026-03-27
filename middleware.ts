@@ -1,85 +1,13 @@
-import { updateSession } from "@/lib/supabase/middleware"
 import type { NextRequest } from "next/server"
 import { NextResponse } from "next/server"
-import { countryToLocale } from '@/lib/languages'
-
-async function getLocale(req: NextRequest): Promise<string> {
-  // 1. Check cookie
-  const cookieLocale = req.cookies.get('locale')?.value;
-  if (cookieLocale) {
-    return cookieLocale;
-  }
-
-  // 2. Cloudflare country header (free on Vercel, no external call)
-  const cfCountry = req.headers.get('cf-ipcountry');
-  if (cfCountry && countryToLocale[cfCountry]) {
-    return countryToLocale[cfCountry];
-  }
-
-  // 3. Browser language
-  const acceptLanguage = req.headers.get('accept-language');
-  if (acceptLanguage) {
-    const firstLang = acceptLanguage.split(',')[0];
-    if (firstLang) {
-      const browserLocale = firstLang.split('-')[0]?.toLowerCase() || 'en';
-      const supportedLocales = ['en', 'zh', 'es', 'fr', 'ar', 'pt', 'ru', 'ja', 'de', 'ko', 'it', 'tr', 'nl', 'pl', 'sv', 'id', 'uk', 'he', 'el', 'cs', 'ro', 'hu', 'da', 'fi', 'no', 'sk', 'vi', 'th', 'ms'];
-      if (supportedLocales.includes(browserLocale)) {
-        return browserLocale;
-      }
-    }
-  }
-
-  return 'en';
-}
-
-// DEV ONLY — feature routes that bypass auth entirely
-const DEV_BYPASS = ["/dashboard", "/brief", "/screener", "/smart-money", "/token-intel", "/signals", "/alerts", "/wallet-dna", "/sector-rotation", "/chat", "/forexanalytix", "/calendar", "/learn", "/knowledge-base", "/community", "/settings", "/positions"];
 
 export async function middleware(request: NextRequest) {
-  // CRITICAL: Stripe webhook must bypass ALL middleware (no auth, no redirects)
-  if (request.nextUrl.pathname === '/api/stripe/webhook') {
-    return NextResponse.next()
-  }
-
-  // DEV ONLY — skip auth entirely for feature routes
-  if (DEV_BYPASS.some(p => request.nextUrl.pathname === p || request.nextUrl.pathname.startsWith(p + '/'))) {
-    return NextResponse.next()
-  }
-
-  const isApiRoute = request.nextUrl.pathname.startsWith('/api');
-
-  // For non-API routes, update session and add locale detection
-  if (!isApiRoute) {
-    const sessionResponse = await updateSession(request)
-    let locale = await getLocale(request);
-
-    // Set locale cookie if not already set
-    if (!request.cookies.get('locale')) {
-      sessionResponse.cookies.set('locale', locale, {
-        maxAge: 60 * 60 * 24 * 365,
-        sameSite: 'lax',
-        path: '/'
-      });
-    }
-
-    // Add locale to headers for server components
-    sessionResponse.headers.set('x-locale', locale);
-    return sessionResponse;
-  }
-
-  // API routes: just update session (auth check)
-  return await updateSession(request)
+  // No auth — everything passes through
+  return NextResponse.next()
 }
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - images - .svg, .png, .jpg, .jpeg, .gif, .webp
-     */
     "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 }

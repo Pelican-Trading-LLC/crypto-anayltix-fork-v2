@@ -57,21 +57,7 @@ export async function fetchMarkets(params?: {
 
 export async function searchMarkets(query: string, limit = 20): Promise<PolymarketMarket[]> {
   if (!query.trim()) return []
-  try {
-    // Try events endpoint with title search
-    const sp = new URLSearchParams({ title: query, active: 'true', limit: String(limit), order: 'volume24hr', ascending: 'false' })
-    const url = isBrowser ? `${BASE}/events?${sp}` : `https://gamma-api.polymarket.com/events?${sp}`
-    const res = await fetch(url)
-    if (!res.ok) throw new Error(`Search ${res.status}`)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const events: any[] = await res.json()
-    const markets: PolymarketMarket[] = []
-    for (const ev of events) {
-      if (ev.markets) markets.push(...ev.markets.map(parseMarket))
-    }
-    if (markets.length > 0) return markets.slice(0, limit)
-  } catch { /* fallback below */ }
-  // Fallback: client-side filter
+  // Client-side search from cached markets — fast and reliable
   const all = await fetchMarkets({ limit: 100 })
   const q = query.toLowerCase()
   return all.filter(m => m.question.toLowerCase().includes(q) || (m.description || '').toLowerCase().includes(q)).slice(0, limit)
