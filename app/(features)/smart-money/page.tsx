@@ -80,134 +80,161 @@ function ScatterPlot({ wallets }: { wallets: MockWallet[] }) {
   const yLabels = ['0%', '100%', '200%', '300%', '400%', '500%']
   const xLabels = ['$0', '$20K', '$40K', '$60K', '$80K', '$100K']
 
+  const CHART_HEIGHT = 220
+  const INNER_LEFT = 52
+  const INNER_RIGHT = 16
+  const INNER_TOP = 16
+  const INNER_BOTTOM = 38
+
   return (
-    <div
-      style={{
-        background: 'var(--bg-surface-2)',
-        border: '1px solid var(--border-default)',
-        borderRadius: 8,
-        height: 220,
-        padding: 0,
-        overflow: 'hidden',
-        position: 'relative',
-      }}
-    >
-      {/* Y-axis labels */}
-      {yLabels.map((label, i) => {
-        const pct = i / (yLabels.length - 1)
-        const top = CHART_TOP + (1 - pct) * (220 - CHART_TOP - CHART_BOTTOM)
-        return (
-          <span
-            key={label}
-            style={{
-              position: 'absolute',
-              left: 8,
-              top,
-              transform: 'translateY(-50%)',
-              fontSize: 10,
-              fontFamily: 'var(--font-mono)',
-              color: 'var(--text-quaternary)',
-              zIndex: 2,
-            }}
-          >
-            {label}
-          </span>
-        )
-      })}
+    <div style={{ position: 'relative' }}>
+      {/* Y-axis title */}
+      <div style={{
+        position: 'absolute', left: -6, top: '50%', transform: 'translateY(-50%) rotate(-90deg)',
+        fontSize: 10, fontWeight: 600, letterSpacing: '0.06em', color: 'var(--text-tertiary)',
+        fontFamily: 'var(--font-mono)', whiteSpace: 'nowrap', zIndex: 4,
+      }}>
+        ROI (Return on Investment)
+      </div>
 
-      {/* X-axis labels */}
-      {xLabels.map((label, i) => {
-        const pct = i / (xLabels.length - 1)
-        return (
-          <span
-            key={label}
-            style={{
-              position: 'absolute',
-              bottom: 6,
-              left: `${CHART_LEFT + pct * (100 - CHART_LEFT / 3.6 - CHART_RIGHT / 3.6)}%`,
-              transform: 'translateX(-50%)',
-              fontSize: 10,
-              fontFamily: 'var(--font-mono)',
-              color: 'var(--text-quaternary)',
-              zIndex: 2,
-            }}
-          >
-            {label}
-          </span>
-        )
-      })}
+      <div
+        style={{
+          background: 'var(--bg-surface-2)',
+          border: '1px solid var(--border-default)',
+          borderRadius: 8,
+          height: CHART_HEIGHT,
+          padding: 0,
+          overflow: 'hidden',
+          position: 'relative',
+          marginLeft: 18,
+        }}
+      >
+        {/* Y-axis labels */}
+        {yLabels.map((label, i) => {
+          const pct = i / (yLabels.length - 1)
+          const top = INNER_TOP + (1 - pct) * (CHART_HEIGHT - INNER_TOP - INNER_BOTTOM)
+          return (
+            <span
+              key={label}
+              style={{
+                position: 'absolute',
+                left: 8,
+                top,
+                transform: 'translateY(-50%)',
+                fontSize: 10,
+                fontFamily: 'var(--font-mono)',
+                color: 'var(--text-quaternary)',
+                zIndex: 2,
+              }}
+            >
+              {label}
+            </span>
+          )
+        })}
 
-      {/* Grid lines - horizontal */}
-      {yLabels.map((label, i) => {
-        const pct = i / (yLabels.length - 1)
-        const top = CHART_TOP + (1 - pct) * (220 - CHART_TOP - CHART_BOTTOM)
-        return (
-          <div
-            key={`h-${i}`}
-            style={{
-              position: 'absolute',
-              left: CHART_LEFT,
-              right: CHART_RIGHT,
-              top,
-              height: 1,
-              background: 'rgba(90,130,180,0.04)',
-            }}
-          />
-        )
-      })}
+        {/* X-axis labels */}
+        {xLabels.map((label, i) => {
+          const pct = i / (xLabels.length - 1)
+          return (
+            <span
+              key={label}
+              style={{
+                position: 'absolute',
+                bottom: 18,
+                left: `${INNER_LEFT / 3.6 + pct * (100 - INNER_LEFT / 3.6 - INNER_RIGHT / 3.6)}%`,
+                transform: 'translateX(-50%)',
+                fontSize: 10,
+                fontFamily: 'var(--font-mono)',
+                color: 'var(--text-quaternary)',
+                zIndex: 2,
+              }}
+            >
+              {label}
+            </span>
+          )
+        })}
 
-      {/* Grid lines - vertical */}
-      {xLabels.map((label, i) => {
-        const pct = i / (xLabels.length - 1)
-        return (
-          <div
-            key={`v-${i}`}
-            style={{
-              position: 'absolute',
-              left: `${CHART_LEFT + pct * (100 - CHART_LEFT / 3.6 - CHART_RIGHT / 3.6)}%`,
-              top: CHART_TOP,
-              bottom: CHART_BOTTOM,
-              width: 1,
-              background: 'rgba(90,130,180,0.04)',
-            }}
-          />
-        )
-      })}
+        {/* X-axis title */}
+        <div style={{
+          position: 'absolute', bottom: 2, left: '50%', transform: 'translateX(-50%)',
+          fontSize: 10, fontWeight: 600, letterSpacing: '0.06em', color: 'var(--text-tertiary)',
+          fontFamily: 'var(--font-mono)', whiteSpace: 'nowrap', zIndex: 4,
+        }}>
+          Total PnL (Realized Profit)
+        </div>
 
-      {/* Dots */}
-      {wallets.map((w, idx) => {
-        const chartW = 100 - CHART_LEFT / 3.6 - CHART_RIGHT / 3.6 // percent-based width
-        const chartH = 220 - CHART_TOP - CHART_BOTTOM // pixel-based height
-        const xPct = Math.min(w.realizedPnl / maxRpnl, 1)
-        const yPct = Math.min(w.roi / maxRoi, 1)
-        const leftPct = CHART_LEFT / 3.6 + xPct * chartW // approximate px->% conversion
-        const topPx = CHART_TOP + (1 - yPct) * chartH
+        {/* Grid lines - horizontal */}
+        {yLabels.map((_, i) => {
+          const pct = i / (yLabels.length - 1)
+          const top = INNER_TOP + (1 - pct) * (CHART_HEIGHT - INNER_TOP - INNER_BOTTOM)
+          return (
+            <div
+              key={`h-${i}`}
+              style={{
+                position: 'absolute',
+                left: INNER_LEFT,
+                right: INNER_RIGHT,
+                top,
+                height: 1,
+                background: 'rgba(90,130,180,0.06)',
+              }}
+            />
+          )
+        })}
 
-        return (
-          <div
-            key={idx}
-            onMouseEnter={(e) => setHovered({ wallet: w, x: e.clientX, y: e.clientY })}
-            onMouseLeave={() => setHovered(null)}
-            style={{
-              position: 'absolute',
-              left: `${leftPct}%`,
-              top: topPx,
-              width: 10,
-              height: 10,
-              borderRadius: '50%',
-              border: '2px solid var(--accent-primary)',
-              background: 'transparent',
-              transform: 'translate(-50%, -50%)',
-              cursor: 'pointer',
-              zIndex: 3,
-              transition: 'box-shadow 120ms',
-              boxShadow: hovered?.wallet === w ? '0 0 6px var(--accent-primary)' : 'none',
-            }}
-          />
-        )
-      })}
+        {/* Grid lines - vertical */}
+        {xLabels.map((_, i) => {
+          const pct = i / (xLabels.length - 1)
+          return (
+            <div
+              key={`v-${i}`}
+              style={{
+                position: 'absolute',
+                left: `${INNER_LEFT / 3.6 + pct * (100 - INNER_LEFT / 3.6 - INNER_RIGHT / 3.6)}%`,
+                top: INNER_TOP,
+                bottom: INNER_BOTTOM,
+                width: 1,
+                background: 'rgba(90,130,180,0.06)',
+              }}
+            />
+          )
+        })}
 
-      {hovered && <ScatterTooltip wallet={hovered.wallet} x={hovered.x} y={hovered.y} />}
+        {/* Dots */}
+        {wallets.map((w, idx) => {
+          const chartW = 100 - INNER_LEFT / 3.6 - INNER_RIGHT / 3.6
+          const chartH = CHART_HEIGHT - INNER_TOP - INNER_BOTTOM
+          const xPct = Math.min(w.realizedPnl / maxRpnl, 1)
+          const yPct = Math.min(w.roi / maxRoi, 1)
+          const leftPct = INNER_LEFT / 3.6 + xPct * chartW
+          const topPx = INNER_TOP + (1 - yPct) * chartH
+
+          return (
+            <div
+              key={idx}
+              onMouseEnter={(e) => setHovered({ wallet: w, x: e.clientX, y: e.clientY })}
+              onMouseLeave={() => setHovered(null)}
+              style={{
+                position: 'absolute',
+                left: `${leftPct}%`,
+                top: topPx,
+                width: 10,
+                height: 10,
+                borderRadius: '50%',
+                border: '2px solid var(--accent-primary)',
+                background: 'transparent',
+                transform: 'translate(-50%, -50%)',
+                cursor: 'pointer',
+                zIndex: 3,
+                transition: 'box-shadow 120ms',
+                boxShadow: hovered?.wallet === w ? '0 0 6px var(--accent-primary)' : 'none',
+              }}
+            />
+          )
+        })}
+
+        {hovered && <ScatterTooltip wallet={hovered.wallet} x={hovered.x} y={hovered.y} />}
+      </div>
     </div>
   )
 }

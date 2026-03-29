@@ -33,7 +33,7 @@ export default function PredictionsPage() {
     const p = m._parsedPrices || []; setSimPos(prev => [...prev, { id: m.conditionId || m.id, q: m.question, side, amt: 100, prob: side === 'yes' ? (p[0] || 0.5) : (p[1] || 0.5) }]); setSimOpen(true)
   }, [])
 
-  const { markets, isLoading } = usePolymarkets({ limit: 100 })
+  const { markets, isLoading } = usePolymarkets({ limit: 500 })
   const { results: sr, isLoading: sl } = usePolymarketSearch(dq)
   const shifts = useProbabilityShifts(markets)
   const signals = useMemo(() => detectContrarianSignals(markets), [markets])
@@ -72,19 +72,44 @@ export default function PredictionsPage() {
       </div>
 
       {/* ── Shift Ticker ────────────────────────────────── */}
-      <div style={{ background: 'var(--bg-surface-2)', border: '1px solid var(--border-subtle)', borderRadius: 8, marginBottom: 14, overflow: 'hidden' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '5px 14px', borderBottom: '1px solid var(--border-subtle)', background: 'rgba(212,160,66,0.03)' }}>
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--data-warning)" strokeWidth="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-          <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.08em', color: 'var(--data-warning)', ...mono }}>PROBABILITY SHIFTS</span>
-          <span style={{ fontSize: 9, color: 'var(--text-quaternary)', marginLeft: 'auto', ...mono }}>{shifts.length > 0 ? `${shifts.length} detected` : `Monitoring ${markets.length} markets`}</span>
+      <div style={{ background: 'linear-gradient(135deg, rgba(139,92,246,0.04) 0%, rgba(62,189,140,0.02) 100%)', border: '1px solid rgba(139,92,246,0.12)', borderRadius: 10, marginBottom: 14, overflow: 'hidden', position: 'relative' }}>
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 1, background: 'linear-gradient(90deg, transparent, rgba(139,92,246,0.3), rgba(62,189,140,0.2), transparent)' }} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '7px 14px', borderBottom: '1px solid rgba(139,92,246,0.08)' }}>
+          <div style={{ width: 18, height: 18, borderRadius: 5, background: 'rgba(139,92,246,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" strokeWidth="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.08em', color: 'var(--accent-primary)', ...mono }}>PROBABILITY SHIFTS</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginLeft: 'auto' }}>
+            <div style={{ width: 5, height: 5, borderRadius: '50%', background: shifts.length > 0 ? 'var(--data-positive)' : 'var(--accent-primary)', boxShadow: shifts.length > 0 ? '0 0 6px var(--data-positive)' : '0 0 4px rgba(139,92,246,0.4)', animation: shifts.length > 0 ? undefined : undefined }} />
+            <span style={{ fontSize: 9, color: 'var(--text-tertiary)', ...mono }}>{shifts.length > 0 ? `${shifts.length} detected` : `Monitoring ${markets.length} markets`}</span>
+          </div>
         </div>
-        <div style={{ display: 'flex', overflowX: 'auto', padding: '6px 10px', gap: 8, scrollbarWidth: 'none' }}>
-          {shifts.length === 0 ? <span style={{ fontSize: 10, color: 'var(--text-quaternary)', padding: '4px 6px' }}>Shifts appear when probabilities move 2%+ (60s poll cycle)</span> : shifts.slice(0, 10).map((s, i) => (
-            <div key={i} onClick={() => setSel(s.market)} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '5px 10px', background: 'var(--bg-surface-3)', borderRadius: 5, border: `1px solid ${s.direction === 'up' ? 'rgba(62,189,140,0.12)' : 'rgba(224,101,101,0.12)'}`, flexShrink: 0, cursor: 'pointer', transition: 'background 100ms' }}
-              onMouseEnter={e => { e.currentTarget.style.background = 'var(--bg-surface-4)' }} onMouseLeave={e => { e.currentTarget.style.background = 'var(--bg-surface-3)' }}>
-              <span style={{ fontSize: 10, color: s.direction === 'up' ? 'var(--data-positive)' : 'var(--data-negative)', fontWeight: 700 }}>{s.direction === 'up' ? '▲' : '▼'}</span>
+        <div style={{ display: 'flex', overflowX: 'auto', padding: '8px 10px', gap: 8, scrollbarWidth: 'none' }}>
+          {shifts.length === 0 ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 10px', width: '100%' }}>
+              <div style={{ display: 'flex', gap: 3 }}>
+                {[0.6, 0.8, 1, 0.8, 0.6].map((o, i) => <div key={i} style={{ width: 2, height: 8 + i * 2, borderRadius: 1, background: 'var(--accent-primary)', opacity: o * 0.3 }} />)}
+              </div>
+              <span style={{ fontSize: 11, color: 'var(--text-tertiary)' }}>Watching for 2%+ probability moves across all markets</span>
+            </div>
+          ) : shifts.slice(0, 10).map((s, i) => (
+            <div key={i} onClick={() => setSel(s.market)} style={{
+              display: 'flex', alignItems: 'center', gap: 8, padding: '7px 12px',
+              background: s.direction === 'up' ? 'rgba(62,189,140,0.06)' : 'rgba(224,101,101,0.06)',
+              borderRadius: 8,
+              border: `1px solid ${s.direction === 'up' ? 'rgba(62,189,140,0.15)' : 'rgba(224,101,101,0.15)'}`,
+              flexShrink: 0, cursor: 'pointer', transition: 'all 120ms',
+            }}
+              onMouseEnter={e => { e.currentTarget.style.background = s.direction === 'up' ? 'rgba(62,189,140,0.12)' : 'rgba(224,101,101,0.12)'; e.currentTarget.style.transform = 'translateY(-1px)' }}
+              onMouseLeave={e => { e.currentTarget.style.background = s.direction === 'up' ? 'rgba(62,189,140,0.06)' : 'rgba(224,101,101,0.06)'; e.currentTarget.style.transform = 'translateY(0)' }}>
+              <div style={{ width: 20, height: 20, borderRadius: 5, background: s.direction === 'up' ? 'rgba(62,189,140,0.15)' : 'rgba(224,101,101,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span style={{ fontSize: 10, color: s.direction === 'up' ? 'var(--data-positive)' : 'var(--data-negative)', fontWeight: 700 }}>{s.direction === 'up' ? '▲' : '▼'}</span>
+              </div>
               <span style={{ fontSize: 11, fontWeight: 500, color: 'var(--text-primary)', maxWidth: 180, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{s.market.question}</span>
-              <span style={{ fontSize: 11, fontWeight: 700, ...mono, color: s.direction === 'up' ? 'var(--data-positive)' : 'var(--data-negative)', whiteSpace: 'nowrap' }}>{s.currentProb.toFixed(0)}% <span style={{ fontSize: 9, fontWeight: 500 }}>({s.direction === 'up' ? '+' : ''}{s.delta.toFixed(1)})</span></span>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 1 }}>
+                <span style={{ fontSize: 13, fontWeight: 700, ...mono, color: s.direction === 'up' ? 'var(--data-positive)' : 'var(--data-negative)', lineHeight: 1 }}>{s.currentProb.toFixed(0)}%</span>
+                <span style={{ fontSize: 9, fontWeight: 600, ...mono, color: s.direction === 'up' ? 'var(--data-positive)' : 'var(--data-negative)', opacity: 0.7, lineHeight: 1 }}>{s.direction === 'up' ? '+' : ''}{s.delta.toFixed(1)}pp</span>
+              </div>
             </div>
           ))}
         </div>
@@ -104,16 +129,16 @@ export default function PredictionsPage() {
           <button key={c} onClick={() => { setCat(c); setWlOnly(false) }} style={{
             height: 26, padding: '0 10px', borderRadius: 5, fontSize: 11, fontWeight: 500, cursor: 'pointer', transition: 'all 100ms',
             border: '1px solid', fontFamily: 'var(--font-sans)',
-            borderColor: cat === c && !wlOnly ? (c === 'contrarian' ? 'rgba(212,160,66,0.3)' : 'var(--accent-primary-muted)') : 'var(--border-subtle)',
-            background: cat === c && !wlOnly ? (c === 'contrarian' ? 'rgba(212,160,66,0.06)' : 'var(--accent-primary-bg)') : 'transparent',
-            color: cat === c && !wlOnly ? (c === 'contrarian' ? 'var(--data-warning)' : 'var(--accent-primary)') : 'var(--text-quaternary)',
+            borderColor: cat === c && !wlOnly ? 'var(--accent-primary-muted)' : 'var(--border-subtle)',
+            background: cat === c && !wlOnly ? 'var(--accent-primary-bg)' : 'transparent',
+            color: cat === c && !wlOnly ? 'var(--accent-primary)' : 'var(--text-quaternary)',
           }}>{c === 'contrarian' ? '⚡ Contrarian' : c.charAt(0).toUpperCase() + c.slice(1)}</button>
         ))}
         <div style={{ width: 1, height: 16, background: 'var(--border-subtle)', margin: '0 4px' }} />
         <button onClick={() => setWlOnly(!wlOnly)} style={{
           height: 26, padding: '0 10px', borderRadius: 5, fontSize: 11, fontWeight: 500, cursor: 'pointer', border: '1px solid',
-          borderColor: wlOnly ? 'rgba(212,160,66,0.3)' : 'var(--border-subtle)', background: wlOnly ? 'rgba(212,160,66,0.06)' : 'transparent',
-          color: wlOnly ? 'var(--data-warning)' : 'var(--text-quaternary)',
+          borderColor: wlOnly ? 'var(--accent-primary-muted)' : 'var(--border-subtle)', background: wlOnly ? 'var(--accent-primary-bg)' : 'transparent',
+          color: wlOnly ? 'var(--accent-primary)' : 'var(--text-quaternary)',
         }}>★ Saved{wl.length > 0 ? ` (${wl.length})` : ''}</button>
       </div>
 
@@ -249,81 +274,89 @@ function Detail({ m, onClose }: { m: PolymarketMarket; onClose: () => void }) {
   const oc = m._parsedOutcomes || ['Yes', 'No']
   const pr = m._parsedPrices || []
 
-
   return (
     <>
       <div onClick={onClose} style={{ position: 'fixed', inset: 0, zIndex: 70, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(8px)' }} />
-      <div style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '92vw', maxWidth: 740, maxHeight: '88vh', background: 'var(--bg-surface-1)', border: '1px solid var(--border-default)', borderRadius: 16, boxShadow: '0 32px 80px rgba(0,0,0,0.5)', overflow: 'hidden', zIndex: 71, display: 'flex', flexDirection: 'column' }}>
+      <div style={{ position: 'fixed', inset: 0, zIndex: 71, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '32px 16px', pointerEvents: 'none' }}>
+        <div style={{ width: '100%', maxWidth: 680, maxHeight: 'calc(100vh - 64px)', background: 'var(--bg-surface-1)', border: '1px solid var(--border-default)', borderRadius: 16, boxShadow: '0 24px 64px rgba(0,0,0,0.6)', overflow: 'hidden', display: 'flex', flexDirection: 'column', pointerEvents: 'auto' }}>
 
-        {/* Header */}
-        <div style={{ padding: '18px 22px', borderBottom: '1px solid var(--border-default)', display: 'flex', gap: 14 }}>
-          {m.image && <img src={m.image} alt="" style={{ width: 52, height: 52, borderRadius: 10, objectFit: 'cover', background: 'var(--bg-surface-3)', flexShrink: 0 }} onError={e => { (e.target as HTMLImageElement).style.display = 'none' }} />}
-          <div style={{ flex: 1 }}>
-            <h2 style={{ fontSize: 17, fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.3, margin: '0 0 6px' }}>{m.question}</h2>
-            <div style={{ display: 'flex', gap: 8, fontSize: 11, color: 'var(--text-tertiary)', ...mono, flexWrap: 'wrap' }}>
-              <span>{formatVolume(m.volume || 0)} total</span>
-              <span style={{ color: 'var(--border-default)' }}>|</span>
-              <span>{formatVolume(m.volume24hr || 0)} 24h</span>
-              <span style={{ color: 'var(--border-default)' }}>|</span>
-              <span>{formatVolume(m.liquidity || 0)} liq</span>
-              {m.endDate && <><span style={{ color: 'var(--border-default)' }}>|</span><span>Exp {new Date(m.endDate).toLocaleDateString()}</span></>}
-            </div>
-          </div>
-          <button onClick={onClose} style={{ background: 'var(--bg-surface-3)', border: '1px solid var(--border-default)', borderRadius: 8, width: 34, height: 34, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-tertiary)', cursor: 'pointer', flexShrink: 0, fontSize: 16, fontWeight: 300 }}>×</button>
-        </div>
-
-        {/* Body */}
-        <div style={{ flex: 1, overflowY: 'auto', padding: '18px 22px' }}>
-          {/* Outcomes */}
-          <div style={{ marginBottom: 22 }}>
-            {oc.map((o, i) => {
-              const p = pr[i] ? pr[i]! * 100 : 0
-              return (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '11px 0', borderBottom: i < oc.length - 1 ? '1px solid var(--border-subtle)' : 'none' }}>
-                  <span style={{ flex: 1, fontSize: 15, fontWeight: 500, color: 'var(--text-primary)' }}>{o}</span>
-                  <div style={{ width: 150, height: 7, borderRadius: 4, background: 'rgba(255,255,255,0.04)', overflow: 'hidden' }}>
-                    <div style={{ width: `${p}%`, height: '100%', borderRadius: 4, background: p > 50 ? 'var(--data-positive)' : 'var(--data-negative)', opacity: 0.65 }} />
-                  </div>
-                  <span style={{ fontSize: 20, fontWeight: 700, ...mono, color: p > 65 ? 'var(--data-positive)' : p < 35 ? 'var(--data-negative)' : 'var(--text-primary)', width: 64, textAlign: 'right' }}>{p.toFixed(1)}%</span>
-                </div>
-              )
-            })}
-          </div>
-
-          {/* Chart */}
-          <div style={{ marginBottom: 22 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-              <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)' }}>Probability History</span>
-              <div style={{ display: 'flex', gap: 1, background: 'var(--bg-surface-3)', borderRadius: 6, padding: 2 }}>
-                {['1d', '1w', '1m', 'max'].map(x => <button key={x} onClick={() => setIv(x)} style={{ height: 24, padding: '0 9px', borderRadius: 4, border: 'none', background: iv === x ? 'var(--accent-primary-bg)' : 'transparent', color: iv === x ? 'var(--accent-primary)' : 'var(--text-quaternary)', fontSize: 10, fontWeight: 600, ...mono, cursor: 'pointer' }}>{x.toUpperCase()}</button>)}
+          {/* Header */}
+          <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border-default)', display: 'flex', gap: 14, flexShrink: 0 }}>
+            {m.image && <img src={m.image} alt="" style={{ width: 46, height: 46, borderRadius: 10, objectFit: 'cover', background: 'var(--bg-surface-3)', flexShrink: 0 }} onError={e => { (e.target as HTMLImageElement).style.display = 'none' }} />}
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.35, margin: '0 0 5px' }}>{m.question}</h2>
+              <div style={{ display: 'flex', gap: 7, fontSize: 11, color: 'var(--text-tertiary)', ...mono, flexWrap: 'wrap' }}>
+                <span>{formatVolume(m.volume || 0)} total</span>
+                <span style={{ color: 'var(--border-default)' }}>·</span>
+                <span>{formatVolume(m.volume24hr || 0)} 24h</span>
+                <span style={{ color: 'var(--border-default)' }}>·</span>
+                <span>{formatVolume(m.liquidity || 0)} liq</span>
+                {m.endDate && <><span style={{ color: 'var(--border-default)' }}>·</span><span>Exp {new Date(m.endDate).toLocaleDateString()}</span></>}
               </div>
             </div>
-            <div style={{ background: 'var(--bg-surface-2)', border: '1px solid var(--border-subtle)', borderRadius: 8, padding: 14 }}>
-              {cl || !history.length ? <div style={{ height: 150, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-quaternary)', fontSize: 11, ...mono }}>{cl ? 'Loading chart...' : 'No data for this interval'}</div> : <Chart h={history} height={150} />}
+            <button onClick={onClose} style={{ background: 'var(--bg-surface-3)', border: '1px solid var(--border-default)', borderRadius: 8, width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-tertiary)', cursor: 'pointer', flexShrink: 0, fontSize: 16, fontWeight: 300 }}>×</button>
+          </div>
+
+          {/* Scrollable body */}
+          <div style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
+            {/* Outcomes */}
+            <div style={{ padding: '14px 20px', display: 'flex', gap: 10 }}>
+              {oc.slice(0, 2).map((o, i) => {
+                const p = pr[i] ? pr[i]! * 100 : 0
+                return (
+                  <div key={i} style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', background: 'var(--bg-surface-2)', borderRadius: 8, border: '1px solid var(--border-subtle)' }}>
+                    <span style={{ fontSize: 14, fontWeight: 500, color: 'var(--text-secondary)' }}>{o}</span>
+                    <div style={{ flex: 1, height: 6, borderRadius: 3, background: 'rgba(255,255,255,0.04)', overflow: 'hidden' }}>
+                      <div style={{ width: `${p}%`, height: '100%', borderRadius: 3, background: p > 50 ? 'var(--data-positive)' : 'var(--data-negative)', opacity: 0.7 }} />
+                    </div>
+                    <span style={{ fontSize: 19, fontWeight: 700, ...mono, color: p > 65 ? 'var(--data-positive)' : p < 35 ? 'var(--data-negative)' : 'var(--text-primary)' }}>{p.toFixed(1)}%</span>
+                  </div>
+                )
+              })}
+            </div>
+
+            {/* Chart */}
+            <div style={{ padding: '0 20px 16px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)' }}>Probability History</span>
+                <div style={{ display: 'flex', gap: 1, background: 'var(--bg-surface-3)', borderRadius: 6, padding: 2 }}>
+                  {['1d', '1w', '1m', 'max'].map(x => <button key={x} onClick={() => setIv(x)} style={{ height: 24, padding: '0 9px', borderRadius: 4, border: 'none', background: iv === x ? 'var(--accent-primary-bg)' : 'transparent', color: iv === x ? 'var(--accent-primary)' : 'var(--text-quaternary)', fontSize: 10, fontWeight: 600, ...mono, cursor: 'pointer' }}>{x.toUpperCase()}</button>)}
+                </div>
+              </div>
+              <div style={{ background: 'var(--bg-surface-2)', border: '1px solid var(--border-subtle)', borderRadius: 8, padding: '12px 14px' }}>
+                {cl || !history.length ? <div style={{ height: 130, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-quaternary)', fontSize: 11, ...mono }}>{cl ? 'Loading chart...' : 'No data for this interval'}</div> : <Chart h={history} height={130} />}
+              </div>
+            </div>
+
+            {/* Description */}
+            {m.description && (
+              <div style={{ padding: '0 20px 14px' }}>
+                <div style={{ fontSize: 10, fontWeight: 600, color: 'var(--text-quaternary)', ...mono, letterSpacing: '0.04em', marginBottom: 5 }}>RESOLUTION DETAILS</div>
+                <p style={{ fontSize: 12.5, lineHeight: 1.6, color: 'var(--text-tertiary)', margin: 0, maxHeight: 90, overflow: 'auto' }}>{m.description}</p>
+              </div>
+            )}
+
+            {/* Pelican */}
+            <div style={{ padding: '0 20px 16px' }}>
+              <div style={{ background: 'var(--pelican-bg)', border: '1px solid var(--pelican-border)', borderRadius: 8, padding: '14px 16px', position: 'relative', overflow: 'hidden' }}>
+                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: 'linear-gradient(90deg, var(--pelican-gradient-start), var(--pelican-gradient-end))', opacity: 0.4 }} />
+                <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 7, marginTop: 1 }}>
+                  <img src="/images/pelican-logo.png" alt="" width={20} height={20} style={{ objectFit: 'contain' }} />
+                  <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.06em', color: 'var(--accent-primary)', ...mono }}>PELICAN ANALYSIS</span>
+                </div>
+                <div style={{ fontSize: 12.5, lineHeight: 1.6, color: 'var(--text-secondary)' }}>
+                  {formatVolume(m.volume24hr || 0)} in 24h volume · {formatVolume(m.liquidity || 0)} liquidity.
+                  {(pr[0] ?? 0.5) > 0.7 ? ' High confidence — watch for any reversal signals.' : (pr[0] ?? 0.5) < 0.3 ? ' Low probability priced in — potential contrarian edge.' : ' Market divided — catalysts could swing this either direction.'} Track 5%+ shifts as signal events.
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Description */}
-          {m.description && <div style={{ marginBottom: 22 }}><div style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-quaternary)', ...mono, letterSpacing: '0.04em', marginBottom: 6 }}>RESOLUTION DETAILS</div><p style={{ fontSize: 12.5, lineHeight: 1.65, color: 'var(--text-tertiary)', margin: 0, maxHeight: 100, overflow: 'auto' }}>{m.description}</p></div>}
-
-          {/* Pelican */}
-          <div style={{ background: 'var(--pelican-bg)', border: '1px solid var(--pelican-border)', borderRadius: 8, padding: 16, position: 'relative', overflow: 'hidden' }}>
-            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: 'linear-gradient(90deg, var(--pelican-gradient-start), var(--pelican-gradient-end))', opacity: 0.4 }} />
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8, marginTop: 2 }}>
-              <img src="/images/pelican-logo.png" alt="" width={22} height={22} style={{ objectFit: 'contain' }} />
-              <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.06em', color: 'var(--accent-primary)', ...mono }}>PELICAN ANALYSIS</span>
-            </div>
-            <div style={{ fontSize: 12.5, lineHeight: 1.65, color: 'var(--text-secondary)' }}>
-              {formatVolume(m.volume24hr || 0)} in 24h volume · {formatVolume(m.liquidity || 0)} liquidity.
-              {(pr[0] ?? 0.5) > 0.7 ? ' High confidence — watch for any reversal signals.' : (pr[0] ?? 0.5) < 0.3 ? ' Low probability priced in — potential contrarian edge.' : ' Market divided — catalysts could swing this either direction.'} Track 5%+ shifts as signal events.
-            </div>
+          {/* Footer */}
+          <div style={{ padding: '11px 20px', borderTop: '1px solid var(--border-default)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
+            <span style={{ fontSize: 10, color: 'var(--text-quaternary)', ...mono }}>POLYMARKET · LIVE DATA</span>
+            <a href={getPolymarketUrl(m)} target="_blank" rel="noopener noreferrer" style={{ height: 32, padding: '0 16px', borderRadius: 6, background: 'var(--accent-violet)', color: 'white', fontSize: 12, fontWeight: 600, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 5 }}>Trade on Polymarket ↗</a>
           </div>
-        </div>
-
-        {/* Footer */}
-        <div style={{ padding: '12px 22px', borderTop: '1px solid var(--border-default)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span style={{ fontSize: 10, color: 'var(--text-quaternary)', ...mono }}>POLYMARKET · LIVE DATA</span>
-          <a href={getPolymarketUrl(m)} target="_blank" rel="noopener noreferrer" style={{ height: 32, padding: '0 16px', borderRadius: 6, background: 'var(--accent-violet)', color: 'white', fontSize: 12, fontWeight: 600, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 5 }}>Trade on Polymarket ↗</a>
         </div>
       </div>
     </>
