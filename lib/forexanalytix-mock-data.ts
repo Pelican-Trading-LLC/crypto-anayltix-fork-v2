@@ -14,10 +14,10 @@ export interface FAAnalyst {
 }
 
 export const FA_ANALYSTS: FAAnalyst[] = [
-  { id: 'blake', name: 'Blake Morrow', role: 'CEO & Head Analyst', methodology: 'Macro / Harmonic', color: '#2A5ADA', initials: 'BM', bio: '20+ years FX analysis. Former institutional trader. Specializes in macro-driven harmonic patterns.' },
-  { id: 'grega', name: 'Grega Horvat', role: 'Senior Analyst', methodology: 'Elliott Wave', color: '#9945FF', initials: 'GH', bio: 'Elliott Wave specialist with 15+ years experience. Published author on wave theory.' },
-  { id: 'dale', name: 'Dale Pinkert', role: 'Sentiment Analyst', methodology: 'Sentiment / COT', color: '#3EBD8C', initials: 'DP', bio: 'Former FX desk trader. Specializes in COT data and sentiment positioning.' },
-  { id: 'joel', name: 'Joel Kruger', role: 'Technical Strategist', methodology: 'Institutional Flow', color: '#D4A042', initials: 'JK', bio: 'Former currency strategist at major banks. Focuses on institutional order flow.' },
+  { id: 'blake', name: 'Sample Macro Analyst', role: 'Sample Analyst', methodology: 'Macro / Harmonic', color: '#2A5ADA', initials: 'MA', bio: 'Sample analyst profile for layout preview. Live analyst data requires connected feeds.' },
+  { id: 'grega', name: 'Sample Wave Analyst', role: 'Sample Analyst', methodology: 'Elliott Wave', color: '#9945FF', initials: 'WA', bio: 'Sample analyst profile for layout preview. Live analyst data requires connected feeds.' },
+  { id: 'dale', name: 'Sample Sentiment Analyst', role: 'Sample Analyst', methodology: 'Sentiment / COT', color: '#3EBD8C', initials: 'SA', bio: 'Sample analyst profile for layout preview. Live analyst data requires connected feeds.' },
+  { id: 'joel', name: 'Sample Flow Analyst', role: 'Sample Analyst', methodology: 'Institutional Flow', color: '#D4A042', initials: 'FA', bio: 'Sample analyst profile for layout preview. Live analyst data requires connected feeds.' },
 ]
 
 // ── PiP Signals (Points in Play) ──────────────────────────────
@@ -43,49 +43,49 @@ export interface FAPiP {
 
 export const FA_PIPS: FAPiP[] = [
   {
-    id: 'pip1', analyst_id: 'blake', analyst_name: 'Blake Morrow', analyst_color: '#2A5ADA', analyst_initials: 'BM',
+    id: 'pip1', analyst_id: 'blake', analyst_name: 'Sample Macro Analyst', analyst_color: '#2A5ADA', analyst_initials: 'MA',
     asset: 'EUR/USD', asset_class: 'forex', direction: 'BULLISH', methodology: 'Harmonic',
-    title: 'EUR/USD Bullish Bat at 1.0820',
-    body: 'Classic bullish bat completion at the 0.886 XA retracement. ECB rate differential narrowing. Watch for confirmation above 1.0850.',
-    key_levels: { entry: '1.0820', target: '1.0980', stop: '1.0760' },
+    title: 'EUR/USD Sample Harmonic Setup',
+    body: 'Sample harmonic completion with macro context. Live PiP levels require connected ForexAnalytix feeds.',
+    key_levels: { entry: '<sample>', target: '<sample>', stop: '<sample>' },
     confidence: 82, timestamp: '3h ago', status: 'active',
-    crypto_translation: 'EUR strength = DXY weakness = historically bullish for BTC. Last 3 DXY breakdowns preceded 15-25% BTC rallies within 4 weeks.',
+    crypto_translation: 'Sample translation showing how a currency setup can map to crypto risk conditions.',
   },
   {
-    id: 'pip2', analyst_id: 'grega', analyst_name: 'Grega Horvat', analyst_color: '#9945FF', analyst_initials: 'GH',
+    id: 'pip2', analyst_id: 'grega', analyst_name: 'Sample Wave Analyst', analyst_color: '#9945FF', analyst_initials: 'WA',
     asset: 'BTC', asset_class: 'crypto', direction: 'BULLISH', methodology: 'Elliott Wave',
-    title: 'BTC Wave 5 Extension to $92K',
-    body: 'Wave 4 correction complete at $81,200. Wave 5 impulse targeting 1.618 extension at $92,000. Invalidation below $79,500.',
-    key_levels: { entry: '$83,500', target: '$92,000', stop: '$79,500' },
+    title: 'BTC Sample Wave Extension',
+    body: 'Sample wave-count narrative for layout preview. Live entry, target, and invalidation levels require connected feeds.',
+    key_levels: { entry: '<sample>', target: '<sample>', stop: '<sample>' },
     confidence: 74, timestamp: '5h ago', status: 'active',
-    crypto_translation: 'Direct crypto PiP. If Wave 5 plays out, expect alt rotation to follow 7-10 days after BTC peaks.',
+    crypto_translation: 'Sample crypto PiP translation for preview only.',
   },
   {
-    id: 'pip3', analyst_id: 'dale', analyst_name: 'Dale Pinkert', analyst_color: '#3EBD8C', analyst_initials: 'DP',
+    id: 'pip3', analyst_id: 'dale', analyst_name: 'Sample Sentiment Analyst', analyst_color: '#3EBD8C', analyst_initials: 'SA',
     asset: 'GBP/USD', asset_class: 'forex', direction: 'BEARISH', methodology: 'Sentiment',
     title: 'GBP/USD Crowded Long — Fade Setup',
     body: 'COT report shows asset managers net long GBP at 3-year highs. Retail sentiment 78% long. Extreme positioning historically precedes reversals.',
-    key_levels: { entry: '1.2710', target: '1.2520', stop: '1.2790' },
+    key_levels: { entry: '<sample>', target: '<sample>', stop: '<sample>' },
     confidence: 68, timestamp: '8h ago', status: 'active',
     crypto_translation: 'GBP weakness typically accompanies risk-off sentiment in European sessions. Watch for ETH/BTC underperformance during London hours.',
   },
   {
-    id: 'pip4', analyst_id: 'joel', analyst_name: 'Joel Kruger', analyst_color: '#D4A042', analyst_initials: 'JK',
+    id: 'pip4', analyst_id: 'joel', analyst_name: 'Sample Flow Analyst', analyst_color: '#D4A042', analyst_initials: 'FA',
     asset: 'USD/JPY', asset_class: 'forex', direction: 'BEARISH', methodology: 'Institutional Flow',
     title: 'USD/JPY Breakdown — BoJ Intervention Zone',
     body: 'Real money selling above 152. BoJ intervention risk elevated. Institutional flow data shows heavy hedging activity from Japanese corporates.',
-    key_levels: { entry: '152.40', target: '149.80', stop: '153.20' },
+    key_levels: { entry: '<sample>', target: '<sample>', stop: '<sample>' },
     confidence: 71, timestamp: '6h ago', status: 'active',
     crypto_translation: 'JPY carry trade unwind is one of the strongest crypto correlation signals. Last BoJ intervention triggered a 12% BTC selloff in 48 hours.',
   },
   {
-    id: 'pip5', analyst_id: 'blake', analyst_name: 'Blake Morrow', analyst_color: '#2A5ADA', analyst_initials: 'BM',
+    id: 'pip5', analyst_id: 'blake', analyst_name: 'Sample Macro Analyst', analyst_color: '#2A5ADA', analyst_initials: 'MA',
     asset: 'ETH', asset_class: 'crypto', direction: 'BEARISH', methodology: 'Macro',
     title: 'ETH Macro Headwinds — Risk-Off Setup',
     body: 'DXY breaking above 105, risk assets repricing. ETH correlating 0.85 with NASDAQ. Macro headwinds stronger than on-chain support.',
-    key_levels: { entry: '$2,180', target: '$1,950', stop: '$2,320' },
+    key_levels: { entry: '<sample>', target: '<sample>', stop: '<sample>' },
     confidence: 65, timestamp: '2h ago', status: 'active',
-    crypto_translation: 'Direct crypto PiP. Aligns with Grega\'s Elliott Wave 4 correction target. Confluence of two independent methodologies at $1,950.',
+    crypto_translation: 'Sample crypto PiP. Live confluence requires connected analyst feeds.',
   },
 ]
 
@@ -122,7 +122,7 @@ export const FA_TRAFFIC_LIGHT: {
 export const FA_FACE_SUMMARY = {
   title: 'FACE Webinar — March 19, 2026',
   duration: '58 min',
-  analysts: ['Blake Morrow', 'Dale Pinkert', 'Joel Kruger'],
+  analysts: ['Sample Macro Analyst', 'Sample Sentiment Analyst', 'Sample Flow Analyst'],
   key_takeaways: [
     'DXY at critical inflection point — 104 support being tested. Break below opens 102 and is bullish for all risk assets.',
     'EUR/USD harmonic pattern completion suggests 200+ pip rally if 1.0850 holds.',
@@ -136,7 +136,7 @@ export const FA_FACE_SUMMARY = {
 // ── Day Ahead Podcast ─────────────────────────────────────────
 
 export const FA_PODCAST = {
-  title: 'The Day Ahead with Blake Morrow',
+  title: 'The Day Ahead — Sample Macro Brief',
   episode: 'March 19, 2026',
   duration: '22 min',
   key_points: [
@@ -145,7 +145,7 @@ export const FA_PODCAST = {
     'US session: No major data today but Fed\'s Waller speaks at 2:00 PM ET. Markets will be reactive.',
     'Risk management: Keep stops tight this week. FOMC minutes Thursday will be the real volatility event.',
   ],
-  pelican_translation: 'Blake\'s key message: don\'t chase anything before Thursday\'s FOMC minutes. For crypto, this means reduced leverage and wider stops. Smart money is waiting — you should too.',
+  pelican_translation: 'Sample macro takeaway: avoid over-interpreting quiet sessions before major calendar risk. Live commentary requires connected feeds.',
   timestamp: '6h ago',
 }
 
@@ -162,8 +162,8 @@ export interface FABlogPost {
 }
 
 export const FA_BLOG_POSTS: FABlogPost[] = [
-  { id: 'bp1', title: 'DXY at the Crossroads: What a Break Below 104 Means for All Markets', author: 'Blake Morrow', category: 'Macro', excerpt: 'The US Dollar Index is testing its most important support level of 2026. Here\'s why this matters for forex, crypto, and equities.', timestamp: '4h ago', read_time: '5 min' },
-  { id: 'bp2', title: 'Elliott Wave Update: BTC, ETH, and the Altcoin Complex', author: 'Grega Horvat', category: 'Technical', excerpt: 'Wave counts across the crypto complex suggest we\'re in the early stages of an impulse move higher — if key levels hold.', timestamp: '8h ago', read_time: '7 min' },
-  { id: 'bp3', title: 'COT Report Deep Dive: Where Smart Money is Really Positioned', author: 'Dale Pinkert', category: 'Sentiment', excerpt: 'This week\'s Commitment of Traders report reveals extreme positioning in 3 currency pairs. Here\'s how to trade it.', timestamp: '1d ago', read_time: '6 min' },
-  { id: 'bp4', title: 'Yen Carry Trade: The Hidden Risk Crypto Traders Ignore', author: 'Joel Kruger', category: 'Cross-Asset', excerpt: 'The JPY carry trade unwind is one of the most underappreciated risks in crypto. Here\'s the correlation and the trigger levels.', timestamp: '2d ago', read_time: '8 min' },
+  { id: 'bp1', title: 'DXY at the Crossroads: Sample Macro Note', author: 'Sample Macro Analyst', category: 'Macro', excerpt: 'Sample research excerpt for layout preview. Live research requires connected feeds.', timestamp: '4h ago', read_time: '5 min' },
+  { id: 'bp2', title: 'Elliott Wave Update: Sample Technical Note', author: 'Sample Wave Analyst', category: 'Technical', excerpt: 'Sample wave-count excerpt for layout preview. Live research requires connected feeds.', timestamp: '8h ago', read_time: '7 min' },
+  { id: 'bp3', title: 'COT Report Deep Dive: Sample Sentiment Note', author: 'Sample Sentiment Analyst', category: 'Sentiment', excerpt: 'Sample sentiment excerpt for layout preview. Live research requires connected feeds.', timestamp: '1d ago', read_time: '6 min' },
+  { id: 'bp4', title: 'Yen Carry Trade: Sample Cross-Asset Note', author: 'Sample Flow Analyst', category: 'Cross-Asset', excerpt: 'Sample cross-asset excerpt for layout preview. Live research requires connected feeds.', timestamp: '2d ago', read_time: '8 min' },
 ]

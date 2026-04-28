@@ -1,11 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createIpRateLimiter, getClientIp, rateLimitResponse } from '@/lib/rate-limit';
+import { PLAN_CONFIG } from '@/lib/plans';
 
 const MAX_CONTENT_LENGTH = 2000
 
 const helpLimiter = createIpRateLimiter('help-chat', 10, '1 h')
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+
+const PRICING_TIERS = (['starter', 'pro', 'power'] as const)
+  .map((planId) => {
+    const plan = PLAN_CONFIG[planId]
+    return `- ${plan.label}: $${plan.price}/month — ${plan.credits.toLocaleString()} credits`
+  })
+  .join('\n')
 
 const SYSTEM_PROMPT = `You are the Token Analytix help assistant on the tokenanalytix.com website. Your job is to answer questions about Token Analytix ONLY. You are friendly, concise, and helpful.
 
@@ -33,9 +41,7 @@ Token Analytix is an AI-powered crypto analytics platform that lets traders anal
 Token Analytix uses a credit-based pricing system. Credits represent analytical workload, not raw API calls. Credits reset monthly and do not roll over.
 
 **Subscription Tiers:**
-- Starter: $29/month — 1,000 credits (exploration & learning)
-- Pro: $99/month — 3,500 credits (active traders)
-- Elite: $249/month — 10,000 credits (heavy & professional users)
+${PRICING_TIERS}
 
 **Credit Costs by Query Type:**
 - Conversation/Mentoring (education, coaching): 2 credits
@@ -58,7 +64,8 @@ Available in 30+ languages including: Chinese, Spanish, Japanese, Korean, French
 
 ### Team
 - Nick Groves — Founder & CEO. 8 years trading experience with a background in crypto arbitrage.
-- Raymond Campbell — Senior Architect. 20+ years experience in exchange infrastructure.
+- Ray Campbell — Co-Founder & CTO. 20+ years experience in exchange infrastructure.
+- Jack Marshall — Founder and product lead for Pelican trading workflows.
 
 ### Current Status
 - Now in Beta

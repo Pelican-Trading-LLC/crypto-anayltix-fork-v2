@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { createUserRateLimiter, rateLimitResponse } from '@/lib/rate-limit'
+import { createIpRateLimiter, createUserRateLimiter, getClientIp, rateLimitResponse } from '@/lib/rate-limit'
 
 export const dynamic = 'force-dynamic'
 
 const sparklineLimiter = createUserRateLimiter('market-sparklines', 30, '1 m')
+const sparklineIpLimiter = createIpRateLimiter('market-sparklines-ip', 60, '1 m')
 
 const POLYGON_API_KEY = process.env.POLYGON_API_KEY
 const MAX_TICKERS = 10
@@ -56,6 +57,9 @@ async function fetchTickerSparkline(
 
 export async function GET(request: NextRequest) {
   try {
+    const { success: ipSuccess } = await sparklineIpLimiter.limit(getClientIp(request))
+    if (!ipSuccess) return rateLimitResponse()
+
     const supabase = await createClient()
     const { data: { user }, error: authError } = await supabase.auth.getUser()
     if (authError || !user) {

@@ -5,12 +5,13 @@ import { Check } from '@phosphor-icons/react'
 import { cn } from '@/lib/utils'
 import { Section } from '@/components/landing/section'
 import { ScrollReveal } from '@/components/landing/scroll-reveal'
+import { PLAN_CONFIG } from '@/lib/plans'
 
 const plans = [
   {
-    name: 'Free',
-    price: 0,
-    planId: 'free',
+    name: PLAN_CONFIG.none.label,
+    price: PLAN_CONFIG.none.price,
+    planId: 'none',
     description: 'Explore crypto with TradFi training wheels',
     features: [
       'Daily market brief',
@@ -22,9 +23,9 @@ const plans = [
     highlighted: false,
   },
   {
-    name: 'Lite',
-    price: 29,
-    planId: 'lite',
+    name: PLAN_CONFIG.starter.label,
+    price: PLAN_CONFIG.starter.price,
+    planId: 'starter',
     description: 'For traders ready to go deeper into crypto',
     features: [
       'Everything in Free',
@@ -38,12 +39,12 @@ const plans = [
     highlighted: false,
   },
   {
-    name: 'Pro',
-    price: 99,
+    name: PLAN_CONFIG.pro.label,
+    price: PLAN_CONFIG.pro.price,
     planId: 'pro',
     description: 'Full crypto intelligence for serious traders',
     features: [
-      'Everything in Lite',
+      `Everything in ${PLAN_CONFIG.starter.label}`,
       'Pelican Portal (full conversational AI)',
       'Conversation history',
       'Cross-asset translation feed',
@@ -54,6 +55,21 @@ const plans = [
     ],
     cta: 'Start Free',
     highlighted: true,
+  },
+  {
+    name: PLAN_CONFIG.power.label,
+    price: PLAN_CONFIG.power.price,
+    planId: 'power',
+    description: 'Higher limits for professional research workflows',
+    features: [
+      `Everything in ${PLAN_CONFIG.pro.label}`,
+      '10,000 monthly credits',
+      'Heavy research workflows',
+      'Professional usage limits',
+      'Priority support',
+    ],
+    cta: 'Start Free',
+    highlighted: false,
   },
 ]
 
@@ -71,7 +87,7 @@ export function PricingSection() {
         </div>
       </ScrollReveal>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 max-w-6xl mx-auto">
         {plans.map((plan, i) => (
           <ScrollReveal key={plan.planId} delay={i * 0.1}>
             <div

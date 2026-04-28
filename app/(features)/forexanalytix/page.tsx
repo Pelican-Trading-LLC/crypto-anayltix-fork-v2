@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import Image from 'next/image'
 import { TokenIcon, FilterPill, InsightsButton, Sparkline, SourceLogo } from '@/components/shared'
 import { formatCompact } from '@/lib/format'
 import {
@@ -20,7 +21,7 @@ const TABS: { key: ActiveTab; label: string }[] = [
   { key: 'xfeed', label: 'X Feed' },
 ]
 
-const ANALYST_FILTERS = ['All Analysts', 'Blake Morrow', 'Nick Groves', 'Grega Horvat', 'Jack Marshall']
+const ANALYST_FILTERS = ['All Analysts', 'Sample Harmonic Analyst', 'Sample Pattern Analyst', 'Sample Wave Analyst', 'Sample RWA Analyst', 'Sample Macro Analyst']
 const PATTERN_FILTERS = ['All Patterns', 'Bull Flag', 'Cup & Handle', 'Elliott Wave', 'H&S', 'Bat Pattern']
 
 // ── Source brand colors (for research feed author source text) ──
@@ -554,7 +555,7 @@ export default function AnalysisHubPage() {
                         onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--accent-primary-bg)'; e.currentTarget.style.borderColor = 'var(--accent-primary-muted)' }}
                         onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--bg-surface-2)'; e.currentTarget.style.borderColor = 'var(--border-default)' }}
                       >
-                        <img src="/images/pelican-logo.png" alt="" width={24} height={24} style={{ objectFit: 'contain' }} />
+                        <Image src="/images/pelican-logo.png" alt="" width={24} height={24} style={{ objectFit: 'contain' }} loading="lazy" />
                         Summarize with Pelican
                       </button>
                     ) : (
@@ -564,7 +565,7 @@ export default function AnalysisHubPage() {
                       }}>
                         <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: 'linear-gradient(90deg, var(--pelican-gradient-start), var(--pelican-gradient-end))', opacity: 0.5 }} />
                         <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8, marginTop: 4 }}>
-                          <img src="/images/pelican-logo.png" alt="" width={26} height={26} style={{ objectFit: 'contain' }} />
+                          <Image src="/images/pelican-logo.png" alt="" width={26} height={26} style={{ objectFit: 'contain' }} loading="lazy" />
                           <span style={{ fontSize: 11, fontFamily: 'var(--font-mono)', fontWeight: 700, color: 'var(--accent-primary)', letterSpacing: '0.06em' }}>PELICAN SUMMARY</span>
                         </div>
                         <p style={{ fontSize: 13, lineHeight: 1.7, color: 'var(--text-secondary)', margin: 0 }}>

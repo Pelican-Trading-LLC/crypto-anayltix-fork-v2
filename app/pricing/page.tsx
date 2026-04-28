@@ -1,9 +1,10 @@
 import type { Metadata } from 'next'
 import PricingPageContent from '@/components/pricing/PricingPageContent'
+import { PLAN_CONFIG } from '@/lib/plans'
 
 export const metadata: Metadata = {
   title: 'Pricing | Token Analytix — AI-Powered Crypto Intelligence Plans',
-  description: 'Free, Lite ($29/mo), and Pro ($99/mo) plans. The crypto intelligence platform built for TradFi traders. Pelican AI, analyst signals, and exchange integration.',
+  description: `${PLAN_CONFIG.none.label}, ${PLAN_CONFIG.starter.label} ($${PLAN_CONFIG.starter.price}/mo), ${PLAN_CONFIG.pro.label} ($${PLAN_CONFIG.pro.price}/mo), and ${PLAN_CONFIG.power.label} ($${PLAN_CONFIG.power.price}/mo) plans. The crypto intelligence platform built for TradFi traders.`,
   alternates: {
     canonical: 'https://tokenanalytix.com/pricing',
   },
@@ -21,12 +22,12 @@ const pricingJsonLd = {
   offers: [
     {
       '@type': 'Offer',
-      name: 'Free',
-      price: '0',
+      name: PLAN_CONFIG.none.label,
+      price: String(PLAN_CONFIG.none.price),
       priceCurrency: 'USD',
       priceSpecification: {
         '@type': 'UnitPriceSpecification',
-        price: '0',
+        price: String(PLAN_CONFIG.none.price),
         priceCurrency: 'USD',
         billingDuration: 'P1M',
       },
@@ -34,12 +35,12 @@ const pricingJsonLd = {
     },
     {
       '@type': 'Offer',
-      name: 'Lite',
-      price: '29',
+      name: PLAN_CONFIG.starter.label,
+      price: String(PLAN_CONFIG.starter.price),
       priceCurrency: 'USD',
       priceSpecification: {
         '@type': 'UnitPriceSpecification',
-        price: '29',
+        price: String(PLAN_CONFIG.starter.price),
         priceCurrency: 'USD',
         billingDuration: 'P1M',
       },
@@ -47,16 +48,29 @@ const pricingJsonLd = {
     },
     {
       '@type': 'Offer',
-      name: 'Pro',
-      price: '99',
+      name: PLAN_CONFIG.pro.label,
+      price: String(PLAN_CONFIG.pro.price),
       priceCurrency: 'USD',
       priceSpecification: {
         '@type': 'UnitPriceSpecification',
-        price: '99',
+        price: String(PLAN_CONFIG.pro.price),
         priceCurrency: 'USD',
         billingDuration: 'P1M',
       },
       description: 'Pelican Portal, conversation history, CT signal translations, wallet tracking, intelligence alerts, priority support',
+    },
+    {
+      '@type': 'Offer',
+      name: PLAN_CONFIG.power.label,
+      price: String(PLAN_CONFIG.power.price),
+      priceCurrency: 'USD',
+      priceSpecification: {
+        '@type': 'UnitPriceSpecification',
+        price: String(PLAN_CONFIG.power.price),
+        priceCurrency: 'USD',
+        billingDuration: 'P1M',
+      },
+      description: 'Higher limits for professional research workflows, 10,000 monthly credits, priority support',
     },
   ],
 };

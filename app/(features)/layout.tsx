@@ -39,6 +39,47 @@ const PelicanChatPanel = dynamicImport(
   { ssr: false }
 )
 
+const MOCK_DATA_PATHS = [
+  '/dashboard',
+  '/signals',
+  '/alerts',
+  '/screener',
+  '/calendar',
+  '/smart-money',
+  '/forexanalytix',
+  '/knowledge-base',
+]
+
+function DemoModeBanner({ pathname }: { pathname: string }) {
+  const [dismissed, setDismissed] = useState(false)
+
+  useEffect(() => {
+    setDismissed(localStorage.getItem('ta-demo-mode-banner-dismissed') === 'true')
+  }, [pathname])
+
+  if (dismissed || !MOCK_DATA_PATHS.some((path) => pathname === path || pathname.startsWith(`${path}/`))) {
+    return null
+  }
+
+  return (
+    <div className="flex items-center justify-between gap-4 border-b border-amber-200 bg-amber-50 px-4 py-2 text-[12px] text-amber-950">
+      <span>
+        Sample data for layout preview. Live signals require an active subscription and connected feeds.
+      </span>
+      <button
+        type="button"
+        className="shrink-0 rounded border border-amber-300 px-2 py-1 text-[11px] font-medium text-amber-900 transition-colors hover:bg-amber-100"
+        onClick={() => {
+          localStorage.setItem('ta-demo-mode-banner-dismissed', 'true')
+          setDismissed(true)
+        }}
+      >
+        Dismiss
+      </button>
+    </div>
+  )
+}
+
 // =============================================================================
 // INNER LAYOUT (Has access to panel context)
 // =============================================================================
@@ -82,6 +123,8 @@ function FeaturesLayoutInner({ children }: { children: React.ReactNode }) {
         <div className="relative z-[var(--z-sticky)]">
           <TopNav />
         </div>
+
+        <DemoModeBanner pathname={pathname} />
 
         <div className="relative z-10 flex flex-1 overflow-hidden">
           <motion.main

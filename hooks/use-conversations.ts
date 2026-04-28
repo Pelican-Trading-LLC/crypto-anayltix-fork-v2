@@ -9,14 +9,14 @@
  * @version 3.0.0 - Streamlined (removed legacy duplicates)
  */
 
-import { useState, useEffect, useMemo, useCallback } from "react"
+import { useState, useEffect, useMemo, useCallback, useRef } from "react"
 import { usePathname } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 import type { User } from "@supabase/supabase-js"
 import * as Sentry from "@sentry/nextjs"
 import { captureError } from "@/lib/sentry-helper"
 import { useGuestConversations } from "@/hooks/use-guest-conversations"
-import { useConversationRealtime } from "@/hooks/use-conversation-realtime"
+import { useConversationRealtime, type ConversationRefreshSource } from "@/hooks/use-conversation-realtime"
 import {
   updateConversation as updateConversationDB,
   hardDeleteConversation,
@@ -107,6 +107,7 @@ export function useConversations(): UseConversationsReturn {
   const debouncedSearch = useDebounce(search, 300)
   const pathname = usePathname()
   const supabase = useMemo(() => createClient(), [])
+  const refreshTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const effectiveUserId = user?.id || guestUserId
   const {
     initializeGuestUserId,
@@ -210,11 +211,26 @@ export function useConversations(): UseConversationsReturn {
     }
   }, [guestUserId, loadFromDatabase, loadGuestConversations, supabase])
 
-  const refreshCurrentUserConversations = useCallback(() => {
+  const refreshCurrentUserConversations = useCallback((_source: ConversationRefreshSource) => {
     if (user?.id) {
-      void loadFromDatabase(user.id)
+      if (refreshTimeoutRef.current) {
+        clearTimeout(refreshTimeoutRef.current)
+      }
+
+      refreshTimeoutRef.current = setTimeout(() => {
+        refreshTimeoutRef.current = null
+        void loadFromDatabase(user.id)
+      }, 500)
     }
   }, [user?.id, loadFromDatabase])
+
+  useEffect(() => {
+    return () => {
+      if (refreshTimeoutRef.current) {
+        clearTimeout(refreshTimeoutRef.current)
+      }
+    }
+  }, [])
 
   useConversationRealtime({
     userId: user?.id,

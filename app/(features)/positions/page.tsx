@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useMemo, useEffect } from 'react'
+import Image from 'next/image'
 import { TokenIcon, FlowBar, FilterPill, InsightsButton } from '@/components/shared'
 import { formatPrice, formatCompact, formatPercent } from '@/lib/format'
 import { useKrakenTickers } from '@/hooks/use-kraken'
@@ -246,7 +247,7 @@ export default function PositionsPage() {
                   <th style={{ ...thStyle, width: 100, textAlign: 'right' }}>Day Chg</th>
                   <th style={{ ...thStyle, width: 80, textAlign: 'center' }}>Exchange</th>
                   <th style={{ ...thStyle, width: 48, textAlign: 'center' }}>
-                    <img src="/images/pelican-logo.png" alt="" width={18} height={18} style={{ objectFit: 'contain', opacity: 0.5 }} />
+                    <Image src="/images/pelican-logo.png" alt="" width={18} height={18} style={{ objectFit: 'contain', opacity: 0.5 }} loading="lazy" />
                   </th>
                 </tr>
               </thead>
@@ -396,7 +397,7 @@ export default function PositionsPage() {
           <div style={{ background: 'var(--pelican-bg)', border: '1px solid var(--pelican-border)', borderRadius: 10, padding: 20, position: 'relative', overflow: 'hidden' }}>
             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: 'linear-gradient(90deg, var(--pelican-gradient-start), var(--pelican-gradient-end))', opacity: 0.5 }} />
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10, marginTop: 4 }}>
-              <img src="/images/pelican-logo.png" alt="" width={24} height={24} style={{ objectFit: 'contain' }} />
+              <Image src="/images/pelican-logo.png" alt="" width={24} height={24} style={{ objectFit: 'contain' }} loading="lazy" />
               <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.06em', color: 'var(--accent-primary)', fontFamily: 'var(--font-mono)' }}>PORTFOLIO INSIGHTS</span>
             </div>
             <div style={{ fontSize: 13, lineHeight: 1.7, color: 'var(--text-secondary)' }}>

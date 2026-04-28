@@ -14,7 +14,7 @@ interface AnalystProfile {
 
 const ANALYSTS: AnalystProfile[] = [
   {
-    name: 'Blake Morrow',
+    name: 'Macro / Harmonic Analysts',
     description:
       'Harmonic patterns and macro analysis applied to BTC, ETH, and major alts. 15+ years of TradFi experience.',
     icon: UserCircle,
@@ -22,7 +22,7 @@ const ANALYSTS: AnalystProfile[] = [
     badgeColor: 'bg-blue-100 text-blue-700',
   },
   {
-    name: 'Grega Horvat',
+    name: 'Elliott Wave Analysts',
     description:
       'Elliott Wave specialist. Precise wave counts on crypto with clear targets and invalidation levels.',
     icon: UserCircle,
@@ -32,7 +32,7 @@ const ANALYSTS: AnalystProfile[] = [
   {
     name: 'Multi-Analyst Synthesis',
     description:
-      'Pelican combines all analyst calls with derivatives data and on-chain intelligence. When Grega\u2019s wave count aligns with Blake\u2019s harmonic pattern and smart money is accumulating \u2014 that\u2019s a signal.',
+      'Pelican combines analyst calls with derivatives data and on-chain intelligence. When independent methodologies align with smart-money accumulation, the signal gets stronger.',
     icon: UsersThree,
     badgeLabel: 'AI-Powered',
     badgeColor: 'bg-emerald-100 text-emerald-700',

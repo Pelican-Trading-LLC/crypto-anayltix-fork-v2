@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { getServiceClient } from '@/lib/admin'
-import { getPlanByPriceId, getPlanCredits, PLAN_CREDITS } from '@/lib/plans'
+import { getPlanCredits } from '@/lib/plans'
 
 const getStripeClient = () => {
   const secretKey = process.env.STRIPE_SECRET_KEY
@@ -13,6 +13,8 @@ const getStripeClient = () => {
 
 export async function POST(request: NextRequest) {
   let stripe: Stripe
+  let event: Stripe.Event | null = null
+  let eventInserted = false
   try {
     stripe = getStripeClient()
   } catch (error) {
@@ -38,8 +40,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'No signature' }, { status: 400 })
   }
 
-  let event: Stripe.Event
-
   try {
     event = stripe.webhooks.constructEvent(
       body,
@@ -56,6 +56,55 @@ export async function POST(request: NextRequest) {
 
   try {
     const supabaseAdmin = getServiceClient()
+
+    const { error: eventInsertError } = await supabaseAdmin
+      .from('stripe_events')
+      .insert({
+        id: event.id,
+        type: event.type,
+        livemode: event.livemode,
+        api_version: event.api_version,
+        status: 'processing',
+      })
+
+    if (eventInsertError) {
+      if (eventInsertError.code === '23505') {
+        const { data: existingEvent, error: existingEventError } = await supabaseAdmin
+          .from('stripe_events')
+          .select('status')
+          .eq('id', event.id)
+          .single()
+
+        if (existingEventError) {
+          console.error('Failed to load existing Stripe event:', existingEventError)
+          throw existingEventError
+        }
+
+        if (existingEvent?.status !== 'failed') {
+          return NextResponse.json({ received: true, duplicate: true })
+        }
+
+        const { error: retryUpdateError } = await supabaseAdmin
+          .from('stripe_events')
+          .update({
+            status: 'processing',
+            error_message: null,
+          })
+          .eq('id', event.id)
+
+        if (retryUpdateError) {
+          console.error('Failed to mark Stripe event retry:', retryUpdateError)
+          throw retryUpdateError
+        }
+
+        eventInserted = true
+      } else {
+        console.error('Failed to record Stripe event:', eventInsertError)
+        throw eventInsertError
+      }
+    } else {
+      eventInserted = true
+    }
 
     switch (event.type) {
       case 'checkout.session.completed': {
@@ -212,9 +261,33 @@ export async function POST(request: NextRequest) {
         break
     }
 
+    await supabaseAdmin
+      .from('stripe_events')
+      .update({
+        status: 'succeeded',
+        processed_at: new Date().toISOString(),
+      })
+      .eq('id', event.id)
+
     return NextResponse.json({ received: true })
   } catch (error) {
     console.error('Webhook processing error:', error)
+
+    if (event?.id && eventInserted) {
+      try {
+        const supabaseAdmin = getServiceClient()
+        await supabaseAdmin
+          .from('stripe_events')
+          .update({
+            status: 'failed',
+            error_message: error instanceof Error ? error.message : String(error),
+          })
+          .eq('id', event.id)
+      } catch (updateError) {
+        console.error('Failed to mark Stripe event failed:', updateError)
+      }
+    }
+
     return NextResponse.json(
       { error: 'Webhook processing failed' },
       { status: 500 }
@@ -226,4 +299,3 @@ export async function POST(request: NextRequest) {
 // Stripe needs the raw request body to verify the signature
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
-

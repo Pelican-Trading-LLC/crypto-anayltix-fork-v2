@@ -16,7 +16,7 @@ let noOpWarned = false
 
 function createNoOpLimiter(): RateLimiterLike {
   if (!noOpWarned) {
-    console.warn('[rate-limit] Upstash not configured — rate limiting disabled')
+    console.warn('[rate-limit] Upstash not configured — rate limiting disabled outside production')
     noOpWarned = true
   }
   return {
@@ -36,6 +36,9 @@ function createRedisClient() {
   const token = process.env.UPSTASH_REDIS_REST_TOKEN
 
   if (!url || !token) {
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('Upstash credentials required in production')
+    }
     return null
   }
 

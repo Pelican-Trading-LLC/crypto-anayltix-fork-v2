@@ -26,7 +26,7 @@ const faqs = [
   {
     question: "What's the ForexAnalytix connection?",
     answer:
-      'ForexAnalytix is the largest independent TradFi analyst community with 25,000+ members. Their analysts (Blake Morrow, Grega Horvat, and others) apply established methodologies like Elliott Wave and harmonic patterns to crypto markets. Pelican translates their analysis into actionable crypto intelligence.',
+      'ForexAnalytix is the largest independent TradFi analyst community with 25,000+ members. Their analysts apply established methodologies like Elliott Wave and harmonic patterns to crypto markets. Pelican translates their analysis into actionable crypto intelligence.',
   },
   {
     question: 'Is my data safe?',

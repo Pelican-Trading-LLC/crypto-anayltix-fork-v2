@@ -274,7 +274,7 @@ export async function POST(request: NextRequest) {
 
     const { data: signedUrlData, error: signedUrlError } = await supabase.storage
       .from("pelican")
-      .createSignedUrl(storageKey, 7 * 24 * 60 * 60)
+      .createSignedUrl(storageKey, 24 * 60 * 60)
 
     if (signedUrlError) {
       console.error(`[${requestId}] Signed URL error:`, signedUrlError)

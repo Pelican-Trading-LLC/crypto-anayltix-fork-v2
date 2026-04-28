@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useMemo } from 'react'
+import Image from 'next/image'
 import { MagnifyingGlass, SquaresFour, Table as TableIcon } from '@phosphor-icons/react'
 import { TokenIcon, ChainBadge, FlowBar, FilterPill, TimeToggle, InsightsButton, Sparkline } from '@/components/shared'
 import { formatPrice, formatCompact, formatPercent, formatInteger } from '@/lib/format'
@@ -339,7 +340,7 @@ export default function DashboardPage() {
                 boxShadow: '0 2px 8px rgba(74,144,196,0.3)',
               }}
             >
-              <img src="/images/pelican-logo.png" alt="Pelican" width={22} height={22} style={{ objectFit: 'contain', filter: 'brightness(10)' }} />
+              <Image src="/images/pelican-logo.png" alt="Pelican" width={22} height={22} style={{ objectFit: 'contain', filter: 'brightness(10)' }} priority />
             </button>
           </div>
         </div>
@@ -536,7 +537,7 @@ export default function DashboardPage() {
                     })}
                     {/* Pelican insights — last column */}
                     <th style={{ ...thStyle, width: 52, textAlign: 'center', cursor: 'default' }}>
-                      <img src="/images/pelican-logo.png" alt="Insights" width={22} height={22} style={{ objectFit: 'contain', opacity: 0.6, filter: 'brightness(1.3)' }} />
+                      <Image src="/images/pelican-logo.png" alt="Insights" width={22} height={22} style={{ objectFit: 'contain', opacity: 0.6, filter: 'brightness(1.3)' }} loading="lazy" />
                     </th>
                   </tr>
                 </thead>
@@ -610,7 +611,7 @@ export default function DashboardPage() {
                       <th style={{ ...thStyle, width: 90, textAlign: 'right' }}>24h Change</th>
                       <th style={{ ...thStyle, width: 120, textAlign: 'right' }}>Volume</th>
                       <th style={{ ...thStyle, width: 48, textAlign: 'center' }}>
-                        <img src="/images/pelican-logo.png" alt="" width={18} height={18} style={{ objectFit: 'contain', opacity: 0.5 }} />
+                        <Image src="/images/pelican-logo.png" alt="" width={18} height={18} style={{ objectFit: 'contain', opacity: 0.5 }} loading="lazy" />
                       </th>
                       <th style={{ ...thStyle, width: 40, textAlign: 'center', cursor: 'default' }}></th>
                     </tr>
@@ -820,7 +821,7 @@ export default function DashboardPage() {
 
             {/* Pelican brief */}
             <div style={{ width: 16, flexShrink: 0, display: 'flex', justifyContent: 'center' }}>
-              <img src="/images/pelican-logo.png" alt="" style={{ width: 20, height: 20, objectFit: 'contain', opacity: 0.5, cursor: 'pointer' }} title={event.pelicanBrief} />
+              <Image src="/images/pelican-logo.png" alt="" width={20} height={20} style={{ objectFit: 'contain', opacity: 0.5, cursor: 'pointer' }} title={event.pelicanBrief} loading="lazy" />
             </div>
           </div>
         ))}

@@ -18,7 +18,7 @@
  * @version 2.0.0
  */
 
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { logger } from '@/lib/logger';
 import { createClient } from '@/lib/supabase/client';
 
@@ -172,8 +172,17 @@ function buildStreamingPayload(
 
 export function useStreamingChat(): UseStreamingChatReturn {
   const [isStreaming, setIsStreaming] = useState(false);
+  const isStreamingRef = useRef(false);
+  const mountedRef = useRef(true);
   const abortControllerRef = useRef<AbortController | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const setStreamingState = useCallback((value: boolean) => {
+    isStreamingRef.current = value;
+    if (mountedRef.current) {
+      setIsStreaming(value);
+    }
+  }, []);
 
   /**
    * Clear any active timeouts
@@ -185,6 +194,18 @@ export function useStreamingChat(): UseStreamingChatReturn {
     }
   }, []);
 
+  useEffect(() => {
+    mountedRef.current = true;
+
+    return () => {
+      mountedRef.current = false;
+      isStreamingRef.current = false;
+      clearTimeouts();
+      abortControllerRef.current?.abort();
+      abortControllerRef.current = null;
+    };
+  }, [clearTimeouts]);
+
   /**
    * Abort the current stream
    */
@@ -194,8 +215,8 @@ export function useStreamingChat(): UseStreamingChatReturn {
       abortControllerRef.current = null;
     }
     clearTimeouts();
-    setIsStreaming(false);
-  }, [clearTimeouts]);
+    setStreamingState(false);
+  }, [clearTimeouts, setStreamingState]);
 
   /**
    * Send a streaming message to the backend
@@ -236,7 +257,7 @@ export function useStreamingChat(): UseStreamingChatReturn {
         });
       }
 
-      setIsStreaming(true);
+      setStreamingState(true);
 
       let fullResponse = '';
       let lastChunkTime = Date.now();
@@ -289,11 +310,11 @@ export function useStreamingChat(): UseStreamingChatReturn {
         // Chunk timeout checker
         const checkChunkTimeout = () => {
           const elapsed = Date.now() - lastChunkTime;
-          if (elapsed > CHUNK_TIMEOUT_MS && isStreaming) {
+          if (elapsed > CHUNK_TIMEOUT_MS && isStreamingRef.current) {
             logger.warn('[STREAM-TIMEOUT] No chunk received for 30s');
             abortStream();
             callbacks.onError?.(new Error('Stream timeout - no data received'));
-          } else if (isStreaming) {
+          } else if (isStreamingRef.current) {
             timeoutRef.current = setTimeout(checkChunkTimeout, 5000);
           }
         };
@@ -412,11 +433,11 @@ export function useStreamingChat(): UseStreamingChatReturn {
 
       } finally {
         clearTimeouts();
-        setIsStreaming(false);
+        setStreamingState(false);
         abortControllerRef.current = null;
       }
     },
-    [abortStream, clearTimeouts, isStreaming]
+    [abortStream, clearTimeouts, setStreamingState]
   );
 
   return {
@@ -427,4 +448,3 @@ export function useStreamingChat(): UseStreamingChatReturn {
 }
 
 export default useStreamingChat;
-

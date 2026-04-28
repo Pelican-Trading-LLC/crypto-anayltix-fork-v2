@@ -9,13 +9,14 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { useT } from '@/lib/providers/translation-provider'
 import MarketingNav from '@/components/marketing/MarketingNav'
 import MarketingFooter from '@/components/marketing/MarketingFooter'
+import { PLAN_CONFIG, type PlanType } from '@/lib/plans'
 
 const PLANS = [
   {
-    id: 'free',
-    name: 'Free',
-    price: 0,
-    stripePriceId: '',
+    id: 'none',
+    name: PLAN_CONFIG.none.label,
+    price: PLAN_CONFIG.none.price,
+    stripePriceId: PLAN_CONFIG.none.stripePriceId,
     popular: false,
     cta: 'Start Free',
     features: [
@@ -26,10 +27,10 @@ const PLANS = [
     ],
   },
   {
-    id: 'lite',
-    name: 'Lite',
-    price: 29,
-    stripePriceId: process.env.NEXT_PUBLIC_STRIPE_STARTER_PRICE_ID || 'price_lite',
+    id: 'starter',
+    name: PLAN_CONFIG.starter.label,
+    price: PLAN_CONFIG.starter.price,
+    stripePriceId: PLAN_CONFIG.starter.stripePriceId,
     popular: false,
     cta: 'Start Free',
     features: [
@@ -43,13 +44,13 @@ const PLANS = [
   },
   {
     id: 'pro',
-    name: 'Pro',
-    price: 99,
-    stripePriceId: process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID || 'price_pro',
+    name: PLAN_CONFIG.pro.label,
+    price: PLAN_CONFIG.pro.price,
+    stripePriceId: PLAN_CONFIG.pro.stripePriceId,
     popular: true,
     cta: 'Start Free',
     features: [
-      'Everything in Lite',
+      `Everything in ${PLAN_CONFIG.starter.label}`,
       'Pelican Portal (full conversational AI)',
       'Conversation history',
       'Cross-asset translation feed',
@@ -58,8 +59,37 @@ const PLANS = [
       'Intelligence alerts',
       'Priority support',
     ],
-  }
-]
+  },
+  {
+    id: 'power',
+    name: PLAN_CONFIG.power.label,
+    price: PLAN_CONFIG.power.price,
+    stripePriceId: PLAN_CONFIG.power.stripePriceId,
+    popular: false,
+    cta: 'Start Free',
+    features: [
+      `Everything in ${PLAN_CONFIG.pro.label}`,
+      '10,000 monthly credits',
+      'Heavy research workflows',
+      'Professional usage limits',
+      'Priority support',
+    ],
+  },
+] satisfies Array<{
+  id: PlanType
+  name: string
+  price: number
+  stripePriceId: string | null
+  popular: boolean
+  cta: string
+  features: string[]
+}>
+
+const LEGACY_PLAN_ALIASES: Record<string, PlanType> = {
+  free: 'none',
+  lite: 'starter',
+  elite: 'power',
+}
 
 export default function PricingPageContent() {
   const router = useRouter()
@@ -92,8 +122,9 @@ export default function PricingPageContent() {
   // Auto-select plan if arriving with ?plan= parameter
   useEffect(() => {
     if (preselectedPlan && user && !loadingPlan) {
-      const plan = PLANS.find(p => p.id === preselectedPlan)
-      if (plan && plan.id !== 'free') {
+      const normalizedPlan = LEGACY_PLAN_ALIASES[preselectedPlan] ?? preselectedPlan
+      const plan = PLANS.find(p => p.id === normalizedPlan)
+      if (plan && plan.id !== 'none') {
         setTimeout(() => {
           handleSelectPlan(plan)
         }, 100)
@@ -103,8 +134,13 @@ export default function PricingPageContent() {
   }, [preselectedPlan, user, loadingPlan])
 
   const handleSelectPlan = async (plan: typeof PLANS[0]) => {
-    if (plan.id === 'free') {
+    if (plan.id === 'none') {
       router.push('/auth/signup')
+      return
+    }
+
+    if (!plan.stripePriceId) {
+      setError(`${plan.name} checkout is not configured yet.`)
       return
     }
 

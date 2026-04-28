@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { createUserRateLimiter, rateLimitResponse } from '@/lib/rate-limit'
+import { createIpRateLimiter, createUserRateLimiter, getClientIp, rateLimitResponse } from '@/lib/rate-limit'
 
 export const dynamic = 'force-dynamic'
 
 const iposLimiter = createUserRateLimiter('ipos', 20, '1 m')
+const iposIpLimiter = createIpRateLimiter('ipos-ip', 60, '1 m')
 
 const POLYGON_API_KEY = process.env.POLYGON_API_KEY
 
@@ -20,8 +21,11 @@ export interface IPOEntry {
   exchange: string | null
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    const { success: ipSuccess } = await iposIpLimiter.limit(getClientIp(request))
+    if (!ipSuccess) return rateLimitResponse()
+
     const supabase = await createClient()
     const { data: { user }, error: authError } = await supabase.auth.getUser()
     if (authError || !user) {

@@ -6,6 +6,7 @@ import { CaretDown } from '@phosphor-icons/react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Section } from '@/components/landing/section'
 import { ScrollReveal } from '@/components/landing/scroll-reveal'
+import { PLAN_CONFIG } from '@/lib/plans'
 
 interface FAQItem {
   question: string
@@ -56,7 +57,7 @@ const faqData: FAQCategory[] = [
       },
       {
         question: 'What is the analyst signal feed?',
-        answer: "ForexAnalytix analysts (Blake Morrow, Grega Horvat, and others) apply established methodologies like Elliott Wave and harmonic patterns to crypto markets. The signal feed delivers their analysis in real-time, translated into actionable crypto intelligence.",
+        answer: "ForexAnalytix analysts apply established methodologies like Elliott Wave and harmonic patterns to crypto markets. The signal feed delivers their analysis in real-time, translated into actionable crypto intelligence.",
       },
     ],
   },
@@ -82,7 +83,7 @@ const faqData: FAQCategory[] = [
     items: [
       {
         question: "What's the ForexAnalytix connection?",
-        answer: 'ForexAnalytix is the largest independent TradFi analyst community with 25,000+ members. Their analysts (Blake Morrow, Grega Horvat, and others) apply established methodologies like Elliott Wave and harmonic patterns to crypto markets. Pelican translates their analysis into actionable crypto intelligence.',
+        answer: 'ForexAnalytix is the largest independent TradFi analyst community with 25,000+ members. Their analysts apply established methodologies like Elliott Wave and harmonic patterns to crypto markets. Pelican translates their analysis into actionable crypto intelligence.',
       },
       {
         question: 'Who are the analysts?',
@@ -95,7 +96,7 @@ const faqData: FAQCategory[] = [
     items: [
       {
         question: 'What are the subscription tiers?',
-        answer: 'Three tiers: Free ($0/month) with daily briefs, education modules, and 3 Pelican questions/day. Lite ($29/month) adds unlimited questions, analyst signals, smart money alerts, and community access. Pro ($99/month) adds Pelican Portal, conversation history, CT translations, wallet tracking, and priority support.',
+        answer: `Four tiers: ${PLAN_CONFIG.none.label} ($${PLAN_CONFIG.none.price}/month), ${PLAN_CONFIG.starter.label} ($${PLAN_CONFIG.starter.price}/month), ${PLAN_CONFIG.pro.label} ($${PLAN_CONFIG.pro.price}/month), and ${PLAN_CONFIG.power.label} ($${PLAN_CONFIG.power.price}/month).`,
       },
       {
         question: 'Is there a free tier?',

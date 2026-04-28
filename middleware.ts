@@ -1,12 +1,43 @@
 import type { NextRequest } from "next/server"
 import { NextResponse } from "next/server"
+import { updateSession } from "@/lib/supabase/middleware"
+
+const PROTECTED_PATHS = [
+  "/admin",
+  "/chat",
+  "/dashboard",
+  "/signals",
+  "/alerts",
+  "/screener",
+  "/calendar",
+  "/smart-money",
+  "/forexanalytix",
+  "/knowledge-base",
+  "/wallet-dna",
+  "/positions",
+  "/token-intel",
+  "/sector-rotation",
+  "/defi",
+  "/heatmap",
+  "/journal",
+  "/earnings",
+  "/predictions",
+]
+
+function isProtectedPath(pathname: string) {
+  return PROTECTED_PATHS.some((path) => pathname === path || pathname.startsWith(`${path}/`))
+}
 
 export async function middleware(request: NextRequest) {
-  // Local dev: skip marketing landing and open the app shell on /dashboard (no auth gate there)
+  // Local dev: skip marketing landing and open the app shell on /dashboard.
   if (process.env.NODE_ENV === "development" && request.nextUrl.pathname === "/") {
     const url = request.nextUrl.clone()
     url.pathname = "/dashboard"
     return NextResponse.redirect(url)
+  }
+
+  if (isProtectedPath(request.nextUrl.pathname)) {
+    return updateSession(request)
   }
 
   return NextResponse.next()

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useMemo, useEffect, useCallback } from 'react'
+import Image from 'next/image'
 import { usePolymarkets, usePolymarketSearch, usePriceHistory } from '@/hooks/use-polymarket'
 import { useProbabilityShifts, type ProbabilityShift } from '@/hooks/use-probability-shifts'
 import { detectContrarianSignals, type ContrarianSignal } from '@/lib/contrarian-detector'
@@ -341,7 +342,7 @@ function Detail({ m, onClose }: { m: PolymarketMarket; onClose: () => void }) {
               <div style={{ background: 'var(--pelican-bg)', border: '1px solid var(--pelican-border)', borderRadius: 8, padding: '14px 16px', position: 'relative', overflow: 'hidden' }}>
                 <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: 'linear-gradient(90deg, var(--pelican-gradient-start), var(--pelican-gradient-end))', opacity: 0.4 }} />
                 <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 7, marginTop: 1 }}>
-                  <img src="/images/pelican-logo.png" alt="" width={20} height={20} style={{ objectFit: 'contain' }} />
+                  <Image src="/images/pelican-logo.png" alt="" width={20} height={20} style={{ objectFit: 'contain' }} loading="lazy" />
                   <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.06em', color: 'var(--accent-primary)', ...mono }}>PELICAN ANALYSIS</span>
                 </div>
                 <div style={{ fontSize: 12.5, lineHeight: 1.6, color: 'var(--text-secondary)' }}>

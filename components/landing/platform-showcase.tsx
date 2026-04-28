@@ -37,7 +37,7 @@ const features = [
     icon: Translate,
     title: 'Cross-Asset Translation',
     description:
-      'Blake Morrow\u2019s team at ForexAnalytix publishes daily macro analysis. Pelican automatically translates it: \u201CDXY breaking below 104 support \u2014 historically, this correlates with a 15-20% BTC rally over 8 weeks.\u201D',
+      'ForexAnalytix publishes daily macro analysis. Pelican translates cross-asset context into crypto impact once connected feeds are live.',
     highlights: [
       'ForexAnalytix macro analysis translated to crypto impact',
       'DXY, yields, and macro events mapped to BTC/ETH/SOL',

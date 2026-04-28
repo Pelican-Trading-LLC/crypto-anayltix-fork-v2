@@ -129,16 +129,16 @@ const X_FEED: XPost[] = [
     tweetUrl: 'https://x.com/CryptoKaleo',
   },
   {
-    handle: '@zaborack',
-    displayName: 'Nick Groves',
+    handle: '@sampleanalyst',
+    displayName: 'Sample Analyst',
     verified: true,
     profileHue: 190,
-    text: '$57M in volume on a single Polymarket contract. 80% probability marked the bottom. 20% marked the top. This is prediction market data as a leading indicator. No code. No bot. Just a chart any trader can read.',
+    text: 'Sample prediction-market post for layout preview. Live social posts require connected feeds and verified attribution.',
     likes: 2567,
     retweets: 891,
     replies: 312,
     time: '6h ago',
-    tweetUrl: 'https://x.com/zaborack',
+    tweetUrl: 'https://x.com',
   },
 ]
 

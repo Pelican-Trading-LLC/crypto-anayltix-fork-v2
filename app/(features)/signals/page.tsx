@@ -40,8 +40,7 @@ export default function SignalsPage() {
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <h1 className="text-xl font-semibold">Signals</h1>
-          <span className="w-1.5 h-1.5 rounded-full bg-[#3EBD8C] animate-pulse" />
-          <span className="text-[11px] text-[#3EBD8C]">Live</span>
+          <span className="rounded-full border border-amber-300 bg-amber-50 px-2 py-0.5 text-[11px] font-medium text-amber-800">Sample</span>
         </div>
         <button className="p-2 rounded-lg text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
           <ArrowsClockwise size={18} />

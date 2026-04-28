@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { FAQFullPage } from '@/components/landing/faq-full-page';
+import { PLAN_CONFIG } from '@/lib/plans';
 
 export const metadata: Metadata = {
   title: 'FAQ | Token Analytix',
@@ -58,7 +59,7 @@ const faqJsonLd = {
       name: 'What are the subscription tiers?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Three tiers: Free ($0/month) with daily briefs and 3 Pelican questions/day, Lite ($29/month) with unlimited questions and analyst signals, and Pro ($99/month) with full Pelican Portal and priority support.',
+        text: `Four tiers: ${PLAN_CONFIG.none.label} ($${PLAN_CONFIG.none.price}/month), ${PLAN_CONFIG.starter.label} ($${PLAN_CONFIG.starter.price}/month), ${PLAN_CONFIG.pro.label} ($${PLAN_CONFIG.pro.price}/month), and ${PLAN_CONFIG.power.label} ($${PLAN_CONFIG.power.price}/month).`,
       },
     },
   ],

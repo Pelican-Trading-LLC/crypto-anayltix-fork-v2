@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
+import Image from 'next/image'
 import { FilterPill } from '@/components/shared'
 import { MOCK_SMART_ALERTS as MOCK_ALERTS, type AlertRow } from '@/lib/crypto-mock-data'
 
@@ -145,7 +146,7 @@ export default function AlertsPage() {
                 transition: 'background 120ms',
               }}
             >
-              <img src="/images/pelican-logo.png" alt="" width={18} height={18} style={{ objectFit: 'contain', filter: 'brightness(10)' }} />
+              <Image src="/images/pelican-logo.png" alt="" width={18} height={18} style={{ objectFit: 'contain', filter: 'brightness(10)' }} loading="lazy" />
               Create
             </button>
           </div>
@@ -391,7 +392,7 @@ export default function AlertsPage() {
                     <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: 'linear-gradient(90deg, var(--pelican-gradient-start), var(--pelican-gradient-end))', opacity: 0.5 }} />
 
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8, marginTop: 2 }}>
-                      <img src="/images/pelican-logo.png" alt="" width={24} height={24} style={{ objectFit: 'contain' }} />
+                      <Image src="/images/pelican-logo.png" alt="" width={24} height={24} style={{ objectFit: 'contain' }} loading="lazy" />
                       <span style={{ fontSize: 11, fontFamily: 'var(--font-mono)', fontWeight: 700, color: 'var(--accent-primary)', letterSpacing: '0.06em' }}>
                         POST-TRIGGER ANALYSIS
                       </span>

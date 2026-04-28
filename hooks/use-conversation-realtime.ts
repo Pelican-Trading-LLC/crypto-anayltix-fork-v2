@@ -2,11 +2,14 @@
 
 import { useEffect } from "react"
 import type { SupabaseClient } from "@supabase/supabase-js"
+import { logger } from "@/lib/logger"
+
+export type ConversationRefreshSource = "realtime" | "window-event"
 
 interface UseConversationRealtimeOptions {
   userId: string | null | undefined
   supabase: SupabaseClient
-  onRefresh: () => void
+  onRefresh: (source: ConversationRefreshSource) => void
 }
 
 export function useConversationRealtime({
@@ -27,7 +30,10 @@ export function useConversationRealtime({
           table: "conversations",
           filter: `user_id=eq.${userId}`,
         },
-        onRefresh
+        () => {
+          logger.info("[CONVERSATIONS-REALTIME] Refresh requested", { source: "realtime" })
+          onRefresh("realtime")
+        }
       )
       .subscribe()
 
@@ -40,7 +46,8 @@ export function useConversationRealtime({
     if (!userId) return
 
     const handler = () => {
-      onRefresh()
+      logger.info("[CONVERSATIONS-REALTIME] Refresh requested", { source: "window-event" })
+      onRefresh("window-event")
     }
 
     window.addEventListener("pelican:conversation-created", handler)

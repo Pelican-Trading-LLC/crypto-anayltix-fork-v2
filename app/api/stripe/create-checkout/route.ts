@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { createClient } from '@/lib/supabase/server'
 import { createUserRateLimiter, rateLimitResponse } from '@/lib/rate-limit'
+import { getPlanByPriceId, getPlanCredits, PLAN_CONFIG } from '@/lib/plans'
 
 export const dynamic = 'force-dynamic'
 
@@ -46,46 +47,16 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Validate price ID against allowlist from env vars
-    const allowedPriceIds = [
-      process.env.NEXT_PUBLIC_STRIPE_STARTER_PRICE_ID,
-      process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID,
-      process.env.NEXT_PUBLIC_STRIPE_POWER_PRICE_ID,
-    ].filter(Boolean)
-
-    if (!allowedPriceIds.includes(priceId)) {
+    const serverPlanName = getPlanByPriceId(priceId)
+    if (!serverPlanName || !PLAN_CONFIG[serverPlanName].stripePriceId) {
       return NextResponse.json(
         { error: 'Invalid price ID' },
         { status: 400 }
       )
     }
 
-    // Derive plan name and credits server-side from priceId — never trust client-supplied values
-    const PRICE_TO_PLAN: Record<string, string> = {
-      [process.env.NEXT_PUBLIC_STRIPE_STARTER_PRICE_ID!]: 'starter',
-      [process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID!]: 'pro',
-      [process.env.NEXT_PUBLIC_STRIPE_POWER_PRICE_ID!]: 'power',
-    }
-    const serverPlanName = PRICE_TO_PLAN[priceId]
-    if (!serverPlanName) {
-      return NextResponse.json(
-        { error: 'Invalid price configuration' },
-        { status: 400 }
-      )
-    }
-
-    const PLAN_CREDITS: Record<string, number> = {
-      [process.env.NEXT_PUBLIC_STRIPE_STARTER_PRICE_ID!]: 1000,
-      [process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID!]: 3500,
-      [process.env.NEXT_PUBLIC_STRIPE_POWER_PRICE_ID!]: 10000,
-    }
-    const planCredits = PLAN_CREDITS[priceId]
-    if (!planCredits) {
-      return NextResponse.json(
-        { error: 'Invalid price configuration' },
-        { status: 400 }
-      )
-    }
+    // Derive plan metadata server-side from lib/plans.ts — never trust client-supplied values.
+    const planCredits = getPlanCredits(serverPlanName)
 
     const userEmail = user.email
 
@@ -160,4 +131,3 @@ export async function POST(request: NextRequest) {
     )
   }
 }
-

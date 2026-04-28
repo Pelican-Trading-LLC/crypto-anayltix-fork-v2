@@ -3,10 +3,19 @@ import { render, screen } from "@testing-library/react"
 import { forwardRef } from "react"
 import { MessageContent } from "./message-content"
 
+type MockMotionDivProps = React.PropsWithChildren<
+  React.HTMLAttributes<HTMLDivElement> & {
+    initial?: unknown
+    animate?: unknown
+    exit?: unknown
+    transition?: unknown
+  }
+>
+
 // Mock framer-motion to avoid animation issues in tests
 vi.mock("framer-motion", () => ({
   motion: {
-    div: forwardRef<HTMLDivElement, React.PropsWithChildren<Record<string, unknown>>>(
+    div: forwardRef<HTMLDivElement, MockMotionDivProps>(
       function MockMotionDiv({ children, initial, animate, exit, transition, ...props }, ref) {
         void initial
         void animate

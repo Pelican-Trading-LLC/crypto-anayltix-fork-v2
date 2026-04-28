@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
-import { createUserRateLimiter, rateLimitResponse } from "@/lib/rate-limit"
+import { createIpRateLimiter, createUserRateLimiter, getClientIp, rateLimitResponse } from "@/lib/rate-limit"
 
 export const dynamic = "force-dynamic"
 
 const candleLimiter = createUserRateLimiter('candles', 30, '1 m')
+const candleIpLimiter = createIpRateLimiter('candles-ip', 60, '1 m')
 const POLYGON_API_KEY = process.env.POLYGON_API_KEY
 
 type Timespan = 'minute' | 'hour' | 'day'
@@ -38,6 +39,9 @@ function isValidTicker(ticker: string): boolean {
 
 export async function GET(request: NextRequest) {
   try {
+    const { success: ipSuccess } = await candleIpLimiter.limit(getClientIp(request))
+    if (!ipSuccess) return rateLimitResponse()
+
     // 1. Auth check
     const supabase = await createClient()
     const { data: { user }, error: authError } = await supabase.auth.getUser()
