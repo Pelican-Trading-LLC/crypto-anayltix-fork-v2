@@ -5,7 +5,7 @@ import { DEFAULT_VOICE_SAMPLES, type VoiceSample } from '@/lib/blake-mode/voice/
 import { buildSystemPrompt } from '@/lib/blake-mode/voice/systemPrompt'
 import type { BlakeLevel } from '@/lib/blake-mode/types'
 import { computeStructuralHash, deriveBias } from '@/lib/blake-mode/thesis-hash'
-import { getLatestThesis, pushThesis } from '@/lib/blake-mode/store/redis-store'
+import { getLatestThesis, pushRecentGeneration, pushThesis } from '@/lib/blake-mode/store/redis-store'
 import { evaluateAlerts, fireThesisChangeAlert } from '@/lib/blake-mode/alert-engine'
 
 export const dynamic = 'force-dynamic'
@@ -161,6 +161,7 @@ export async function POST(req: Request) {
 
     const generated = await callAnthropic(buildSystemPrompt(samples), slimState)
     const text = generated ?? localFallbackAnalysis(slimState, samples)
+    await pushRecentGeneration({ id: crypto.randomUUID(), ticker, text, createdAt: new Date().toISOString() })
     const structuralHash = computeStructuralHash(state)
     const latest = await getLatestThesis(ticker, 'blake')
 

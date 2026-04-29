@@ -16,9 +16,19 @@ import {
   Pulse,
   Briefcase,
   Stack,
+  ChartLineUp,
+  Newspaper,
+  ListBullets,
+  ClockCounterClockwise,
+  UserCircle,
+  Wrench,
+  MicrophoneStage,
 } from '@phosphor-icons/react'
 import type { Icon as PhosphorIcon } from '@phosphor-icons/react'
+import useSWR from 'swr'
 import { useAuth } from '@/lib/providers/auth-provider'
+import { getAcknowledgedAlertIds } from '@/lib/blake-mode/store/local-store'
+import type { BlakeAlert } from '@/lib/blake-mode/types'
 
 // =============================================================================
 // TYPES
@@ -30,6 +40,7 @@ interface NavItem {
   icon: PhosphorIcon
   badge?: string
   accentTint?: boolean
+  comingSoon?: boolean
 }
 
 interface NavSection {
@@ -43,18 +54,51 @@ interface NavSection {
 
 const NAV_SECTIONS: NavSection[] = [
   {
-    title: '',
+    title: 'Dashboard',
     items: [
-      { label: 'Dashboard', href: '/dashboard', icon: SquaresFour },
-      { label: 'Analysis Hub', href: '/forexanalytix', icon: Pulse },
-      { label: 'Predictions', href: '/screener', icon: ArrowsClockwise },
-      { label: 'Smart Alerts', href: '/alerts', icon: Bell, badge: '3' },
+      { label: 'Home', href: '/dashboard', icon: SquaresFour },
+      { label: "Today's Briefing", href: '/briefings', icon: Newspaper },
+    ],
+  },
+  {
+    title: 'Analysis',
+    items: [
+      { label: 'Watch List', href: '/watchlist', icon: ListBullets },
+      { label: 'Blake Mode', href: '/blake-mode', icon: ChartLineUp, accentTint: true },
+      { label: 'Charts (legacy)', href: '/forexanalytix', icon: Pulse },
+    ],
+  },
+  {
+    title: 'Intelligence',
+    items: [
+      { label: 'Live Alerts', href: '/alerts', icon: Bell },
+      { label: 'Thesis History', href: '/theses', icon: ClockCounterClockwise },
+      { label: 'Track Record', href: '/track-record', icon: TrendUp },
+    ],
+  },
+  {
+    title: 'Analysts',
+    items: [
+      { label: 'Blake Morrow ●', href: '/blake-mode', icon: UserCircle },
+      { label: 'Grega Horvat ○', href: '/blake-mode', icon: UserCircle, comingSoon: true },
+      { label: 'Steve Voulgaridis ○', href: '/blake-mode', icon: UserCircle, comingSoon: true },
+      { label: 'Dale Pinkert ○', href: '/blake-mode', icon: UserCircle, comingSoon: true },
+    ],
+  },
+  {
+    title: 'Admin',
+    items: [
+      { label: 'Level Editor', href: '/blake-mode/admin', icon: Wrench },
+      { label: 'Voice Lab', href: '/voice-lab', icon: MicrophoneStage },
+      { label: 'Briefing Generator', href: '/admin', icon: Newspaper },
       { label: 'DeFi', href: '/defi', icon: Stack },
       { label: 'Positions', href: '/positions', icon: Briefcase },
-      { label: 'Smart Money', href: '/smart-money', icon: TrendUp },
+      { label: 'Predictions', href: '/screener', icon: ArrowsClockwise },
     ],
   },
 ]
+
+const fetcher = (url: string) => fetch(url).then((response) => response.json())
 
 // =============================================================================
 // SIDEBAR COMPONENT
@@ -64,6 +108,11 @@ export default function AppSidebar() {
   const [collapsed, setCollapsed] = useState(false)
   const pathname = usePathname()
   const { user } = useAuth()
+  const { data } = useSWR<{ alerts: BlakeAlert[] }>('/api/blake-mode/alerts?severity=action&limit=50', fetcher, {
+    refreshInterval: 30_000,
+  })
+  const acknowledged = getAcknowledgedAlertIds()
+  const actionAlertCount = (data?.alerts ?? []).filter((alert) => !acknowledged.has(alert.id)).length
 
   const isActive = (href: string) =>
     pathname === href || pathname.startsWith(href + '/')
@@ -129,10 +178,16 @@ export default function AppSidebar() {
                   <Link
                     key={item.href}
                     href={item.href}
+                    title={item.comingSoon ? 'Coming soon' : item.label}
+                    onClick={(event) => {
+                      if (item.comingSoon) event.preventDefault()
+                    }}
                     className={`flex items-center gap-3 px-3 py-2 mx-2 rounded-lg text-[13px] font-medium transition-colors relative ${
                       active
                         ? 'text-[#4A90C4]'
-                        : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[rgba(90,130,180,0.04)]'
+                        : item.comingSoon
+                          ? 'text-[var(--text-muted)] opacity-55'
+                          : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[rgba(90,130,180,0.04)]'
                     }`}
                     style={
                       active
@@ -153,7 +208,7 @@ export default function AppSidebar() {
                     {!collapsed && (
                       <>
                         <span className="flex-1 truncate">{item.label}</span>
-                        {item.badge && (
+                        {(item.badge || (item.label === 'Live Alerts' && actionAlertCount > 0)) && (
                           <span
                             className="ml-auto flex items-center justify-center rounded-full font-mono font-bold text-white"
                             style={{
@@ -163,7 +218,7 @@ export default function AppSidebar() {
                               background: 'var(--data-negative)',
                             }}
                           >
-                            {item.badge}
+                            {item.badge ?? actionAlertCount}
                           </span>
                         )}
                       </>

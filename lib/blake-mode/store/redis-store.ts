@@ -1,6 +1,13 @@
 import { redis } from '@/lib/redis'
 import type { BlakeAlert, BlakeBriefing, BlakeThesis } from '../types'
 
+export interface RecentGeneration {
+  id: string
+  ticker: string
+  text: string
+  createdAt: string
+}
+
 const memoryLists = new Map<string, unknown[]>()
 const memoryValues = new Map<string, unknown>()
 
@@ -113,4 +120,12 @@ export async function setLevelCache(ticker: string, analyst: string, levels: unk
 
 export async function getLevelCache<T>(ticker: string, analyst: string): Promise<T | null> {
   return getValue<T>(`blake-mode:levels:cache:${ticker}:${analyst}`)
+}
+
+export async function pushRecentGeneration(generation: RecentGeneration): Promise<void> {
+  await listPush('blake-mode:generations:recent', generation, 50, 60 * 60 * 24 * 7)
+}
+
+export async function getRecentGenerations(limit: number = 20): Promise<RecentGeneration[]> {
+  return listRange<RecentGeneration>('blake-mode:generations:recent', 0, limit - 1)
 }

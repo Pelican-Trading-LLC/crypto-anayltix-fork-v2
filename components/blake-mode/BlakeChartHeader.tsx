@@ -1,5 +1,6 @@
 import type { BlakeChartState } from '@/lib/blake-mode/types'
 import { AdminModeToggle } from './AdminModeToggle'
+import { AnalystSwitcher } from './AnalystSwitcher'
 
 function formatPrice(value: number, assetClass: BlakeChartState['assetClass']): string {
   if (assetClass === 'forex') return value.toFixed(5)
@@ -32,8 +33,9 @@ export function BlakeChartHeader({
           Pipczar structure map · {state.assetClass}
         </p>
         {onAdminModeChange && (
-          <div className="mt-2">
+          <div className="mt-2 flex flex-wrap items-center gap-3">
             <AdminModeToggle enabled={adminMode} onChange={onAdminModeChange} />
+            <AnalystSwitcher />
           </div>
         )}
       </div>
