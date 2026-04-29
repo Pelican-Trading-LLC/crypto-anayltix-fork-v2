@@ -176,6 +176,21 @@
   --radius-card: 12px;
   --radius-button: 8px;
   --radius-modal: 16px;
+
+  --blake-bg: #FAF9E7;
+  --blake-grid: rgba(0, 0, 0, 0.06);
+  --blake-text: #1F2937;
+  --blake-candle-up: #16A34A;
+  --blake-candle-down: #DC2626;
+  --blake-cyan-major: #2DD4D4;
+  --blake-trendline: #DC2626;
+  --blake-ema-fast: #F97316;
+  --blake-ema-slow: #DC2626;
+  --blake-fib-retr: #2563EB;
+  --blake-fib-ext: #DC2626;
+  --blake-rsi: #A855F7;
+  --blake-rsi-signal: #EAB308;
+  --blake-dotted: #1F2937;
 }
 
 .dark {
