@@ -1,10 +1,11 @@
 "use client"
 
 import React from 'react'
-import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 import { cn } from '@/lib/utils'
+import { AlertBadge } from '@/components/blake-mode/AlertBadge'
+import { DataStatusBadge } from '@/components/blake-mode/DataStatusBadge'
 
 // =============================================================================
 // TYPES
@@ -37,6 +38,12 @@ const routeTitles: Record<string, string> = {
   '/community': 'COMMUNITY',
   '/screener': 'TOKEN SCREENER',
   '/alerts': 'SMART ALERTS',
+  '/watchlist': 'BLAKE WATCH LIST',
+  '/blake-mode': 'BLAKE MODE',
+  '/briefings': 'TODAY\'S BRIEFING',
+  '/track-record': 'PIPCZAR INDEX',
+  '/theses': 'THESIS HISTORY',
+  '/voice-lab': 'VOICE LAB',
 }
 
 function getPageTitle(pathname: string): string {
@@ -72,8 +79,10 @@ export function TopNav({ className }: TopNavProps) {
           </div>
         )}
 
-        {/* Right: placeholder for future items */}
-        <div className="flex items-center gap-2 sm:gap-3 ml-auto flex-shrink-0" />
+        <div className="ml-auto flex flex-shrink-0 items-center gap-2 sm:gap-3">
+          <DataStatusBadge />
+          <AlertBadge />
+        </div>
       </div>
     </nav>
   )
