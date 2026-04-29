@@ -77,6 +77,7 @@ export async function buildBlakeChartState(symbol: string): Promise<BlakeChartSt
     majorSwing,
     fibLevels,
     horizontalLevels,
+    manualLevels: [],
     trendlines,
     channel,
     indicators,
@@ -85,4 +86,3 @@ export async function buildBlakeChartState(symbol: string): Promise<BlakeChartSt
     recentEvent: determineRecentEvent(candles),
   }
 }
-

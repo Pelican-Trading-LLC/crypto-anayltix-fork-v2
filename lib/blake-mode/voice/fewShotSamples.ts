@@ -1,9 +1,6 @@
-export interface VoiceSample {
-  id: string
-  ticker: string
-  state: unknown
-  output: string
-}
+import type { VoiceSample } from '../types'
+
+export type { VoiceSample } from '../types'
 
 export const DEFAULT_VOICE_SAMPLES: VoiceSample[] = [
   {
@@ -54,4 +51,3 @@ export const DEFAULT_VOICE_SAMPLES: VoiceSample[] = [
       'Every couple weeks when we get to major resistance, I have to remind people this is a long term channel in the $SPX. If you chase the market into new highs, it tends to reject. This is a market you buy dips, and sell rips (into resistance).',
   },
 ]
-
