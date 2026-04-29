@@ -3,6 +3,7 @@ import { buildBlakeChartState } from '@/lib/blake-mode/ta/engine'
 import { aggregateConfluence } from '@/lib/blake-mode/confluence/aggregator'
 import { DEFAULT_VOICE_SAMPLES, type VoiceSample } from '@/lib/blake-mode/voice/fewShotSamples'
 import { buildSystemPrompt } from '@/lib/blake-mode/voice/systemPrompt'
+import type { BlakeLevel } from '@/lib/blake-mode/types'
 
 export const dynamic = 'force-dynamic'
 
@@ -35,7 +36,7 @@ function localFallbackAnalysis(slimState: {
   currentPrice: number
   trend: string
   recentEvent: string | null
-  keyLevels: { type: string; price: number; distancePercent: number }[]
+  keyLevels: { type: string; price: number; distancePercent: number; label?: string | null; source?: string }[]
   channel: { direction: string } | null
   rsiZone: string
 }, samples: VoiceSample[]): string {
@@ -58,6 +59,7 @@ function localFallbackAnalysis(slimState: {
   const event = slimState.recentEvent?.replaceAll('_', ' ') ?? 'structure test'
   const samplePrefix = samples[0]?.output.includes(':') ? samples[0].output.split(':')[0] : 'Intraday Update'
   const prefix = samplePrefix?.trim() || 'Intraday Update'
+  const levelDescription = closest?.label ? `${closest.label} near ${level}` : `${closest ? formatLevelType(closest.type) : 'pivot'} near ${level}`
   const pressure =
     slimState.trend === 'down'
       ? `A move back above ${invalidationLevel} would take the downside pressure off.`
@@ -65,7 +67,7 @@ function localFallbackAnalysis(slimState: {
         ? `A move back below ${invalidationLevel} would take the upside pressure off.`
         : `A move back through ${invalidationLevel} would take the range pressure off.`
 
-  return `${prefix}: $${slimState.ticker} is working through a ${event} inside the ${structure}, and the ${closest ? formatLevelType(closest.type) : 'pivot'} near ${level} is in play. ${pressure} RSI is still ${slimState.rsiZone}.`
+  return `${prefix}: $${slimState.ticker} is working through a ${event} inside the ${structure}, and ${levelDescription} is in play. ${pressure} RSI is still ${slimState.rsiZone}.`
 }
 
 async function callAnthropic(system: string, payload: unknown): Promise<string | null> {
@@ -98,10 +100,10 @@ async function callAnthropic(system: string, payload: unknown): Promise<string |
 
 export async function POST(req: Request) {
   try {
-    const body = (await req.json()) as { ticker?: string; voiceSamples?: VoiceSample[] }
+    const body = (await req.json()) as { ticker?: string; voiceSamples?: VoiceSample[]; manualLevels?: BlakeLevel[] }
     const ticker = (body.ticker ?? 'BTC').toUpperCase()
     const samples = body.voiceSamples?.length ? body.voiceSamples : DEFAULT_VOICE_SAMPLES
-    const state = await buildBlakeChartState(ticker)
+    const state = await buildBlakeChartState(ticker, { manualLevels: body.manualLevels })
     const confluence = await aggregateConfluence(ticker, state)
 
     const slimState = {
@@ -118,12 +120,23 @@ export async function POST(req: Request) {
           }
         : null,
       keyLevels: [
+        ...state.manualLevels
+          .filter((level) => level.status === 'active' && Math.abs((level.price - state.currentPrice) / state.currentPrice) < 0.03)
+          .map((level) => ({
+            type: level.role,
+            price: level.price,
+            label: level.label,
+            note: level.note,
+            source: 'blake_manual',
+            distancePercent: ((level.price - state.currentPrice) / state.currentPrice) * 100,
+          })),
         ...state.horizontalLevels
-          .filter((level) => level.strength === 'major')
+          .filter((level) => level.source !== 'manual' && level.strength === 'major')
           .slice(0, 4)
           .map((level) => ({
             type: level.role,
             price: level.price,
+            source: 'auto',
             touchCount: level.touchCount,
             distancePercent: ((level.price - state.currentPrice) / state.currentPrice) * 100,
           })),
@@ -139,6 +152,7 @@ export async function POST(req: Request) {
       rsi: state.indicators.currentRsi,
       rsiZone: state.indicators.rsiZone,
       divergences: state.divergences.map((divergence) => divergence.type),
+      manualLevels: state.manualLevels.filter((level) => level.status === 'active'),
       confluence,
     }
 

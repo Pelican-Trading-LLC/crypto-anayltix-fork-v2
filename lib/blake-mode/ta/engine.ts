@@ -1,5 +1,6 @@
 import { fetchCandles, getTickerConfig } from '../data'
-import type { BlakeChartState, Candle } from '../types'
+import { getServerLevels } from '../store/server-levels'
+import type { BlakeChartState, BlakeLevel, Candle, HorizontalLevel } from '../types'
 import { detectChannel } from './channels'
 import { detectDivergences } from './divergence'
 import { computeFibLevels } from './fibs'
@@ -45,7 +46,10 @@ function determineRecentEvent(candles: Candle[]): BlakeChartState['recentEvent']
   return 'consolidation'
 }
 
-export async function buildBlakeChartState(symbol: string): Promise<BlakeChartState> {
+export async function buildBlakeChartState(
+  symbol: string,
+  opts: { analyst?: string; manualLevels?: BlakeLevel[] } = {}
+): Promise<BlakeChartState> {
   const config = getTickerConfig(symbol)
   const candles = await fetchCandles(config.symbol)
   const latest = candles[candles.length - 1]
@@ -59,7 +63,28 @@ export async function buildBlakeChartState(symbol: string): Promise<BlakeChartSt
   const pivots = detectPivots(candles)
   const majorSwing = findMajorSwing(pivots, candles)
   const fibLevels = majorSwing ? computeFibLevels(majorSwing) : []
-  const horizontalLevels = detectHorizontalLevels(pivots, candles)
+  const autoLevels = detectHorizontalLevels(pivots, candles)
+  const manualLevels = opts.manualLevels ?? (await getServerLevels(config.symbol, opts.analyst ?? 'blake'))
+  const activeManualLevels = manualLevels.filter((level) => level.status === 'active')
+  const tolerance = config.assetClass === 'crypto' ? 0.005 : config.assetClass === 'forex' ? 0.001 : 0.002
+  const filteredAutoLevels = autoLevels.filter(
+    (auto) => !activeManualLevels.some((manual) => Math.abs((manual.price - auto.price) / auto.price) < tolerance)
+  )
+  const horizontalLevels: HorizontalLevel[] = [
+    ...activeManualLevels.map((manual): HorizontalLevel => ({
+      price: manual.price,
+      touchCount: 999,
+      firstTouchTime: 0,
+      lastTouchTime: 0,
+      role: manual.role === 'support' || manual.role === 'resistance' ? manual.role : 'pivot',
+      strength: manual.strength,
+      source: 'manual' as const,
+      label: manual.label,
+      color: manual.color,
+      manualLevelId: manual.id,
+    })),
+    ...filteredAutoLevels.map((auto) => ({ ...auto, source: 'auto' as const })),
+  ]
   const trendlines = detectTrendlines(pivots, candles)
   const channel = detectChannel(trendlines, pivots)
   const indicators = computeIndicators(candles)
@@ -77,7 +102,7 @@ export async function buildBlakeChartState(symbol: string): Promise<BlakeChartSt
     majorSwing,
     fibLevels,
     horizontalLevels,
-    manualLevels: [],
+    manualLevels,
     trendlines,
     channel,
     indicators,

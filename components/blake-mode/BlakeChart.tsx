@@ -20,6 +20,13 @@ function pricePrecision(state: BlakeChartState): number {
   return state.assetClass === 'forex' ? 5 : 2
 }
 
+const MANUAL_LEVEL_COLORS = {
+  cyan: '#2DD4D4',
+  black: '#1F2937',
+  red: '#DC2626',
+  blue: '#2563EB',
+}
+
 function addTwoPointLine(
   chart: IChartApi,
   startTime: number,
@@ -120,7 +127,17 @@ function RsiPanel({ state }: { state: BlakeChartState }) {
   return <div ref={containerRef} className="h-[150px] w-full" />
 }
 
-export function BlakeChart({ state }: { state: BlakeChartState }) {
+export function BlakeChart({
+  state,
+  adminMode = false,
+  onAdminModeChange,
+  onChartClick,
+}: {
+  state: BlakeChartState
+  adminMode?: boolean
+  onAdminModeChange?: (enabled: boolean) => void
+  onChartClick?: (price: number, time: number) => void
+}) {
   const containerRef = useRef<HTMLDivElement>(null)
   const priceFormat = usePriceFormat(state)
 
@@ -176,21 +193,25 @@ export function BlakeChart({ state }: { state: BlakeChartState }) {
         .filter((point): point is { time: UTCTimestamp; value: number } => Boolean(point))
     )
 
-    state.horizontalLevels
-      .filter((level) => level.strength === 'major')
-      .forEach((level) => {
-        candleSeries.createPriceLine({
-          price: level.price,
-          color: '#2DD4D4',
-          lineWidth: 3 as const,
-          lineStyle: LineStyle.Solid,
-          axisLabelVisible: true,
-          title: '',
-        })
+    state.horizontalLevels.forEach((level) => {
+      const manual = level.source === 'manual'
+      const color = manual ? MANUAL_LEVEL_COLORS[level.color ?? 'cyan'] : level.strength === 'major' ? '#2DD4D4' : 'rgba(31,41,55,0.45)'
+      const title = manual ? `• ${level.label || 'Blake level'} (${level.price.toFixed(pricePrecision(state))})` : ''
+
+      if (!manual && level.strength === 'minor') return
+
+      candleSeries.createPriceLine({
+        price: level.price,
+        color,
+        lineWidth: manual ? (4 as const) : (3 as const),
+        lineStyle: LineStyle.Solid,
+        axisLabelVisible: true,
+        title,
       })
+    })
 
     state.horizontalLevels
-      .filter((level) => level.strength === 'minor')
+      .filter((level) => level.source !== 'manual' && level.strength === 'minor')
       .slice(0, 4)
       .forEach((level) => {
         candleSeries.createPriceLine({
@@ -237,6 +258,14 @@ export function BlakeChart({ state }: { state: BlakeChartState }) {
     })
 
     chart.timeScale().fitContent()
+    const clickHandler = (param: { point?: { x: number; y: number } | null; time?: Time }) => {
+      if (!adminMode || !param.point) return
+      const price = candleSeries.coordinateToPrice(param.point.y)
+      if (typeof price !== 'number') return
+      onChartClick?.(price, typeof param.time === 'number' ? param.time : state.candles[state.candles.length - 1]?.time ?? 0)
+    }
+    chart.subscribeClick(clickHandler)
+
     const ro = new ResizeObserver(() => {
       if (containerRef.current) chart.applyOptions({ width: containerRef.current.clientWidth })
     })
@@ -244,14 +273,15 @@ export function BlakeChart({ state }: { state: BlakeChartState }) {
 
     return () => {
       ro.disconnect()
+      chart.unsubscribeClick(clickHandler)
       chart.remove()
     }
-  }, [priceFormat, state])
+  }, [adminMode, onChartClick, priceFormat, state])
 
   return (
     <div className="overflow-hidden rounded-md border border-white/10 bg-[#FAF9E7] shadow-2xl shadow-black/30">
-      <BlakeChartHeader state={state} />
-      <div ref={containerRef} className="h-[600px] w-full" />
+      <BlakeChartHeader state={state} adminMode={adminMode} onAdminModeChange={onAdminModeChange} />
+      <div ref={containerRef} className={['h-[600px] w-full', adminMode ? 'cursor-crosshair' : ''].join(' ')} />
       <div className="border-t border-black/10 px-2 pb-2">
         <div className="flex items-center justify-between px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-[#1F2937]/70">
           <span>RSI 14</span>
