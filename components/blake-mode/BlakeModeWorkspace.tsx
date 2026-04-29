@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import toast, { Toaster } from 'react-hot-toast'
 import { BlakeChart } from '@/components/blake-mode/BlakeChart'
+import { AlertToast } from '@/components/blake-mode/AlertToast'
 import { ConfluencePanel } from '@/components/blake-mode/ConfluencePanel'
 import { LevelEditorPopover, type LevelEditorDraft } from '@/components/blake-mode/LevelEditorPopover'
 import { ManualLevelsPanel } from '@/components/blake-mode/ManualLevelsPanel'
@@ -194,6 +195,7 @@ export function BlakeModeWorkspace({ adminDefault = false }: { adminDefault?: bo
   return (
     <div className="min-h-screen bg-[#0B1220] text-white">
       <Toaster position="top-right" />
+      <AlertToast ticker={ticker} />
       <header className="border-b border-white/10 px-8 py-4">
         <div className="flex items-center justify-between gap-6">
           <div>

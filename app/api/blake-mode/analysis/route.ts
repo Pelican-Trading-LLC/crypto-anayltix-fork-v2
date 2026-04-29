@@ -6,6 +6,7 @@ import { buildSystemPrompt } from '@/lib/blake-mode/voice/systemPrompt'
 import type { BlakeLevel } from '@/lib/blake-mode/types'
 import { computeStructuralHash, deriveBias } from '@/lib/blake-mode/thesis-hash'
 import { getLatestThesis, pushThesis } from '@/lib/blake-mode/store/redis-store'
+import { evaluateAlerts, fireThesisChangeAlert } from '@/lib/blake-mode/alert-engine'
 
 export const dynamic = 'force-dynamic'
 
@@ -164,7 +165,7 @@ export async function POST(req: Request) {
     const latest = await getLatestThesis(ticker, 'blake')
 
     if (!latest || latest.structuralHash !== structuralHash) {
-      await pushThesis({
+      const thesis = {
         id: crypto.randomUUID(),
         ticker,
         analyst: 'blake',
@@ -178,8 +179,12 @@ export async function POST(req: Request) {
         recentEvent: state.recentEvent,
         stateSnapshot: slimState,
         createdAt: new Date().toISOString(),
-      })
+      }
+      await pushThesis(thesis)
+      await fireThesisChangeAlert(ticker, text, thesis.id)
     }
+
+    await evaluateAlerts(ticker, state)
 
     return NextResponse.json({
       analysis: text,
