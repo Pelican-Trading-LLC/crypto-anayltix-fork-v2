@@ -4,6 +4,8 @@ import { aggregateConfluence } from '@/lib/blake-mode/confluence/aggregator'
 import { DEFAULT_VOICE_SAMPLES, type VoiceSample } from '@/lib/blake-mode/voice/fewShotSamples'
 import { buildSystemPrompt } from '@/lib/blake-mode/voice/systemPrompt'
 import type { BlakeLevel } from '@/lib/blake-mode/types'
+import { computeStructuralHash, deriveBias } from '@/lib/blake-mode/thesis-hash'
+import { getLatestThesis, pushThesis } from '@/lib/blake-mode/store/redis-store'
 
 export const dynamic = 'force-dynamic'
 
@@ -157,8 +159,30 @@ export async function POST(req: Request) {
     }
 
     const generated = await callAnthropic(buildSystemPrompt(samples), slimState)
+    const text = generated ?? localFallbackAnalysis(slimState, samples)
+    const structuralHash = computeStructuralHash(state)
+    const latest = await getLatestThesis(ticker, 'blake')
+
+    if (!latest || latest.structuralHash !== structuralHash) {
+      await pushThesis({
+        id: crypto.randomUUID(),
+        ticker,
+        analyst: 'blake',
+        thesisText: text,
+        structuralHash,
+        bias: deriveBias(state),
+        keyLevelPrice: state.manualLevels.find((level) => level.status === 'active')?.price ?? null,
+        invalidationPrice: state.manualLevels.find((level) => level.role === 'invalidation' && level.status === 'active')?.price ?? null,
+        rsi: state.indicators.currentRsi,
+        trend: state.trend,
+        recentEvent: state.recentEvent,
+        stateSnapshot: slimState,
+        createdAt: new Date().toISOString(),
+      })
+    }
+
     return NextResponse.json({
-      analysis: generated ?? localFallbackAnalysis(slimState, samples),
+      analysis: text,
       state: slimState,
       fullState: state,
       confluence,

@@ -7,6 +7,7 @@ import { ConfluencePanel } from '@/components/blake-mode/ConfluencePanel'
 import { LevelEditorPopover, type LevelEditorDraft } from '@/components/blake-mode/LevelEditorPopover'
 import { ManualLevelsPanel } from '@/components/blake-mode/ManualLevelsPanel'
 import { PelicanVoicePanel } from '@/components/blake-mode/PelicanVoicePanel'
+import { ThesisTimeline } from '@/components/blake-mode/ThesisTimeline'
 import { TickerSelector } from '@/components/blake-mode/TickerSelector'
 import { TICKER_CONFIGS } from '@/lib/blake-mode/config'
 import type { BlakeConfluence } from '@/lib/blake-mode/confluence/aggregator'
@@ -231,7 +232,10 @@ export function BlakeModeWorkspace({ adminDefault = false }: { adminDefault?: bo
         <div className="mt-6 grid grid-cols-12 gap-6">
           <div className="col-span-12 xl:col-span-8">
             {state ? (
-              <BlakeChart state={state} adminMode={adminMode} onAdminModeChange={setAdminMode} onChartClick={handleChartClick} />
+              <>
+                <BlakeChart state={state} adminMode={adminMode} onAdminModeChange={setAdminMode} onChartClick={handleChartClick} />
+                <ThesisTimeline ticker={ticker} />
+              </>
             ) : (
               <div className="flex h-[790px] items-center justify-center rounded-md border border-white/10 bg-[#FAF9E7] text-[#1F2937]">
                 <div className="font-mono text-sm">Loading chart structure...</div>
