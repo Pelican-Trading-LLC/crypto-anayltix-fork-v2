@@ -10,6 +10,7 @@ import type { MockToken, MockWallet } from '@/lib/crypto-mock-data'
 import { useKrakenTickers } from '@/hooks/use-kraken'
 import { useLocalWatchlist } from '@/hooks/use-local-watchlist'
 import { mergeTokenData } from '@/lib/merge-data'
+import { TrackRecordCard } from '@/components/blake-mode/TrackRecordCard'
 
 /* ─── Types ─────────────────────────────────────────────────── */
 
@@ -352,6 +353,10 @@ export default function DashboardPage() {
           <SuggestedPill text="Top tokens by net inflow" />
           <SuggestedPill text="Contrarian signals active" />
         </div>
+      </section>
+
+      <section style={{ padding: '0 24px 24px' }}>
+        <TrackRecordCard />
       </section>
 
       {/* ─── Token Screener ────────────────────────────────────── */}
