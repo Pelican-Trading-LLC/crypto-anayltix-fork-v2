@@ -13,7 +13,10 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode
 }) {
-  const { user, displayName } = await requireAdminPage()
+  const { user, displayName } =
+    process.env.NODE_ENV === 'development'
+      ? { user: { email: 'demo@tokenanalytix.local' }, displayName: 'Demo Admin' }
+      : await requireAdminPage()
 
   return (
     <div className="flex h-screen bg-background">

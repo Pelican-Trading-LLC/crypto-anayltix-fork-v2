@@ -36,6 +36,12 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
+  // Local demo mode: keep the platform browsable without requiring Supabase auth.
+  // Blake Mode is a partner demo surface, so localhost should open directly.
+  if (process.env.NODE_ENV === "development" && isProtectedPath(request.nextUrl.pathname)) {
+    return NextResponse.next()
+  }
+
   if (isProtectedPath(request.nextUrl.pathname)) {
     return updateSession(request)
   }
