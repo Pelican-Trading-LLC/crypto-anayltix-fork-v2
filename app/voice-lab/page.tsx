@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { formatDistanceToNow } from 'date-fns'
 import useSWR from 'swr'
-import toast, { Toaster } from 'react-hot-toast'
+import toast from 'react-hot-toast'
 import { DEFAULT_VOICE_SAMPLES } from '@/lib/blake-mode/voice/fewShotSamples'
 import { getLocalVoiceSamples, saveLocalVoiceSamples } from '@/lib/blake-mode/store/local-store'
 import type { VoiceSample } from '@/lib/blake-mode/types'
@@ -47,7 +47,6 @@ export default function VoiceLabPage() {
 
   return (
     <main className="min-h-screen bg-[#0B1220] px-8 py-7 text-white">
-      <Toaster position="top-right" />
       <div className="mb-6">
         <p className="font-mono text-xs uppercase tracking-[0.24em] text-[#2DD4D4]">Admin</p>
         <h1 className="mt-2 text-2xl font-semibold">Voice Lab</h1>

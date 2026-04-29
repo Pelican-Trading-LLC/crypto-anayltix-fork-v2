@@ -19,7 +19,12 @@ export function useCommandK() {
     }
 
     document.addEventListener('keydown', handleKeyDown)
-    return () => document.removeEventListener('keydown', handleKeyDown)
+    const handleOpen = () => setIsOpen(true)
+    window.addEventListener('token-analytix:open-command-palette', handleOpen)
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+      window.removeEventListener('token-analytix:open-command-palette', handleOpen)
+    }
   }, [])
 
   return {

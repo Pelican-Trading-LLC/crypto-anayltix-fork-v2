@@ -8,6 +8,7 @@ import { ToastProvider } from "./toast-provider"
 import { TranslationProvider } from "./translation-provider"
 import { ThemeProvider } from "@/components/theme-provider"
 import { TooltipProvider } from "@/components/ui/tooltip"
+import { GlobalKeyboardShortcuts } from "@/components/navigation/global-keyboard-shortcuts"
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -22,7 +23,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
         <SWRProvider>
           <AuthProvider>
             <TooltipProvider delayDuration={300} skipDelayDuration={100}>
-              <ToastProvider>{children}</ToastProvider>
+              <ToastProvider>
+                <GlobalKeyboardShortcuts />
+                {children}
+              </ToastProvider>
             </TooltipProvider>
           </AuthProvider>
         </SWRProvider>

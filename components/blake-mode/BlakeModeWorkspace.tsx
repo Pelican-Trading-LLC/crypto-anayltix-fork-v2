@@ -1,10 +1,11 @@
 'use client'
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import toast, { Toaster } from 'react-hot-toast'
+import toast from 'react-hot-toast'
 import { BlakeChart } from '@/components/blake-mode/BlakeChart'
 import { AlertToast } from '@/components/blake-mode/AlertToast'
 import { ConfluencePanel } from '@/components/blake-mode/ConfluencePanel'
+import { DataStatusBadge } from '@/components/blake-mode/DataStatusBadge'
 import { LevelEditorPopover, type LevelEditorDraft } from '@/components/blake-mode/LevelEditorPopover'
 import { ManualLevelsPanel } from '@/components/blake-mode/ManualLevelsPanel'
 import { PelicanVoicePanel } from '@/components/blake-mode/PelicanVoicePanel'
@@ -177,7 +178,6 @@ export function BlakeModeWorkspace({ adminDefault = false }: { adminDefault?: bo
   if (completion) {
     return (
       <div className="min-h-screen bg-[#0B1220] px-8 py-10 text-white">
-        <Toaster position="top-right" />
         <div className="mx-auto max-w-2xl rounded-md border border-white/10 bg-white/[0.04] p-8">
           <p className="font-mono text-xs uppercase tracking-wide text-[#2DD4D4]">Blake admin pass complete</p>
           <h1 className="mt-3 text-3xl font-semibold">All set. {updatedCount} tickers updated.</h1>
@@ -194,7 +194,6 @@ export function BlakeModeWorkspace({ adminDefault = false }: { adminDefault?: bo
 
   return (
     <div className="min-h-screen bg-[#0B1220] text-white">
-      <Toaster position="top-right" />
       <AlertToast ticker={ticker} />
       <header className="border-b border-white/10 px-8 py-4">
         <div className="flex items-center justify-between gap-6">
@@ -203,6 +202,7 @@ export function BlakeModeWorkspace({ adminDefault = false }: { adminDefault?: bo
             <p className="mt-1 text-xs text-white/58">Human levels in, Pelican amplification out.</p>
           </div>
           <div className="flex items-center gap-3">
+            <DataStatusBadge />
             {adminDefault && (
               <div className="rounded-md border border-[#DC2626]/30 bg-[#DC2626]/10 px-3 py-2 text-right">
                 <p className="font-mono text-sm font-semibold">{updatedCount} of 8</p>

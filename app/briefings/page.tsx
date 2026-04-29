@@ -2,14 +2,14 @@
 
 import { useMemo, useState } from 'react'
 import useSWR from 'swr'
-import toast, { Toaster } from 'react-hot-toast'
+import toast from 'react-hot-toast'
 import type { BlakeBriefing } from '@/lib/blake-mode/types'
 
 const fetcher = (url: string) => fetch(url).then((response) => response.json())
 
 export default function BriefingsPage() {
   const { data, mutate, isLoading } = useSWR<{ today: BlakeBriefing | null; archive: BlakeBriefing[] }>('/api/blake-mode/briefings', fetcher)
-  const briefings = data?.archive ?? []
+  const briefings = useMemo(() => data?.archive ?? [], [data?.archive])
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const selected = useMemo(() => briefings.find((briefing) => briefing.id === selectedId) ?? data?.today ?? briefings[0] ?? null, [briefings, data?.today, selectedId])
 
@@ -21,7 +21,6 @@ export default function BriefingsPage() {
 
   return (
     <div className="min-h-screen bg-[#0B1220] px-8 py-6 text-white">
-      <Toaster position="top-right" />
       <header className="mb-6 flex items-center justify-between border-b border-white/10 pb-4">
         <div>
           <h1 className="text-2xl font-semibold">Briefings</h1>

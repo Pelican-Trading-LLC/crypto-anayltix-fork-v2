@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import type { ReactNode } from 'react'
 import { useState } from 'react'
-import toast, { Toaster } from 'react-hot-toast'
+import toast from 'react-hot-toast'
 import { ChartLineUp, EnvelopeSimple, MicrophoneStage } from '@phosphor-icons/react'
 
 export default function AdminIndexPage() {
@@ -21,7 +21,6 @@ export default function AdminIndexPage() {
 
   return (
     <main className="text-white">
-      <Toaster position="top-right" />
       <div className="mb-7">
         <p className="font-mono text-xs uppercase tracking-[0.24em] text-[#2DD4D4]">Blake Mode Admin</p>
         <h1 className="mt-2 text-3xl font-semibold">Amplification Console</h1>
