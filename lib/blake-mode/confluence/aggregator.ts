@@ -1,4 +1,4 @@
-import { TICKER_CONFIGS } from '../data'
+import { TICKER_CONFIGS } from '../config'
 import type { BlakeChartState } from '../types'
 import { getCryptoConfluence, type CryptoConfluence } from './crypto'
 import { getEquityConfluence, type EquityConfluence } from './equity'
@@ -22,4 +22,3 @@ export async function aggregateConfluence(symbol: string, state: BlakeChartState
       return { type: 'forex', data: await getForexConfluence(symbol, state) }
   }
 }
-

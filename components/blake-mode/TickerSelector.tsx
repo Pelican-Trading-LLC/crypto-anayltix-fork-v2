@@ -1,6 +1,6 @@
 'use client'
 
-import { TICKER_CONFIGS } from '@/lib/blake-mode/data'
+import { TICKER_CONFIGS } from '@/lib/blake-mode/config'
 
 interface TickerSelectorProps {
   tickers: string[]
@@ -39,4 +39,3 @@ export function TickerSelector({ tickers, selected, onSelect }: TickerSelectorPr
     </div>
   )
 }
-

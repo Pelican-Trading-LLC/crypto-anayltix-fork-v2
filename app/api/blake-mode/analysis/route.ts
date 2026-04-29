@@ -19,6 +19,17 @@ function formatLevel(price: number, ticker: string): string {
   return ticker.endsWith('USD') && ticker.length === 6 ? price.toFixed(5) : price.toFixed(price >= 100 ? 2 : 4)
 }
 
+function formatLevelType(type: string): string {
+  if (!type.startsWith('fib_')) return type.replaceAll('_', ' ')
+
+  const raw = type.replace('fib_', '')
+  const numeric = raw.startsWith('1') ? Number(`${raw[0]}.${raw.slice(1)}`) : Number(`0.${raw.replace(/^0/, '')}`)
+  if (!Number.isFinite(numeric)) return 'Fib level'
+
+  const percent = numeric >= 1 ? (numeric * 100).toFixed(1) : (numeric * 100).toFixed(numeric === 0.5 ? 0 : 1)
+  return `${percent.replace('.0', '')}% ${numeric > 1 ? 'extension' : 'retracement'}`
+}
+
 function localFallbackAnalysis(slimState: {
   ticker: string
   currentPrice: number
@@ -31,14 +42,30 @@ function localFallbackAnalysis(slimState: {
   const closest = slimState.keyLevels
     .slice()
     .sort((a, b) => Math.abs(a.distancePercent) - Math.abs(b.distancePercent))[0]
+  const invalidation =
+    slimState.trend === 'up'
+      ? slimState.keyLevels
+          .filter((level) => level.distancePercent < 0)
+          .sort((a, b) => Math.abs(a.distancePercent) - Math.abs(b.distancePercent))[0]
+      : slimState.trend === 'down'
+        ? slimState.keyLevels
+            .filter((level) => level.distancePercent > 0)
+            .sort((a, b) => Math.abs(a.distancePercent) - Math.abs(b.distancePercent))[0]
+        : closest
   const level = closest ? formatLevel(closest.price, slimState.ticker) : formatLevel(slimState.currentPrice, slimState.ticker)
-  const pressure = slimState.trend === 'down' ? 'downside pressure' : slimState.trend === 'up' ? 'upside pressure' : 'range pressure'
+  const invalidationLevel = invalidation ? formatLevel(invalidation.price, slimState.ticker) : level
   const structure = slimState.channel ? `${slimState.channel.direction} channel` : `${slimState.trend} trend`
   const event = slimState.recentEvent?.replaceAll('_', ' ') ?? 'structure test'
   const samplePrefix = samples[0]?.output.includes(':') ? samples[0].output.split(':')[0] : 'Intraday Update'
   const prefix = samplePrefix?.trim() || 'Intraday Update'
+  const pressure =
+    slimState.trend === 'down'
+      ? `A move back above ${invalidationLevel} would take the downside pressure off.`
+      : slimState.trend === 'up'
+        ? `A move back below ${invalidationLevel} would take the upside pressure off.`
+        : `A move back through ${invalidationLevel} would take the range pressure off.`
 
-  return `${prefix}: $${slimState.ticker} is working through a ${event} inside the ${structure}, and the ${closest?.type ?? 'pivot'} near ${level} is in play. A move back through that level would take the ${pressure} off, especially with RSI still ${slimState.rsiZone}.`
+  return `${prefix}: $${slimState.ticker} is working through a ${event} inside the ${structure}, and the ${closest ? formatLevelType(closest.type) : 'pivot'} near ${level} is in play. ${pressure} RSI is still ${slimState.rsiZone}.`
 }
 
 async function callAnthropic(system: string, payload: unknown): Promise<string | null> {

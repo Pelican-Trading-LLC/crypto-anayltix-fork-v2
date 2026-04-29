@@ -5,7 +5,7 @@ import { BlakeChart } from '@/components/blake-mode/BlakeChart'
 import { ConfluencePanel } from '@/components/blake-mode/ConfluencePanel'
 import { PelicanVoicePanel } from '@/components/blake-mode/PelicanVoicePanel'
 import { TickerSelector } from '@/components/blake-mode/TickerSelector'
-import { TICKER_CONFIGS } from '@/lib/blake-mode/data'
+import { TICKER_CONFIGS } from '@/lib/blake-mode/config'
 import type { BlakeConfluence } from '@/lib/blake-mode/confluence/aggregator'
 import type { BlakeChartState } from '@/lib/blake-mode/types'
 import type { VoiceSample } from '@/lib/blake-mode/voice/fewShotSamples'
@@ -148,4 +148,3 @@ export default function BlakeModePage() {
     </div>
   )
 }
-
